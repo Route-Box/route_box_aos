@@ -1,0 +1,23 @@
+package com.example.routebox.presentation.ui.route
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.routebox.databinding.FragmentRouteBinding
+
+class RouteFragment : Fragment() {
+    private lateinit var binding: FragmentRouteBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+
+    ): View {
+        binding = FragmentRouteBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+}
