@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">RouteBox</string>
+    <string name="app_name_ver2">ROUTE BOX</string>
     <string name="menu_home">홈</string>
     <string name="menu_search">탐색</string>
     <string name="menu_route">내 루트</string>
     <string name="menu_my">마이</string>
+    <string name="kakao">카카오로 시작하기</string>
+
+    <!-- contentDescription -->
+    <string name="cd_app_logo">App Logo</string>
 </resources>

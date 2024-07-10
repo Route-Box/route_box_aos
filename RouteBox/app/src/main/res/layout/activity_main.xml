@@ -19,7 +19,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/divider"
+            android:background="@color/gray6"
             app:layout_constraintBottom_toTopOf="@id/main_bottom_nav"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

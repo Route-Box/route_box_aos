@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.RouteBox" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/main_color</item>
+        <item name="colorPrimary">@color/main</item>
 명        <!-- Remove the title bar -->
         <item name="windowNoTitle">true</item>
         <!-- Status bar color. -->
@@ -10,4 +10,109 @@
     </style>
 
     <style name="Theme.RouteBox" parent="Base.Theme.RouteBox" />
+
+    <!-- Font 관련 -->
+    <style name="heading_l" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">36sp</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="heading_m" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">32sp</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="heading_s" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">26sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="title_xl" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">30sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="title_l" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">26sp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="title_m" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">24sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="title_s" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">20sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_b_xl" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">30sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_b_l" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">26sp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_b_m" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">24sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_b_s" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">20sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_b_xs" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_bold</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">18sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_r_xl" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_regular</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">30sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_r_l" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_regular</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">26sp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_r_m" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_regular</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">24sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_r_s" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_regular</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">20sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+    <style name="body_r_xs" parent="@android:style/Widget.TextView">
+        <item name="fontFamily">@font/pretendard_regular</item>
+        <item name="android:lineHeight" tools:ignore="NewApi">18sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/title_black</item>
+    </style>
+
 </resources>
