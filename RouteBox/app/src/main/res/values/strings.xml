@@ -1,12 +1,38 @@
 <resources>
+    <!-- 앱 이름 -->
     <string name="app_name">RouteBox</string>
     <string name="app_name_ver2">ROUTE BOX</string>
+
+    <!-- 바텀 메뉴 -->
     <string name="menu_home">홈</string>
     <string name="menu_search">탐색</string>
     <string name="menu_route">내 루트</string>
     <string name="menu_my">마이</string>
+
+    <!-- 로그인 및 회원가입 -->
     <string name="kakao">카카오로 시작하기</string>
+    <string name="signup_nickname_title">닉네임을 정해주세요</string>
+    <string name="signup_nickname_et">닉네임을 입력해주세요</string>
+    <string name="signup_nickname_btn">중복 확인</string>
+    <string name="signup_nickname_condition">2~8자 이내(특수 문자 및 공백 제외)</string>
+    <string name="signup_nickname_x">이 닉네임은 이미 다른 사람이 사용중이에요</string>
+    <string name="signup_nickname_o">사용 가능한 닉네임이에요!</string>
+    <string name="signup_birth">생일을 알려주세요</string>
+    <string name="signup_birth_yy">YYYY</string>
+    <string name="signup_birth_mm">MM</string>
+    <string name="signup_birth_dd">DD</string>
+    <string name="signup_gender_title">당신의 성별을 알려주세요</string>
+    <string name="signup_gender_m">남자</string>
+    <string name="signup_gender_f">여자</string>
+    <string name="signup_gender_x">비공개</string>
+    <string name="signup_complete">,\n루트박스에 온 걸 환영해요!</string>
+    <string name="signup_term_1">(필수)이용약관</string>
+    <string name="signup_term_2">(필수)개인정보수집이용동의</string>
+    <string name="signup_complete_btn">루트박스 시작하기</string>
+    <string name="next_btn">다음</string>
 
     <!-- contentDescription -->
     <string name="cd_app_logo">App Logo</string>
+    <string name="cd_back">Back Icon</string>
+    <string name="cd_arrow">Arrow Icon</string>
 </resources>
