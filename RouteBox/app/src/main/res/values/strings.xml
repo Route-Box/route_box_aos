@@ -1,6 +1,6 @@
 <resources>
     <!-- 앱 이름 -->
-    <string name="app_name">RouteBox</string>
+    <string name="app_name">Route Box</string>
     <string name="app_name_ver2">ROUTE BOX</string>
 
     <!-- 바텀 메뉴 -->
