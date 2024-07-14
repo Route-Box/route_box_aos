@@ -7,6 +7,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <!-- Default Splash 제거 -->
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="Theme.RouteBox" parent="Base.Theme.RouteBox" />
