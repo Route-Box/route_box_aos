@@ -19,12 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-
         initNavigation()
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        // 기존의 뒤로가기 버튼 기능 제거
+        // super.onBackPressed()
         setAppFinishedFlow()
     }
 
