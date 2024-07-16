@@ -33,11 +33,11 @@ class Signup1NicknameFragment : Fragment() {
 
     private fun initClickListener() {
         binding.nicknameCheckBtn.setOnClickListener {
-            // MEMO: 사용 가능한 닉네임
+            // 사용 가능한 닉네임
             nicknameConditionText(View.GONE, View.VISIBLE, View.GONE)
             viewModel.setNickname(binding.nicknameEt.text.toString())
 
-            // MEMO: 사용 불가한 닉네임
+            // 사용 불가한 닉네임
             // nicknameConditionText(View.GONE, View.GONE, View.VISIBLE)
         }
     }
