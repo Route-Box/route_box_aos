@@ -41,63 +41,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <View-->
-<!--            android:id="@+id/status_bar_gray"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="3dp"-->
-<!--            android:background="@color/gray6"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/status_bar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent" >-->
-
-<!--            <View-->
-<!--                android:id="@+id/status_bar_black1"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="3dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="@color/title_black"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--            <View-->
-<!--                android:id="@+id/status_bar_black2"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="3dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:visibility="invisible"-->
-<!--                android:background="@color/title_black"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--            <View-->
-<!--                android:id="@+id/status_bar_black3"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="3dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:visibility="invisible"-->
-<!--                android:background="@color/title_black"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--            <View-->
-<!--                android:id="@+id/status_bar_black4"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="3dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:visibility="invisible"-->
-<!--                android:background="@color/title_black"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--        </LinearLayout>-->
-
         <FrameLayout
             android:id="@+id/signup_fl"
             android:layout_width="match_parent"
