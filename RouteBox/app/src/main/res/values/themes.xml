@@ -118,8 +118,9 @@
     </style>
 
     <!-- Button 관련 -->
-    <!-- Button Style의 이름은 배경색_radius_윤곽선 순으로 지정 -->
     <style name="large_fill_default" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_40</item>
         <item name="backgroundTint">@color/main</item>
         <item name="fontFamily">@font/pretendard_bold</item>
@@ -128,7 +129,9 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="gray6_40" parent="@style/Widget.AppCompat.Button">
+    <style name="large_fill_disable" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_40</item>
         <item name="backgroundTint">@color/gray6</item>
         <item name="fontFamily">@font/pretendard_bold</item>
@@ -137,7 +140,9 @@
         <item name="android:textColor">@color/gray4</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="gray6_40_gray5" parent="@style/Widget.AppCompat.Button">
+    <style name="large_outline_disable" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_40_outline_gray</item>
         <item name="backgroundTint">@color/gray6</item>
         <item name="backgroundTintMode">multiply</item>
@@ -148,7 +153,9 @@
         <item name="strokeColor">@color/gray5</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="white_40_gray5" parent="@style/Widget.AppCompat.Button">
+    <style name="large_outline_default" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_40_outline_gray</item>
         <item name="backgroundTint">@color/white</item>
         <item name="backgroundTintMode">multiply</item>
@@ -158,7 +165,9 @@
         <item name="android:textColor">@color/title_black</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="white_40_black" parent="@style/Widget.AppCompat.Button">
+    <style name="large_outline_highlight" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_40_outline_black</item>
         <item name="backgroundTint">@color/white</item>
         <item name="backgroundTintMode">multiply</item>
@@ -168,7 +177,9 @@
         <item name="android:textColor">@color/title_black</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="black_4" parent="@style/Widget.AppCompat.Button">
+    <style name="small_fill_default" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_4</item>
         <item name="backgroundTint">@color/title_black</item>
         <item name="fontFamily">@font/pretendard_regular</item>
@@ -177,7 +188,9 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="gray6_4" parent="@style/Widget.AppCompat.Button">
+    <style name="small_fill_disable" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_4</item>
         <item name="backgroundTint">@color/gray6</item>
         <item name="fontFamily">@font/pretendard_regular</item>
@@ -186,7 +199,9 @@
         <item name="android:textColor">@color/gray4</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="gray6_4_gray5" parent="@style/Widget.AppCompat.Button">
+    <style name="small_outline_disable" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_4_outline_gray</item>
         <item name="backgroundTint">@color/gray6</item>
         <item name="backgroundTintMode">multiply</item>
@@ -196,7 +211,9 @@
         <item name="android:textColor">@color/gray4</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="white_4_gray5" parent="@style/Widget.AppCompat.Button">
+    <style name="small_outline_default" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_4_outline_gray</item>
         <item name="backgroundTint">@color/white</item>
         <item name="backgroundTintMode">multiply</item>
@@ -206,7 +223,9 @@
         <item name="android:textColor">@color/title_black</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
-    <style name="white_4_black" parent="@style/Widget.AppCompat.Button">
+    <style name="small_outline_default_highlight" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/radius_4_outline_black</item>
         <item name="backgroundTintMode">multiply</item>
         <item name="backgroundTint">@color/white</item>
