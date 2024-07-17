@@ -8,6 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivitySignupBinding
 import com.example.routebox.presentation.ui.MainActivity
@@ -22,8 +27,6 @@ class SignupActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_signup)
-
-        setFragment(Signup1NicknameFragment())
 
         initObserve()
         initClickListener()
@@ -52,20 +55,24 @@ class SignupActivity: AppCompatActivity() {
         }
 
         binding.nextBtn.setOnClickListener {
-            // 다음 버튼을 눌렀을 때 Fragment 변경을 위한 코드
-            if (viewModel.step.value == 1) {
-                setFragment(Signup2BirthFragment())
-            } else if (viewModel.step.value == 2) {
-                setFragment(Signup3GenderFragment())
-                binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
-            } else if (viewModel.step.value == 3) {
-                setFragment(Signup4TermsFragment())
-                binding.nextBtn.text = ContextCompat.getString(this, R.string.signup_complete_btn)
-            } else if (viewModel.step.value == 4) {
-                // TODO: 서버 회원가입 API와 연동!!
-                // 회원가입 API 성공했을 때 MainActivity로 이동!
-                startActivity(Intent(this, MainActivity::class.java))
-                finishAffinity()
+            when (viewModel.step.value) {
+                1 -> {
+                    Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup1NicknameFragment_to_signup2BirthFragment)
+                }
+                2 -> {
+                    Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup3GenderFragment)
+                    binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
+                }
+                3 -> {
+                    Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup4TermsFragment)
+                    binding.nextBtn.text = ContextCompat.getString(this, R.string.signup_complete_btn)
+                }
+                4 -> {
+                    // TODO: 서버 회원가입 API와 연동!!
+                    // 회원가입 API 성공했을 때 MainActivity로 이동!
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finishAffinity()
+                }
             }
 
             viewModel.setStep(viewModel.step.value!! + 1)
@@ -84,28 +91,26 @@ class SignupActivity: AppCompatActivity() {
 
     // 뒤로가기의 경우, 뒤로가기 아이콘을 눌렀을 때와 안드로이드 자체 뒤로가기 버튼을 눌렀을 때를 모두 고려해야 하기 때문에 편의를 위해 함수로 정의
     private fun backStep() {
-        // 뒤로가기 버튼을 눌렀을 때 Fragment 변경을 위한 코드
-        if (viewModel.step.value == 1) {
-            finish()
-        } else if (viewModel.step.value == 2) {
-            setFragment(Signup1NicknameFragment())
-            viewModel.setNickname("")
-        } else if (viewModel.step.value == 3) {
-            setFragment(Signup2BirthFragment())
-            viewModel.setBirth("")
-        } else if (viewModel.step.value == 4) {
-            setFragment(Signup3GenderFragment())
-            viewModel.setGender("")
-            viewModel.setTerms(false)
-            binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
+        when (viewModel.step.value) {
+            1 -> { finish() }
+            2 -> {
+                Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup1NicknameFragment2)
+                viewModel.setNickname("")
+            }
+            3 -> {
+                Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup2BirthFragment)
+                viewModel.setBirth("")
+            }
+            4 -> {
+                Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup4TermsFragment_to_signup3GenderFragment)
+                viewModel.setGender("")
+                viewModel.setTerms(false)
+                binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
+            }
         }
 
         viewModel.setStep(viewModel.step.value!! - 1)
         if (viewModel.step.value != 0) binding.progressBar.progress = viewModel.step.value!!
         binding.nextBtn.isEnabled = false
-    }
-
-    private fun setFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.signup_fl, fragment).commit()
     }
 }
