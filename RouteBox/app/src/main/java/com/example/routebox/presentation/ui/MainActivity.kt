@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityMainBinding
@@ -31,7 +32,9 @@ class MainActivity : AppCompatActivity() {
     private fun initNavigation() {
         binding.mainBottomNav.itemIconTintList = null
 
-        NavigationUI.setupWithNavController(binding.mainBottomNav, findNavController(R.id.main_nav_host))
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host) as NavHostFragment
+        val navController = navHostFragment.navController
+        NavigationUI.setupWithNavController(binding.mainBottomNav, navController)
     }
 
     private fun setAppFinishedFlow() {

@@ -11,22 +11,43 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_app_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RouteBox"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.ui.MainActivity"
+            android:name=".presentation.ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="oauth"
+                    android:scheme="kakao${KAKAO_API_KEY}" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".presentation.ui.auth.LoginActivity" />
+        <activity android:name=".presentation.ui.MainActivity" />
+        <activity android:name=".presentation.ui.auth.SignupActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="${KAKAO_API_KEY}" />
     </application>
 
 </manifest>

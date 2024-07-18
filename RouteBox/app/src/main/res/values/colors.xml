@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 기본 색상 -->
     <color name="black">#FF000000</color>
+    <color name="title_black">#FF161616</color>
+    <color name="gray1">#FF333333</color>
+    <color name="gray2">#FF555555</color>
+    <color name="gray3">#FF70747E</color>
+    <color name="gray4">#FF96979B</color>
+    <color name="gray5">#FFD3D3D3</color>
+    <color name="gray6">#FFF2F2F2</color>
+    <color name="gray7">#FFF9F9F9</color>
+    <color name="gray8">#FFFCFCFE</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dim">#FF161616</color>
     <color name="transparent">#00FFFFFF</color>
-    <color name="main_color">#FF5FC5B6</color>
-    <color name="main_gray">#FFD3D3D3</color>
+    <color name="red1_warning">#FFE71F2A</color>
+    <color name="red2_error_bg">#FFFFF9F9</color>
+    <color name="sub_color">#FFFF9D9D</color>
 
-    <color name="divider">#FFF2F2F2</color>
+    <!-- 메인 관련 색상 -->
+    <color name="main">#FF21C8B6</color>
+    <color name="app_name_color">#FF0E9187</color> <!-- 로그인 화면 글자 색 -->
+    <color name="main_gradient_top">#FF75D27E</color> <!-- 그라데이션 상단 색 -->
+    <color name="main_gradient_bottom">#FF47C4B6</color> <!-- 그라데이션 하단 색 -->
 </resources>
