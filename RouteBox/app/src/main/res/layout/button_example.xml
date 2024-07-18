@@ -7,61 +7,61 @@
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="180dp"
         android:layout_height="40dp"
-        android:text="main_40"
-        style="@style/main_40" />
+        android:text="large_fill_default"
+        style="@style/large_fill_default" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="180dp"
         android:layout_height="40dp"
-        android:text="gray6_40"
-        style="@style/gray6_40" />
+        android:text="large_fill_disable"
+        style="@style/large_fill_disable" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="180dp"
         android:layout_height="40dp"
-        android:text="gray6_40_gray5"
-        style="@style/gray6_40_gray5" />
+        android:text="large_outline_disable"
+        style="@style/large_outline_disable" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="180dp"
         android:layout_height="40dp"
-        android:text="white_40_gray5"
-        style="@style/white_40_gray5" />
+        android:text="large_outline_default"
+        style="@style/large_outline_default" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="180dp"
         android:layout_height="40dp"
-        android:text="white_40_black"
-        style="@style/white_40_black" />
+        android:text="large_outline_default_highlight"
+        style="@style/large_outline_default_highlight" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="black_4"
-        style="@style/black_4" />
+        android:text="small_fill_default"
+        style="@style/small_fill_default" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="gray6_4"
-        style="@style/gray6_4" />
+        android:text="small_fill_disable"
+        style="@style/small_fill_disable" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="gray6_4_gray5"
-        style="@style/gray6_4_gray5" />
+        android:text="small_outline_disable"
+        style="@style/small_outline_disable" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="white_4_gray5"
-        style="@style/white_4_gray5" />
+        android:text="small_outline_default"
+        style="@style/small_outline_default" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="white_4_black"
-        style="@style/white_4_black"/>
+        android:text="small_outline_default_highlight"
+        style="@style/small_outline_default_highlight"/>
 
 </LinearLayout>
