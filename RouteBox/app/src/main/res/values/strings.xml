@@ -31,6 +31,11 @@
     <string name="signup_complete_btn">루트박스 시작하기</string>
     <string name="next_btn">다음</string>
 
+    <!-- 탐색 -->
+    <string name="search_comment_hint">댓글을 입력해주세요</string>
+    <string name="search_comment_empty">아직 댓글이 없습니다.\n첫 번째 댓글을 남겨주세요.</string>
+    <string name="comment_date">2일 전</string>
+
     <!-- contentDescription -->
     <string name="cd_app_logo">App Logo</string>
     <string name="cd_back">Back Icon</string>
