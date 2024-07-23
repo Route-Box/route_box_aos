@@ -36,6 +36,15 @@
     <string name="search_comment_empty">아직 댓글이 없습니다.\n첫 번째 댓글을 남겨주세요.</string>
     <string name="comment_date">2일 전</string>
 
+    <!-- 구매하기 -->
+    <string name="purchase_default_popup_content">해당 여행 루트 조회를 위해서는\n구매가 필요합니다.\n구매하시겠습니까?</string>
+    <string name="purchase_point_lack_popup_content">포인트가 부족합니다.</string>
+    <string name="purchase_done_popup_content">성공적으로 구매가 완료되었습니다.\n마이페이지에서 확인할 수 있습니다.</string>
+
+    <!-- 팝업 다이얼로그 -->
+    <string name="popup_positive_default">네</string>
+    <string name="popup_negative_default">아니오</string>
+
     <!-- contentDescription -->
     <string name="cd_app_logo">App Logo</string>
     <string name="cd_back">Back Icon</string>
