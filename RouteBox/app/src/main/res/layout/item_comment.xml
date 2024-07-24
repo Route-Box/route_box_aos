@@ -72,7 +72,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/comment_more_iv"
+                android:id="@+id/item_comment_more_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_more"

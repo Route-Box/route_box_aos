@@ -35,6 +35,7 @@
     <string name="search_comment_hint">댓글을 입력해주세요</string>
     <string name="search_comment_empty">아직 댓글이 없습니다.\n첫 번째 댓글을 남겨주세요.</string>
     <string name="comment_date">2일 전</string>
+    <string name="search_hint">관심있는 지역을 검색해보세요</string>
 
     <!-- 구매하기 -->
     <string name="purchase_default_popup_content">해당 여행 루트 조회를 위해서는\n구매가 필요합니다.\n구매하시겠습니까?</string>
@@ -49,4 +50,5 @@
     <string name="cd_app_logo">App Logo</string>
     <string name="cd_back">Back Icon</string>
     <string name="cd_arrow">Arrow Icon</string>
+    <string name="search_route_result_title">\'%s\' 루트</string>
 </resources>
