@@ -45,6 +45,7 @@
                 style="@style/body_r_m"/>
 
             <View
+                android:id="@+id/dialog_button_separate_view"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/gray6"/>

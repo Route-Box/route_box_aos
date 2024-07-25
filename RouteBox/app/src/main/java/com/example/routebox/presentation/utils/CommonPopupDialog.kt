@@ -91,6 +91,7 @@ class CommonPopupDialog(
         if (id == -1) {
             // 취소 버튼을 보이지 않게 처리
             binding.dialogNegativeBtn.visibility = View.GONE
+            binding.dialogButtonSeparateView.visibility = View.GONE
         }
     }
 }
