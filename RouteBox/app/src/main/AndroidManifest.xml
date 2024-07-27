@@ -47,6 +47,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.ui.search.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".presentation.ui.search.search.FilterActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />

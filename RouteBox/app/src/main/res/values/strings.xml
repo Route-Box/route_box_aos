@@ -36,6 +36,16 @@
     <string name="search_comment_empty">아직 댓글이 없습니다.\n첫 번째 댓글을 남겨주세요.</string>
     <string name="comment_date">2일 전</string>
     <string name="search_hint">관심있는 지역을 검색해보세요</string>
+    <string name="filter_appbar_title">필터</string>
+    <string name="filter_title">필요한 여행 루트를 더욱 빠르게\n찾고 싶다면, 루트박스</string>
+    <string name="filter_title_highlighting_text">루트박스</string>
+    <string name="filter_question1_with_whom">누구와 함께 가나요?</string>
+    <string name="filter_question2_how_many">몇 명과 함께할 예정인가요?</string>
+    <string name="filter_question3_how_long">며칠 동안 머물 예정인가요?</string>
+    <string name="filter_question4_route_style">원하는 루트 스타일을 알려주세요.</string>
+    <string name="filter_question5_means_of_transportation">이동 수단을 알려주세요.</string>
+    <string name="filter_clear">초기화</string>
+    <string name="filter_look_route">N개 루트 보기</string>
 
     <!-- 구매하기 -->
     <string name="purchase_default_popup_content">해당 여행 루트 조회를 위해서는\n구매가 필요합니다.\n구매하시겠습니까?</string>
