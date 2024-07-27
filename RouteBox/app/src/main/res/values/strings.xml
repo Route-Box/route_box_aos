@@ -1,7 +1,9 @@
 <resources>
-    <!-- 앱 이름 -->
+    <!-- 앱 이름 관련 -->
     <string name="app_name">Route Box</string>
     <string name="app_name_ver2">ROUTE BOX</string>
+    <string name="route_big">ROUTE</string>
+    <string name="box_big">BOX</string>
 
     <!-- 바텀 메뉴 -->
     <string name="menu_home">홈</string>
@@ -31,8 +33,46 @@
     <string name="signup_complete_btn">루트박스 시작하기</string>
     <string name="next_btn">다음</string>
 
+    <!-- 탐색 -->
+    <string name="buy_point">구매하기</string>
+    <string name="route_style_preview">여행 루트 스타일 맛보기</string>
+    <string name="preview_buy_1">님의 루트가 사진이 들었다면,</string>
+    <string name="route_kor">루트</string>
+    <string name="preview_buy_2">를 구매하여 더 많은 사진을 감상하세요!</string>
+    <string name="my_wallet">내 지갑</string>
+    <string name="own_point">님의 보유 포인트</string>
+    <string name="refund">환급받기</string>
+    <string name="charge">충전하기</string>
+    <string name="point_history">포인트 내역</string>
+    <string name="empty_point">아직 포인트 내역이 없습니다.</string>
+    <string name="point">포인트</string>
+    <string name="won">원</string>
+    <string name="point_description">이용 안내</string>
+    <string name="point_description_content">- 1캐쉬는 1원입니다.\n- 이용 안내 사항이 들어갑니다.</string>
+    <string name="refund_price">환급금액</string>
+    <string name="my_point">내 포인트</string>
+    <string name="refund_point">환급받을 포인트</string>
+    <string name="enter_point">포인트를 입력해주세요</string>
+    <string name="refund_rule">포인트는 5,000P 단위로 전환 가능합니다.\n또한, 송금 수수료 500P 가 차감됩니다.</string>
+    <string name="owner_title">예금주</string>
+    <string name="enter_owner">예금주명을 입력해주세요</string>
+    <string name="bank_title">은행</string>
+    <string name="enter_bank">은행 선택</string>
+    <string name="close">닫기</string>
+    <string name="enter_account_number">계좌번호 입력(-제외)</string>
+    <string name="apply_refund">환급 신청하기</string>
+    <string name="agree_refund_title">환급을 위한 개인정보 수집 및 이용동의</string>
+    <string name="agree_personal_info_content">루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 루트박스가 제공하는 어쩌고 저쩌고 </string>
+
     <!-- contentDescription -->
     <string name="cd_app_logo">App Logo</string>
     <string name="cd_back">Back Icon</string>
     <string name="cd_arrow">Arrow Icon</string>
+    <string name="cd_search_point">Point Icon</string>
+    <string name="cd_search_search">Search Icon</string>
+    <string name="cd_search_route_profile">Profile Image</string>
+    <string name="cd_save">Save Icon</string>
+    <string name="cd_route_image">Route Image</string>
+    <string name="cd_bank_logo">Bank Logo</string>
+
 </resources>

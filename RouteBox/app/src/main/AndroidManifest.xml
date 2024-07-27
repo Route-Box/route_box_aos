@@ -44,6 +44,10 @@
         <activity android:name=".presentation.ui.MainActivity" />
         <activity android:name=".presentation.ui.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".presentation.ui.search.WalletActivity" />
+        <activity android:name=".presentation.ui.search.ChargeActivity" />
+        <activity android:name=".presentation.ui.search.RefundActivity" />
+        <activity android:name=".presentation.ui.search.RoutePreviewDetailActivity" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"

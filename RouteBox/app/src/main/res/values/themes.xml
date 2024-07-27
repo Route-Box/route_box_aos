@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.RouteBox" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Base.Theme.RouteBox" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/main</item>
         <!-- Remove the title bar -->
         <item name="windowNoTitle">true</item>
@@ -180,6 +180,8 @@
     <style name="small_fill_default" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
         <item name="android:background">@drawable/radius_4</item>
         <item name="backgroundTint">@color/title_black</item>
         <item name="fontFamily">@font/pretendard_regular</item>
@@ -191,6 +193,8 @@
     <style name="small_fill_disable" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
         <item name="android:background">@drawable/radius_4</item>
         <item name="backgroundTint">@color/gray6</item>
         <item name="fontFamily">@font/pretendard_regular</item>
@@ -202,6 +206,8 @@
     <style name="small_outline_disable" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
         <item name="android:background">@drawable/radius_4_outline_gray</item>
         <item name="backgroundTint">@color/gray6</item>
         <item name="backgroundTintMode">multiply</item>
@@ -214,6 +220,8 @@
     <style name="small_outline_default" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
         <item name="android:background">@drawable/radius_4_outline_gray</item>
         <item name="backgroundTint">@color/white</item>
         <item name="backgroundTintMode">multiply</item>
@@ -226,6 +234,8 @@
     <style name="small_outline_default_highlight" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
         <item name="android:background">@drawable/radius_4_outline_black</item>
         <item name="backgroundTintMode">multiply</item>
         <item name="backgroundTint">@color/white</item>
