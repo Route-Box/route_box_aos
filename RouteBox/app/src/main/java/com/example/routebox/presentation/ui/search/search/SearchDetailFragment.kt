@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.search.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +28,15 @@ class SearchDetailFragment: Fragment() {
     }
 
     private fun initClickListeners() {
+        // 검색 버튼 클릭
         binding.searchDetailSearchIv.setOnClickListener {
-            Toast.makeText(requireContext(), "검색 버튼 클릭", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "검색 버튼 클릭", Toast.LENGTH_SHORT).show()
         }
 
+        // 필터 버튼 클릭
         binding.searchDetailFilterIv.setOnClickListener {
             //TODO: 필터 화면으로 이동
+            startActivity(Intent(requireActivity(), FilterActivity::class.java))
         }
     }
 
@@ -44,8 +48,8 @@ class SearchDetailFragment: Fragment() {
         }
         routeAdapter.addRoute(arrayListOf("1", "2", "3", "4", "5")) //TODO: 서버의 루트 데이터로 변경
         routeAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
-            override fun onMoreButtonClick(position: Int) {
-                //TODO: 클릭 동작 정의
+            override fun onItemClick(position: Int) {
+                //TODO: 피드 상세 화면으로 이동
             }
         })
     }

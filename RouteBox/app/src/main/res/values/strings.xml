@@ -35,6 +35,7 @@
     <string name="search_comment_hint">댓글을 입력해주세요</string>
     <string name="search_comment_empty">아직 댓글이 없습니다.\n첫 번째 댓글을 남겨주세요.</string>
     <string name="comment_date">2일 전</string>
+    <string name="search_appbar_title">검색하기</string>
     <string name="search_hint">관심있는 지역을 검색해보세요</string>
     <string name="filter_appbar_title">필터</string>
     <string name="filter_title">필요한 여행 루트를 더욱 빠르게\n찾고 싶다면, 루트박스</string>

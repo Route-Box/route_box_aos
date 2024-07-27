@@ -22,7 +22,7 @@ class SearchResultRVAdapter: RecyclerView.Adapter<SearchResultRVAdapter.ViewHold
     }
 
     interface MyItemClickListener {
-        fun onMoreButtonClick(position: Int)
+        fun onItemClick(position: Int)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -37,7 +37,7 @@ class SearchResultRVAdapter: RecyclerView.Adapter<SearchResultRVAdapter.ViewHold
         holder.bind(routeList[position])
         holder.apply {
             itemView.setOnClickListener {
-                mItemClickListener.onMoreButtonClick(position)
+                mItemClickListener.onItemClick(position)
             }
         }
     }

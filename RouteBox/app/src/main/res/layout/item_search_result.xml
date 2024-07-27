@@ -90,7 +90,7 @@
                     android:id="@+id/item_search_result_purchase_num_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_box"
+                    android:drawableStart="@drawable/ic_download"
                     android:gravity="center_vertical"
                     android:text="10"
                     android:textColor="@color/gray3"

@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/search_detail_top_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,9 +28,24 @@
                 android:id="@+id/search_detail_back_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_left"/>
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:gravity="center_horizontal"
+                android:text="@string/search_appbar_title"
+                app:layout_constraintTop_toTopOf="@id/search_detail_back_iv"
+                app:layout_constraintBottom_toBottomOf="@id/search_detail_back_iv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/body_b_l"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/search_detail_search_ll"
@@ -97,6 +112,7 @@
                 android:id="@+id/search_detail_filter_iv"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_filter"/>
 
         </LinearLayout>
