@@ -48,14 +48,14 @@ class SearchFragment : Fragment() {
         routeList.add( RoutePreview(null, "9", "2024-07-8", null, "제목", "내용", 1, 1) )
         routeList.add( RoutePreview(null, "10", "2024-07-9", null, "제목", "내용", 1, 1) )
 
-        initAdapter()
+        setAdapter()
         initClickListener()
         initScrollLoading()
 
         return binding.root
     }
 
-    private fun initAdapter() {
+    private fun setAdapter() {
         routeAdapter = SearchHomeRouteRVAdapter(routeList)
         binding.searchHomeRv.adapter = routeAdapter
         binding.searchHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

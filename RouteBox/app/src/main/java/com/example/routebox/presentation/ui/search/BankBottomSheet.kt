@@ -37,7 +37,7 @@ class BankBottomSheet: BottomSheetDialogFragment() {
     ): View? {
         binding = BottomSheetBankBinding.inflate(inflater, container, false)
 
-        initAdapter()
+        setAdapter()
         initClickListener()
 
         bankList.addAll(arrayListOf(
@@ -54,7 +54,7 @@ class BankBottomSheet: BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private fun initAdapter() {
+    private fun setAdapter() {
         bankRVAdapter = BankRVAdapter(bankList)
         binding.bankRv.adapter = bankRVAdapter
         binding.bankRv.layoutManager = GridLayoutManager(context, 3)

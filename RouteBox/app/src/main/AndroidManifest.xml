@@ -46,7 +46,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.ui.search.WalletActivity" />
         <activity android:name=".presentation.ui.search.ChargeActivity" />
-        <activity android:name=".presentation.ui.search.RefundActivity" />
+        <activity android:name=".presentation.ui.search.RefundActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.ui.search.RoutePreviewDetailActivity" />
 
         <meta-data

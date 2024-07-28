@@ -24,3 +24,8 @@ data class History(
     var date: String,
     var point: Int
 )
+
+data class OwnPoint(
+    var nickname: String,
+    var point: Int
+)

@@ -31,7 +31,7 @@ class WalletActivity: AppCompatActivity() {
         ))
 
         initClickListener()
-        initAdapter()
+        setAdapter()
     }
 
     private fun initClickListener() {
@@ -48,7 +48,7 @@ class WalletActivity: AppCompatActivity() {
         }
     }
 
-    private fun initAdapter() {
+    private fun setAdapter() {
         historyRVAdapter = PointHistoryRVAdapter(historyList)
         binding.pointHistoryRv.adapter = historyRVAdapter
         binding.pointHistoryRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

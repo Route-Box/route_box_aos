@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="point"
+            type="com.example.routebox.domain.model.OwnPoint" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,526 +44,535 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingHorizontal="22dp"
             app:layout_constraintTop_toBottomOf="@id/charge_top_bar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
-                android:id="@+id/nickname_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="닉넴"
-                android:layout_marginTop="32dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:paddingHorizontal="22dp"
+                android:overScrollMode="never"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                style="@style/heading_s" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/own_point"
-                app:layout_constraintTop_toTopOf="@id/nickname_tv"
-                app:layout_constraintBottom_toBottomOf="@id/nickname_tv"
-                app:layout_constraintStart_toEndOf="@id/nickname_tv"
-                style="@style/heading_s" />
-
-            <TextView
-                android:id="@+id/point_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1000"
-                android:textColor="@color/main"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/nickname_tv"
-                app:layout_constraintStart_toStartOf="@id/nickname_tv"
-                style="@style/heading_l" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="P"
-                android:textColor="@color/main"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/nickname_tv"
-                app:layout_constraintStart_toEndOf="@id/point_tv"
-                style="@style/heading_l" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/first_cl"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/point_tv"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
-                    android:id="@+id/point_4500_tv"
+                    android:id="@+id/nickname_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4,500 "
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@{point.nickname}"
+                    android:layout_marginTop="32dp"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/heading_s" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/point"
-                    app:layout_constraintStart_toEndOf="@id/point_4500_tv"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                    android:text="@string/own_point"
+                    app:layout_constraintTop_toTopOf="@id/nickname_tv"
+                    app:layout_constraintBottom_toBottomOf="@id/nickname_tv"
+                    app:layout_constraintStart_toEndOf="@id/nickname_tv"
+                    style="@style/heading_s" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <TextView
+                    android:id="@+id/point_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="20dp"
-                    android:background="@drawable/radius_4"
-                    android:backgroundTint="@color/title_black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:text="@{String.valueOf(point.point)}"
+                    android:textColor="@color/main"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@id/nickname_tv"
+                    app:layout_constraintStart_toStartOf="@id/nickname_tv"
+                    style="@style/heading_l" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="P"
+                    android:textColor="@color/main"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@id/nickname_tv"
+                    app:layout_constraintStart_toEndOf="@id/point_tv"
+                    style="@style/heading_l" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/first_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/point_tv"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/first_price"
+                        android:id="@+id/point_4500_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5,000"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="4,500 "
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/first_won"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         style="@style/body_b_s" />
 
                     <TextView
-                        android:id="@+id/first_won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/won"
-                        android:textColor="@color/white"
+                        android:text="@string/point"
+                        app:layout_constraintStart_toEndOf="@id/point_4500_tv"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/first_price"
                         style="@style/body_b_s" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="20dp"
+                        android:background="@drawable/radius_4"
+                        android:backgroundTint="@color/title_black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/first_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5,000"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/first_won"
+                            style="@style/body_b_s" />
+
+                        <TextView
+                            android:id="@+id/first_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/won"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/first_price"
+                            style="@style/body_b_s" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray6"
-                app:layout_constraintTop_toBottomOf="@id/first_cl"
-                app:layout_constraintBottom_toTopOf="@id/second_cl" />
-            
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/second_cl"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/first_cl"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/point_9500_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="9,500 "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/point"
-                    app:layout_constraintStart_toEndOf="@id/point_9500_tv"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray6"
+                    app:layout_constraintTop_toBottomOf="@id/first_cl"
+                    app:layout_constraintBottom_toTopOf="@id/second_cl" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="20dp"
-                    android:background="@drawable/radius_4"
-                    android:backgroundTint="@color/title_black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:id="@+id/second_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/first_cl"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/second_price"
+                        android:id="@+id/point_9500_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10,000"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="9,500 "
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/second_won"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         style="@style/body_b_s" />
 
                     <TextView
-                        android:id="@+id/second_won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/won"
-                        android:textColor="@color/white"
+                        android:text="@string/point"
+                        app:layout_constraintStart_toEndOf="@id/point_9500_tv"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/second_price"
                         style="@style/body_b_s" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="20dp"
+                        android:background="@drawable/radius_4"
+                        android:backgroundTint="@color/title_black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/second_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="10,000"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/second_won"
+                            style="@style/body_b_s" />
+
+                        <TextView
+                            android:id="@+id/second_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/won"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/second_price"
+                            style="@style/body_b_s" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray6"
-                app:layout_constraintTop_toBottomOf="@id/second_cl"
-                app:layout_constraintBottom_toTopOf="@id/third_cl" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/third_cl"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/second_cl"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/point_14500_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="14,500 "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/point"
-                    app:layout_constraintStart_toEndOf="@id/point_14500_tv"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray6"
+                    app:layout_constraintTop_toBottomOf="@id/second_cl"
+                    app:layout_constraintBottom_toTopOf="@id/third_cl" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="20dp"
-                    android:background="@drawable/radius_4"
-                    android:backgroundTint="@color/title_black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:id="@+id/third_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/second_cl"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/third_price"
+                        android:id="@+id/point_14500_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="15,000"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="14,500 "
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/third_won"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         style="@style/body_b_s" />
 
                     <TextView
-                        android:id="@+id/third_won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/won"
-                        android:textColor="@color/white"
+                        android:text="@string/point"
+                        app:layout_constraintStart_toEndOf="@id/point_14500_tv"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/third_price"
                         style="@style/body_b_s" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="20dp"
+                        android:background="@drawable/radius_4"
+                        android:backgroundTint="@color/title_black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/third_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="15,000"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/third_won"
+                            style="@style/body_b_s" />
+
+                        <TextView
+                            android:id="@+id/third_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/won"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/third_price"
+                            style="@style/body_b_s" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray6"
-                app:layout_constraintTop_toBottomOf="@id/third_cl"
-                app:layout_constraintBottom_toTopOf="@id/fourth_cl" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/fourth_cl"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/third_cl"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/point_19500_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="19,500 "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/point"
-                    app:layout_constraintStart_toEndOf="@id/point_19500_tv"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray6"
+                    app:layout_constraintTop_toBottomOf="@id/third_cl"
+                    app:layout_constraintBottom_toTopOf="@id/fourth_cl" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="20dp"
-                    android:background="@drawable/radius_4"
-                    android:backgroundTint="@color/title_black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:id="@+id/fourth_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/third_cl"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/fourth_price"
+                        android:id="@+id/point_19500_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20,000"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="19,500 "
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/fourth_won"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         style="@style/body_b_s" />
 
                     <TextView
-                        android:id="@+id/fourth_won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/won"
-                        android:textColor="@color/white"
+                        android:text="@string/point"
+                        app:layout_constraintStart_toEndOf="@id/point_19500_tv"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/fourth_price"
                         style="@style/body_b_s" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="20dp"
+                        android:background="@drawable/radius_4"
+                        android:backgroundTint="@color/title_black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/fourth_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="20,000"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/fourth_won"
+                            style="@style/body_b_s" />
+
+                        <TextView
+                            android:id="@+id/fourth_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/won"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/fourth_price"
+                            style="@style/body_b_s" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray6"
-                app:layout_constraintTop_toBottomOf="@id/fourth_cl"
-                app:layout_constraintBottom_toTopOf="@id/fifth_cl" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/fifth_cl"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/fourth_cl"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/point_24500_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="24,500 "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/point"
-                    app:layout_constraintStart_toEndOf="@id/point_24500_tv"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray6"
+                    app:layout_constraintTop_toBottomOf="@id/fourth_cl"
+                    app:layout_constraintBottom_toTopOf="@id/fifth_cl" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="20dp"
-                    android:background="@drawable/radius_4"
-                    android:backgroundTint="@color/title_black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:id="@+id/fifth_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/fourth_cl"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/fifth_price"
+                        android:id="@+id/point_24500_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="25,000"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="24,500 "
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/fifth_won"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         style="@style/body_b_s" />
 
                     <TextView
-                        android:id="@+id/fifth_won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/won"
-                        android:textColor="@color/white"
+                        android:text="@string/point"
+                        app:layout_constraintStart_toEndOf="@id/point_24500_tv"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/fifth_price"
                         style="@style/body_b_s" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="20dp"
+                        android:background="@drawable/radius_4"
+                        android:backgroundTint="@color/title_black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/fifth_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="25,000"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/fifth_won"
+                            style="@style/body_b_s" />
+
+                        <TextView
+                            android:id="@+id/fifth_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/won"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/fifth_price"
+                            style="@style/body_b_s" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray6"
-                app:layout_constraintTop_toBottomOf="@id/fifth_cl"
-                app:layout_constraintBottom_toTopOf="@id/sixth_cl" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/sixth_cl"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/fifth_cl"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/point_49500_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="49,500 "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/point"
-                    app:layout_constraintStart_toEndOf="@id/point_49500_tv"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/body_b_s" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray6"
+                    app:layout_constraintTop_toBottomOf="@id/fifth_cl"
+                    app:layout_constraintBottom_toTopOf="@id/sixth_cl" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="20dp"
-                    android:background="@drawable/radius_4"
-                    android:backgroundTint="@color/title_black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:id="@+id/sixth_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/fifth_cl"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/sixth_price"
+                        android:id="@+id/point_49500_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50,000"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="49,500 "
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/sixth_won"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         style="@style/body_b_s" />
 
                     <TextView
-                        android:id="@+id/sixth_won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/won"
-                        android:textColor="@color/white"
+                        android:text="@string/point"
+                        app:layout_constraintStart_toEndOf="@id/point_49500_tv"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/sixth_price"
                         style="@style/body_b_s" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="20dp"
+                        android:background="@drawable/radius_4"
+                        android:backgroundTint="@color/title_black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/sixth_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="50,000"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/sixth_won"
+                            style="@style/body_b_s" />
+
+                        <TextView
+                            android:id="@+id/sixth_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/won"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/sixth_price"
+                            style="@style/body_b_s" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                app:cardCornerRadius="8dp"
-                app:cardBackgroundColor="@color/gray7"
-                app:cardElevation="0dp"
-                app:layout_constraintTop_toBottomOf="@id/sixth_cl"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:layout_marginTop="40dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardBackgroundColor="@color/gray7"
+                    app:cardElevation="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/sixth_cl"
+                    app:layout_constraintStart_toStartOf="parent">
 
-                    <TextView
-                        android:id="@+id/point_description_title"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/point_description"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        style="@style/body_b_xs" />
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/point_description_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/point_description_content"
-                        android:layout_marginTop="12dp"
-                        android:textColor="@color/gray3"
-                        android:lineHeight="22sp"
-                        app:layout_constraintTop_toBottomOf="@id/point_description_title"
-                        app:layout_constraintStart_toStartOf="parent"
-                        style="@style/body_r_xs" />
+                        <TextView
+                            android:id="@+id/point_description_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/point_description"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            style="@style/body_b_xs" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/point_description_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/point_description_content"
+                            android:layout_marginTop="12dp"
+                            android:textColor="@color/gray3"
+                            android:lineHeight="22sp"
+                            app:layout_constraintTop_toBottomOf="@id/point_description_title"
+                            app:layout_constraintStart_toStartOf="parent"
+                            style="@style/body_r_xs" />
 
-            </androidx.cardview.widget.CardView>
-            
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
