@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
+        <import type="java.util.Set"/>
         <variable
             name="viewModel"
             type="com.example.routebox.presentation.ui.search.search.SearchViewModel" />
@@ -11,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/search_detail_top_ll"
@@ -83,51 +86,135 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/search_detail_filter_ll"
+        <!-- 검색 전 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/search_detail_empty_cl"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="18dp"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.routeSearchKeyWord.isEmpty ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toBottomOf="@id/search_detail_search_ll"
             app:layout_constraintStart_toStartOf="@id/search_detail_search_ll"
-            app:layout_constraintEnd_toEndOf="@id/search_detail_search_ll">
+            app:layout_constraintEnd_toEndOf="@id/search_detail_search_ll"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
+                android:id="@+id/search_detail_recent_searchword_title_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="'경주' 루트"
+                android:text="@string/search_recent_searchword"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 style="@style/body_b_m"/>
 
+            <!-- 최근 검색어가 있을 때 -->
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/search_detail_searchword_empty_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:text="최근 순"
-                android:drawablePadding="4dp"
-                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawableTop="@drawable/img_empty"
+                android:drawablePadding="16dp"
+                android:textColor="@color/gray1"
+                android:text="@string/search_recent_searchword_empty"
+                android:visibility="@{viewModel.resentSearchWordSet.size() == 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/search_detail_recent_searchword_title_tv"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.35"
                 style="@style/body_r_s"/>
 
-            <ImageView
-                android:id="@+id/search_detail_filter_iv"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_filter"/>
+            <!-- 최근 검색어가 없을 때 -->
+            <LinearLayout
+                android:id="@+id/search_detail_recent_searchword_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.resentSearchWordSet.size() == 0 ? View.GONE : View.VISIBLE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/search_detail_recent_searchword_title_tv">
+
+                <TextView
+                    android:id="@+id/search_detail_clear_all_recent_searchword_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="@string/search_clear_all_searchword"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray4"
+                    android:layout_gravity="end"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/search_detail_recent_searchword_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:overScrollMode="never"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_recent_searchword"
+                    tools:itemCount="3"/>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 검색 후 -->
+        <LinearLayout
+            android:id="@+id/search_detail_result_ll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="18dp"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.routeSearchKeyWord.isEmpty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintTop_toBottomOf="@id/search_detail_search_ll"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/search_detail_filter_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="22dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{viewModel.setSearchResultTitle()}"
+                    tools:text="'경주' 루트"
+                    style="@style/body_b_m"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:text="최근 순"
+                    android:drawablePadding="4dp"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    style="@style/body_r_s"/>
+
+                <ImageView
+                    android:id="@+id/search_detail_filter_iv"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_filter"/>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_detail_result_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                tools:listitem="@layout/item_search_result"/>
 
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_detail_result_rv"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:paddingTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/search_detail_filter_ll"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_search_result"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

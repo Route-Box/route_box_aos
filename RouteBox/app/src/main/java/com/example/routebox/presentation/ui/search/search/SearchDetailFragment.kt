@@ -1,19 +1,28 @@
 package com.example.routebox.presentation.ui.search.search
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.databinding.FragmentSearchDetailBinding
+import com.example.routebox.presentation.utils.SharedPreferencesHelper
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 
 class SearchDetailFragment: Fragment() {
     private lateinit var binding: FragmentSearchDetailBinding
 
-    private lateinit var routeAdapter: SearchResultRVAdapter
+    private lateinit var searchWordAdapter: RecentSearchWordRVAdapter
+    private lateinit var searchResultAdapter: SearchResultRVAdapter
+
+    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,14 +31,22 @@ class SearchDetailFragment: Fragment() {
     ): View? {
         binding = FragmentSearchDetailBinding.inflate(inflater, container, false)
 
+        binding.apply {
+            viewModel = this@SearchDetailFragment.viewModel
+            lifecycleOwner = this@SearchDetailFragment
+        }
+
+        initObserve()
+        initRecentSearchWord()
         initClickListeners()
-        setAdapter()
+        setSearchResultAdapter()
         return binding.root
     }
 
     private fun initClickListeners() {
         // 검색 버튼 클릭
         binding.searchDetailSearchIv.setOnClickListener {
+            //TODO: 최근 검색어 저장
 //            Toast.makeText(requireContext(), "검색 버튼 클릭", Toast.LENGTH_SHORT).show()
         }
 
@@ -38,19 +55,63 @@ class SearchDetailFragment: Fragment() {
             //TODO: 필터 화면으로 이동
             startActivity(Intent(requireActivity(), FilterActivity::class.java))
         }
+
+        // 최근 검색어 모두 지우기
+        binding.searchDetailClearAllRecentSearchwordTv.setOnClickListener {
+            searchWordAdapter.deleteAllWords()
+            viewModel.clearAllSearchWord()
+        }
     }
 
-    private fun setAdapter() {
-        routeAdapter = SearchResultRVAdapter()
+    private fun initRecentSearchWord() {
+        val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        viewModel.setSearchWordSet(sharedPreferencesHelper.getRecentSearchWords())
+    }
+
+    private fun setSearchWordAdapter() {
+        searchWordAdapter = RecentSearchWordRVAdapter()
+        binding.searchDetailRecentSearchwordRv.apply {
+            adapter = searchWordAdapter
+            layoutManager = FlexboxLayoutManager(context).apply {
+                flexWrap = FlexWrap.WRAP
+                flexDirection = FlexDirection.ROW
+            }
+        }
+        searchWordAdapter.setRecentSearchWordClickListener(object : RecentSearchWordRVAdapter.MyItemClickListener {
+            override fun onItemClick(position: Int, word: String) {
+                // 검색어로 다시 검색
+                viewModel.setCurrentSearchWord(word)
+                // 해당 검색어를 가장 최근 검색어로 이동
+                viewModel.updateRecentSearchWord(word, SearchType.REBROWSING)
+            }
+
+            override fun onDeleteWord(position: Int, word: String) {
+                // 검색어를 set에서 삭제
+                viewModel.updateRecentSearchWord(word, SearchType.DELETE)
+            }
+        })
+    }
+
+    private fun setSearchResultAdapter() {
+        searchResultAdapter = SearchResultRVAdapter()
         binding.searchDetailResultRv.apply {
-            adapter = routeAdapter
+            adapter = searchResultAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        routeAdapter.addRoute(arrayListOf("1", "2", "3", "4", "5")) //TODO: 서버의 루트 데이터로 변경
-        routeAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
+        searchResultAdapter.addRoute(arrayListOf("1", "2", "3", "4", "5")) //TODO: 서버의 루트 데이터로 변경
+        searchResultAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int) {
                 //TODO: 피드 상세 화면으로 이동
             }
         })
+    }
+
+    private fun initObserve() {
+        viewModel.resentSearchWordSet.observe(viewLifecycleOwner) { set ->
+            if (!set.isNullOrEmpty()) {
+                setSearchWordAdapter()
+                searchWordAdapter.addSearchWord(set as List<String>)
+            }
+        }
     }
 }
