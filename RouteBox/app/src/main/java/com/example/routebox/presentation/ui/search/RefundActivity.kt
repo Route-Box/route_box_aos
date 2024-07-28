@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.search
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -7,9 +8,12 @@ import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.transition.Visibility
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRefundBinding
 import com.example.routebox.domain.model.Bank
@@ -34,6 +38,9 @@ class RefundActivity: AppCompatActivity() {
 
         binding.bankCl.setOnClickListener {
             val bankBottomSheet = BankBottomSheet()
+            val bundle = Bundle()
+            bundle.putString("bankName", binding.enterBank.text.toString().substring(1))
+            bankBottomSheet.arguments = bundle
             bankBottomSheet.show(supportFragmentManager, "BankBottomSheet")
             bankBottomSheet.setOnDialogFinishListener(object: BankBottomSheet.OnDialogFinishListener {
                 override fun finish(data: Bank?) {
@@ -59,7 +66,17 @@ class RefundActivity: AppCompatActivity() {
             checkPointValid(true)
         }
 
-        binding.agreeRefundCv.setOnClickListener {
+        binding.ownerEraseIv.setOnClickListener {
+            binding.ownerEt.setText("")
+            checkNext[1] = false
+        }
+
+        binding.accountNumberEraseIv.setOnClickListener {
+            binding.accountNumberEt.setText("")
+            checkNext[3] = false
+        }
+
+        binding.agreeRefundIv.setOnClickListener {
             checkNext[4] = !checkNext[4]
 
             if (!checkNext[4]) {
@@ -70,6 +87,10 @@ class RefundActivity: AppCompatActivity() {
                 binding.agreeRefundIv.setImageResource(R.drawable.ic_term_check_o)
                 checkNextBtn()
             }
+        }
+
+        binding.termsArrowIv.setOnClickListener {
+            startActivity(Intent(this, RefundTermsContentActivity::class.java))
         }
     }
 
@@ -102,6 +123,7 @@ class RefundActivity: AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun afterTextChanged(p0: Editable?) {
+                checkEraseVisibility(binding.ownerEraseIv, binding.ownerEt.text.isEmpty())
                 checkNext[1] = binding.ownerEt.text.isNotEmpty()
                 checkNextBtn()
             }
@@ -111,6 +133,7 @@ class RefundActivity: AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun afterTextChanged(p0: Editable?) {
+                checkEraseVisibility(binding.accountNumberEraseIv, binding.accountNumberEt.text.isEmpty())
                 checkNext[3] = binding.accountNumberEt.text.isNotEmpty()
                 checkNextBtn()
             }
@@ -137,6 +160,11 @@ class RefundActivity: AppCompatActivity() {
             binding.pTv.visibility = View.GONE
             binding.pointEraseIv.visibility = View.VISIBLE
         }
+    }
+
+    private fun checkEraseVisibility(eraseIv: ImageView, isEmpty: Boolean) {
+        if (isEmpty) eraseIv.visibility = View.GONE
+        else eraseIv.visibility = View.VISIBLE
     }
 
     private fun checkNextBtn() {

@@ -19,6 +19,7 @@ class BankBottomSheet: BottomSheetDialogFragment() {
     private lateinit var bankRVAdapter: BankRVAdapter
     private lateinit var dialogFinishListener: OnDialogFinishListener
     private var selectBank: Bank? = null
+    private var preSelectedBank: String = ""
 
     private var bankList = arrayListOf<Bank>()
 
@@ -37,6 +38,8 @@ class BankBottomSheet: BottomSheetDialogFragment() {
     ): View? {
         binding = BottomSheetBankBinding.inflate(inflater, container, false)
 
+        preSelectedBank = arguments?.getString("bankName").toString()
+
         setAdapter()
         initClickListener()
 
@@ -50,6 +53,15 @@ class BankBottomSheet: BottomSheetDialogFragment() {
             Bank("케이뱅크", ContextCompat.getDrawable(binding.root.context, R.drawable.ic_bank_k)!!), Bank("부산", ContextCompat.getDrawable(binding.root.context, R.drawable.ic_bank_bnk)!!), Bank("전북", ContextCompat.getDrawable(binding.root.context, R.drawable.ic_bank_jb)!!),
             Bank("제주", ContextCompat.getDrawable(binding.root.context, R.drawable.ic_bank_shinhan)!!)
         ))
+
+        // 이전에 선택한 은행 확인 후 View 처리
+        for (i in 0 until bankList.size) {
+            if (bankList[i].bankName == preSelectedBank) {
+                bankRVAdapter.selectedBankIndex(i)
+                selectBank = Bank(bankList[i].bankName, bankList[i].bankImg)
+                break
+            }
+        }
 
         return binding.root
     }
@@ -68,7 +80,7 @@ class BankBottomSheet: BottomSheetDialogFragment() {
 
     private fun initClickListener() {
         binding.closeTv.setOnClickListener {
-            selectBank = null
+            if (preSelectedBank == "") selectBank = null
             onDestroyView()
         }
     }
@@ -76,6 +88,5 @@ class BankBottomSheet: BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         dialogFinishListener.finish(selectBank)
-        Log.d("BANK-TEST", "selectBank = ${selectBank}")
     }
 }

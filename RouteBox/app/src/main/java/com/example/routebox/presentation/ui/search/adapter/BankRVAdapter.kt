@@ -1,7 +1,9 @@
 package com.example.routebox.presentation.ui.search.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
 import com.example.routebox.databinding.ItemBankBinding
@@ -12,17 +14,7 @@ class BankRVAdapter(
 ): RecyclerView.Adapter<BankRVAdapter.ViewHolder>() {
 
     private lateinit var itemClickListener: OnItemClickListener
-
-    //    private val bankList: ArrayList<Bank> = arrayListOf(
-//        Bank("KB 국민", R.drawable.ic_bank_kb), Bank("IBK기업", R.drawable.ic_bank_ibk), Bank("NH농협", R.drawable.ic_bank_nh),
-//        Bank("신한", R.drawable.ic_bank_shinhan), Bank("우리", R.drawable.ic_bank_woori), Bank("한국씨티", R.drawable.ic_bank_citi),
-//        Bank("토스뱅크", R.drawable.ic_bank_toss), Bank("카카오뱅크", R.drawable.ic_bank_kakao), Bank("SC제일", R.drawable.ic_bank_sc),
-//        Bank("하나", R.drawable.ic_bank_hana), Bank("대구", R.drawable.ic_bank_dgb), Bank("경남", R.drawable.ic_bank_bnk),
-//        Bank("KDB산업", R.drawable.ic_bank_kdb), Bank("우체국", R.drawable.ic_bank_epost), Bank("수협", R.drawable.ic_bank_suhyup),
-//        Bank("광주", R.drawable.ic_bank_jb), Bank("SBI저축은행", R.drawable.ic_bank_sbi), Bank("새마을금고", R.drawable.ic_bank_mg),
-//        Bank("케이뱅크", R.drawable.ic_bank_k), Bank("부산", R.drawable.ic_bank_bnk), Bank("전북", R.drawable.ic_bank_jb),
-//        Bank("제주", R.drawable.ic_bank_shinhan)
-//    )
+    private var selectedBank: Int = -1
 
     interface OnItemClickListener {
         fun onItemClick(data: Bank)
@@ -42,14 +34,23 @@ class BankRVAdapter(
             itemClickListener.onItemClick(bankList[position])
         }
 
-        holder.bind(bankList[position])
+        holder.bind(bankList[position], position)
     }
 
     override fun getItemCount(): Int = bankList.size
 
     inner class ViewHolder(val binding: ItemBankBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(bank: Bank) {
+        fun bind(bank: Bank, position: Int) {
             binding.bank = bank
+
+            if (position == selectedBank) {
+                binding.bankCv.strokeColor = ContextCompat.getColor(binding.root.context, R.color.app_name_color)
+                binding.bankCv.setBackgroundColor(Color.parseColor("#1A21C8B6"))
+            }
         }
+    }
+
+    fun selectedBankIndex(index: Int) {
+        selectedBank = index
     }
 }
