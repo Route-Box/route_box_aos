@@ -52,12 +52,11 @@ class RefundActivity: AppCompatActivity() {
                     }
                 }
             })
+        }
 
-            binding.pointEraseIv.setOnClickListener {
-                Log.d("CLICK-TEST", "pointErase")
-                binding.enterPointEt.setText("")
-                checkPointValid(true)
-            }
+        binding.pointEraseIv.setOnClickListener {
+            binding.enterPointEt.setText("")
+            checkPointValid(true)
         }
 
         binding.agreeRefundCv.setOnClickListener {
