@@ -25,8 +25,16 @@ class CommentActivity : AppCompatActivity() {
             lifecycleOwner = this@CommentActivity
         }
 
+        initClickListeners()
         setAdapter()
         initObserve()
+    }
+
+    private fun initClickListeners() {
+        // 뒤로가기
+        binding.commentBackIv.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setAdapter() {

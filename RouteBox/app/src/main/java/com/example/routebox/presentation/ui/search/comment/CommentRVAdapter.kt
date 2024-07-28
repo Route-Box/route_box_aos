@@ -38,7 +38,7 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(commentList[position])
         holder.apply {
-            binding.itemCommentProfileIv.setOnClickListener {
+            binding.itemCommentMoreIv.setOnClickListener {
                 mItemClickListener.onMoreButtonClick(position)
             }
         }
