@@ -69,6 +69,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="16dp"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:background="@color/transparent"
                 android:text="@={viewModel.searchWord}"
                 android:hint="@string/search_hint"
@@ -80,7 +81,7 @@
                 android:layout_width="34dp"
                 android:layout_height="34dp"
                 android:padding="5dp"
-                android:onClick="@{viewModel::searchWordRoute}"
+                android:onClick="@{viewModel::inputRouteSearchWord}"
                 android:layout_marginEnd="12dp"
                 android:src="@drawable/ic_search"/>
 
@@ -184,7 +185,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{viewModel.setSearchResultTitle()}"
+                    android:text="@{@string/search_route_result_title(viewModel.routeSearchKeyWord)}"
                     tools:text="'경주' 루트"
                     style="@style/body_b_m"/>
 

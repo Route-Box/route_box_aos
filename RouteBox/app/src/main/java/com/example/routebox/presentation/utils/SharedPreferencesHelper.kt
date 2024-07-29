@@ -9,7 +9,7 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
     }
 
     // 최근 검색어 저장
-    fun setRecentSearchWords(wordSet: Set<String>) {
+    fun setRecentSearchWords(wordSet: Set<String>?) {
         sharedPreferences.edit()
             .putStringSet(RECENT_SEARCHWORD_KEY, wordSet)
             .apply()

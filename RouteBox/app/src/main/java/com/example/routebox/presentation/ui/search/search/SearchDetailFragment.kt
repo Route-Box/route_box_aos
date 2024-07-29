@@ -3,6 +3,7 @@ package com.example.routebox.presentation.ui.search.search
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,35 +38,36 @@ class SearchDetailFragment: Fragment() {
         }
 
         initObserve()
-        initRecentSearchWord()
+        initRecentSearchWords()
         initClickListeners()
         setSearchResultAdapter()
         return binding.root
     }
 
     private fun initClickListeners() {
-        // 검색 버튼 클릭
-        binding.searchDetailSearchIv.setOnClickListener {
-            //TODO: 최근 검색어 저장
-//            Toast.makeText(requireContext(), "검색 버튼 클릭", Toast.LENGTH_SHORT).show()
-        }
-
         // 필터 버튼 클릭
         binding.searchDetailFilterIv.setOnClickListener {
-            //TODO: 필터 화면으로 이동
+            //필터 화면으로 이동
             startActivity(Intent(requireActivity(), FilterActivity::class.java))
         }
 
         // 최근 검색어 모두 지우기
         binding.searchDetailClearAllRecentSearchwordTv.setOnClickListener {
             searchWordAdapter.deleteAllWords()
-            viewModel.clearAllSearchWord()
+            viewModel.clearAllRecentSearchWords()
         }
     }
 
-    private fun initRecentSearchWord() {
+    private fun initRecentSearchWords() {
         val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
-        viewModel.setSearchWordSet(sharedPreferencesHelper.getRecentSearchWords())
+        Log.d("SearchDetailFrag", "최근 검색어 가져오기: ${sharedPreferencesHelper.getRecentSearchWords()}")
+        viewModel.setRecentSearchWordSet(sharedPreferencesHelper.getRecentSearchWords())
+    }
+
+    private fun saveRecentSearchWords() {
+        // sharedPreferences에 최근 검색어 저장
+        val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        sharedPreferencesHelper.setRecentSearchWords(viewModel.resentSearchWordSet.value)
     }
 
     private fun setSearchWordAdapter() {
@@ -107,11 +109,15 @@ class SearchDetailFragment: Fragment() {
     }
 
     private fun initObserve() {
+        // 최근 검색어 관측
         viewModel.resentSearchWordSet.observe(viewLifecycleOwner) { set ->
+            Log.d("SearchDetailFrag", "최근 검색어: $set")
             if (!set.isNullOrEmpty()) {
                 setSearchWordAdapter()
-                searchWordAdapter.addSearchWord(set as List<String>)
+                // 어댑터에 최근 검색어 추가
+                searchWordAdapter.addSearchWord(set.toList())
             }
+            saveRecentSearchWords()
         }
     }
 }
