@@ -48,18 +48,18 @@ class SearchDetailFragment: Fragment() {
 
     private fun initClickListeners() {
         // 정렬 기준
-        binding.searchDetailOrderOptionTv.setOnClickListener {
+        binding.searchOrderOptionTv.setOnClickListener {
             showOrderingSearchResultMenu(it)
         }
 
         // 필터 버튼 클릭
-        binding.searchDetailFilterIv.setOnClickListener {
+        binding.searchFilterIv.setOnClickListener {
             //필터 화면으로 이동
             startActivity(Intent(requireActivity(), FilterActivity::class.java))
         }
 
         // 최근 검색어 모두 지우기
-        binding.searchDetailClearAllRecentSearchwordTv.setOnClickListener {
+        binding.searchClearAllRecentSearchwordTv.setOnClickListener {
             searchWordAdapter.deleteAllWords()
             viewModel.clearAllRecentSearchWords()
         }
@@ -79,7 +79,7 @@ class SearchDetailFragment: Fragment() {
 
     private fun setSearchWordAdapter() {
         searchWordAdapter = RecentSearchWordRVAdapter()
-        binding.searchDetailRecentSearchwordRv.apply {
+        binding.searchRecentSearchwordRv.apply {
             adapter = searchWordAdapter
             layoutManager = FlexboxLayoutManager(context).apply {
                 flexWrap = FlexWrap.WRAP
@@ -103,7 +103,7 @@ class SearchDetailFragment: Fragment() {
 
     private fun setSearchResultAdapter() {
         searchResultAdapter = SearchResultRVAdapter()
-        binding.searchDetailResultRv.apply {
+        binding.searchResultRv.apply {
             adapter = searchResultAdapter
             layoutManager = LinearLayoutManager(context)
         }

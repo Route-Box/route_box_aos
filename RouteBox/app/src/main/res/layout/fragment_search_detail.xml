@@ -18,7 +18,7 @@
         android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/search_detail_top_ll"
+            android:id="@+id/search_top_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="26dp"
@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:id="@+id/search_detail_back_iv"
+                android:id="@+id/search_back_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_arrow_left"
@@ -43,8 +43,8 @@
                 android:layout_marginHorizontal="12dp"
                 android:gravity="center_horizontal"
                 android:text="@string/search_appbar_title"
-                app:layout_constraintTop_toTopOf="@id/search_detail_back_iv"
-                app:layout_constraintBottom_toBottomOf="@id/search_detail_back_iv"
+                app:layout_constraintTop_toTopOf="@id/search_back_iv"
+                app:layout_constraintBottom_toBottomOf="@id/search_back_iv"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 style="@style/body_b_l"/>
@@ -52,7 +52,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:id="@+id/search_detail_search_ll"
+            android:id="@+id/search_searchbox_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="22dp"
@@ -61,10 +61,10 @@
             android:background="@drawable/radius_8_outline_gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_detail_top_ll">
+            app:layout_constraintTop_toBottomOf="@id/search_top_ll">
 
             <EditText
-                android:id="@+id/search_detail_et"
+                android:id="@+id/search_et"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -78,7 +78,7 @@
                 style="@style/body_r_m"/>
             
             <ImageView
-                android:id="@+id/search_detail_search_iv"
+                android:id="@+id/search_search_iv"
                 android:layout_width="34dp"
                 android:layout_height="34dp"
                 android:padding="5dp"
@@ -90,19 +90,19 @@
 
         <!-- 검색 전 -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/search_detail_empty_cl"
+            android:id="@+id/search_empty_cl"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="18dp"
             android:orientation="vertical"
             android:visibility="@{viewModel.routeSearchKeyWord.isEmpty ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toBottomOf="@id/search_detail_search_ll"
-            app:layout_constraintStart_toStartOf="@id/search_detail_search_ll"
-            app:layout_constraintEnd_toEndOf="@id/search_detail_search_ll"
+            app:layout_constraintTop_toBottomOf="@id/search_searchbox_ll"
+            app:layout_constraintStart_toStartOf="@id/search_searchbox_ll"
+            app:layout_constraintEnd_toEndOf="@id/search_searchbox_ll"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
-                android:id="@+id/search_detail_recent_searchword_title_tv"
+                android:id="@+id/search_recent_searchword_title_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -113,7 +113,7 @@
 
             <!-- 최근 검색어가 있을 때 -->
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/search_detail_searchword_empty_tv"
+                android:id="@+id/search_searchword_empty_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/img_empty"
@@ -123,24 +123,24 @@
                 android:visibility="@{viewModel.resentSearchWordSet.size() == 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/search_detail_recent_searchword_title_tv"
+                app:layout_constraintTop_toBottomOf="@id/search_recent_searchword_title_tv"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.35"
                 style="@style/body_r_s"/>
 
             <!-- 최근 검색어가 없을 때 -->
             <LinearLayout
-                android:id="@+id/search_detail_recent_searchword_ll"
+                android:id="@+id/search_recent_searchword_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 android:visibility="@{viewModel.resentSearchWordSet.size() == 0 ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/search_detail_recent_searchword_title_tv">
+                app:layout_constraintTop_toBottomOf="@id/search_recent_searchword_title_tv">
 
                 <TextView
-                    android:id="@+id/search_detail_clear_all_recent_searchword_tv"
+                    android:id="@+id/search_clear_all_recent_searchword_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="5dp"
@@ -151,7 +151,7 @@
                     android:layout_gravity="end"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/search_detail_recent_searchword_rv"
+                    android:id="@+id/search_recent_searchword_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -166,18 +166,18 @@
 
         <!-- 검색 후 -->
         <LinearLayout
-            android:id="@+id/search_detail_result_ll"
+            android:id="@+id/search_result_ll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="18dp"
             android:orientation="vertical"
             android:visibility="@{viewModel.routeSearchKeyWord.isEmpty ? View.GONE : View.VISIBLE}"
-            app:layout_constraintTop_toBottomOf="@id/search_detail_search_ll"
+            app:layout_constraintTop_toBottomOf="@id/search_searchbox_ll"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="gone">
 
             <LinearLayout
-                android:id="@+id/search_detail_filter_ll"
+                android:id="@+id/search_filter_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="22dp">
@@ -191,7 +191,7 @@
                     style="@style/body_b_m"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/search_detail_order_option_tv"
+                    android:id="@+id/search_order_option_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
@@ -201,7 +201,7 @@
                     style="@style/body_r_s"/>
 
                 <ImageView
-                    android:id="@+id/search_detail_filter_iv"
+                    android:id="@+id/search_filter_iv"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
@@ -210,7 +210,7 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/search_detail_result_rv"
+                android:id="@+id/search_result_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
