@@ -28,6 +28,12 @@ class FilterOptionsRVAdapter: RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHo
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteAllOptions() {
+        this.selectedOptions.clear()
+        notifyDataSetChanged()
+    }
+
     interface MyItemClickListener {
         fun onItemClick(position: Int, isSelected: Boolean)
     }
@@ -39,6 +45,7 @@ class FilterOptionsRVAdapter: RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHo
         context = viewGroup.context
         return ViewHolder(binding)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(optionList[position])
         holder.itemView.setOnClickListener {
@@ -59,6 +66,7 @@ class FilterOptionsRVAdapter: RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHo
     inner class ViewHolder(val binding: ItemFilterOptionBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(option: FilterOption) {
             binding.option = option
+            updateSelection(option)
         }
 
         fun updateSelection(option: FilterOption) {

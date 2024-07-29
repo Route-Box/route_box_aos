@@ -3,6 +3,7 @@ package com.example.routebox.presentation.ui.search.search
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,14 +20,21 @@ class FilterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilterBinding
 
     private val viewModel: FilterViewModel by viewModels()
+    private lateinit var adapterList: List<FilterOptionsRVAdapter>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_filter)
 
+        binding.apply {
+            viewModel = this@FilterActivity.viewModel
+            lifecycleOwner = this@FilterActivity
+        }
+
         initClickListeners()
         highlightingTitleText()
         setFilterOptions()
+        initObserve()
     }
 
     private fun initClickListeners() {
@@ -38,6 +46,19 @@ class FilterActivity : AppCompatActivity() {
         // x 버튼
         binding.filterCloseIv.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun initObserve() {
+        viewModel.isResetButtonClick.observe(this) {
+            if (it == true) {
+                Log.d("FilterActivity", "리셋 버튼 클릭")
+                // 필터 옵션 초기화 진행
+                for (adapter in adapterList) {
+                    adapter.deleteAllOptions()
+                }
+                viewModel.setResetDone()
+            }
         }
     }
 
@@ -62,7 +83,7 @@ class FilterActivity : AppCompatActivity() {
 
     private fun setFilterOptions() {
         val filterOptionList = FilterOption.getOptionsSortedByFilterType() // 필터 유형마다의 옵션 목록을 리스트에 저장
-        val adapterList = List(filterOptionList.size) { FilterOptionsRVAdapter() } // 리사이클러뷰와 연결할 어댑터 리스트 생성
+        adapterList = List(filterOptionList.size) { FilterOptionsRVAdapter() } // 리사이클러뷰와 연결할 어댑터 리스트 정의
         binding.apply {
             val recyclerViewList = listOf<RecyclerView>(
                 filterQuestion1WithWhomRv,
