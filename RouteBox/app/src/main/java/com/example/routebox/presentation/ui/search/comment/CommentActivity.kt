@@ -2,6 +2,9 @@ package com.example.routebox.presentation.ui.search.comment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -46,8 +49,10 @@ class CommentActivity : AppCompatActivity() {
         }
         commentAdapter.setCommentClickListener(object: CommentRVAdapter.MyItemClickListener {
             // 아이템 클릭
-            override fun onMoreButtonClick(position: Int) {
-                //TODO: 신고하기 or 수정/삭제하기의 팝업 메뉴 띄우기
+            override fun onMoreButtonClick(view: View?, position: Int, isMine: Boolean) {
+                //TODO: 내 댓글이라면 수정/삭제하기 메뉴 노출, 아니라면 신고하기 메뉴 노출
+                if (position % 2 == 0) myMenuShow(view!!)
+                else reportMenuShow(view!!)
             }
         })
     }
@@ -60,5 +65,39 @@ class CommentActivity : AppCompatActivity() {
                 commentAdapter.addComment(commentList)
             }
         }
+    }
+
+    private fun myMenuShow(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.inflate(R.menu.comment_my_menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_edit -> {
+                    Toast.makeText(this, "수정하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.menu_delete -> {
+                    Toast.makeText(this, "삭제하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> { false }
+            }
+        }
+        popupMenu.show()
+    }
+
+    private fun reportMenuShow(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.inflate(R.menu.comment_report_menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_report -> {
+                    Toast.makeText(this, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> { false }
+            }
+        }
+        popupMenu.show()
     }
 }

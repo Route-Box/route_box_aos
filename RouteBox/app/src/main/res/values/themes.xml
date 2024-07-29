@@ -9,6 +9,8 @@
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Default Splash 제거 -->
         <item name="android:windowIsTranslucent">true</item>
+        <item name="popupMenuBackground">@drawable/bg_menu</item>
+        <item name="android:popupMenuStyle">@style/popup_menu</item>
     </style>
 
     <style name="Theme.RouteBox" parent="Base.Theme.RouteBox" />
@@ -246,6 +248,11 @@
         <item name="colorControlNormal">@color/gray5</item> <!-- EditText 기본 색상 -->
         <item name="colorControlActivated">@color/title_black</item> <!-- Focus 되었을 때 색상 -->
         <item name="android:textCursorDrawable">@color/title_black</item> <!-- Cursor 색상 -->
+    </style>
+
+    <!-- 팝업 메뉴 기본 석정 -->
+    <style name="popup_menu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_menu</item>
     </style>
 
 </resources>

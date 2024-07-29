@@ -3,6 +3,7 @@ package com.example.routebox.presentation.ui.search.comment
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemCommentBinding
@@ -23,7 +24,7 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
     }
 
     interface MyItemClickListener {
-        fun onMoreButtonClick(position: Int)
+        fun onMoreButtonClick(view: View?, position: Int, isMine: Boolean)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -39,7 +40,7 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
         holder.bind(commentList[position])
         holder.apply {
             binding.itemCommentMoreIv.setOnClickListener {
-                mItemClickListener.onMoreButtonClick(position)
+                mItemClickListener.onMoreButtonClick(binding.itemCommentMoreIv, position, true)
             }
         }
     }
