@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSearchDetailBinding
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
@@ -45,6 +47,11 @@ class SearchDetailFragment: Fragment() {
     }
 
     private fun initClickListeners() {
+        // 정렬 기준
+        binding.searchDetailOrderOptionTv.setOnClickListener {
+            showOrderingSearchResultMenu(it)
+        }
+
         // 필터 버튼 클릭
         binding.searchDetailFilterIv.setOnClickListener {
             //필터 화면으로 이동
@@ -119,5 +126,32 @@ class SearchDetailFragment: Fragment() {
             }
             saveRecentSearchWords()
         }
+    }
+
+    private fun showOrderingSearchResultMenu(view: View) {
+        val popupMenu = PopupMenu(requireActivity(), view)
+        popupMenu.inflate(R.menu.search_order_menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_order_recent -> { // 최신 순
+                    viewModel.updateSelectedOrderOptionMenuId(0)
+                    true
+                }
+                R.id.menu_order_old -> { // 오래된 순
+                    viewModel.updateSelectedOrderOptionMenuId(1)
+                    true
+                }
+                R.id.menu_order_popularity -> { // 인기 순
+                    viewModel.updateSelectedOrderOptionMenuId(2)
+                    true
+                }
+                R.id.menu_order_many_comment -> { // 댓글 많은 순
+                    viewModel.updateSelectedOrderOptionMenuId(3)
+                    true
+                }
+                else -> { false }
+            }
+        }
+        popupMenu.show()
     }
 }

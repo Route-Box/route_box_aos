@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.example.routebox.presentation.ui.search.search.OrderOptionType"/>
         <import type="android.view.View"/>
         <import type="java.util.Set"/>
         <variable
@@ -190,10 +191,11 @@
                     style="@style/body_b_m"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/search_detail_order_option_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:text="최근 순"
+                    android:text="@{OrderOptionType.findOrderOptionById(viewModel.selectedOrderMenuId).title}"
                     android:drawablePadding="4dp"
                     android:drawableEnd="@drawable/ic_arrow_down"
                     style="@style/body_r_s"/>
