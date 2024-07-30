@@ -19,6 +19,15 @@
         android:name="com.example.routebox.presentation.ui.search.SearchFragment"
         android:label="SearchFragment"
         tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_searchDetailFragment"
+            app:destination="@id/searchDetailFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/searchDetailFragment"
+        android:name="com.example.routebox.presentation.ui.search.search.SearchDetailFragment"
+        android:label="SearchDetailFragment"
+        tools:layout="@layout/fragment_search_detail">
     </fragment>
 
     <!-- Route -->

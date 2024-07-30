@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/search_order_menu_recent"
+        android:id="@+id/menu_order_recent"/>
+    <item android:title="@string/search_order_menu_old"
+        android:id="@+id/menu_order_old"/>
+    <item android:title="@string/search_order_menu_popularity"
+        android:id="@+id/menu_order_popularity"/>
+    <item android:title="@string/search_order_menu_many_comment"
+        android:id="@+id/menu_order_many_comment"/>
+</menu>

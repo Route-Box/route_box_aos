@@ -73,4 +73,7 @@ dependencies {
 
     // 카카오 로그인
     implementation "com.kakao.sdk:v2-user:2.12.1" // 카카오 로그인
+
+    // flexbox
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }
