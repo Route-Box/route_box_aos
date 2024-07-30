@@ -72,7 +72,7 @@ dependencies {
     kapt 'com.google.dagger:hilt-compiler:2.48'
 
     // 카카오 로그인
-    implementation "com.kakao.sdk:v2-user:2.15.0" // 카카오 로그인
+    implementation "com.kakao.sdk:v2-user:2.15.0"
 
     // Flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
@@ -85,4 +85,7 @@ dependencies {
 
     // CircleIndicator
     implementation 'me.relex:circleindicator:2.1.6'
+
+    // flexbox
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }

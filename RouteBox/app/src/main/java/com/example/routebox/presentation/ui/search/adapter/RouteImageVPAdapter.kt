@@ -1,8 +1,5 @@
 package com.example.routebox.presentation.ui.search.adapter
 
-import android.annotation.SuppressLint
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,20 +27,7 @@ class RouteImageVPAdapter(
     inner class ViewHolder(val binding: ItemImageBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: String) {
             Glide.with(binding.root.context).load(data).into(binding.routeImage)
-            Log.d("VP-TEST", "data = ${data}")
 //            binding.routeImage.setImageURI(Uri.parse(data))
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun addAllItems(items: ArrayList<String>) {
-        imageList.addAll(items)
-        Log.d("VP-TEST", "imageList = $imageList")
-        this.notifyDataSetChanged()
-    }
-
-    fun removeAll() {
-        imageList.clear()
-        this.notifyDataSetChanged()
     }
 }

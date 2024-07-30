@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="searchWord"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/radius_900_outline_gray">
+
+        <TextView
+            android:id="@+id/item_recent_searchword_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{searchWord}"
+            android:textColor="@color/gray2"
+            tools:text="최근 검색어"
+            style="@style/body_r_s"/>
+
+        <ImageView
+            android:id="@+id/item_recent_searchword_delete_iv"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="6dp"
+            android:padding="3dp"
+            android:src="@drawable/ic_colse"
+            app:tint="@color/gray4" />
+
+    </LinearLayout>
+</layout>

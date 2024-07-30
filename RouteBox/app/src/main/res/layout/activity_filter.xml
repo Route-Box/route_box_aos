@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.search.search.FilterViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/filter_top_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="20dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/filter_back_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_left"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="12dp"
+                android:gravity="center_horizontal"
+                android:text="@string/filter_appbar_title"
+                style="@style/body_b_l"/>
+
+            <ImageView
+                android:id="@+id/filter_close_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_colse"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/filter_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/filter_title"
+            app:layout_constraintTop_toBottomOf="@id/filter_top_ll"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/heading_m"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/filter_option_sv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbars="none"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/filter_title_tv"
+            app:layout_constraintBottom_toTopOf="@id/filter_bottom_ll"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_question1_with_whom"
+                    style="@style/body_b_l"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filter_question1_with_whom_rv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="30dp"
+                    android:overScrollMode="never"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_filter_option"
+                    tools:itemCount="3"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:text="@string/filter_question2_how_many"
+                    style="@style/body_b_l"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filter_question2_how_many_rv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:overScrollMode="never"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_filter_option"
+                    tools:itemCount="2"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:text="@string/filter_question3_how_long"
+                    style="@style/body_b_l"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filter_question3_how_long_rv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="15dp"
+                    android:overScrollMode="never"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_filter_option"
+                    tools:itemCount="3"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:text="@string/filter_question4_route_style"
+                    style="@style/body_b_l"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filter_question4_route_style_rv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="20dp"
+                    android:overScrollMode="never"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_filter_option"
+                    tools:itemCount="4"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:text="@string/filter_question5_means_of_transportation"
+                    style="@style/body_b_l"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filter_question5_means_of_transportation_rv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:overScrollMode="never"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_filter_option"
+                    tools:itemCount="1"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/filter_bottom_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="22dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/filter_clear_btn"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="18dp"
+                android:layout_marginEnd="4dp"
+                android:onClick="@{viewModel::clickFilterResetButton}"
+                android:clickable="@{viewModel.isActivateButton ? true : false}"
+                android:background="@{viewModel.isActivateButton ? @drawable/radius_40_outline_gray : @drawable/radius_40_gray}"
+                android:textColor="@{viewModel.isActivateButton ? @color/title_black : @color/gray4}"
+                android:textAlignment="center"
+                android:text="@string/filter_clear"
+                style="@style/body_b_m"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/filter_look_route_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="18dp"
+                android:layout_weight="1"
+                android:background="@drawable/radius_40"
+                android:backgroundTint="@color/main"
+                android:textColor="@color/white"
+                android:text="@string/filter_look_route"
+                style="@style/body_b_m"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

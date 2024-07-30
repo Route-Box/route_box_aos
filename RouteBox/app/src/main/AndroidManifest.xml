@@ -41,7 +41,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.ui.auth.LoginActivity" />
-        <activity android:name=".presentation.ui.MainActivity" />
+        <activity android:name=".presentation.ui.MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.ui.search.WalletActivity" />
@@ -49,7 +50,9 @@
         <activity android:name=".presentation.ui.search.RefundActivity" />
         <activity android:name=".presentation.ui.search.RefundTermsContentActivity" />
         <activity android:name=".presentation.ui.search.RoutePreviewDetailActivity" />
-
+        <activity android:name=".presentation.ui.search.comment.CommentActivity"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".presentation.ui.search.search.FilterActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />
