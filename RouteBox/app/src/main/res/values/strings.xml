@@ -116,6 +116,7 @@
     <string name="cd_back">Back Icon</string>
     <string name="cd_arrow">Arrow Icon</string>
     <string name="cd_search_point">Point Icon</string>
+    <string name="cd_coupon">Coupon Icon</string>
     <string name="cd_search_search">Search Icon</string>
     <string name="cd_search_route_profile">Profile Image</string>
     <string name="cd_save">Save Icon</string>

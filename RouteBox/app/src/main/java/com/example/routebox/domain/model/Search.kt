@@ -4,13 +4,13 @@ import android.graphics.drawable.Drawable
 
 data class RoutePreview(
     var profileImg: String?,
-    val nickname: String,
-    val createAt: String,
+    val nickname: String?,
+    val createAt: String?,
     val img: ArrayList<String>?,
-    val title: String,
-    val content: String,
-    val save: Int,
-    val comment: Int
+    val title: String?,
+    val content: String?,
+    val save: Int?,
+    val comment: Int?
 )
 
 data class Bank(
@@ -29,3 +29,6 @@ data class OwnPoint(
     var nickname: String,
     var point: Int
 )
+
+const val loadingType = 1
+const val routeType = 2

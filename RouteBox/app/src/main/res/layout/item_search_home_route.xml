@@ -101,7 +101,6 @@
             android:background="@color/line_color"
             app:layout_constraintTop_toBottomOf="@id/search_top_bar" />
 
-        <!-- TODO: 이미지 있을 때, 없을 때 처리 -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/image_vp"
             android:layout_width="match_parent"
@@ -118,7 +117,7 @@
             android:layout_marginTop="12dp"
             android:visibility="@{preview.img == null ? View.GONE : View.VISIBLE}"
             app:ci_orientation="horizontal"
-            app:ci_drawable="@drawable/indicator_unselected"
+            app:ci_drawable="@drawable/indicator_selected"
             app:ci_drawable_unselected="@drawable/indicator_unselected"
             app:layout_constraintTop_toBottomOf="@id/image_vp"
             app:layout_constraintStart_toStartOf="parent"
