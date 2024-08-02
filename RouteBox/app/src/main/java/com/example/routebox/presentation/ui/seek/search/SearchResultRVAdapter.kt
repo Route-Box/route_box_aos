@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.search.search
+package com.example.routebox.presentation.ui.seek.search
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

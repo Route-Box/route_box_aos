@@ -30,7 +30,6 @@
                 android:id="@+id/signup_back_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
-                android:contentDescription="@string/cd_back"
                 android:src="@drawable/ic_arrow_left"
                 android:layout_marginStart="16dp"
                 android:paddingVertical="5dp"

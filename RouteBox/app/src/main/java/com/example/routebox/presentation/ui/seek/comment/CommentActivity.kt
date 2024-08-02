@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.search.comment
+package com.example.routebox.presentation.ui.seek.comment
 
 import android.os.Bundle
 import android.util.Log

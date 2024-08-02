@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.search.search
+package com.example.routebox.presentation.ui.seek.search
 
 import android.content.Context
 import android.content.Intent
@@ -12,15 +12,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
-import com.example.routebox.databinding.FragmentSearchDetailBinding
+import com.example.routebox.databinding.FragmentSearchBinding
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
-class SearchDetailFragment: Fragment() {
-    private lateinit var binding: FragmentSearchDetailBinding
+class SearchFragment: Fragment() {
+    private lateinit var binding: FragmentSearchBinding
 
     private lateinit var searchWordAdapter: RecentSearchWordRVAdapter
     private lateinit var searchResultAdapter: SearchResultRVAdapter
@@ -32,11 +32,11 @@ class SearchDetailFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchDetailBinding.inflate(inflater, container, false)
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         binding.apply {
-            viewModel = this@SearchDetailFragment.viewModel
-            lifecycleOwner = this@SearchDetailFragment
+            viewModel = this@SearchFragment.viewModel
+            lifecycleOwner = this@SearchFragment
         }
 
         initObserve()

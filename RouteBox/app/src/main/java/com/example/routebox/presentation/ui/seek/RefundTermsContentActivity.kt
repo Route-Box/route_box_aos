@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.search
+package com.example.routebox.presentation.ui.seek
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod

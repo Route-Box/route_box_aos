@@ -1,19 +1,14 @@
-package com.example.routebox.presentation.ui.search
+package com.example.routebox.presentation.ui.seek
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.transition.Visibility
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRefundBinding
 import com.example.routebox.domain.model.Bank

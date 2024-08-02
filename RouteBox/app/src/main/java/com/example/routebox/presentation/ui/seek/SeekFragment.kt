@@ -1,25 +1,22 @@
-package com.example.routebox.presentation.ui.search
+package com.example.routebox.presentation.ui.seek
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.routebox.databinding.FragmentSearchBinding
+import com.example.routebox.R
+import com.example.routebox.databinding.FragmentSeekBinding
 import com.example.routebox.domain.model.RoutePreview
-import com.example.routebox.presentation.ui.search.adapter.SearchHomeRouteRVAdapter
-import com.example.routebox.presentation.utils.OnSwipeTouchListener
+import com.example.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 
-class SearchFragment : Fragment() {
+class SeekFragment : Fragment() {
 
-    private lateinit var binding: FragmentSearchBinding
-    private lateinit var routeAdapter: SearchHomeRouteRVAdapter
+    private lateinit var binding: FragmentSeekBinding
+    private lateinit var routeAdapter: SeekHomeRouteRVAdapter
     private var routeList = arrayListOf<RoutePreview>()
 
     private var checkInitial: Boolean = true
@@ -29,7 +26,7 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        binding = FragmentSeekBinding.inflate(inflater, container, false)
 
         // 더미데이터
         routeList.add(
@@ -72,9 +69,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        routeAdapter = SearchHomeRouteRVAdapter(routeList)
-        binding.searchHomeRv.adapter = routeAdapter
-        binding.searchHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        routeAdapter = SeekHomeRouteRVAdapter(routeList)
+        binding.seekHomeRv.adapter = routeAdapter
+        binding.seekHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun initClickListener() {
@@ -84,11 +81,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun initScrollLoading() {
-//        binding.searchHomeRv.setOnTouchListener(object: OnSwipeTouchListener(binding.root.context) {
+//        binding.seekHomeRv.setOnTouchListener(object: OnSwipeTouchListener(binding.root.context) {
 //            @SuppressLint("ClickableViewAccessibility")
 //            override fun onSwipeBottom() {
 //                super.onSwipeBottom()
-//                if (binding.searchHomeRv.canScrollVertically(1)) {
+//                if (binding.seekHomeRv.canScrollVertically(1)) {
 //                    Log.d("SWIPE-TEST","아래로")
 //                    if (checkInitial) {
 //                        checkInitial = !checkInitial
@@ -100,12 +97,12 @@ class SearchFragment : Fragment() {
 //                }
 //            }
 //        })
-//        binding.searchHomeRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+//        binding.seekHomeRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
 //            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 //                super.onScrolled(recyclerView, dx, dy)
 //
 //                // RecyclerView가 최상단에 도달했을 때
-//                if (binding.searchHomeRv.canScrollVertically(1)) {
+//                if (binding.seekHomeRv.canScrollVertically(1)) {
 //                    if (checkInitial) {
 //                        checkInitial = !checkInitial
 //                    } else {

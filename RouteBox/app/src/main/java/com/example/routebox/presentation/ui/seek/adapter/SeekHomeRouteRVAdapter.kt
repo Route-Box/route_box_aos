@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.search.adapter
+package com.example.routebox.presentation.ui.seek.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.routebox.R
 import com.example.routebox.databinding.ItemLoadingBinding
-import com.example.routebox.databinding.ItemSearchHomeRouteBinding
+import com.example.routebox.databinding.ItemSeekHomeRouteBinding
 import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.loadingType
 import com.example.routebox.domain.model.routeType
 
-class SearchHomeRouteRVAdapter(
+class SeekHomeRouteRVAdapter(
     private var routeList: ArrayList<RoutePreview>
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -32,7 +32,7 @@ class SearchHomeRouteRVAdapter(
     ): RecyclerView.ViewHolder {
         return when(viewType) {
             routeType -> {
-                val binding: ItemSearchHomeRouteBinding = ItemSearchHomeRouteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding: ItemSeekHomeRouteBinding = ItemSeekHomeRouteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return RouteTypeViewHolder(binding)
             } else -> {
                 val binding: ItemLoadingBinding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -53,7 +53,7 @@ class SearchHomeRouteRVAdapter(
 
     override fun getItemCount(): Int = routeList.size
 
-    inner class RouteTypeViewHolder(val binding: ItemSearchHomeRouteBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class RouteTypeViewHolder(val binding: ItemSeekHomeRouteBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: RoutePreview) {
             // ViewPager 연결
             if (data.img != null) setVPAdapter(binding, data.img)
@@ -67,7 +67,7 @@ class SearchHomeRouteRVAdapter(
         }
     }
 
-    private fun setVPAdapter(binding: ItemSearchHomeRouteBinding, imageList: ArrayList<String>) {
+    private fun setVPAdapter(binding: ItemSeekHomeRouteBinding, imageList: ArrayList<String>) {
         val imageVPAdapter = RouteImageVPAdapter(imageList)
         binding.imageVp.adapter = imageVPAdapter
         binding.imageVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL

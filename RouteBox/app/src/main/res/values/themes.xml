@@ -9,6 +9,7 @@
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Default Splash 제거 -->
         <item name="android:windowIsTranslucent">true</item>
+        <!-- 팝업 관련 -->
         <item name="popupMenuBackground">@drawable/bg_menu</item>
         <item name="android:popupMenuStyle">@style/popup_menu</item>
     </style>

@@ -34,7 +34,7 @@
             android:layout_height="18dp"
             android:layout_marginStart="6dp"
             android:padding="3dp"
-            android:src="@drawable/ic_colse"
+            android:src="@drawable/ic_close"
             app:tint="@color/gray4" />
 
     </LinearLayout>

@@ -1,7 +1,6 @@
-package com.example.routebox.presentation.ui.search
+package com.example.routebox.presentation.ui.seek
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.BottomSheetBankBinding
 import com.example.routebox.domain.model.Bank
-import com.example.routebox.presentation.ui.search.adapter.BankRVAdapter
+import com.example.routebox.presentation.ui.seek.adapter.BankRVAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BankBottomSheet: BottomSheetDialogFragment() {

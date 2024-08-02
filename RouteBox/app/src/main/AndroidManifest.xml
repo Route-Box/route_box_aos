@@ -45,14 +45,14 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".presentation.ui.search.WalletActivity" />
-        <activity android:name=".presentation.ui.search.ChargeActivity" />
-        <activity android:name=".presentation.ui.search.RefundActivity" />
-        <activity android:name=".presentation.ui.search.RefundTermsContentActivity" />
-        <activity android:name=".presentation.ui.search.RoutePreviewDetailActivity" />
-        <activity android:name=".presentation.ui.search.comment.CommentActivity"
+        <activity android:name=".presentation.ui.seek.WalletActivity" />
+        <activity android:name=".presentation.ui.seek.ChargeActivity" />
+        <activity android:name=".presentation.ui.seek.RefundActivity" />
+        <activity android:name=".presentation.ui.seek.RefundTermsContentActivity" />
+        <activity android:name=".presentation.ui.seek.RoutePreviewDetailActivity" />
+        <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".presentation.ui.search.search.FilterActivity"/>
+        <activity android:name=".presentation.ui.seek.search.FilterActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />

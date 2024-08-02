@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.search.adapter
+package com.example.routebox.presentation.ui.seek.adapter
 
 import android.view.LayoutInflater
 import android.view.View

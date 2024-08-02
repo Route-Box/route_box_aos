@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/search_top_bar"
+            android:id="@+id/route_top_bar"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:paddingHorizontal="25dp"
@@ -37,7 +37,6 @@
                     android:id="@+id/writer_profile_iv"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:contentDescription="@string/cd_search_route_profile"
                     app:imageUrl="@{preview.profileImg}"
                     app:placeHolder="@{@drawable/ic_profile_default}" />
 
@@ -87,7 +86,7 @@
                 android:id="@+id/more_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_top_more"
+                android:src="@drawable/ic_more"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -99,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/line_color"
-            app:layout_constraintTop_toBottomOf="@id/search_top_bar" />
+            app:layout_constraintTop_toBottomOf="@id/route_top_bar" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/image_vp"
@@ -156,8 +155,7 @@
                 android:id="@+id/save_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:contentDescription="@string/cd_save"
-                android:src="@drawable/ic_save"
+                android:src="@drawable/ic_download"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/gray3"
                 app:layout_constraintTop_toBottomOf="@id/content_tv"
@@ -178,7 +176,6 @@
                 android:id="@+id/comment_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:contentDescription="@string/cd_save"
                 android:src="@drawable/ic_comment"
                 android:textColor="@color/gray3"
                 android:layout_marginStart="8dp"

@@ -1,16 +1,15 @@
-package com.example.routebox.presentation.ui.search
+package com.example.routebox.presentation.ui.seek
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityWalletBinding
 import com.example.routebox.domain.model.History
-import com.example.routebox.presentation.ui.search.adapter.PointHistoryRVAdapter
+import com.example.routebox.presentation.ui.seek.adapter.PointHistoryRVAdapter
 
 class WalletActivity: AppCompatActivity() {
 

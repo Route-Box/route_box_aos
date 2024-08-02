@@ -27,7 +27,7 @@
                 android:id="@+id/ic_back"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_top_arrow"
+                android:src="@drawable/ic_arrow_left"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -223,7 +223,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="150dp"
-                    android:src="@drawable/ic_empty_list"
+                    android:src="@drawable/img_empty"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintVertical_chainStyle="packed"
                     app:layout_constraintTop_toTopOf="parent"

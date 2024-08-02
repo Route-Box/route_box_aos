@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.search.search.FilterViewModel" />
+            type="com.example.routebox.presentation.ui.seek.search.FilterViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
                 android:id="@+id/filter_close_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_colse"/>
+                android:src="@drawable/ic_close"/>
 
         </LinearLayout>
 
