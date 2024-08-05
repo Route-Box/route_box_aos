@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View" />
@@ -150,15 +150,26 @@
                 app:layout_constraintTop_toBottomOf="@id/title_tv"
                 app:layout_constraintStart_toStartOf="parent"
                 style="@style/body_r_m" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/option_rv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="30dp"
+                app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/content_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/item_filter_option" />
             
             <ImageView
                 android:id="@+id/save_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_download"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="12dp"
                 android:textColor="@color/gray3"
-                app:layout_constraintTop_toBottomOf="@id/content_tv"
+                app:layout_constraintTop_toBottomOf="@id/option_rv"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView

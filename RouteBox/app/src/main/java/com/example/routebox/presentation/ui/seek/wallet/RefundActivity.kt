@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.seek
+package com.example.routebox.presentation.ui.seek.wallet
 
 import android.content.Intent
 import android.os.Bundle
@@ -37,7 +37,8 @@ class RefundActivity: AppCompatActivity() {
             bundle.putString("bankName", binding.enterBank.text.toString().substring(1))
             bankBottomSheet.arguments = bundle
             bankBottomSheet.show(supportFragmentManager, "BankBottomSheet")
-            bankBottomSheet.setOnDialogFinishListener(object: BankBottomSheet.OnDialogFinishListener {
+            bankBottomSheet.setOnDialogFinishListener(object:
+                BankBottomSheet.OnDialogFinishListener {
                 override fun finish(data: Bank?) {
                     if (data != null) {
                         binding.bankLogo.visibility = View.VISIBLE

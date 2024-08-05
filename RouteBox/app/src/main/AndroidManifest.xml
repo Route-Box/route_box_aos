@@ -45,10 +45,10 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".presentation.ui.seek.WalletActivity" />
-        <activity android:name=".presentation.ui.seek.ChargeActivity" />
-        <activity android:name=".presentation.ui.seek.RefundActivity" />
-        <activity android:name=".presentation.ui.seek.RefundTermsContentActivity" />
+        <activity android:name=".presentation.ui.seek.wallet.WalletActivity" />
+        <activity android:name=".presentation.ui.seek.wallet.ChargeActivity" />
+        <activity android:name=".presentation.ui.seek.wallet.RefundActivity" />
+        <activity android:name=".presentation.ui.seek.wallet.RefundTermsContentActivity" />
         <activity android:name=".presentation.ui.seek.RoutePreviewDetailActivity" />
         <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
