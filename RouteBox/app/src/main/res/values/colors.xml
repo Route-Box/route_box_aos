@@ -18,6 +18,9 @@
     <color name="red2_error_bg">#FFFFF9F9</color>
     <color name="sub_color">#FFFF9D9D</color>
 
+    <!-- 기타 색상 -->
+    <color name="route_private_dim">#99000000</color> <!-- 비공개인 루트 dim 배경 (투명도 60) -->
+
     <!-- 메인 관련 색상 -->
     <color name="main">#FF21C8B6</color>
     <color name="app_name_color">#FF0E9187</color> <!-- 로그인 화면 글자 색 -->

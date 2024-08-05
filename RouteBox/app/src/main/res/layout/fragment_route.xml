@@ -1,19 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.route.RouteViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/route_top_ll"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/menu_route"
-            android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="20dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name_first"
+                    style="@style/body_b_l"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/main"
+                    android:text="@string/app_name_last"
+                    style="@style/body_b_l"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/route_statistics_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_graph"/>
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="22dp"
+            app:layout_constraintTop_toBottomOf="@id/route_top_ll"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/route_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/route_start_question"
+                    android:layout_marginTop="32dp"
+                    style="@style/heading_m"/>
+
+                <TextView
+                    android:id="@+id/route_record_start_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:paddingVertical="17dp"
+                    android:text="@string/route_record_start"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_gradient_btn"
+                    style="@style/body_b_l"/>
+
+                <TextView
+                    android:id="@+id/route_my_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:text="@string/route_create_by_me"
+                    style="@style/heading_s"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/route_my_empty_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="52dp"
+                    android:drawableTop="@drawable/img_empty"
+                    android:drawablePadding="16dp"
+                    android:text="@string/route_my_empty"
+                    android:textColor="@color/gray1"
+                    android:visibility="@{viewModel.routeList.empty ? View.VISIBLE : View.GONE}"
+                    tools:visibility="gone"
+                    style="@style/body_r_s"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/route_my_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="20dp"
+                    android:overScrollMode="never"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="@{viewModel.routeList.empty ? View.GONE : View.VISIBLE}"
+                    tools:listitem="@layout/item_route_my"/>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
