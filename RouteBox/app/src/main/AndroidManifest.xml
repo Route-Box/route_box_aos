@@ -49,6 +49,7 @@
         <activity android:name=".presentation.ui.seek.wallet.ChargeActivity" />
         <activity android:name=".presentation.ui.seek.wallet.RefundActivity" />
         <activity android:name=".presentation.ui.seek.wallet.RefundTermsContentActivity" />
+        <activity android:name=".presentation.ui.seek.wallet.RefundCompleteActivity" />
         <activity android:name=".presentation.ui.seek.RoutePreviewDetailActivity" />
         <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>

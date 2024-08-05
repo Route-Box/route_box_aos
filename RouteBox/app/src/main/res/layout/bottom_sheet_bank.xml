@@ -43,7 +43,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:overScrollMode="never"
                     tools:listitem="@layout/item_bank"
                     app:spanCount="3"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

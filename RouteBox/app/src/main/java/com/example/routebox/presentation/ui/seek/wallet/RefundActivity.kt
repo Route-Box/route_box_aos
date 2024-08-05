@@ -88,6 +88,11 @@ class RefundActivity: AppCompatActivity() {
         binding.termsArrowIv.setOnClickListener {
             startActivity(Intent(this, RefundTermsContentActivity::class.java))
         }
+
+        binding.nextBtn.setOnClickListener {
+            startActivity(Intent(this, RefundCompleteActivity::class.java))
+            finish()
+        }
     }
 
     private fun initTextChangeListener() {

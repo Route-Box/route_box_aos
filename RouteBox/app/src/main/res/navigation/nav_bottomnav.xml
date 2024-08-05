@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_seekFragment_to_searchFragment"
             app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_seekFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
