@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <LinearLayout
             android:id="@+id/route_top_ll"
@@ -48,8 +49,9 @@
 
             <ImageView
                 android:id="@+id/route_statistics_iv"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
                 android:src="@drawable/ic_graph"/>
 
         </LinearLayout>

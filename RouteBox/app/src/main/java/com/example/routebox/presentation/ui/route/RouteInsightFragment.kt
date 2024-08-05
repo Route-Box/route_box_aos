@@ -12,10 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
-import com.example.routebox.databinding.FragmentRouteBinding
+import com.example.routebox.databinding.FragmentRouteInsightBinding
 
-class RouteFragment : Fragment() {
-    private lateinit var binding: FragmentRouteBinding
+class RouteInsightFragment : Fragment() {
+    private lateinit var binding: FragmentRouteInsightBinding
 
     private lateinit var myRouteAdapter: MyRouteRVAdapter
 
@@ -27,11 +27,11 @@ class RouteFragment : Fragment() {
         savedInstanceState: Bundle?
 
     ): View {
-        binding = FragmentRouteBinding.inflate(inflater, container, false)
+        binding = FragmentRouteInsightBinding.inflate(inflater, container, false)
 
         binding.apply {
-            viewModel = this@RouteFragment.viewModel
-            lifecycleOwner = this@RouteFragment
+            viewModel = this@RouteInsightFragment.viewModel
+            lifecycleOwner = this@RouteInsightFragment
         }
 
         initClickListeners()
@@ -41,12 +41,8 @@ class RouteFragment : Fragment() {
     }
 
     private fun initClickListeners() {
-        binding.routeStatisticsIv.setOnClickListener {
-            // 인사이트 화면으로 이동
-            findNavController().navigate(R.id.action_routeFragment_to_routeInsightFragment)
-        }
-        binding.routeRecordStartBtn.setOnClickListener {
-            //TODO: 루트 생성 화면으로 이동
+        binding.insightBackIv.setOnClickListener {
+            findNavController().popBackStack() // 뒤로가기
         }
     }
 
