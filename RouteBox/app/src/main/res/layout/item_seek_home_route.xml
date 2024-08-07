@@ -184,9 +184,9 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="8dp"
                 app:drawableStartCompat="@drawable/ic_comment"
-                app:layout_constraintStart_toEndOf="@id/save_tv"
-                app:layout_constraintTop_toTopOf="@id/save_tv"
-                app:layout_constraintBottom_toBottomOf="@id/save_tv"
+                app:layout_constraintStart_toEndOf="@id/download_tv"
+                app:layout_constraintTop_toTopOf="@id/download_tv"
+                app:layout_constraintBottom_toBottomOf="@id/download_tv"
                 style="@style/body_b_xs" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
