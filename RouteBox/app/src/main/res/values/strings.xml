@@ -114,6 +114,12 @@
     <string name="insight_my_route_create_num">내 루트 수</string>
     <string name="insight_my_route_buy_num">내 루트 구매 수</string>
     <string name="insight_my_route_comment_num">내 루트 댓글 수</string>
+    <!-- 루트 시작 -->
+    <string name="create_route_title">내 여행 루트 기록해볼까요?</string>
+    <string name="create_route_description">설정한 시간동안 여행 루트가 작성돼요.</string>
+    <string name="select_time_placeholder">시간 선택</string>
+    <string name="start_trip">여행 시작</string>
+    <string name="end_trip">여행 종료</string>
 
     <!-- 공통 -->
     <string name="next_btn">다음</string>

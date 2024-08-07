@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
+import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
 
 class RouteFragment : Fragment() {
     private lateinit var binding: FragmentRouteBinding
@@ -41,12 +43,16 @@ class RouteFragment : Fragment() {
     }
 
     private fun initClickListeners() {
+        // 인사이트 버튼
         binding.routeStatisticsIv.setOnClickListener {
             // 인사이트 화면으로 이동
             findNavController().navigate(R.id.action_routeFragment_to_routeInsightFragment)
         }
+
+        // 루트 시작하기 버튼
         binding.routeRecordStartBtn.setOnClickListener {
-            //TODO: 루트 생성 화면으로 이동
+            // 루트 시작하기 화면으로 이동
+            startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
         }
     }
 

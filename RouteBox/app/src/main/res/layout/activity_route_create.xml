@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.example.routebox.presentation.utils.DateConverter"/>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.route.record.RouteCreateViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:id="@+id/route_create_top_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="20dp"
+            android:orientation="horizontal"
+            android:gravity="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/route_create_back_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:src="@drawable/ic_close"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="22dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/route_create_top_ll">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/create_route_title"
+                style="@style/heading_m"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/gray1"
+                android:text="@string/create_route_description"
+                style="@style/body_r_m"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/start_trip"
+                style="@style/title_l"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/route_create_start_date_tv"
+                    android:text="@{DateConverter.getFormattedDate(viewModel.startDate)}"
+                    tools:text="23년 1월 25일"
+                    style="@style/common_date_selected_tv" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/route_create_start_time_tv"
+                    android:text="@string/select_time_placeholder"
+                    style="@style/common_time_selected_tv" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/end_trip"
+                style="@style/title_l"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/route_create_end_date_tv"
+                    android:text="@{DateConverter.getFormattedDate(viewModel.endDate)}"
+                    tools:text="23년 12월 25일"
+                    style="@style/common_date_selected_tv" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/route_create_end_time_tv"
+                    android:text="시간 선택"
+                    style="@style/common_time_selected_tv" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/next_btn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/next_btn"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="28dp"
+            android:enabled="false"
+            android:textSize="16sp"
+            android:fontFamily="@font/pretendard_bold"
+            android:background="@drawable/selector_main_btn"
+            android:textColor="@drawable/selector_main_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
