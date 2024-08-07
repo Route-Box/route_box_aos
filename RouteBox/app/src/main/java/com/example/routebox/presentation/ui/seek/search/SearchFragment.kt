@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSearchBinding
+import com.example.routebox.presentation.ui.seek.RoutePreviewDetailActivity
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.android.flexbox.FlexDirection
@@ -48,6 +49,10 @@ class SearchFragment: Fragment() {
     }
 
     private fun initClickListeners() {
+        binding.searchBackIv.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         // 정렬 기준
         binding.searchOrderOptionTv.setOnClickListener {
             showOrderingSearchResultMenu(it)
@@ -111,7 +116,8 @@ class SearchFragment: Fragment() {
         searchResultAdapter.addRoute(arrayListOf("1", "2", "3", "4", "5")) //TODO: 서버의 루트 데이터로 변경
         searchResultAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int) {
-                //TODO: 피드 상세 화면으로 이동
+                val intent = Intent(activity, RoutePreviewDetailActivity::class.java)
+                startActivity(intent)
             }
         })
     }

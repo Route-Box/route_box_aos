@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.routebox.databinding.ItemImageBinding
+import com.example.routebox.databinding.ItemRouteImageBinding
 
 class RouteImageVPAdapter(
     private val imageList: ArrayList<String>
@@ -15,7 +15,7 @@ class RouteImageVPAdapter(
         parent: ViewGroup,
         viewType: Int
     ): RouteImageVPAdapter.ViewHolder {
-        val binding: ItemImageBinding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding: ItemRouteImageBinding = ItemRouteImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -25,7 +25,7 @@ class RouteImageVPAdapter(
 
     override fun getItemCount(): Int = imageList.size
 
-    inner class ViewHolder(val binding: ItemImageBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemRouteImageBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: String, position: Int) {
             Glide.with(binding.root.context).load(data).into(binding.routeImage)
 

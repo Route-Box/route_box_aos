@@ -69,7 +69,7 @@ class CommentActivity : AppCompatActivity() {
 
     private fun myMenuShow(view: View) {
         val popupMenu = PopupMenu(this, view)
-        popupMenu.inflate(R.menu.comment_my_menu)
+        popupMenu.inflate(R.menu.my_option_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
@@ -88,7 +88,7 @@ class CommentActivity : AppCompatActivity() {
 
     private fun reportMenuShow(view: View) {
         val popupMenu = PopupMenu(this, view)
-        popupMenu.inflate(R.menu.comment_report_menu)
+        popupMenu.inflate(R.menu.report_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {

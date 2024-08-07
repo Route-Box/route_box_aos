@@ -3,6 +3,7 @@ package com.example.routebox.presentation.ui.seek.adapter
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,8 @@ import com.example.routebox.domain.model.routeType
 import com.example.routebox.presentation.ui.seek.RouteTagRVAdapter
 import com.example.routebox.presentation.ui.seek.search.FilterOptionsRVAdapter
 import com.example.routebox.presentation.ui.seek.search.SearchResultRVAdapter.MyItemClickListener
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
 class SeekHomeRouteRVAdapter(
@@ -33,7 +36,8 @@ class SeekHomeRouteRVAdapter(
     }
 
     interface MyItemClickListener {
-        fun onItemClick(position: Int)
+        fun moreItemClick(view: View, position: Int)
+        fun commentItemClick(position: Int)
     }
 
     // 뷰의 타입을 정해주는 부분
@@ -67,8 +71,14 @@ class SeekHomeRouteRVAdapter(
             (holder as RouteTypeViewHolder).bind(routeList[position])
             holder.setIsRecyclable(false)
             holder.apply {
-                binding.commentIv.setOnClickListener {
-                    mItemClickListener.onItemClick(position)
+                binding.downloadTv.setOnClickListener {
+                    mItemClickListener.commentItemClick(position)
+                }
+                binding.commentTv.setOnClickListener {
+                    mItemClickListener.commentItemClick(position)
+                }
+                binding.moreIv.setOnClickListener {
+                    mItemClickListener.moreItemClick(binding.moreIv, position)
                 }
             }
         }
@@ -102,7 +112,7 @@ class SeekHomeRouteRVAdapter(
         if (tagList != null) {
             val tagRVAdapter = RouteTagRVAdapter(tagList)
             binding.optionRv.adapter = tagRVAdapter
-            binding.optionRv.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+            binding.optionRv.layoutManager = FlexboxLayoutManager(binding.root.context)
         }
     }
 

@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:layout_marginTop="12dp"
-            android:visibility="@{preview.img == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{preview.img.size > 1 ? View.VISIBLE : View.GONE}"
             app:ci_orientation="horizontal"
             app:ci_drawable="@drawable/indicator_selected"
             app:ci_drawable_unselected="@drawable/indicator_unselected"
@@ -160,39 +160,20 @@
                 app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/content_tv"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:listitem="@layout/item_filter_option" />
-            
-            <ImageView
-                android:id="@+id/save_iv"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_download"
-                android:layout_marginTop="12dp"
-                android:textColor="@color/gray3"
-                app:layout_constraintTop_toBottomOf="@id/option_rv"
-                app:layout_constraintStart_toStartOf="parent" />
+                tools:listitem="@layout/item_route_tag" />
 
             <TextView
-                android:id="@+id/save_tv"
+                android:id="@+id/download_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray3"
                 android:text="@{String.valueOf(preview.save)}"
-                app:layout_constraintStart_toEndOf="@id/save_iv"
-                app:layout_constraintTop_toTopOf="@id/save_iv"
-                app:layout_constraintBottom_toBottomOf="@id/save_iv"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp"
+                app:drawableStartCompat="@drawable/ic_download"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/option_rv"
                 style="@style/body_b_xs" />
-
-            <ImageView
-                android:id="@+id/comment_iv"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_comment"
-                android:textColor="@color/gray3"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@id/save_tv"
-                app:layout_constraintTop_toTopOf="@id/save_iv"
-                app:layout_constraintBottom_toBottomOf="@id/save_iv" />
 
             <TextView
                 android:id="@+id/comment_tv"
@@ -200,9 +181,12 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray3"
                 android:text="@{String.valueOf(preview.comment)}"
-                app:layout_constraintStart_toEndOf="@id/comment_iv"
-                app:layout_constraintTop_toTopOf="@id/save_iv"
-                app:layout_constraintBottom_toBottomOf="@id/save_iv"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                app:drawableStartCompat="@drawable/ic_comment"
+                app:layout_constraintStart_toEndOf="@id/save_tv"
+                app:layout_constraintTop_toTopOf="@id/save_tv"
+                app:layout_constraintBottom_toBottomOf="@id/save_tv"
                 style="@style/body_b_xs" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

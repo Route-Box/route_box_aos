@@ -26,6 +26,11 @@ class WalletActivity: AppCompatActivity() {
                 History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀1", "2024년 07월 28일", 3),
                 History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀2", "2024년 07월 28일", -2),
                 History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀3", "2024년 07월 28일", 1),
+                History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀4", "2024년 07월 28일", -9),
+                History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀4", "2024년 07월 28일", -9),
+                History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀4", "2024년 07월 28일", -9),
+                History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀4", "2024년 07월 28일", -9),
+                History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀4", "2024년 07월 28일", -9),
                 History("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "타이틀4", "2024년 07월 28일", -9)
         ))
 

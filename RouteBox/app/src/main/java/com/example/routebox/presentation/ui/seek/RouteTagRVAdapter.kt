@@ -5,7 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.routebox.databinding.ItemFilterOptionBinding
+import com.example.routebox.databinding.ItemRouteTagBinding
 import com.example.routebox.domain.model.FilterOption
 
 class RouteTagRVAdapter(
@@ -21,7 +21,7 @@ class RouteTagRVAdapter(
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val binding: ItemFilterOptionBinding = ItemFilterOptionBinding.inflate(
+        val binding: ItemRouteTagBinding = ItemRouteTagBinding.inflate(
             LayoutInflater.from(viewGroup.context), viewGroup, false
         )
         context = viewGroup.context
@@ -34,7 +34,7 @@ class RouteTagRVAdapter(
 
     override fun getItemCount(): Int = tagList.size
 
-    inner class ViewHolder(val binding: ItemFilterOptionBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemRouteTagBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tag: FilterOption) {
             binding.option = tag
         }

@@ -2,15 +2,13 @@ package com.example.routebox.presentation.ui.seek
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSeekBinding
@@ -80,11 +78,14 @@ class SeekFragment : Fragment() {
         binding.seekHomeRv.adapter = routeAdapter
         binding.seekHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         routeAdapter.setRouteCommentClickListener(object: SeekHomeRouteRVAdapter.MyItemClickListener {
-            override fun onItemClick(position: Int) {
-                var intent = Intent(context, CommentActivity::class.java)
+            override fun commentItemClick(position: Int) {
+                val intent = Intent(context, CommentActivity::class.java)
                 // TODO: 루트 아이디 보내주기
                 intent.putExtra("routeId", 0)
                 startActivity(intent)
+            }
+            override fun moreItemClick(view: View, position: Int) {
+                reportMenuShow(view!!)
             }
         })
     }
@@ -95,13 +96,13 @@ class SeekFragment : Fragment() {
         }
 
         binding.topSearchIv.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(R.id.action_seekFragment_to_searchFragment)
+            findNavController().navigate(R.id.action_seekFragment_to_searchFragment)
         }
     }
 
     private fun reportMenuShow(view: View) {
         val popupMenu = PopupMenu(activity, view)
-        popupMenu.inflate(R.menu.comment_report_menu)
+        popupMenu.inflate(R.menu.report_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {

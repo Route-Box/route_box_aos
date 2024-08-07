@@ -1,9 +1,7 @@
 <resources>
     <!-- 앱 이름 -->
     <string name="app_name">Route Box</string>
-    <string name="app_name_ver2">ROUTE BOX</string>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                g>
-    <string name="route_big">ROUTE</string>
-    <string name="box_big">BOX</string>
+    <string name="app_name_ver2">ROUTE BOX</string>
 
     <!-- 바텀 메뉴 -->
     <string name="menu_home">홈</string>
@@ -111,8 +109,7 @@
     <string name="edit">수정하기</string>
     <string name="delete">삭제하기</string>
     <string name="buy_point">구매하기</string>
-    <string name="preview_buy_1">님의 루트가 사진이 들었다면,</string>
-    <string name="preview_buy_2">를 구매하여 더 많은 사진을 감상하세요!</string>
+    <string name="preview_buy">%s님의 루트가 사진이 들었다면,\n<b>루트</b>를 구매하여 더 많은 사진을 감상하세요!</string>
 
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>

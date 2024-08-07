@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.seek.wallet
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import com.example.routebox.R
 import com.example.routebox.databinding.BottomSheetBankBinding
 import com.example.routebox.domain.model.Bank
 import com.example.routebox.presentation.ui.seek.adapter.BankRVAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BankBottomSheet: BottomSheetDialogFragment() {
@@ -28,6 +31,12 @@ class BankBottomSheet: BottomSheetDialogFragment() {
 
     fun setOnDialogFinishListener(listener: OnDialogFinishListener) {
         dialogFinishListener = listener
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
     }
 
     override fun onCreateView(

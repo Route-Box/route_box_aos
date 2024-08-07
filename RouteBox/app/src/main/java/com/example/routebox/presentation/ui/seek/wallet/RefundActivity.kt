@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRefundBinding
 import com.example.routebox.domain.model.Bank
@@ -36,6 +37,9 @@ class RefundActivity: AppCompatActivity() {
             val bundle = Bundle()
             bundle.putString("bankName", binding.enterBank.text.toString().substring(1))
             bankBottomSheet.arguments = bundle
+            bankBottomSheet.run {
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
+            }
             bankBottomSheet.show(supportFragmentManager, "BankBottomSheet")
             bankBottomSheet.setOnDialogFinishListener(object:
                 BankBottomSheet.OnDialogFinishListener {
