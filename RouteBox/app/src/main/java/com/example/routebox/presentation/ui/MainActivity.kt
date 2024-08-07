@@ -3,8 +3,8 @@ package com.example.routebox.presentation.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.routebox.R
@@ -23,18 +23,19 @@ class MainActivity : AppCompatActivity() {
         initNavigation()
     }
 
-    override fun onBackPressed() {
-        // 기존의 뒤로가기 버튼 기능 제거
-        // super.onBackPressed()
-        setAppFinishedFlow()
-    }
-
     private fun initNavigation() {
         binding.mainBottomNav.itemIconTintList = null
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host) as NavHostFragment
         val navController = navHostFragment.navController
         NavigationUI.setupWithNavController(binding.mainBottomNav, navController)
+
+        // 뒤로가기 클릭 시 정의
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                setAppFinishedFlow()
+            }
+        })
     }
 
     private fun setAppFinishedFlow() {
