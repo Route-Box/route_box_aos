@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -41,6 +42,11 @@ class RouteInsightFragment : Fragment() {
     }
 
     private fun initClickListeners() {
+        // 안드로이드 기본 뒤로가기 버튼 클릭
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack()
+        }
+
         binding.insightBackIv.setOnClickListener {
             findNavController().popBackStack() // 뒤로가기
         }
@@ -93,6 +99,7 @@ class RouteInsightFragment : Fragment() {
                     true
                 }
                 R.id.menu_make_public_or_private -> {
+                    //TODO: 공개/비공개 상태로 바꾸기
                     Toast.makeText(requireContext(), "공개/비공개 전환 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }
