@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityFilterBinding
 import com.example.routebox.domain.model.FilterOption
+import com.example.routebox.presentation.ui.seek.search.adapter.FilterOptionsRVAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager

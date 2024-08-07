@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.seek.adapter
+package com.example.routebox.presentation.ui.seek.wallet.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -24,12 +24,12 @@ class BankRVAdapter(
         itemClickListener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BankRVAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: ItemBankBinding = ItemBankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: BankRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(bankList[position])
         }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.BottomSheetBankBinding
 import com.example.routebox.domain.model.Bank
-import com.example.routebox.presentation.ui.seek.adapter.BankRVAdapter
+import com.example.routebox.presentation.ui.seek.wallet.adapter.BankRVAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

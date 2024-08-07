@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.seek.comment
+package com.example.routebox.presentation.ui.seek.comment.adapter
 
 import android.annotation.SuppressLint
 import android.util.Log

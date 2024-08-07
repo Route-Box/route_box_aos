@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityCommentBinding
+import com.example.routebox.presentation.ui.seek.comment.adapter.CommentRVAdapter
 
 class CommentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCommentBinding

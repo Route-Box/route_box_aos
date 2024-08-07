@@ -1,14 +1,10 @@
 package com.example.routebox.presentation.ui.seek.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.routebox.R
@@ -18,11 +14,6 @@ import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.loadingType
 import com.example.routebox.domain.model.routeType
-import com.example.routebox.presentation.ui.seek.RouteTagRVAdapter
-import com.example.routebox.presentation.ui.seek.search.FilterOptionsRVAdapter
-import com.example.routebox.presentation.ui.seek.search.SearchResultRVAdapter.MyItemClickListener
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
 class SeekHomeRouteRVAdapter(

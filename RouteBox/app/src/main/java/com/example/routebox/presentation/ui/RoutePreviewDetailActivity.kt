@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.seek
+package com.example.routebox.presentation.ui
 
 import android.content.Intent
 import android.os.Bundle

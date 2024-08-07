@@ -14,7 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSearchBinding
-import com.example.routebox.presentation.ui.seek.RoutePreviewDetailActivity
+import com.example.routebox.presentation.ui.RoutePreviewDetailActivity
+import com.example.routebox.presentation.ui.seek.search.adapter.RecentSearchWordRVAdapter
+import com.example.routebox.presentation.ui.seek.search.adapter.SearchResultRVAdapter
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.android.flexbox.FlexDirection

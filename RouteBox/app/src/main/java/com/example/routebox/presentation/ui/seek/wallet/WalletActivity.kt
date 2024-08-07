@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityWalletBinding
 import com.example.routebox.domain.model.History
-import com.example.routebox.presentation.ui.seek.adapter.PointHistoryRVAdapter
+import com.example.routebox.presentation.ui.seek.wallet.adapter.PointHistoryRVAdapter
 
 class WalletActivity: AppCompatActivity() {
 
