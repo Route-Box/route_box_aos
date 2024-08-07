@@ -10,9 +10,9 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/searchFragment"
-        android:icon="@drawable/selector_menu_search"
-        android:title="@string/menu_search"
+        android:id="@+id/seekFragment"
+        android:icon="@drawable/selector_menu_seek"
+        android:title="@string/menu_seek"
         android:enabled="true"
         app:showAsAction="ifRoom"/>
 

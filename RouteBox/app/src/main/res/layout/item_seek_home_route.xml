@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="preview"
+            type="com.example.routebox.domain.model.RoutePreview" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/route_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:paddingHorizontal="25dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/writer_profile_cv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:rippleColor="@android:color/transparent"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/writer_profile_iv"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:imageUrl="@{preview.profileImg}"
+                    app:placeHolder="@{@drawable/ic_profile_default}" />
+
+            </com.google.android.material.card.MaterialCardView>
+            
+            <TextView
+                android:id="@+id/nickname_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{preview.nickname}"
+                android:textColor="@color/title_black"
+                android:textFontWeight="700"
+                style="@style/body_b_s"
+                android:layout_marginStart="12dp"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/writer_profile_cv"
+                app:layout_constraintBottom_toTopOf="@id/time_tv" />
+
+            <TextView
+                android:id="@+id/time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{preview.createAt}"
+                android:textColor="@color/gray3"
+                android:textFontWeight="400"
+                style="@style/body_r_xs"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/nickname_tv"
+                app:layout_constraintTop_toBottomOf="@id/nickname_tv" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buy_point_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="15dp"
+                android:text="@string/buy_point"
+                android:background="@drawable/radius_100"
+                android:layout_marginEnd="6dp"
+                style="@style/small_fill_default"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/more_iv" />
+            
+            <ImageView
+                android:id="@+id/more_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_more"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"
+            app:layout_constraintTop_toBottomOf="@id/route_top_bar" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/image_vp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="@{preview.img == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@id/top_line"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:id="@+id/image_ci"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="12dp"
+            android:visibility="@{preview.img.size > 1 ? View.VISIBLE : View.GONE}"
+            app:ci_orientation="horizontal"
+            app:ci_drawable="@drawable/indicator_selected"
+            app:ci_drawable_unselected="@drawable/indicator_unselected"
+            app:layout_constraintTop_toBottomOf="@id/image_vp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/text_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="22dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/image_ci"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/title_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{preview.title}"
+                android:textColor="#222222"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/body_b_l" />
+
+            <TextView
+                android:id="@+id/content_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{preview.content}"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/title_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/body_r_m" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/option_rv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="30dp"
+                app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/content_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/item_route_tag" />
+
+            <TextView
+                android:id="@+id/download_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray3"
+                android:text="@{String.valueOf(preview.save)}"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp"
+                app:drawableStartCompat="@drawable/ic_download"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/option_rv"
+                style="@style/body_b_xs" />
+
+            <TextView
+                android:id="@+id/comment_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray3"
+                android:text="@{String.valueOf(preview.comment)}"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                app:drawableStartCompat="@drawable/ic_comment"
+                app:layout_constraintStart_toEndOf="@id/download_tv"
+                app:layout_constraintTop_toTopOf="@id/download_tv"
+                app:layout_constraintBottom_toBottomOf="@id/download_tv"
+                style="@style/body_b_xs" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/line_color"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@id/text_cl"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

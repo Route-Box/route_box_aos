@@ -17,6 +17,7 @@
     <color name="red1_warning">#FFE71F2A</color>
     <color name="red2_error_bg">#FFFFF9F9</color>
     <color name="sub_color">#FFFF9D9D</color>
+    <color name="line_color">#FFECF0F3</color>
 
     <!-- 기타 색상 -->
     <color name="route_private_dim">#99000000</color> <!-- 비공개인 루트 dim 배경 (투명도 60) -->
