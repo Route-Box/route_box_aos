@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="point"
+            type="java.lang.String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/refund_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:paddingHorizontal="25dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/ic_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/refund"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/body_b_l" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@id/refund_top_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/point_cv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="22dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/gray7"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="10dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/gray5"
+                    app:rippleColor="@android:color/transparent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="20dp">
+
+                        <TextView
+                            android:id="@+id/total_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/my_point"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            style="@style/body_r_s" />
+
+                        <TextView
+                            android:id="@+id/my_point"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{point}"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/total_p"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            style="@style/title_m" />
+
+                        <TextView
+                            android:id="@+id/total_p"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="P"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            style="@style/title_m" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/refund_point_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/refund_point"
+                    android:layout_marginTop="59dp"
+                    app:layout_constraintTop_toBottomOf="@id/point_cv"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    style="@style/body_r_xs" />
+
+                <EditText
+                    android:id="@+id/enter_point_et"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_point"
+                    android:layout_marginTop="8dp"
+                    android:background="@null"
+                    android:textColorHint="@color/gray5"
+                    android:layout_marginEnd="35dp"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textCursorDrawable="@color/title_black"
+                    app:layout_constraintTop_toBottomOf="@id/refund_point_title"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    app:layout_constraintEnd_toStartOf="@id/p_tv"
+                    style="@style/body_r_l" />
+
+                <TextView
+                    android:id="@+id/p_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="p"
+                    android:textColor="@color/gray4"
+                    app:layout_constraintTop_toTopOf="@id/enter_point_et"
+                    app:layout_constraintBottom_toBottomOf="@id/enter_point_et"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv"
+                    style="@style/body_b_m" />
+
+                <ImageView
+                    android:id="@+id/point_erase_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_circle"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/enter_point_et"
+                    app:layout_constraintBottom_toBottomOf="@id/enter_point_et"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv" />
+
+                <View
+                    android:id="@+id/point_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/gray5"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintTop_toBottomOf="@id/enter_point_et"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv" />
+
+                <TextView
+                    android:id="@+id/refund_rule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/refund_rule"
+                    android:textColor="@color/gray4"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintTop_toBottomOf="@id/point_line"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    style="@style/body_r_xs" />
+
+                <TextView
+                    android:id="@+id/owner_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/owner_title"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/refund_rule"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    style="@style/body_r_xs" />
+
+                <EditText
+                    android:id="@+id/owner_et"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_owner"
+                    android:layout_marginTop="8dp"
+                    android:background="@null"
+                    android:textColorHint="@color/gray5"
+                    android:layout_marginEnd="20dp"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    android:textCursorDrawable="@color/title_black"
+                    app:layout_constraintTop_toBottomOf="@id/owner_title"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    app:layout_constraintEnd_toStartOf="@id/owner_erase_iv"
+                    style="@style/body_r_l" />
+
+                <ImageView
+                    android:id="@+id/owner_erase_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_circle"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/owner_et"
+                    app:layout_constraintBottom_toBottomOf="@id/owner_et"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv" />
+
+                <View
+                    android:id="@+id/owner_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/gray5"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintTop_toBottomOf="@id/owner_et"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv" />
+
+                <TextView
+                    android:id="@+id/bank_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bank_title"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/owner_line"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    style="@style/body_r_xs" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/bank_cl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    app:layout_constraintTop_toTopOf="@id/account_number_et"
+                    app:layout_constraintBottom_toBottomOf="@id/account_number_et">
+
+                    <ImageView
+                        android:id="@+id/bank_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:id="@+id/enter_bank"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="은행 선택"
+                        android:textColor="@color/gray5"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/bank_logo"
+                        style="@style/body_r_l" />
+
+                    <ImageView
+                        android:id="@+id/bank_arrow_iv"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_arrow_down"
+                        android:layout_marginStart="24dp"
+                        app:layout_constraintStart_toEndOf="@id/enter_bank"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:tint="@color/gray4" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <EditText
+                    android:id="@+id/account_number_et"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_account_number"
+                    android:layout_marginTop="8dp"
+                    android:background="@null"
+                    android:textColorHint="@color/gray5"
+                    android:layout_marginStart="12dp"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textCursorDrawable="@color/title_black"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bank_title"
+                    app:layout_constraintStart_toEndOf="@id/bank_cl"
+                    app:layout_constraintEnd_toStartOf="@id/account_number_erase_iv"
+                    style="@style/body_r_l" />
+
+                <ImageView
+                    android:id="@+id/account_number_erase_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_circle"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/account_number_et"
+                    app:layout_constraintBottom_toBottomOf="@id/account_number_et"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv" />
+
+                <View
+                    android:id="@+id/bank_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/gray5"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintTop_toBottomOf="@id/account_number_et"
+                    app:layout_constraintStart_toStartOf="@id/point_cv"
+                    app:layout_constraintEnd_toEndOf="@id/point_cv" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/agree_refund_cv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/gray7"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginHorizontal="22dp"
+                    android:layout_marginBottom="120dp"
+                    app:rippleColor="@android:color/transparent"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bank_line"
+                    app:layout_constraintBottom_toBottomOf="parent" >
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="20dp"
+                        android:paddingHorizontal="16dp">
+
+                        <TextView
+                            android:id="@+id/agree_refund_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/agree_refund_title"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            style="@style/body_b_s" />
+
+                        <ImageView
+                            android:id="@+id/terms_arrow_iv"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintStart_toEndOf="@id/agree_refund_title"
+                            app:layout_constraintTop_toTopOf="@id/agree_refund_title"
+                            app:layout_constraintBottom_toBottomOf="@id/agree_refund_title" />
+
+                        <ImageView
+                            android:id="@+id/agree_refund_iv"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_term_check_x"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/next_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="@string/next_btn"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginBottom="28dp"
+                    android:enabled="false"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:background="@drawable/selector_main_btn"
+                    android:textColor="@drawable/selector_main_btn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="preview"
+            type="com.example.routebox.domain.model.RoutePreview" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/image_vp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="#1F000000"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/search_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:paddingHorizontal="25dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/ic_back"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_left"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buy_point_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="15dp"
+                    android:text="@string/buy_point"
+                    android:background="@drawable/radius_100"
+                    android:layout_marginEnd="6dp"
+                    style="@style/small_fill_default"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/lock_cl"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:paddingHorizontal="26dp"
+                android:background="#60000000"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/writer_cl"
+                app:layout_constraintStart_toStartOf="parent" >
+
+                <ImageView
+                    android:id="@+id/lock_iv"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_lock"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/lock_content_cv" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/lock_content_cv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#99000000"
+                    android:layout_marginTop="18.5dp"
+                    android:layout_marginBottom="60dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="40dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lock_iv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="11dp"
+                        android:paddingHorizontal="24dp">
+
+                        <TextView
+                            android:id="@+id/buy_title_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textFontWeight="400"
+                            android:textColor="@color/white"
+                            android:textAlignment="center"
+                            android:text="@{@string/preview_buy(preview.nickname)}"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            style="@style/body_r_m" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/writer_cl"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:paddingHorizontal="25dp"
+                app:layout_constraintTop_toBottomOf="@id/image_vp"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/writer_profile_iv"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:imageUrl="@{preview.profileImg}"
+                    app:placeHolder="@{@drawable/ic_profile_default}"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/nickname_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{preview.nickname}"
+                    android:textColor="@color/title_black"
+                    android:textFontWeight="700"
+                    style="@style/body_b_s"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/writer_profile_iv"
+                    app:layout_constraintBottom_toTopOf="@id/time_tv" />
+
+                <TextView
+                    android:id="@+id/time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{preview.createAt}"
+                    android:textColor="@color/gray3"
+                    android:textFontWeight="400"
+                    style="@style/body_r_xs"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/nickname_tv"
+                    app:layout_constraintTop_toBottomOf="@id/nickname_tv" />
+
+                <ImageView
+                    android:id="@+id/more_iv"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_more"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/text_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="22dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@id/writer_cl"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/title_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{preview.title}"
+                    android:textColor="#222222"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/body_b_l" />
+
+                <TextView
+                    android:id="@+id/content_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{preview.content}"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/title_tv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/body_r_m" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/download_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray3"
+                android:text="@{String.valueOf(preview.save)}"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                app:drawableStartCompat="@drawable/ic_download"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_cl"
+                style="@style/body_b_xs" />
+
+            <TextView
+                android:id="@+id/comment_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray3"
+                android:text="@{String.valueOf(preview.comment)}"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                app:drawableStartCompat="@drawable/ic_comment"
+                app:layout_constraintStart_toEndOf="@id/download_tv"
+                app:layout_constraintTop_toTopOf="@id/download_tv"
+                app:layout_constraintBottom_toBottomOf="@id/download_tv"
+                style="@style/body_b_xs" />
+
+            <View
+                android:id="@+id/bottom_line"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="@color/line_color"
+                android:layout_marginTop="40dp"
+                app:layout_constraintTop_toBottomOf="@id/comment_tv"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/route_preview_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/route_style_preview"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="30dp"
+                android:textFontWeight="700"
+                style="@style/body_b_l"
+                app:layout_constraintTop_toBottomOf="@+id/bottom_line"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="52dp"
+                tools:listitem="@layout/item_route_tag"
+                app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/route_preview_tv"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

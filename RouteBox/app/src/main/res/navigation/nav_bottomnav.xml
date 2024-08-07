@@ -13,21 +13,24 @@
         tools:layout="@layout/fragment_home">
     </fragment>
 
-    <!-- Search -->
+    <!-- Seek -->
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.routebox.presentation.ui.search.SearchFragment"
-        android:label="SearchFragment"
-        tools:layout="@layout/fragment_search">
+        android:id="@+id/seekFragment"
+        android:name="com.example.routebox.presentation.ui.seek.SeekFragment"
+        android:label="SeekFragment"
+        tools:layout="@layout/fragment_seek">
         <action
-            android:id="@+id/action_searchFragment_to_searchDetailFragment"
-            app:destination="@id/searchDetailFragment"/>
+            android:id="@+id/action_seekFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_seekFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/searchDetailFragment"
-        android:name="com.example.routebox.presentation.ui.search.search.SearchDetailFragment"
-        android:label="SearchDetailFragment"
-        tools:layout="@layout/fragment_search_detail">
+        android:id="@+id/searchFragment"
+        android:name="com.example.routebox.presentation.ui.seek.search.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search">
     </fragment>
 
     <!-- Route -->
