@@ -20,4 +20,9 @@ class RouteCreateViewModel: ViewModel() {
         _startDate.value = TODAY
         _endDate.value = TODAY
     }
+
+    fun updateDate(isStartDate: Boolean, date: LocalDate) {
+        if (isStartDate) _startDate.value = date
+        else _endDate.value = date
+    }
 }
