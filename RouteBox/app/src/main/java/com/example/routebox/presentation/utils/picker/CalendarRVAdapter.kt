@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
+import com.example.routebox.databinding.ItemCalendarDateBinding
 import com.example.routebox.presentation.ui.route.record.RouteCreateActivity.Companion.TODAY
 import java.time.LocalDate
 
@@ -22,15 +22,15 @@ class CalendarRVAdapter(private val selectedDatePosition: Int, private val selec
 
     private var dateList = listOf<LocalDate?>() // 달력에 표시될 날짜 목록
     private var selectedItemPosition = -1 // 달이 넘어가더라도 선택한 날짜는 유일하게 표시해주기 위함
-    private lateinit var mItemClickListener: MyItemClickListener
+    private lateinit var mItemClickListener: MyDateClickListener
 
     private lateinit var context: Context
 
-    interface MyItemClickListener {
-        fun onItemClick(selectedDate: LocalDate)
+    interface MyDateClickListener {
+        fun onDateClick(selectedDate: LocalDate)
     }
 
-    fun setMyItemClickListener(itemClickListener: MyItemClickListener) {
+    fun setMyDateClickListener(itemClickListener: MyDateClickListener) {
         mItemClickListener = itemClickListener
     }
 
@@ -42,37 +42,36 @@ class CalendarRVAdapter(private val selectedDatePosition: Int, private val selec
     }
 
     // 보여지는 화면 설정
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_calendar_date, parent, false)
-        context = parent.context
-        return ViewHolder(view)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        val binding: ItemCalendarDateBinding = ItemCalendarDateBinding.inflate(
+            LayoutInflater.from(viewGroup.context), viewGroup, false
+        )
+        context = viewGroup.context
+        return ViewHolder(binding)
     }
 
     // 내부 데이터 설정
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val day = dateList[position]
-
-        holder.dayText.text = day.toString()
-
-        if (day == null) { // 날짜 데이터가 없을 경우
-            holder.dayText.text = null
+        if (dateList[position] == null) { // 날짜 데이터가 없을 경우 캘린더에 표시하지 않음
+            holder.dateText.text = null
             return
         }
 
-        // 날짜의 일만 표시
-        holder.dayText.text = day.dayOfMonth.toString()
-        if (day < TODAY){ // 오늘 이전 날짜 회색 처리
-            holder.dayText.setTextColor(ContextCompat.getColor(context, R.color.gray5))
+        // 날짜의 date만 표시
+        holder.dateText.text = dateList[position]!!.dayOfMonth.toString()
+
+        if (dateList[position]!! < TODAY){ // 오늘 이전 날짜 회색 처리
+            holder.dateText.setTextColor(ContextCompat.getColor(context, R.color.gray5))
             return
         }
         if (selectedItemPosition == position) { // 선택 날짜 표시
             holder.bg.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.main))
-            holder.dayText.setTextColor(ContextCompat.getColor(context, R.color.white))
-            holder.dayText.setTypeface(null, Typeface.BOLD) // 볼드 처리
+            holder.dateText.setTextColor(ContextCompat.getColor(context, R.color.white))
+            holder.dateText.setTypeface(null, Typeface.BOLD) // 볼드 처리
         } else { // 선택하지 않은 날짜 표시
             holder.bg.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.transparent))
-            holder.dayText.setTextColor(ContextCompat.getColor(context, R.color.title_black))
-            holder.dayText.setTypeface(null, Typeface.NORMAL)
+            holder.dateText.setTextColor(ContextCompat.getColor(context, R.color.title_black))
+            holder.dateText.setTypeface(null, Typeface.NORMAL)
         }
 
         // 날짜 클릭 이벤트
@@ -80,16 +79,16 @@ class CalendarRVAdapter(private val selectedDatePosition: Int, private val selec
             if (dateList[position]!! >= TODAY) { // 오늘 이전의 날짜는 선택할 수 없음
                 notifyItemChanged(selectedItemPosition) // 이전에 선택한 아이템 notify
                 selectedItemPosition = position // 선택한 날짜 position 업데이트
-                mItemClickListener.onItemClick(dateList[selectedItemPosition]!!) // 클릭 이벤트 처리
                 notifyItemChanged(selectedItemPosition) // 새로 선택한 아이템 notify
+                mItemClickListener.onDateClick(dateList[selectedItemPosition]!!) // 클릭 이벤트 처리
             }
         }
     }
 
     override fun getItemCount(): Int = dateList.size
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val bg: LinearLayout = itemView.findViewById(R.id.item_calendar_date_bg)
-        var dayText: TextView = itemView.findViewById(R.id.item_calendar_date_tv)
+    inner class ViewHolder(val binding: ItemCalendarDateBinding): RecyclerView.ViewHolder(binding.root){
+        val bg: LinearLayout = binding.itemCalendarDateBg
+        var dateText: TextView = binding.itemCalendarDateTv
     }
 }

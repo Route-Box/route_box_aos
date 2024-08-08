@@ -2,7 +2,6 @@ package com.example.routebox.presentation.utils.picker
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,8 +63,8 @@ class CalendarBottomSheet(private var listner: DateClickListener, var isStartDat
         }
         setCalendarDate(0)
         // 클릭 이벤트
-        calendarAdapter.setMyItemClickListener(object: CalendarRVAdapter.MyItemClickListener{
-            override fun onItemClick(selectedDate: LocalDate) {
+        calendarAdapter.setMyDateClickListener(object: CalendarRVAdapter.MyDateClickListener{
+            override fun onDateClick(selectedDate: LocalDate) {
                 listner.onDateReceived(isStartDate, selectedDate) // 날짜 전달
                 dismiss() // 뒤로가기
             }
