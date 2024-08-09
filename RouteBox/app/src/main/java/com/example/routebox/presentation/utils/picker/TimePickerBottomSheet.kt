@@ -26,13 +26,25 @@ class TimePickerBottomSheet(private var listener: TimeChangedListener, private v
     ): View {
         binding = BottomSheetTimePickerBinding.inflate(inflater, container, false)
 
+        initPicker()
+        initClickListeners()
+
+        return binding.root
+    }
+
+    private fun initClickListeners() {
+        // x 버튼
         binding.pickerCloseIv.setOnClickListener {
             dismiss() // 종료
         }
 
-        initPicker()
-
-        return binding.root
+        // 저장 버튼
+        binding.pickerSaveBtn.setOnClickListener {
+            val selectedHour = binding.pickerTp.hour
+            val selectedMinute = binding.pickerTp.minute * MINUTES_INTERVAL
+            listener.onTimeSelected(isStartTime, selectedHour, selectedMinute) // 선택한 시간 넘기기
+            dismiss()
+        }
     }
 
     private fun initPicker() {
@@ -44,11 +56,6 @@ class TimePickerBottomSheet(private var listener: TimeChangedListener, private v
         binding.pickerTp.apply {
             hour = initHour
             minute = adjustedMinute
-        }
-
-        binding.pickerTp.setOnTimeChangedListener { _, hourOfDay, minute ->
-            val finalMinute = minute * MINUTES_INTERVAL
-            listener.onTimeSelected(isStartTime, hourOfDay, finalMinute)
         }
     }
 

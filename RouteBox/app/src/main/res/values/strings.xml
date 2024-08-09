@@ -132,5 +132,6 @@
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>
     <string name="popup_negative_default">아니오</string>
+    <string name="save">저장</string>
 
 </resources>
