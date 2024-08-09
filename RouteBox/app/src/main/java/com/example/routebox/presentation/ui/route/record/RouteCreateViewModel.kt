@@ -16,13 +16,29 @@ class RouteCreateViewModel: ViewModel() {
     private val _endDate = MutableLiveData<LocalDate>(TODAY)
     val endDate: LiveData<LocalDate> = _endDate
 
-    init {
-        _startDate.value = TODAY
-        _endDate.value = TODAY
-    }
+    private val _startTimePair = MutableLiveData<Pair<Int, Int>>()
+    val startTimePair: LiveData<Pair<Int, Int>> = _startTimePair
+
+    private val _endTimePair = MutableLiveData<Pair<Int, Int>>()
+    val endTimePair: LiveData<Pair<Int, Int>> = _endTimePair
+
+    private val _buttonActivation = MutableLiveData<Boolean>()
+    val buttonActivation: LiveData<Boolean> = _buttonActivation
 
     fun updateDate(isStartDate: Boolean, date: LocalDate) {
+
         if (isStartDate) _startDate.value = date
         else _endDate.value = date
+    }
+
+    fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
+        if (isStartTime) _startTimePair.value = timePair
+        else _endTimePair.value = timePair
+        updateButtonActivation()
+    }
+
+    // 버튼 활성화 여부 업데이트
+    private fun updateButtonActivation() {
+        _buttonActivation.value = _startTimePair.value != null && _endTimePair.value != null
     }
 }

@@ -77,7 +77,8 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/route_create_start_time_tv"
-                    android:text="@string/select_time_placeholder"
+                    android:text="@{DateConverter.getFormattedTime(viewModel.startTimePair)}"
+                    tools:text="@string/select_time_placeholder"
                     style="@style/common_time_selected_tv" />
 
             </LinearLayout>
@@ -102,7 +103,8 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/route_create_end_time_tv"
-                    android:text="시간 선택"
+                    android:text="@{DateConverter.getFormattedTime(viewModel.endTimePair)}"
+                    tools:text="19:05"
                     style="@style/common_time_selected_tv" />
 
             </LinearLayout>
@@ -116,7 +118,7 @@
             android:text="@string/next_btn"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="28dp"
-            android:enabled="false"
+            android:enabled="@{viewModel.buttonActivation}"
             android:textSize="16sp"
             android:fontFamily="@font/pretendard_bold"
             android:background="@drawable/selector_main_btn"

@@ -14,6 +14,17 @@
         <item name="android:background">@drawable/bottom_dialog_radius</item>
     </style>
 
+    <style name="MyBase.TimePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/white</item>
+        <item name="android:headerBackground">@color/white</item>
+        <item name="android:textColor">@color/title_black</item>
+        <item name="android:colorAccent">@color/title_black</item>
+        <item name="android:textColorPrimary">@color/title_black</item>
+        <!-- NumberPicker divider color -->
+        <item name="colorControlNormal">@color/main</item>
+    </style>
+    출처: https://goatlab.tistory.com/entry/Android-Studio-TimePicker-색상-커스텀 [GOATLAB:티스토리]
+
     <!-- 인사이트 통계 설명 -->
     <style name="insight_statistics_description_tv">
         <item name="android:layout_width">wrap_content</item>
