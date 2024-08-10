@@ -35,6 +35,16 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
     }
 
     private fun initClickListeners() {
+        // 뒤로가기
+        binding.routeCreateBackIv.setOnClickListener {
+            finish()
+        }
+
+        // 다음 버튼
+        binding.routeCreateNextBtn.setOnClickListener {
+            //TODO: 루트 기록 화면으로 이동
+        }
+
         // 시작 날짜
         binding.routeCreateStartDateTv.setOnClickListener {
             showCalendarBottomSheet(true, viewModel.startDate.value!!)

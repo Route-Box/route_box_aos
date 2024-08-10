@@ -112,7 +112,7 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next_btn"
+            android:id="@+id/route_create_next_btn"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="@string/next_btn"
