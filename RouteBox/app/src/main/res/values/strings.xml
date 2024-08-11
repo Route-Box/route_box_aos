@@ -108,8 +108,10 @@
     <string name="route_record_start">루트 기록 시작하기</string>
     <string name="route_create_by_me">내가 만들었어요</string>
     <string name="route_my_empty">아직 만들어진 루트가 없어요.</string>
-    <string name="route_my_make_public">공개전환하기</string>
-    <string name="route_my_make_private">비공개전환하기</string>
+    <string name="route_my_make_public">공개 전환하기</string>
+    <string name="route_my_make_private">비공개 전환하기</string>
+    <string name="route_my_change_to_public_popup_content">해당 루트를 전체 공개로\n변경하시겠습니까?</string>
+    <string name="route_my_change_to_private_popup_content">해당 루트를 비공개로\n변경하시겠습니까?</string>
     <!-- 인사이트 -->
     <string name="insight_my_route_create_num">내 루트 수</string>
     <string name="insight_my_route_buy_num">내 루트 구매 수</string>

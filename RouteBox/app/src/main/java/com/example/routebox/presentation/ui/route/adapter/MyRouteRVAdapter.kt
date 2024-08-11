@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.route
+package com.example.routebox.presentation.ui.route.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

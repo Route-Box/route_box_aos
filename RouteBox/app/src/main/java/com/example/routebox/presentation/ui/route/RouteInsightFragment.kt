@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteInsightBinding
+import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 
 class RouteInsightFragment : Fragment() {
     private lateinit var binding: FragmentRouteInsightBinding

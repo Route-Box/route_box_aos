@@ -14,7 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
+import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
+import com.google.gson.Gson
 
 class RouteFragment : Fragment() {
     private lateinit var binding: FragmentRouteBinding
@@ -69,7 +71,11 @@ class RouteFragment : Fragment() {
             }
 
             override fun onItemClick(position: Int) { // 아이템 전체 클릭
-                //TODO: 루트 보기 화면으로 이동
+                // 루트 보기 화면으로 이동
+                val intent = Intent(requireActivity(), RouteDetailActivity::class.java)
+                val routeJson = Gson().toJson(viewModel.routeList.value!![position])
+                intent.putExtra("route", routeJson)
+                startActivity(intent)
             }
         })
     }
