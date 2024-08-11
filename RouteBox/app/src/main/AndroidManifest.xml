@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- WebView 설정을 위한 Internet 접근 요청 -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -53,9 +52,13 @@
         <activity android:name=".presentation.ui.RoutePreviewDetailActivity" />
         <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".presentation.ui.route.RouteWriteActivity" />
         <activity android:name=".presentation.ui.seek.search.FilterActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
+            android:value="${KAKAO_API_KEY}" />
+        <meta-data
+            android:name="com.kakao.vectormap.AppKey"
             android:value="${KAKAO_API_KEY}" />
     </application>
 

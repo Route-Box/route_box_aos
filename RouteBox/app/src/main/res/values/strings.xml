@@ -103,6 +103,13 @@
     <string name="purchase_point_lack_popup_content">포인트가 부족합니다.</string>
     <string name="purchase_done_popup_content">성공적으로 구매가 완료되었습니다.\n마이페이지에서 확인할 수 있습니다.</string>
 
+    <!-- 내 루트 -->
+    <!-- 기록 -->
+    <string name="progress_tracking">나의 여행 루트를 기록하고 있습니다.  </string>
+    <string name="tracking_tab_1">편의기능</string>
+    <string name="tracking_tab_2">기록하기</string>
+    <string name="add_activity">활동 추가하기</string>
+    
     <!-- 공통 -->
     <string name="next_btn">다음</string>
     <string name="report">신고하기</string>

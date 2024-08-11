@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,8 @@ class RouteFragment : Fragment() {
 
     ): View {
         binding = FragmentRouteBinding.inflate(inflater, container, false)
+
+        startActivity(Intent(activity, RouteWriteActivity::class.java))
 
         return binding.root
     }
