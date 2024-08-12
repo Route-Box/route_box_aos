@@ -17,6 +17,7 @@ import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteInsightBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
+import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 
 class RouteInsightFragment : Fragment() {
     private lateinit var binding: FragmentRouteInsightBinding
@@ -62,9 +63,17 @@ class RouteInsightFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
         }
         myRouteAdapter.setRouteClickListener(object: MyRouteRVAdapter.MyItemClickListener {
-            override fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean) { // 더보기 버튼
+            override fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean) { // 더보기 버튼 클릭
                 // 옵션 메뉴 띄우기
                 showMenu(view!!, isPrivate)
+            }
+
+            override fun onCommentButtonClick(position: Int) { // 댓글 아이콘 클릭
+                // 댓글 화면으로 이동
+                val intent = Intent(requireActivity(), CommentActivity::class.java)
+                //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
+                intent.putExtra("comment", viewModel.routeList.value!![position].title)
+                startActivity(intent)
             }
 
             override fun onItemClick(position: Int) { // 아이템 전체 클릭

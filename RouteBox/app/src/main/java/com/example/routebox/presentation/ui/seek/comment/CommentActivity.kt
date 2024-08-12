@@ -29,9 +29,14 @@ class CommentActivity : AppCompatActivity() {
             lifecycleOwner = this@CommentActivity
         }
 
+        initComment()
         initClickListeners()
         setAdapter()
         initObserve()
+    }
+
+    private fun initComment() {
+        intent.getStringExtra("comment")?.let { viewModel.initComment(it) }
     }
 
     private fun initClickListeners() {

@@ -16,6 +16,7 @@ import com.example.routebox.domain.model.Route
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
 import com.example.routebox.presentation.ui.seek.adapter.RouteTagRVAdapter
+import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -58,6 +59,14 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         // 더보기 버튼
         binding.routeDetailMoreIv.setOnClickListener {
             showMenu(it) // 옵션 메뉴 노출
+        }
+        // 댓글
+        binding.routeDetailCommentNumTv.setOnClickListener {
+            // 댓글 화면으로 이동
+            val intent = Intent(this, CommentActivity::class.java)
+            //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
+            intent.putExtra("comment", viewModel.route.value!!.title)
+            startActivity(intent)
         }
     }
 

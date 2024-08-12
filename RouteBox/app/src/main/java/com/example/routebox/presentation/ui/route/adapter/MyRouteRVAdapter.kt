@@ -25,6 +25,7 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
 
     interface MyItemClickListener {
         fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean)
+        fun onCommentButtonClick(position: Int)
         fun onItemClick(position: Int)
     }
 
@@ -46,6 +47,10 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
             // 더보기 버튼 클릭
             binding.itemRouteMyMoreIv.setOnClickListener {
                 mItemClickListener.onMoreButtonClick(binding.itemRouteMyMoreIv, position, routeList[position].isPrivate)
+            }
+            // 댓글 아이콘 클릭
+            binding.itemSearchResultCommentNumTv.setOnClickListener {
+                mItemClickListener.onCommentButtonClick(position)
             }
         }
     }
