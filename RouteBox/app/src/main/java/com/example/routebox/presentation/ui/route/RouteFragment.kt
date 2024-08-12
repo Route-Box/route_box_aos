@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
+import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
 import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
 import com.google.gson.Gson
 
@@ -105,7 +106,8 @@ class RouteFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    Toast.makeText(requireContext(), "수정하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
+                    // 루트 수정 화면으로 이동
+                    startActivity(Intent(requireActivity(), RouteEditActivity::class.java))
                     true
                 }
                 R.id.menu_make_public_or_private -> {

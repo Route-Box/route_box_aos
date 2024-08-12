@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteInsightBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
+import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
 
 class RouteInsightFragment : Fragment() {
     private lateinit var binding: FragmentRouteInsightBinding
@@ -66,7 +68,8 @@ class RouteInsightFragment : Fragment() {
             }
 
             override fun onItemClick(position: Int) { // 아이템 전체 클릭
-                //TODO: 루트 보기 화면으로 이동
+                // 루트 보기 화면으로 이동
+                startActivity(Intent(requireActivity(), RouteDetailActivity::class.java))
             }
         })
     }
@@ -96,7 +99,8 @@ class RouteInsightFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    Toast.makeText(requireContext(), "수정하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
+                    // 루트 수정 화면으로 이동
+                    startActivity(Intent(requireActivity(), RouteEditActivity::class.java))
                     true
                 }
                 R.id.menu_make_public_or_private -> {

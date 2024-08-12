@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
@@ -13,6 +14,7 @@ import com.example.routebox.domain.model.DialogType
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.Route
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
+import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
 import com.example.routebox.presentation.ui.seek.adapter.RouteTagRVAdapter
 import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
@@ -103,7 +105,8 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    //TODO: 루트 수정 화면으로 이동
+                    // 루트 수정 화면으로 이동
+                    startActivity(Intent(this, RouteEditActivity::class.java))
                     true
                 }
                 R.id.menu_make_public_or_private -> {
