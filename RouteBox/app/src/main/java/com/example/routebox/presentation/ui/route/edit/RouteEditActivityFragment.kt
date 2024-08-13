@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.databinding.FragmentRouteEditActivityBinding
@@ -16,7 +15,7 @@ import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 class RouteEditActivityFragment : Fragment() {
     private lateinit var binding: FragmentRouteEditActivityBinding
 
-    private val viewModel: RouteEditViewModel by viewModels()
+    private val viewModel: RouteEditViewModel by activityViewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
     private val activityAdapter = ActivityRVAdapter(true)
 
@@ -46,10 +45,7 @@ class RouteEditActivityFragment : Fragment() {
             this.lifecycleOwner = this@RouteEditActivityFragment
         }
 
-        val args: RouteEditFragmentArgs by navArgs()
-        args.route?.let {
-            viewModel.setRoute(it)
-        }
+        viewModel.setStepId(2)
     }
 
     private fun initClickListeners() {

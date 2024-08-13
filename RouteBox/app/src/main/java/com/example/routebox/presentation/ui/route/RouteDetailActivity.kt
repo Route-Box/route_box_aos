@@ -14,7 +14,7 @@ import com.example.routebox.domain.model.DialogType
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.Route
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
-import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
+import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.seek.adapter.RouteTagRVAdapter
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.example.routebox.presentation.utils.CommonPopupDialog
@@ -116,7 +116,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 R.id.menu_edit -> {
                     // 루트 수정 화면으로 이동
                     startActivity(
-                        Intent(this, RouteEditActivity::class.java)
+                        Intent(this, RouteEditBaseActivity::class.java)
                             .putExtra("route", Gson().toJson(viewModel.route.value))
                     )
                     true

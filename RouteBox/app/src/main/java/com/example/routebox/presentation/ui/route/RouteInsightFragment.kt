@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteInsightBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
-import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
+import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
 
@@ -112,7 +112,7 @@ class RouteInsightFragment : Fragment() {
                 R.id.menu_edit -> {
                     // 루트 수정 화면으로 이동
                     startActivity(
-                        Intent(requireActivity(), RouteEditActivity::class.java)
+                        Intent(requireActivity(), RouteEditBaseActivity::class.java)
                             .putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
                     )
                     true

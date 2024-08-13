@@ -10,6 +10,10 @@ class RouteEditViewModel: ViewModel() {
     private val _route = MutableLiveData<Route>()
     val route: LiveData<Route> = _route
 
+    // 현재 단계 ID를 담는 LiveData
+    private val _stepId = MutableLiveData<Int>()
+    val stepId: LiveData<Int> = _stepId
+
     val routeTitle: MutableLiveData<String> = MutableLiveData()
 
     val routeContent: MutableLiveData<String> = MutableLiveData()
@@ -17,7 +21,9 @@ class RouteEditViewModel: ViewModel() {
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
-    //TODO: 현재 프래그먼트 스탭을 저장 - 이에 따른 상단 앱바 내용 수정하기
+    fun setStepId(stepId: Int) {
+        _stepId.value = stepId
+    }
 
     fun setRoute(route: Route) {
         _route.value = route
