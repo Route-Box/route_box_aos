@@ -7,7 +7,7 @@
         android:id="@+id/clearable_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="작성해주세요"
+        android:hint="@string/edittext_hint"
         android:paddingBottom="20dp"
         android:paddingEnd="35dip"
         android:theme="@style/EditTextTheme"

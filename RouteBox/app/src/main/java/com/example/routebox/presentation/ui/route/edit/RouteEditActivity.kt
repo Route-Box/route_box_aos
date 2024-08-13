@@ -13,5 +13,18 @@ class RouteEditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_route_edit)
+
+        initClickListeners()
+    }
+
+    private fun initClickListeners() {
+        binding.routeEditBackIv.setOnClickListener {
+            //TODO: 이전 프래그먼트로 이동
+        }
+
+        binding.routeEditCloseIv.setOnClickListener {
+            // 홈 화면으로 이동
+            finish()
+        }
     }
 }

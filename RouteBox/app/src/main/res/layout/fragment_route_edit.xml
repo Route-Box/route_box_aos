@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
-                    android:text="루트 제목을 정해주세요"
+                    android:text="@string/route_edit_input_title"
                     style="@style/title_l"/>
 
                 <com.example.routebox.presentation.utils.ClearableEditText
@@ -57,21 +57,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:maxLines="1"/>
+                    app:maxLines="1"
+                    app:bindText="@={viewModel.routeTitle}"/>
 
                 <TextView
                     android:id="@+id/route_edit_content_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
-                    android:text="루트 설명을 정해주세요"
+                    android:text="@string/route_edit_input_content"
                     style="@style/title_l"/>
 
                 <com.example.routebox.presentation.utils.ClearableEditText
                     android:id="@+id/route_edit_content_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="16dp"
+                    app:bindText="@={viewModel.routeContent}"/>
 
             </LinearLayout>
 
@@ -90,7 +92,7 @@
                 android:layout_weight="3"
                 android:layout_marginEnd="4dp"
                 android:paddingVertical="18dp"
-                android:text="활동 수정"
+                android:text="@string/route_edit_activity_edit"
                 style="@style/large_outline_default"/>
 
             <TextView
@@ -98,8 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:paddingVertical="18dp"
-                android:enabled="true"
-                android:text="완료"
+                android:enabled="@{viewModel.isEnabledButton()}"
+                android:text="@string/done_btn"
                 style="@style/default_large_button"/>
 
         </LinearLayout>

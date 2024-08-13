@@ -122,14 +122,20 @@
     <string name="select_time_placeholder">시간 선택</string>
     <string name="start_trip">여행 시작</string>
     <string name="end_trip">여행 종료</string>
+    <!-- 루트 수정 -->
+    <string name="route_edit_input_title">루트 제목을 정해주세요</string>
+    <string name="route_edit_input_content">루트 설명을 정해주세요</string>
+    <string name="route_edit_activity_edit">활동 수정</string>
 
     <!-- 공통 -->
     <string name="next_btn">다음</string>
+    <string name="done_btn">완료</string>
     <string name="report">신고하기</string>
     <string name="edit">수정하기</string>
     <string name="delete">삭제하기</string>
     <string name="buy_point">구매하기</string>
     <string name="preview_buy">%s님의 루트가 사진이 들었다면,\n<b>루트</b>를 구매하여 더 많은 사진을 감상하세요!</string>
+    <string name="edittext_hint">작성해주세요</string>
 
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>
