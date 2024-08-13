@@ -8,11 +8,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.routebox.R
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.databinding.FragmentRouteEditActivityBinding
+import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
+import com.example.routebox.presentation.utils.CommonPopupDialog
+import com.example.routebox.presentation.utils.PopupDialogInterface
 
-class RouteEditActivityFragment : Fragment() {
+class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private lateinit var binding: FragmentRouteEditActivityBinding
 
     private val viewModel: RouteEditViewModel by activityViewModels()
@@ -64,7 +68,7 @@ class RouteEditActivityFragment : Fragment() {
 
             override fun onDeleteButtonClick(position: Int) {
                 // 활동 삭제 팝업 띄우기
-                Toast.makeText(requireContext(), "활동 삭제 버튼 클릭", Toast.LENGTH_SHORT).show()
+                showPopupDialog()
             }
         })
     }
@@ -83,5 +87,16 @@ class RouteEditActivityFragment : Fragment() {
                 setActivityAdapter()
             }
         }
+    }
+
+    private fun showPopupDialog() {
+        val dialog = CommonPopupDialog(this@RouteEditActivityFragment, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        activity?.let { dialog.show(it.supportFragmentManager, "PopupDialog") }
+    }
+
+    override fun onClickPositiveButton(id: Int) {
+        //TODO: 활동 삭제 진행
+        Toast.makeText(requireContext(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
     }
 }

@@ -126,6 +126,7 @@
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>
     <string name="route_edit_activity_edit">활동 수정</string>
+    <string name="activity_delete_popup">삭제하시겠습니까?</string>
 
     <!-- 공통 -->
     <string name="next_btn">다음</string>
