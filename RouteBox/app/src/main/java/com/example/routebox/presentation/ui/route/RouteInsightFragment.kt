@@ -18,6 +18,7 @@ import com.example.routebox.databinding.FragmentRouteInsightBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
+import com.google.gson.Gson
 
 class RouteInsightFragment : Fragment() {
     private lateinit var binding: FragmentRouteInsightBinding
@@ -64,6 +65,7 @@ class RouteInsightFragment : Fragment() {
         }
         myRouteAdapter.setRouteClickListener(object: MyRouteRVAdapter.MyItemClickListener {
             override fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean) { // 더보기 버튼 클릭
+                viewModel.selectedPosition = position
                 // 옵션 메뉴 띄우기
                 showMenu(view!!, isPrivate)
             }
@@ -109,7 +111,10 @@ class RouteInsightFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     // 루트 수정 화면으로 이동
-                    startActivity(Intent(requireActivity(), RouteEditActivity::class.java))
+                    startActivity(
+                        Intent(requireActivity(), RouteEditActivity::class.java)
+                            .putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
+                    )
                     true
                 }
                 R.id.menu_make_public_or_private -> {

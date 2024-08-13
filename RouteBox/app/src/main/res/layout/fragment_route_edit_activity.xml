@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.route.edit.RouteEditViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/route_edit_activity_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:paddingVertical="170dp"
+            android:text="맵뷰 띄우기"
+            android:background="@color/gray5"/>
+
+        <include
+            android:id="@+id/route_edit_activity_bottom_sheet"
+            layout="@layout/bottom_sheet_activity" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

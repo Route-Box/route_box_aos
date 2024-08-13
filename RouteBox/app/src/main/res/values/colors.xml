@@ -3,6 +3,7 @@
     <!-- 기본 색상 -->
     <color name="black">#FF000000</color>
     <color name="title_black">#FF161616</color>
+    <color name="sub_black">#FF242B37</color>
     <color name="gray1">#FF333333</color>
     <color name="gray2">#FF555555</color>
     <color name="gray3">#FF70747E</color>

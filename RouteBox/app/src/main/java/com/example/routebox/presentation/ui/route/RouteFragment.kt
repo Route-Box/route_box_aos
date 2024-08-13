@@ -70,6 +70,7 @@ class RouteFragment : Fragment() {
             override fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean) { // 더보기 버튼 클릭
                 // 옵션 메뉴 띄우기
                 showMenu(view!!, isPrivate)
+                viewModel.selectedPosition = position
             }
 
             override fun onCommentButtonClick(position: Int) { // 댓글 아이콘 클릭
@@ -116,7 +117,10 @@ class RouteFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     // 루트 수정 화면으로 이동
-                    startActivity(Intent(requireActivity(), RouteEditActivity::class.java))
+                    startActivity(
+                        Intent(requireActivity(), RouteEditActivity::class.java)
+                            .putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
+                    )
                     true
                 }
                 R.id.menu_make_public_or_private -> {

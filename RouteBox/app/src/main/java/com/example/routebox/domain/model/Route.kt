@@ -1,5 +1,7 @@
 package com.example.routebox.domain.model
 
+import java.io.Serializable
+
 // 내 루트
 data class Route(
     val title: String,
@@ -8,7 +10,7 @@ data class Route(
     val tags: List<String>, // 루트 스타일
     val activities: List<Activity> // 활동 목록
     //TODO: 구매 수, 댓글 수, 생성 날짜 등 서버 데이터 추가
-)
+) : Serializable
 
 // 활동
 data class Activity(

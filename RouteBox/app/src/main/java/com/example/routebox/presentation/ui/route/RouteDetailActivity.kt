@@ -115,7 +115,10 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     // 루트 수정 화면으로 이동
-                    startActivity(Intent(this, RouteEditActivity::class.java))
+                    startActivity(
+                        Intent(this, RouteEditActivity::class.java)
+                            .putExtra("route", Gson().toJson(viewModel.route.value))
+                    )
                     true
                 }
                 R.id.menu_make_public_or_private -> {

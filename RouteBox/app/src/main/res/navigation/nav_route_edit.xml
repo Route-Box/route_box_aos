@@ -5,11 +5,39 @@
     android:id="@+id/nav_route_edit"
     app:startDestination="@id/routeEditFragment">
 
+    <!-- 루트 수정 -->
     <fragment
         android:id="@+id/routeEditFragment"
         android:name="com.example.routebox.presentation.ui.route.edit.RouteEditFragment"
         android:label="RouteEditFragment"
         tools:layout="@layout/fragment_route_edit">
+        <action
+            android:id="@+id/action_routeEditFragment_self"
+            app:destination="@id/routeEditFragment"
+            app:popUpTo="@id/routeEditFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_routeEditFragment_to_routeEditActivityFragment"
+            app:destination="@id/routeEditActivityFragment">
+            <argument
+                android:name="route"
+                app:argType="com.example.routebox.domain.model.Route"
+                app:nullable="true"
+                android:defaultValue="@null"/>
+        </action>
+        <argument
+            android:name="route"
+            app:argType="com.example.routebox.domain.model.Route"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
+    <!-- 활동 수정 -->
+    <fragment
+        android:id="@+id/routeEditActivityFragment"
+        android:name="com.example.routebox.presentation.ui.route.edit.RouteEditActivityFragment"
+        android:label="RouteEditActivityFragment"
+        tools:layout="@layout/fragment_route_edit_activity">
     </fragment>
 
 </navigation>

@@ -15,6 +15,8 @@ class RouteViewModel : ViewModel() {
     private val _route = MutableLiveData<Route>()
     val route: LiveData<Route> = _route
 
+    var selectedPosition: Int = 0
+
     init {
         _routeList.value = listOf(
             Route(

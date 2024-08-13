@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -59,7 +58,6 @@ class ClearableEditText @JvmOverloads constructor(
     }
 
     private fun setMaxLines(maxLines: Int) {
-        Log.d("ClearableEditText", "maxLines: $maxLines")
         editText.maxLines = maxLines
         // maxLines 속성에 따라 EditText의 동작을 설정
         if (maxLines == 1) {
