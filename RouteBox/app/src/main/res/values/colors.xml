@@ -3,6 +3,7 @@
     <!-- 기본 색상 -->
     <color name="black">#FF000000</color>
     <color name="title_black">#FF161616</color>
+    <color name="sub_black">#FF242B37</color>
     <color name="gray1">#FF333333</color>
     <color name="gray2">#FF555555</color>
     <color name="gray3">#FF70747E</color>
@@ -19,9 +20,26 @@
     <color name="sub_color">#FFFF9D9D</color>
     <color name="line_color">#FFECF0F3</color>
 
+    <!-- 기타 색상 -->
+    <color name="route_private_dim">#99000000</color> <!-- 비공개인 루트 dim 배경 (투명도 60) -->
+
     <!-- 메인 관련 색상 -->
     <color name="main">#FF21C8B6</color>
     <color name="app_name_color">#FF0E9187</color> <!-- 로그인 화면 글자 색 -->
     <color name="main_gradient_top">#FF75D27E</color> <!-- 그라데이션 상단 색 -->
     <color name="main_gradient_bottom">#FF47C4B6</color> <!-- 그라데이션 하단 색 -->
+
+    <!-- 편의기능, 카테고리 관련 색상 -->
+    <array name="categoryColorArr">
+        <item name="accommodation">#FFF18C94</item> <!-- 숙소 -->
+        <item name="tourist_attraction">#FF75D27E</item> <!-- 관광지 -->
+        <item name="restaurant">#FFFFD966</item> <!-- 음식점 -->
+        <item name="cafe">#FFFF864D</item> <!-- 카페 -->
+        <item name="sns_spot">#FF76C6FF</item> <!-- SNS 스팟 -->
+        <item name="cultural_space">#FF674100</item> <!-- 문화 공관 -->
+        <item name="toilet">#FF8591DB</item> <!-- 화장실 -->
+        <item name="parking_lot">#FFA63537</item> <!-- 주차장 -->
+        <item name="etc">#FF828282</item> <!-- 기타 -->
+    </array>
+
 </resources>

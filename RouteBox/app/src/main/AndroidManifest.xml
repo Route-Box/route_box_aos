@@ -54,6 +54,10 @@
         <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".presentation.ui.seek.search.FilterActivity"/>
+        <activity android:name=".presentation.ui.route.record.RouteCreateActivity"/>
+        <activity android:name=".presentation.ui.route.RouteDetailActivity"/>
+        <activity android:name=".presentation.ui.route.edit.RouteEditActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />
