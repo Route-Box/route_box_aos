@@ -8,20 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
-import com.example.routebox.databinding.FragmentRouteBinding
+import com.example.routebox.databinding.FragmentRouteInsightBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
-import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
 
-class RouteFragment : Fragment() {
-    private lateinit var binding: FragmentRouteBinding
+class RouteInsightFragment : Fragment() {
+    private lateinit var binding: FragmentRouteInsightBinding
 
     private lateinit var myRouteAdapter: MyRouteRVAdapter
 
@@ -33,11 +33,11 @@ class RouteFragment : Fragment() {
         savedInstanceState: Bundle?
 
     ): View {
-        binding = FragmentRouteBinding.inflate(inflater, container, false)
+        binding = FragmentRouteInsightBinding.inflate(inflater, container, false)
 
         binding.apply {
-            viewModel = this@RouteFragment.viewModel
-            lifecycleOwner = this@RouteFragment
+            viewModel = this@RouteInsightFragment.viewModel
+            lifecycleOwner = this@RouteInsightFragment
         }
 
         initClickListeners()
@@ -47,16 +47,13 @@ class RouteFragment : Fragment() {
     }
 
     private fun initClickListeners() {
-        // 인사이트 버튼
-        binding.routeStatisticsIv.setOnClickListener {
-            // 인사이트 화면으로 이동
-            findNavController().navigate(R.id.action_routeFragment_to_routeInsightFragment)
+        // 안드로이드 기본 뒤로가기 버튼 클릭
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack()
         }
 
-        // 루트 시작하기 버튼
-        binding.routeRecordStartBtn.setOnClickListener {
-            // 루트 시작하기 화면으로 이동
-            startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
+        binding.insightBackIv.setOnClickListener {
+            findNavController().popBackStack() // 뒤로가기
         }
     }
 
@@ -68,9 +65,9 @@ class RouteFragment : Fragment() {
         }
         myRouteAdapter.setRouteClickListener(object: MyRouteRVAdapter.MyItemClickListener {
             override fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean) { // 더보기 버튼 클릭
+                viewModel.selectedPosition = position
                 // 옵션 메뉴 띄우기
                 showMenu(view!!, isPrivate)
-                viewModel.selectedPosition = position
             }
 
             override fun onCommentButtonClick(position: Int) { // 댓글 아이콘 클릭
@@ -83,10 +80,7 @@ class RouteFragment : Fragment() {
 
             override fun onItemClick(position: Int) { // 아이템 전체 클릭
                 // 루트 보기 화면으로 이동
-                val intent = Intent(requireActivity(), RouteDetailActivity::class.java)
-                val routeJson = Gson().toJson(viewModel.routeList.value!![position])
-                intent.putExtra("route", routeJson)
-                startActivity(intent)
+                startActivity(Intent(requireActivity(), RouteDetailActivity::class.java))
             }
         })
     }
@@ -124,6 +118,7 @@ class RouteFragment : Fragment() {
                     true
                 }
                 R.id.menu_make_public_or_private -> {
+                    //TODO: 공개/비공개 상태로 바꾸기
                     Toast.makeText(requireContext(), "공개/비공개 전환 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="activity"
+            type="com.example.routebox.domain.model.Activity" />
+        <variable
+            name="activityOrder"
+            type="Integer"/>
+        <variable
+            name="isEditMode"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="20dp"
+        android:paddingHorizontal="22dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/radius_16"
+        android:backgroundTint="@color/gray6">
+
+        <TextView
+            android:id="@+id/item_activity_order_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_pin"
+            app:backgroundTintBasedOnOrder="@{activityOrder}"
+            android:text="@{String.valueOf(activityOrder + 1)}"
+            tools:text="1"
+            android:textColor="@color/white"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/body_b_m"/>
+
+        <TextView
+            android:id="@+id/item_activity_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@{activity.name}"
+            tools:text="강릉 해파랑물회"
+            app:layout_constraintTop_toTopOf="@id/item_activity_order_tv"
+            app:layout_constraintStart_toEndOf="@id/item_activity_order_tv"
+            style="@style/body_b_m"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{isEditMode ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/item_activity_edit_iv"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginEnd="14dp"
+                android:padding="3dp"
+                android:src="@drawable/ic_edit"/>
+
+            <ImageView
+                android:id="@+id/item_activity_delete_iv"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="3dp"
+                app:tint="@color/gray3"
+                android:src="@drawable/ic_close"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_activity_tag_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/gray4"
+            android:text="@{activity.type}"
+            tools:text="음식점"
+            app:layout_constraintTop_toTopOf="@id/item_activity_name_tv"
+            app:layout_constraintStart_toEndOf="@id/item_activity_name_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_activity_name_tv"
+            style="@style/body_r_s"/>
+
+        <TextView
+            android:id="@+id/item_activity_address_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@{activity.address}"
+            tools:text="강릉시 경포동 경포로"
+            app:layout_constraintTop_toBottomOf="@id/item_activity_name_tv"
+            app:layout_constraintStart_toStartOf="@id/item_activity_name_tv"
+            style="@style/body_r_s"/>
+
+        <TextView
+            android:id="@+id/item_activity_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/gray3"
+            android:text="15:00 ~ 17:00"
+            app:layout_constraintTop_toBottomOf="@id/item_activity_address_tv"
+            app:layout_constraintStart_toStartOf="@id/item_activity_name_tv"
+            style="@style/body_r_s"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_activity_image_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:visibility="@{activity.imgUrls.empty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintTop_toBottomOf="@id/item_activity_time_tv"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:itemCount="3"
+            app:spanCount="3"
+            tools:listitem="@layout/item_activity_image"/>
+
+        <LinearLayout
+            android:id="@+id/item_activity_content_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="@{activity.description == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="@id/item_activity_order_tv"
+            app:layout_constraintTop_toBottomOf="@id/item_activity_image_rv">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_activity_comment"/>
+
+            <TextView
+                android:id="@+id/item_activity_content_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:textColor="@color/gray1"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{activity.description}"
+                tools:text="장소 설명"
+                style="@style/body_r_s"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/edit"
+        android:id="@+id/menu_edit"/>
+    <item android:title="@string/route_my_make_public"
+        android:id="@+id/menu_make_public_or_private"/>
+    <item android:title="@string/delete"
+        android:id="@+id/menu_delete"/>
+</menu>

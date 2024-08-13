@@ -54,6 +54,11 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
             return entries.filter { it.filterType == type }
         }
 
+        // 필터 이름 리스트에 해당하는 선택지 리스트 반환
+        fun findOptionsByNames(names: List<String>): List<FilterOption> {
+            return entries.filter { it.optionName in names }
+        }
+
         // 필터 유형 순서에 따라 정렬된 필터 옵션 리스트 반환
         fun getOptionsSortedByFilterType(): List<List<FilterOption>> {
             return FilterType.entries.sortedBy { it.order }.map { type ->

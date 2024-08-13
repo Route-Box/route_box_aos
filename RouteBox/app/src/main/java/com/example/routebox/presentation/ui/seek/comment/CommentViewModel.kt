@@ -16,8 +16,9 @@ class CommentViewModel: ViewModel() {
     private val _commentList = MutableLiveData<ArrayList<String>>(arrayListOf())
     val commentList: LiveData<ArrayList<String>> = _commentList
 
-    init {
-        _postTitle.value = "[후쿠오카] 여자 혼자 여행 완전 자세히!"
+    //TODO: 필요한 데이터로 초기화하기
+    fun initComment(title: String) {
+        _postTitle.value = title
     }
 
     // 댓글 전송

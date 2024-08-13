@@ -259,6 +259,8 @@
         <item name="colorControlNormal">@color/gray5</item> <!-- EditText 기본 색상 -->
         <item name="colorControlActivated">@color/title_black</item> <!-- Focus 되었을 때 색상 -->
         <item name="android:textCursorDrawable">@color/title_black</item> <!-- Cursor 색상 -->
+        <item name="android:textColor">@color/title_black</item> <!-- 텍스트 색상 -->
+        <item name="android:textColorHint">@color/gray5</item> <!-- 힌트 색상 -->
     </style>
 
     <!-- 팝업 메뉴 기본 석정 -->
