@@ -1,21 +1,22 @@
-package com.example.routebox.presentation.ui.route
+package com.example.routebox.presentation.ui.route.write
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import com.example.routebox.databinding.FragmentRouteConvenienceBinding
-import com.kakao.sdk.common.KakaoSdk
+import androidx.navigation.fragment.findNavController
+import com.example.routebox.databinding.FragmentRouteTrackingBinding
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.KakaoMapSdk
 import com.kakao.vectormap.MapLifeCycleCallback
 
-class RouteConvenienceFragment: Fragment() {
 
-    private lateinit var binding: FragmentRouteConvenienceBinding
+class RouteTrackingFragment: Fragment() {
+
+    private lateinit var binding: FragmentRouteTrackingBinding
     private lateinit var kakaoMap: KakaoMap
 
     override fun onCreateView(
@@ -23,15 +24,16 @@ class RouteConvenienceFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentRouteConvenienceBinding.inflate(inflater, container, false)
+        binding = FragmentRouteTrackingBinding.inflate(layoutInflater, container, false)
 
         initMapSetting()
+        initClickListener()
 
         return binding.root
     }
 
     private fun initMapSetting() {
-        binding.convenienceMap.start(object : MapLifeCycleCallback() {
+        binding.trackingMap.start(object : MapLifeCycleCallback() {
             override fun onMapDestroy() {
                 // 지도 API 가 정상적으로 종료될 때 호출
                 Log.d("KakaoMap", "onMapDestroy: ")
@@ -44,8 +46,25 @@ class RouteConvenienceFragment: Fragment() {
             override fun onMapReady(kakaoMap: KakaoMap) {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
-                this@RouteConvenienceFragment.kakaoMap = kakaoMap
+                this@RouteTrackingFragment.kakaoMap = kakaoMap
             }
         })
+    }
+
+    private fun initClickListener() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack()
+        }
+    }
+
+    // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
+    override fun onResume() {
+        super.onResume()
+        binding.trackingMap.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.trackingMap.pause()
     }
 }

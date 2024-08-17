@@ -1,5 +1,6 @@
-package com.example.routebox.presentation.ui.route
+package com.example.routebox.presentation.ui.route.write
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
+import com.example.routebox.presentation.ui.route.RouteActivityActivity
+import com.example.routebox.presentation.ui.route.RouteViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +35,10 @@ class RouteWriteActivity: AppCompatActivity() {
     private fun initClickListener() {
         binding.backIv.setOnClickListener {
             finish()
+        }
+
+        binding.addCv.setOnClickListener {
+            startActivity(Intent(this, RouteActivityActivity::class.java))
         }
     }
 

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/routeConvenienceFragment"
-        android:name="com.example.routebox.presentation.ui.route.RouteConvenienceFragment"
+        android:name="com.example.routebox.presentation.ui.route.write.RouteConvenienceFragment"
         android:label="RouteConvenienceFragment"
         tools:layout="@layout/fragment_route_convenience" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/routeTrackingFragment"
-        android:name="com.example.routebox.presentation.ui.route.RouteTrackingFragment"
+        android:name="com.example.routebox.presentation.ui.route.write.RouteTrackingFragment"
         android:label="RouteTrackingFragment"
         tools:layout="@layout/fragment_route_tracking" >
         <action

@@ -16,7 +16,7 @@ import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditActivity
-import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
+import com.example.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
 
@@ -56,7 +56,9 @@ class RouteFragment : Fragment() {
         // 루트 시작하기 버튼
         binding.routeRecordStartBtn.setOnClickListener {
             // 루트 시작하기 화면으로 이동
-            startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
+//            startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
+            // TODO: 임시 나중에 삭제
+            startActivity(Intent(requireActivity(), RouteWriteActivity::class.java))
         }
     }
 

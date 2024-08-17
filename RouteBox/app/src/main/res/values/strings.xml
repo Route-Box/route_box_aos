@@ -104,11 +104,7 @@
     <string name="purchase_done_popup_content">성공적으로 구매가 완료되었습니다.\n마이페이지에서 확인할 수 있습니다.</string>
 
     <!-- 내 루트 -->
-    <!-- 기록 -->
-    <string name="progress_tracking">나의 여행 루트를 기록하고 있습니다.  </string>
-    <string name="tracking_tab_1">편의기능</string>
-    <string name="tracking_tab_2">기록하기</string>
-    <string name="add_activity">활동 추가하기</string>
+    <!-- 홈 -->
     <string name="route_start_question">내 여행 루트\n기록해볼까요?</string>
     <string name="route_record_start">루트 기록 시작하기</string>
     <string name="route_create_by_me">내가 만들었어요</string>
@@ -127,6 +123,24 @@
     <string name="select_time_placeholder">시간 선택</string>
     <string name="start_trip">여행 시작</string>
     <string name="end_trip">여행 종료</string>
+    <!-- 루트 생성 -->
+    <string name="progress_tracking">나의 여행 루트를 기록하고 있습니다.  </string>
+    <string name="tracking_tab_1">편의기능</string>
+    <string name="tracking_tab_2">기록하기</string>
+    <string name="add_activity">활동 추가하기</string>
+    <string name="tracking_question">내 활동을 기록해볼까요?</string>
+    <string name="route_location_title">위치</string>
+    <string name="location_search">위치를 검색해주세요</string>
+    <string name="route_date_title">방문한 날짜와 시간</string>
+    <string name="route_visit_time">방문 시간</string>
+    <string name="route_end_time">종료 시간</string>
+    <string name="route_category_title">카테고리</string>
+    <string name="category_name">카테고리명</string>
+    <string name="category_content">카테고리를 입력해주세요</string>
+    <string name="route_picture_title">사진 추가</string>
+    <string name="route_picture_content">사진 추가하기</string>
+    <string name="route_place_title">장소 설명</string>
+    <string name="route_place_content_title">장소에 대한 간략한 설명</string>
     <!-- 루트 수정 -->
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>
