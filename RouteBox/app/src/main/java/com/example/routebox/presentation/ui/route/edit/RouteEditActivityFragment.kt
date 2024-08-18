@@ -45,7 +45,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private fun setInit() {
         bottomSheetDialog = binding.routeEditActivityBottomSheet
         bottomSheetDialog.apply {
-            this.viewModel = viewModel
+            this.viewModel = this@RouteEditActivityFragment.viewModel
             this.lifecycleOwner = this@RouteEditActivityFragment
         }
 
