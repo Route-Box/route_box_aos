@@ -18,9 +18,8 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
     WITH_PARTNER(FilterType.WITH_WHOM, "배우자와"),
     WITH_CHILD(FilterType.WITH_WHOM, "아이와"),
     WITH_PARENT(FilterType.WITH_WHOM, "부모님과"),
-    WITH_ETC(FilterType.WITH_WHOM, "기타"),
+    WITH_ETC(FilterType.WITH_WHOM, "누군가와"),
     // 몇 명과
-    MANY_ALONE(FilterType.HOW_MANY, "혼자"),
     MANY_TWO(FilterType.HOW_MANY, "2명"),
     MANY_THREE(FilterType.HOW_MANY, "3명"),
     MANY_FOUR(FilterType.HOW_MANY, "4명"),
@@ -42,11 +41,12 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
     STYLE_SHOPPING(FilterType.ROUTE_STYLE, "쇼핑 \uD83D\uDECD\uFE0F"),
     STYLE_EATING(FilterType.ROUTE_STYLE, "먹방 \uD83C\uDF7D\uFE0F"),
     STYLE_HISTORY(FilterType.ROUTE_STYLE, "역사 탐방 \uD83D\uDD0D"),
-    STYLE_ETC(FilterType.ROUTE_STYLE, "기타"),
+    STYLE_CULTURE(FilterType.ROUTE_STYLE, "전시, 문화 \uD83D\uDCD6"),
+    STYLE_ETC(FilterType.ROUTE_STYLE, "내 맘대로"),
     // 이동 수단
-    TRANSPORTATION_FOOTSTEP(FilterType.MEANS_OF_TRANSPORTATION, "뚜벅뚜벅"),
-    TRANSPORTATION_TAXI_CAR(FilterType.MEANS_OF_TRANSPORTATION, "택시/자동차"),
-    TRANSPORTATION_PUBLIC_TRANSPORTATION(FilterType.MEANS_OF_TRANSPORTATION, "대중교통");
+    TRANSPORTATION_FOOTSTEP(FilterType.MEANS_OF_TRANSPORTATION, "뚜벅뚜벅 \uD83D\uDC63"),
+    TRANSPORTATION_TAXI_CAR(FilterType.MEANS_OF_TRANSPORTATION, "택시/자동차 \uD83D\uDE97"),
+    TRANSPORTATION_PUBLIC_TRANSPORTATION(FilterType.MEANS_OF_TRANSPORTATION, "대중교통 \uD83D\uDE8C");
 
     companion object {
         // 필터 유형에 해당하는 선택지 리스트 반환
