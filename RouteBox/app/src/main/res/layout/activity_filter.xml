@@ -30,7 +30,8 @@
                 android:id="@+id/filter_back_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_left"/>
+                android:src="@drawable/ic_arrow_left"
+                android:visibility="invisible"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -70,101 +71,12 @@
             app:layout_constraintBottom_toTopOf="@id/filter_bottom_ll"
             android:fillViewport="true">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
+            <FrameLayout
+                android:id="@+id/fragment_route_style_frm"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filter_question1_with_whom"
-                    style="@style/body_b_l"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/filter_question1_with_whom_rv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="30dp"
-                    android:overScrollMode="never"
-                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                    tools:listitem="@layout/item_filter_option"
-                    tools:itemCount="3"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:text="@string/filter_question2_how_many"
-                    style="@style/body_b_l"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/filter_question2_how_many_rv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:overScrollMode="never"
-                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                    tools:listitem="@layout/item_filter_option"
-                    tools:itemCount="2"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:text="@string/filter_question3_how_long"
-                    style="@style/body_b_l"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/filter_question3_how_long_rv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="15dp"
-                    android:overScrollMode="never"
-                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                    tools:listitem="@layout/item_filter_option"
-                    tools:itemCount="3"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:text="@string/filter_question4_route_style"
-                    style="@style/body_b_l"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/filter_question4_route_style_rv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="20dp"
-                    android:overScrollMode="never"
-                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                    tools:listitem="@layout/item_filter_option"
-                    tools:itemCount="4"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:text="@string/filter_question5_means_of_transportation"
-                    style="@style/body_b_l"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/filter_question5_means_of_transportation_rv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:overScrollMode="never"
-                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                    tools:listitem="@layout/item_filter_option"
-                    tools:itemCount="1"/>
-
-            </LinearLayout>
+                tools:layout="@layout/fragment_route_style"/>
 
         </androidx.core.widget.NestedScrollView>
 
@@ -177,19 +89,16 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/filter_clear_btn"
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:paddingVertical="18dp"
                 android:layout_marginEnd="4dp"
                 android:onClick="@{viewModel::clickFilterResetButton}"
-                android:clickable="@{viewModel.isActivateButton ? true : false}"
-                android:background="@{viewModel.isActivateButton ? @drawable/radius_40_outline_gray : @drawable/radius_40_gray}"
-                android:textColor="@{viewModel.isActivateButton ? @color/title_black : @color/gray4}"
-                android:textAlignment="center"
+                android:enabled="@{viewModel.isActivateButton}"
                 android:text="@string/filter_clear"
-                style="@style/body_b_m"/>
+                style="@style/default_outline_button"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/filter_look_route_btn"

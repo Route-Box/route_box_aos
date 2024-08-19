@@ -89,7 +89,7 @@
     <string name="search_order_menu_many_comment">댓글 많은 순</string>
     <!-- 필터 -->
     <string name="filter_appbar_title">필터</string>
-    <string name="filter_title">필요한 여행 루트를 더욱 빠르게\n찾고 싶다면, 루트박스</string>
+    <string name="filter_title"><![CDATA[필요한 여행 루트를 더욱 빠르게\n찾고 싶다면, <font color=\'#21C8B6\'>루트박스</font>]]></string>
     <string name="filter_title_highlighting_text">루트박스</string>
     <string name="filter_question1_with_whom">누구와 함께 가나요?</string>
     <string name="filter_question2_how_many">몇 명과 함께할 예정인가요?</string>

@@ -21,7 +21,7 @@ class RouteViewModel : ViewModel() {
         _routeList.value = listOf(
             Route(
                 "루트1", "모든 활동 표시 유형 테스트", false,
-                FilterOption.findOptionsByFilterType(FilterType.HOW_LONG).map { it.optionName },
+                FilterOption.findOptionsByFilterType(FilterType.MEANS_OF_TRANSPORTATION).map { it.optionName },
                 listOf(
                     Activity("기본", "음식점", "강릉시 경포동 경포로1", "13:00", "17:00", emptyList(), null),
                     Activity("이미지만 있을 경우", "SNS 스팟", "강릉시 경포동 경포로3", "13:00", "17:00", listOf("https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f", "https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f", "https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f"), null),
