@@ -115,7 +115,7 @@ class RouteFragment : Fragment() {
         // 메뉴 노출
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_edit -> {
+                R.id.menu_edit -> { // 수정하기
                     // 루트 수정 화면으로 이동
                     startActivity(
                         Intent(requireActivity(), RouteEditBaseActivity::class.java)
@@ -123,11 +123,11 @@ class RouteFragment : Fragment() {
                     )
                     true
                 }
-                R.id.menu_make_public_or_private -> {
+                R.id.menu_make_public_or_private -> { // 공개/비공개 전환
                     Toast.makeText(requireContext(), "공개/비공개 전환 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }
-                R.id.menu_delete -> {
+                R.id.menu_delete -> { // 삭제하기
                     Toast.makeText(requireContext(), "삭제하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }

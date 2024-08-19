@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -109,11 +110,10 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         } else {
             changeShowMenuItem.setTitle(R.string.route_my_make_private)
         }
-        popupMenu.menu.findItem(R.id.menu_delete).setVisible(false) // 삭제하기는 막아둠
         // 메뉴 노출
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_edit -> {
+                R.id.menu_edit -> { // 수정하기
                     // 루트 수정 화면으로 이동
                     startActivity(
                         Intent(this, RouteEditBaseActivity::class.java)
@@ -121,8 +121,12 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                     )
                     true
                 }
-                R.id.menu_make_public_or_private -> {
+                R.id.menu_make_public_or_private -> { // 공개/비공개 전환
                     showPopupDialog()
+                    true
+                }
+                R.id.menu_delete -> { // 삭제하기
+                    Toast.makeText(this, "삭제하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> { false }
