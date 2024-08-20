@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.example.routebox.databinding.FragmentRouteStyleBinding
 import com.example.routebox.domain.model.FilterOption
+import com.example.routebox.domain.model.FilterType
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -69,8 +71,17 @@ class RouteStyleFragment : Fragment() {
             adapter.addOption(filterOptionList[index])
             selectedOptions?.let { adapter.initSelectedOptions(it) } // 선택된 아이템
             adapter.setOptionClickListener(object : FilterOptionsRVAdapter.MyItemClickListener {
-                override fun onItemClick(position: Int, isSelected: Boolean) {
-                    listner?.onOptionItemClick(filterOptionList[index][position], isSelected)
+                override fun onItemClick(selectedOption: FilterOption, isSelected: Boolean) {
+                    if (!isFilterScreen && selectedOption.filterType == FilterType.WITH_WHOM) { // '누구와' 질문
+                        if (selectedOption == FilterOption.WITH_ALONE) { // 혼자 옵션 클릭
+                            // 레이아웃 숨기기
+                            showHowManyLayout(View.GONE)
+                        } else {
+                            // 레이아웃 표시
+                            showHowManyLayout(View.VISIBLE)
+                        }
+                    }
+                    listner?.onOptionItemClick(selectedOption, isSelected)
                 }
             })
         }
@@ -80,6 +91,13 @@ class RouteStyleFragment : Fragment() {
     fun resetAllOptions() {
         for (adapter in adapterList) {
             adapter.deleteAllOptions()
+        }
+    }
+
+    fun showHowManyLayout(visibility: Int) {
+        binding.apply {
+            question2HowManyTv.visibility = visibility
+            question2HowManyRv.visibility = visibility
         }
     }
 

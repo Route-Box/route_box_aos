@@ -71,6 +71,9 @@ class RouteEditViewModel: ViewModel() {
             if (!isSelected) return
             prevOptionMap[option.filterType] = setOf(option) // 해당 필터에 처음 추가
         }
+        if (option == FilterOption.WITH_ALONE) { // '누구와'의 혼자 옵션
+            prevOptionMap.remove(FilterType.HOW_MANY) // 몇 명과 옵션 삭제
+        }
         selectedOptionMap.value = prevOptionMap
         Log.d("RouteEditViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
         checkButtonEnable()
@@ -79,6 +82,11 @@ class RouteEditViewModel: ViewModel() {
     fun initRouteTitleAndContent() {
         routeTitle.value = _route.value?.title
         routeContent.value = _route.value?.content
+    }
+
+    // 선택된 옵션 중에 '누구와 - 혼자'가 있을 경우
+    private fun isHasWithAloneOption(): Boolean {
+        return selectedOptionMap.value?.get(FilterType.WITH_WHOM)?.contains(FilterOption.WITH_ALONE) ?: false
     }
 
     // 루트 제목과 내용이 잘 채워졌는지 확인
@@ -92,8 +100,14 @@ class RouteEditViewModel: ViewModel() {
         val selectedMap = selectedOptionMap.value ?: return false
         // 모든 FilterType을 가져옴
         val allFilterTypes = FilterType.entries.toSet()
-        // selectedMap의 key들과 allFilterTypes를 비교
-        return selectedMap.keys.containsAll(allFilterTypes) && allFilterTypes.all { selectedMap[it]?.isNotEmpty() == true }
+        // isHasWithAloneOption()이 true인 경우 FilterType.HOW_MANY를 제외
+        val requiredFilterTypes = if (isHasWithAloneOption()) {
+            allFilterTypes - FilterType.HOW_MANY
+        } else {
+            allFilterTypes
+        }
+        // selectedMap의 key들과 requiredFilterTypes를 비교
+        return selectedMap.keys.containsAll(requiredFilterTypes) && requiredFilterTypes.all { selectedMap[it]?.isNotEmpty() == true }
     }
 
     fun checkButtonEnable() {

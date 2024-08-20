@@ -48,7 +48,7 @@ class FilterOptionsRVAdapter(private val canDuplicationSelect: Boolean): Recycle
     }
 
     interface MyItemClickListener {
-        fun onItemClick(position: Int, isSelected: Boolean)
+        fun onItemClick(selectedOption: FilterOption, isSelected: Boolean)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -84,7 +84,7 @@ class FilterOptionsRVAdapter(private val canDuplicationSelect: Boolean): Recycle
                     selectedOptions.add(selectedOption)
                 }
             }
-            mItemClickListener.onItemClick(position, selectedOptions.contains(selectedOption))
+            mItemClickListener.onItemClick(optionList[position], selectedOptions.contains(selectedOption))
             holder.updateSelection(selectedOption)
         }
     }
