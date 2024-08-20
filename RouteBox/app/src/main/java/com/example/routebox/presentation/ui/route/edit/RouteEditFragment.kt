@@ -40,8 +40,12 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
     }
 
     private fun setInit() {
-        viewModel.setStepId(1)
-        setFilterFragment()
+        if (viewModel.isEditMode) { // 루트 수정
+            setRouteStyleFragment()
+            viewModel.setStepId(1)
+            return
+        }
+        viewModel.setStepId(0) // 루트 마무리
     }
 
     private fun initClickListeners() {
@@ -57,7 +61,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
         }
     }
 
-    private fun setFilterFragment() {
+    private fun setRouteStyleFragment() {
         // 프래그먼트를 생성하고 저장
         routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = false, FilterOption.findOptionsByNames(viewModel.route.value!!.tags))
         childFragmentManager.beginTransaction()

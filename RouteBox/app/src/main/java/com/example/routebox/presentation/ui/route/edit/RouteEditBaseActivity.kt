@@ -36,6 +36,7 @@ class RouteEditBaseActivity : AppCompatActivity() {
             viewModel.setRoute(route)
             viewModel.initRouteTitleAndContent()
         }
+        viewModel.isEditMode = intent.getBooleanExtra("isEditMode", false)
     }
 
     private fun initClickListeners() {

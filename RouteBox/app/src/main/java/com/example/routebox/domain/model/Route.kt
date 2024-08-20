@@ -4,11 +4,11 @@ import java.io.Serializable
 
 // 내 루트
 data class Route(
-    val title: String,
-    val content: String,
-    val isPrivate: Boolean,
-    val tags: List<String>, // 루트 스타일
-    val activities: List<Activity> // 활동 목록
+    val title: String = "",
+    val content: String = "",
+    val isPrivate: Boolean = true,
+    val tags: List<String> = emptyList(), // 루트 스타일
+    val activities: List<Activity> = emptyList() // 활동 목록
     //TODO: 구매 수, 댓글 수, 생성 날짜 등 서버 데이터 추가
 ) : Serializable
 

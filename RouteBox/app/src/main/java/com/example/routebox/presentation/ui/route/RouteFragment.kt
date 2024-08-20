@@ -16,6 +16,7 @@ import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
+import com.example.routebox.presentation.ui.route.edit.RouteStyleActivity
 import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
@@ -120,6 +121,7 @@ class RouteFragment : Fragment() {
                     startActivity(
                         Intent(requireActivity(), RouteEditBaseActivity::class.java)
                             .putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
+                            .putExtra("isEditMode", false)
                     )
                     true
                 }

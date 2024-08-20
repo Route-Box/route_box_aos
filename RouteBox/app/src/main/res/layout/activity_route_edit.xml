@@ -31,7 +31,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:clickable="@{viewModel.stepId == 1 ? false : true}"
-                android:visibility="@{viewModel.stepId == 1 ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{viewModel.stepId == 0 ? View.INVISIBLE : (viewModel.stepId == 1 ? View.INVISIBLE : View.VISIBLE)}"
                 android:src="@drawable/ic_arrow_left" />
 
             <TextView
@@ -40,8 +40,8 @@
                 android:layout_marginHorizontal="12dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="@{viewModel.stepId == 1 ? @string/do_route_edit : @string/do_activity_edit}"
-                tools:text="@string/do_route_edit"
+                android:text="@{viewModel.stepId == 0 ? @string/do_route_done : (viewModel.stepId == 1 ? @string/do_route_edit : @string/do_activity_edit)}"
+                tools:text="@string/do_route_done"
                 style="@style/body_b_l"/>
 
             <ImageView

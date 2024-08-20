@@ -114,6 +114,7 @@ class RouteInsightFragment : Fragment() {
                     startActivity(
                         Intent(requireActivity(), RouteEditBaseActivity::class.java)
                             .putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
+                            .putExtra("isEditMode", true)
                     )
                     true
                 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.route.edit.RouteStyleViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/route_style_top_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="20dp"
+            android:orientation="horizontal"
+            android:gravity="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/route_style_close_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_close"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/route_style_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/route_style_title"
+            app:layout_constraintTop_toBottomOf="@id/route_style_top_ll"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/heading_m"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/route_style_sv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbars="none"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/route_style_title_tv"
+            app:layout_constraintBottom_toTopOf="@id/route_style_bottom_ll"
+            android:fillViewport="true">
+
+            <FrameLayout
+                android:id="@+id/route_style_frm"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="38dp"
+                android:layout_marginTop="40dp"
+                tools:layout="@layout/fragment_route_style"/>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/route_style_bottom_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="22dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/route_style_done_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="18dp"
+                android:layout_weight="1"
+                android:enabled="@{viewModel.isEnabledButton()}"
+                android:background="@drawable/selector_main_btn"
+                android:textColor="@drawable/selector_main_btn"
+                android:text="@string/done_btn"
+                style="@style/body_b_m"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
