@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.common
+package com.example.routebox.presentation.ui.common.routeStyle
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.FragmentRouteStyleBinding
 import com.example.routebox.domain.model.FilterOption
-import com.example.routebox.presentation.ui.seek.search.adapter.FilterOptionsRVAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -22,6 +21,7 @@ class RouteStyleFragment : Fragment() {
 
     private var listner: FilterOptionClickListener? = null
     private var isFilterScreen: Boolean = false
+    private var selectedOptions: List<FilterOption>? = null
 
     private lateinit var adapterList: List<FilterOptionsRVAdapter>
 
@@ -43,7 +43,8 @@ class RouteStyleFragment : Fragment() {
 
     private fun setFilterOptions() {
         val filterOptionList = FilterOption.getOptionsSortedByFilterType() // 필터 유형마다의 옵션 목록을 리스트에 저장
-        adapterList = List(filterOptionList.size) { FilterOptionsRVAdapter() } // 리사이클러뷰와 연결할 어댑터 리스트 정의
+        // 리사이클러뷰와 연결할 어댑터 리스트 정의
+        adapterList = List(filterOptionList.size) { FilterOptionsRVAdapter(isFilterScreen) } // 필터 화면 내에서는 모든 아이템 중복 선택 가능
         binding.apply {
             val recyclerViewList = listOf<RecyclerView>(
                 question1WithWhomRv,
@@ -66,6 +67,7 @@ class RouteStyleFragment : Fragment() {
         // FilterType 순서대로 필터 옵션을 어댑터에 추가
         adapterList.forEachIndexed { index, adapter ->
             adapter.addOption(filterOptionList[index])
+            selectedOptions?.let { adapter.initSelectedOptions(it) } // 선택된 아이템
             adapter.setOptionClickListener(object : FilterOptionsRVAdapter.MyItemClickListener {
                 override fun onItemClick(position: Int, isSelected: Boolean) {
                     listner?.onOptionItemClick(filterOptionList[index][position], isSelected)
@@ -82,10 +84,11 @@ class RouteStyleFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(listener: FilterOptionClickListener, isFilterScreen: Boolean): RouteStyleFragment {
+        fun newInstance(listener: FilterOptionClickListener, isFilterScreen: Boolean, selectedOptions: List<FilterOption>?): RouteStyleFragment {
             val fragment = RouteStyleFragment()
             fragment.listner = listener
             fragment.isFilterScreen = isFilterScreen
+            fragment.selectedOptions = selectedOptions
             return fragment
         }
     }

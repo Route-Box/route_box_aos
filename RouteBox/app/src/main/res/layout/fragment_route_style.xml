@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
+        <import type="com.example.routebox.domain.model.FilterType"/>
+        <import type="android.view.View"/>
         <variable
             name="isFilterScreen"
             type="Boolean"/>
@@ -12,8 +14,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="22dp"
-        android:layout_marginEnd="38dp"
         android:layout_marginTop="40dp"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +22,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/filter_question1_with_whom"
+            android:text="@{isFilterScreen ? @string/filter_question1_with_whom : @string/route_question1_with_whom}"
+            tools:text="@string/filter_question1_with_whom"
             style="@style/body_b_l"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:overScrollMode="never"
+            android:animateLayoutChanges="false"
             app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
             tools:listitem="@layout/item_filter_option"
             tools:itemCount="3"/>
@@ -39,7 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="@string/filter_question2_how_many"
+            android:text="@{isFilterScreen ? @string/filter_question2_how_many : @string/route_question2_how_many}"
+            tools:text="@string/filter_question2_how_many"
             style="@style/body_b_l"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,7 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="@string/filter_question3_how_long"
+            android:text="@{isFilterScreen ? @string/filter_question3_how_long : @string/route_question3_how_long}"
+            tools:text="@string/filter_question3_how_long"
             style="@style/body_b_l"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -73,8 +77,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="@string/filter_question4_route_style"
+            android:text="@{isFilterScreen ? @string/filter_question4_route_style : @string/route_question4_route_style}"
+            tools:text="@string/filter_question4_route_style"
             style="@style/body_b_l"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{isFilterScreen ? View.GONE : View.VISIBLE}"
+            android:text="@{@string/route_style_maximum(FilterType.ROUTE_STYLE.maxSelectionCount)}"
+            style="@style/body_r_xs"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/question4_route_style_rv"
@@ -90,7 +102,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="@string/filter_question5_means_of_transportation"
+            android:text="@{isFilterScreen ? @string/filter_question5_means_of_transportation : @string/route_question5_means_of_transportation}"
+            tools:text="@string/filter_question5_means_of_transportation"
             style="@style/body_b_l"/>
 
         <androidx.recyclerview.widget.RecyclerView

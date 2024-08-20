@@ -112,6 +112,12 @@
     <string name="route_my_make_private">비공개 전환하기</string>
     <string name="route_my_change_to_public_popup_content">해당 루트를 전체 공개로\n변경하시겠습니까?</string>
     <string name="route_my_change_to_private_popup_content">해당 루트를 비공개로\n변경하시겠습니까?</string>
+    <string name="route_question1_with_whom">누구와 함께 가셨나요?</string>
+    <string name="route_question2_how_many">몇 명과 함께하셨나요?</string>
+    <string name="route_question3_how_long">며칠 동안 머무셨나요?</string>
+    <string name="route_question4_route_style">이번 여행의  루트 스타일을 알려주세요.</string>
+    <string name="route_question5_means_of_transportation">이번 여행의 주요 이동 수단을 알려주세요.</string>
+    <string name="route_style_maximum">최대 %d가지 선택이 가능합니다.</string>
     <!-- 인사이트 -->
     <string name="insight_my_route_create_num">내 루트 수</string>
     <string name="insight_my_route_buy_num">내 루트 구매 수</string>

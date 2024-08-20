@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityFilterBinding
 import com.example.routebox.domain.model.FilterOption
-import com.example.routebox.presentation.ui.common.FilterOptionClickListener
-import com.example.routebox.presentation.ui.common.RouteStyleFragment
+import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
+import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 
 class FilterActivity : AppCompatActivity(), FilterOptionClickListener {
     private lateinit var binding: ActivityFilterBinding
@@ -64,7 +64,7 @@ class FilterActivity : AppCompatActivity(), FilterOptionClickListener {
 
     private fun setFilterFragment() {
         // 프래그먼트를 생성하고 저장
-        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = true)
+        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = true, null)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_route_style_frm, routeStyleFragment)
             .commit()

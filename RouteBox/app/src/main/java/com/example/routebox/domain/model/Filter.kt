@@ -1,12 +1,12 @@
 package com.example.routebox.domain.model
 
 /** 필터 유형 */
-enum class FilterType(val order: Int) {
-    WITH_WHOM(0), // 누구와
-    HOW_MANY(1), // 몇 명과
-    HOW_LONG(2), // 며칠 동안
-    ROUTE_STYLE(3), // 원하는 스타일
-    MEANS_OF_TRANSPORTATION(4), // 이동 수단
+enum class FilterType(val order: Int, val maxSelectionCount: Int) {
+    WITH_WHOM(0, 0), // 누구와
+    HOW_MANY(1, 0), // 몇 명과
+    HOW_LONG(2, 0), // 며칠 동안
+    ROUTE_STYLE(3, 2), // 원하는 스타일
+    MEANS_OF_TRANSPORTATION(4, 0), // 이동 수단
 }
 
 /** 필터 옵션 */

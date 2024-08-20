@@ -9,11 +9,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteEditBinding
+import com.example.routebox.domain.model.FilterOption
+import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
+import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 
-class RouteEditFragment : Fragment() {
+class RouteEditFragment : Fragment(), FilterOptionClickListener {
     private lateinit var binding: FragmentRouteEditBinding
 
     private val viewModel: RouteEditViewModel by activityViewModels()
+
+    private lateinit var routeStyleFragment: RouteStyleFragment
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +41,7 @@ class RouteEditFragment : Fragment() {
 
     private fun setInit() {
         viewModel.setStepId(1)
+        setFilterFragment()
     }
 
     private fun initClickListeners() {
@@ -47,7 +53,16 @@ class RouteEditFragment : Fragment() {
         // 완료 버튼
         binding.routeEditDoneBtn.setOnClickListener {
             //TODO: 루트 제목, 내용 저장 진행
+            requireActivity().finish()
         }
+    }
+
+    private fun setFilterFragment() {
+        // 프래그먼트를 생성하고 저장
+        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = false, FilterOption.findOptionsByNames(viewModel.route.value!!.tags))
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragment_route_style_frm, routeStyleFragment)
+            .commit()
     }
 
     private fun initObserve() {
@@ -58,5 +73,9 @@ class RouteEditFragment : Fragment() {
         viewModel.routeContent.observe(viewLifecycleOwner) {
             viewModel.checkButtonEnable()
         }
+    }
+
+    override fun onOptionItemClick(option: FilterOption, isSelected: Boolean) {
+        viewModel.updateSelectedOption(option, isSelected)
     }
 }
