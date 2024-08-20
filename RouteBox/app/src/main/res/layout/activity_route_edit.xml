@@ -30,8 +30,8 @@
                 android:id="@+id/route_edit_back_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:clickable="@{viewModel.stepId == 1 ? false : true}"
-                android:visibility="@{viewModel.stepId == 0 ? View.INVISIBLE : (viewModel.stepId == 1 ? View.INVISIBLE : View.VISIBLE)}"
+                android:clickable="@{viewModel.stepId == 2 ? true : false}"
+                android:visibility="@{viewModel.stepId == 2 ? View.VISIBLE : View.INVISIBLE}"
                 android:src="@drawable/ic_arrow_left" />
 
             <TextView

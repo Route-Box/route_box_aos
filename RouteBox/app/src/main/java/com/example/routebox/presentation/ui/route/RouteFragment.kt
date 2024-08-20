@@ -118,11 +118,12 @@ class RouteFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.menu_edit -> { // 수정하기
                     // 루트 수정 화면으로 이동
-                    startActivity(
-                        Intent(requireActivity(), RouteEditBaseActivity::class.java)
-                            .putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
-                            .putExtra("isEditMode", false)
-                    )
+                    val intent = Intent(requireActivity(), RouteEditBaseActivity::class.java)
+                    intent.apply {
+                        putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
+                        putExtra("isEditMode", true)
+                    }
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_make_public_or_private -> { // 공개/비공개 전환
