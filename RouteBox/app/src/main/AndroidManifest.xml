@@ -56,8 +56,9 @@
         <activity android:name=".presentation.ui.seek.search.FilterActivity"/>
         <activity android:name=".presentation.ui.route.record.RouteCreateActivity"/>
         <activity android:name=".presentation.ui.route.RouteDetailActivity"/>
-        <activity android:name=".presentation.ui.route.edit.RouteEditActivity"
+        <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".presentation.ui.route.edit.RouteStyleActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />

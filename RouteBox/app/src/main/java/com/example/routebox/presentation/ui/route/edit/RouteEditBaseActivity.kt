@@ -5,14 +5,13 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.Navigation
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteEditBinding
 import com.example.routebox.domain.model.Route
 import com.google.gson.Gson
 
-class RouteEditActivity : AppCompatActivity() {
+class RouteEditBaseActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRouteEditBinding
 
@@ -23,8 +22,8 @@ class RouteEditActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_route_edit)
 
         binding.apply {
-            viewModel = this@RouteEditActivity.viewModel
-            lifecycleOwner = this@RouteEditActivity
+            viewModel = this@RouteEditBaseActivity.viewModel
+            lifecycleOwner = this@RouteEditBaseActivity
         }
 
         setInit()
@@ -36,21 +35,15 @@ class RouteEditActivity : AppCompatActivity() {
         intent.getStringExtra("route")?.let { routeJson ->
             val route = Gson().fromJson(routeJson, Route::class.java) // 값이 넘어왔다면 route 인스턴스에 gson 형태로 받아온 데이터를 넣어줌
             viewModel.setRoute(route)
-
-            val navController: NavController by lazy {
-                val navHostFragment = supportFragmentManager.findFragmentById(R.id.route_edit_container) as NavHostFragment
-                navHostFragment.navController
-            }
-
-            // Safe Args를 사용하여 action을 생성하고 route 데이터를 전달
-            val action = RouteEditFragmentDirections.actionRouteEditFragmentSelf(route)
-            navController.navigate(action)
+            viewModel.initRouteTitleAndContent()
         }
+        viewModel.isEditMode = intent.getBooleanExtra("isEditMode", false)
     }
 
     private fun initClickListeners() {
         binding.routeEditBackIv.setOnClickListener {
-            //TODO: 이전 프래그먼트로 이동
+            // 이전 화면으로 이동
+            Navigation.findNavController(binding.routeEditContainer).popBackStack()
         }
 
         binding.routeEditCloseIv.setOnClickListener {

@@ -1,27 +1,23 @@
 package com.example.routebox.presentation.ui.seek.search
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
+import android.text.Html
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityFilterBinding
 import com.example.routebox.domain.model.FilterOption
-import com.example.routebox.presentation.ui.seek.search.adapter.FilterOptionsRVAdapter
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
+import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
+import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 
-class FilterActivity : AppCompatActivity() {
+class FilterActivity : AppCompatActivity(), FilterOptionClickListener {
     private lateinit var binding: ActivityFilterBinding
 
     private val viewModel: FilterViewModel by viewModels()
-    private lateinit var adapterList: List<FilterOptionsRVAdapter>
+
+    private lateinit var routeStyleFragment: RouteStyleFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +30,7 @@ class FilterActivity : AppCompatActivity() {
 
         initClickListeners()
         highlightingTitleText()
-        setFilterOptions()
+        setFilterFragment()
         initObserve()
     }
 
@@ -54,64 +50,27 @@ class FilterActivity : AppCompatActivity() {
         viewModel.isResetButtonClick.observe(this) {
             if (it == true) {
                 Log.d("FilterActivity", "리셋 버튼 클릭")
+                // 프래그먼트의 resetAllOptions 호출
+                routeStyleFragment.resetAllOptions()
                 // 필터 옵션 초기화 진행
-                for (adapter in adapterList) {
-                    adapter.deleteAllOptions()
-                }
                 viewModel.setResetDone()
             }
         }
     }
 
     private fun highlightingTitleText() {
-        val fullText = binding.filterTitleTv.text
-
-        val spannableString = SpannableString(fullText)
-
-        // 시작 인덱스와 끝 인덱스 사이의 텍스트에 다른 색상 적용
-        val word = String.format(resources.getString(R.string.filter_title_highlighting_text))
-        val startIndex = fullText.indexOf(word)
-        val endIndex = startIndex + word.length
-        spannableString.setSpan(
-            ForegroundColorSpan(ContextCompat.getColor(this, R.color.main)),
-            startIndex,
-            endIndex,
-            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-
-        binding.filterTitleTv.text = spannableString
+        binding.filterTitleTv.text = Html.fromHtml(getString(R.string.filter_title))
     }
 
-    private fun setFilterOptions() {
-        val filterOptionList = FilterOption.getOptionsSortedByFilterType() // 필터 유형마다의 옵션 목록을 리스트에 저장
-        adapterList = List(filterOptionList.size) { FilterOptionsRVAdapter() } // 리사이클러뷰와 연결할 어댑터 리스트 정의
-        binding.apply {
-            val recyclerViewList = listOf<RecyclerView>(
-                filterQuestion1WithWhomRv,
-                filterQuestion2HowManyRv,
-                filterQuestion3HowLongRv,
-                filterQuestion4RouteStyleRv,
-                filterQuestion5MeansOfTransportationRv
-            )
-            // 리사이클러뷰에 어댑터 연결
-            recyclerViewList.forEachIndexed { index, rv ->
-                rv.apply {
-                    adapter = adapterList[index]
-                    layoutManager = FlexboxLayoutManager(context).apply {
-                        flexWrap = FlexWrap.WRAP
-                        flexDirection = FlexDirection.ROW
-                    }
-                }
-            }
-        }
-        // FilterType 순서대로 필터 옵션을 어댑터에 추가
-        adapterList.forEachIndexed { index, adapter ->
-            adapter.addOption(filterOptionList[index])
-            adapter.setOptionClickListener(object : FilterOptionsRVAdapter.MyItemClickListener {
-                override fun onItemClick(position: Int, isSelected: Boolean) {
-                    viewModel.updateSelectedOption(filterOptionList[index].first().filterType, position, isSelected)
-                }
-            })
-        }
+    private fun setFilterFragment() {
+        // 프래그먼트를 생성하고 저장
+        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = true, null)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_route_style_frm, routeStyleFragment)
+            .commit()
+    }
+
+    override fun onOptionItemClick(option: FilterOption, isSelected: Boolean) {
+        viewModel.updateSelectedOption(option, isSelected)
     }
 }

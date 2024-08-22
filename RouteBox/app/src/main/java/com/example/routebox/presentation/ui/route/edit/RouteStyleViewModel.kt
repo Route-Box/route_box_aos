@@ -6,51 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
-import com.example.routebox.domain.model.Route
-import kotlin.properties.Delegates
 
-class RouteEditViewModel: ViewModel() {
-
-    private val _route = MutableLiveData<Route>()
-    val route: LiveData<Route> = _route
-
-    // 현재 단계 ID를 담는 LiveData
-    private val _stepId = MutableLiveData<Int>()
-    val stepId: LiveData<Int> = _stepId
-
-    var isEditMode by Delegates.notNull<Boolean>()
-
-    val routeTitle: MutableLiveData<String> = MutableLiveData()
-
-    val routeContent: MutableLiveData<String> = MutableLiveData()
-
+class RouteStyleViewModel: ViewModel() {
     private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
 
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
-
-    fun setStepId(stepId: Int) {
-        _stepId.value = stepId
-    }
-
-    fun setRoute(route: Route) {
-        _route.value = route
-        initSelectedOptionMap(FilterOption.findOptionsByNames(_route.value!!.tags))
-    }
-
-    private fun initSelectedOptionMap(filterOptions: List<FilterOption>) {
-        // 현재 selectedOptionMap을 가져옴
-        val currentMap = selectedOptionMap.value?.toMutableMap() ?: mutableMapOf()
-
-        // filterOptions 리스트를 순회하며 각 FilterOption의 filterType에 따라 그룹화
-        filterOptions.groupBy { it.filterType }.forEach { (filterType, options) ->
-            // 필터 타입에 따라 Set<FilterOption>으로 변환하여 맵에 저장
-            currentMap[filterType] = options.toSet()
-        }
-
-        // MutableLiveData에 새로운 맵을 저장
-        selectedOptionMap.value = currentMap
-    }
 
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
         val prevOptionMap = selectedOptionMap.value!!.toMutableMap()
@@ -75,23 +36,13 @@ class RouteEditViewModel: ViewModel() {
             prevOptionMap.remove(FilterType.HOW_MANY) // 몇 명과 옵션 삭제
         }
         selectedOptionMap.value = prevOptionMap
-        Log.d("RouteEditViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
+        Log.d("RouteStyleViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
         checkButtonEnable()
-    }
-
-    fun initRouteTitleAndContent() {
-        routeTitle.value = _route.value?.title
-        routeContent.value = _route.value?.content
     }
 
     // 선택된 옵션 중에 '누구와 - 혼자'가 있을 경우
     private fun isHasWithAloneOption(): Boolean {
         return selectedOptionMap.value?.get(FilterType.WITH_WHOM)?.contains(FilterOption.WITH_ALONE) ?: false
-    }
-
-    // 루트 제목과 내용이 잘 채워졌는지 확인
-    private fun isAllContentFilled(): Boolean {
-        return !routeTitle.value.isNullOrEmpty() && !routeContent.value.isNullOrEmpty()
     }
 
     // 모든 선택지가 잘 채워졌는지 확인
@@ -110,7 +61,7 @@ class RouteEditViewModel: ViewModel() {
         return selectedMap.keys.containsAll(requiredFilterTypes) && requiredFilterTypes.all { selectedMap[it]?.isNotEmpty() == true }
     }
 
-    fun checkButtonEnable() {
-        _isEnabledButton.value = if (isEditMode) (isAllContentFilled() && isAllQuestionTypeSelected()) else isAllContentFilled()
+    private fun checkButtonEnable() {
+        _isEnabledButton.value = isAllQuestionTypeSelected()
     }
 }

@@ -89,7 +89,7 @@
     <string name="search_order_menu_many_comment">댓글 많은 순</string>
     <!-- 필터 -->
     <string name="filter_appbar_title">필터</string>
-    <string name="filter_title">필요한 여행 루트를 더욱 빠르게\n찾고 싶다면, 루트박스</string>
+    <string name="filter_title"><![CDATA[필요한 여행 루트를 더욱 빠르게\n찾고 싶다면, <font color=\'#21C8B6\'>루트박스</font>]]></string>
     <string name="filter_title_highlighting_text">루트박스</string>
     <string name="filter_question1_with_whom">누구와 함께 가나요?</string>
     <string name="filter_question2_how_many">몇 명과 함께할 예정인가요?</string>
@@ -112,6 +112,13 @@
     <string name="route_my_make_private">비공개 전환하기</string>
     <string name="route_my_change_to_public_popup_content">해당 루트를 전체 공개로\n변경하시겠습니까?</string>
     <string name="route_my_change_to_private_popup_content">해당 루트를 비공개로\n변경하시겠습니까?</string>
+    <string name="route_style_title">이번 루트의 스타일은?</string>
+    <string name="route_question1_with_whom">누구와 함께 가셨나요?</string>
+    <string name="route_question2_how_many">몇 명과 함께하셨나요?</string>
+    <string name="route_question3_how_long">며칠 동안 머무셨나요?</string>
+    <string name="route_question4_route_style">이번 여행의  루트 스타일을 알려주세요.</string>
+    <string name="route_question5_means_of_transportation">이번 여행의 주요 이동 수단을 알려주세요.</string>
+    <string name="route_style_maximum">최대 %d가지 선택이 가능합니다.</string>
     <!-- 인사이트 -->
     <string name="insight_my_route_create_num">내 루트 수</string>
     <string name="insight_my_route_buy_num">내 루트 구매 수</string>
@@ -126,6 +133,8 @@
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>
     <string name="route_edit_activity_edit">활동 수정</string>
+    <string name="route_activity_empty">아직 만들어진 활동이 없어요.</string>
+    <string name="activity_delete_popup">삭제하시겠습니까?</string>
 
     <!-- 공통 -->
     <string name="next_btn">다음</string>
@@ -137,6 +146,9 @@
     <string name="preview_buy">%s님의 루트가 사진이 들었다면,\n<b>루트</b>를 구매하여 더 많은 사진을 감상하세요!</string>
     <string name="edittext_hint">작성해주세요</string>
     <string name="do_activity_add">활동 추가하기</string>
+    <string name="do_route_done">루트 마무리하기</string>
+    <string name="do_route_edit">루트 수정하기</string>
+    <string name="do_activity_edit">활동 수정하기</string>
 
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>
