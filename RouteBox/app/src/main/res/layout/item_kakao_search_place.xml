@@ -8,52 +8,60 @@
             name="place"
             type="com.example.routebox.domain.model.SearchActivityResult" />
     </data>
-    
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-        <ImageView
-            android:id="@+id/gps_iv"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="27dp"
-            android:layout_marginStart="24dp"
-            android:src="@drawable/ic_location"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/place_name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{place.place_name}"
-            android:layout_marginStart="4dp"
-            app:layout_constraintTop_toTopOf="@id/gps_iv"
-            app:layout_constraintBottom_toBottomOf="@id/gps_iv"
-            app:layout_constraintStart_toEndOf="@id/gps_iv"
-            tools:text="장소 이름"
-            style="@style/title_l" />
-
-        <TextView
-            android:id="@+id/place_address_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{place.road_address_name == null ? place.road_address_name : place.address_name}"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/place_name_tv"
-            app:layout_constraintStart_toStartOf="@id/place_name_tv"
-            tools:text="장소 주소"
-            style="@style/body_r_s" />
-        
-        <View
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray6"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/place_address_tv" />
+            android:layout_height="wrap_content"
+            app:rippleColor="@color/gray6"
+            app:cardElevation="0dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/gps_iv"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="27dp"
+                    android:layout_marginStart="24dp"
+                    android:src="@drawable/ic_location"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/place_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{place.place_name}"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintTop_toTopOf="@id/gps_iv"
+                    app:layout_constraintBottom_toBottomOf="@id/gps_iv"
+                    app:layout_constraintStart_toEndOf="@id/gps_iv"
+                    tools:text="장소 이름"
+                    style="@style/title_l" />
+
+                <TextView
+                    android:id="@+id/place_address_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{place.road_address_name == null ? place.road_address_name : place.address_name}"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@id/place_name_tv"
+                    app:layout_constraintStart_toStartOf="@id/place_name_tv"
+                    tools:text="장소 주소"
+                    style="@style/body_r_s" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray6"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@id/place_address_tv" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
 </layout>

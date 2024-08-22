@@ -131,6 +131,7 @@
     <string name="tracking_question">내 활동을 기록해볼까요?</string>
     <string name="route_location_title">위치</string>
     <string name="location_search">위치를 검색해주세요</string>
+    <string name="route_place_search">검색 결과가 존재하지 않아요.</string>
     <string name="route_date_title">방문한 날짜와 시간</string>
     <string name="route_visit_time">방문 시간</string>
     <string name="route_end_time">종료 시간</string>
@@ -139,6 +140,8 @@
     <string name="category_content">카테고리를 입력해주세요</string>
     <string name="route_picture_title">사진 추가</string>
     <string name="route_picture_content">사진 추가하기</string>
+    <string name="route_picture_camera">사진 찍기</string>
+    <string name="route_max_picture">이미지는 최대 3장까지\n첨부할 수 있어요</string>
     <string name="route_place_title">장소 설명</string>
     <string name="route_place_content_title">장소에 대한 간략한 설명</string>
     <!-- 루트 수정 -->
@@ -156,6 +159,7 @@
     <string name="preview_buy">%s님의 루트가 사진이 들었다면,\n<b>루트</b>를 구매하여 더 많은 사진을 감상하세요!</string>
     <string name="edittext_hint">작성해주세요</string>
     <string name="do_activity_add">활동 추가하기</string>
+    <string name="update">업데이트 예정입니다</string>
 
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>

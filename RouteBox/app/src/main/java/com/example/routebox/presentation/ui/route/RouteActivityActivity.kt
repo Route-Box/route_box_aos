@@ -3,21 +3,21 @@ package com.example.routebox.presentation.ui.route
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
@@ -28,7 +28,6 @@ import com.example.routebox.presentation.ui.route.adapter.CategoryRVAdapter
 import com.example.routebox.presentation.ui.route.adapter.KakaoPlaceRVAdapter
 import com.example.routebox.presentation.ui.route.adapter.PictureRVAdapter
 import com.example.routebox.presentation.ui.route.write.RoutePictureAlbumActivity
-import com.example.routebox.presentation.ui.route.write.RoutePictureAlbumViewModel
 import com.example.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.example.routebox.presentation.utils.picker.CalendarBottomSheet
 import com.example.routebox.presentation.utils.picker.DateClickListener
@@ -36,79 +35,60 @@ import com.example.routebox.presentation.utils.picker.TimeChangedListener
 import com.example.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.google.android.flexbox.FlexboxLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 import java.time.LocalDate
 import java.util.Calendar
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChangedListener {
 
     private lateinit var binding: ActivityRouteActivityBinding
-
     private lateinit var placeRVAdapter: KakaoPlaceRVAdapter
     private var placeList: ArrayList<SearchActivityResult> = arrayListOf<SearchActivityResult>()
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
-    private var imgList = arrayListOf<String?>(null)
+    private var imgList = arrayListOf<Uri?>(null)
+    private val viewModel: RouteWriteViewModel by viewModels()
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
-    private lateinit var viewModel: RouteWriteViewModel
-    private lateinit var albumViewModel: RoutePictureAlbumViewModel
+    // 앨범 접근 권한 요청
+    private fun checkVersion(): String {
+        // SDK 버전에 따라 특정 버전 이상일 경우, READ_MEDIA_IMAGES, 아닐 경우, READ_EXTERNAL_STORAGE 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) return Manifest.permission.READ_MEDIA_IMAGES
+        else return Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+
+    // 권한 허용 요청
+    private val galleryPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (ContextCompat.checkSelfPermission(this@RouteActivityActivity, it.toString()) == PackageManager.PERMISSION_GRANTED) {
+            startActivity(Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java))
+        } else {
+            Log.d("ALBUM-PERMISSION", "권한 필요")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_route_activity)
-        viewModel = ViewModelProvider(this).get(RouteWriteViewModel::class.java)
-        albumViewModel = ViewModelProvider(this).get(RoutePictureAlbumViewModel::class.java)
-
         binding.apply {
-            binding.viewModel = this@RouteActivityActivity.viewModel
+            viewModel = this@RouteActivityActivity.viewModel
             lifecycleOwner = this@RouteActivityActivity
         }
 
         setAdapter()
+        initObserve()
         initClickListener()
         initEditTextListener()
-        setAlbumPermission()
-    }
 
-    // 앨범 접근 권한 체크 (허용 여부 체크)
-    private fun checkAlbumPermission(): Int {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-    }
-
-    lateinit var imageLauncher: ActivityResultLauncher<Intent>
-    lateinit var galleryPermissionLauncher: ActivityResultLauncher<String>
-    lateinit var version: String
-
-    private fun setAlbumPermission() {
-        // SDK 버전에 따라 특정 버전 이상일 경우, READ_MEDIA_IMAGES, 아닐 경우, READ_EXTERNAL_STORAGE 요청
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            version = Manifest.permission.READ_MEDIA_IMAGES
-        else version = Manifest.permission.READ_EXTERNAL_STORAGE
-
-        // 앨범 접근 권한 요청
-        var imageFile = File("")
-        imageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        // 선택한 사진을 받기 위한 launcher
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if (result.resultCode == RESULT_OK) {
-                val imageUri = result.data?.data
-                imageUri?.let {
-                    imageFile = File(it.toString())
-                    Log.d("ALBUM-PERMISSION", imageFile.toString())
-                }
+                imgRVAdapter.addItem(Uri.parse(result.data?.getStringArrayListExtra("album")!![0]))
+                imgRVAdapter.addItem(Uri.parse(result.data?.getStringArrayListExtra("album")!![1]))
+                imgRVAdapter.addItem(Uri.parse(result.data?.getStringArrayListExtra("album")!![2]))
             }
-        }
-        galleryPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-            Log.d("ALBUM-PERMISSION", "it = $it")
-            if (it) {
-                val intent = Intent(Intent.ACTION_PICK)
-                intent.setDataAndType(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
-                )
-                imageLauncher.launch(intent)
-            } else Log.d("ALBUM-PERMISSION", "deny")
         }
     }
 
@@ -119,16 +99,18 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         placeRVAdapter.setPlaceClickListener(object: KakaoPlaceRVAdapter.MyItemClickListener {
             override fun onItemClick(place: SearchActivityResult) {
                 binding.searchEt.setText(place.place_name)
-                binding.searchEt.setTypeface(Typeface.DEFAULT_BOLD)
-
+                viewModel.setPlaceName(place.place_name)
                 viewModel.placeSearchResult.value = arrayListOf()
+                viewModel.setPlaceSearchMode(false)
             }
         })
         // 페이징 처리를 통해 새로운 장소 15개를 얻으면 placeRVAdapter에 해당 내용을 전송 -> 뷰 업데이트
         viewModel.placeSearchResult.observe(this) {
             // 다시 검색했을 경우, RecyclerView 데이터 새로 추가
             if (viewModel.placeSearchPage.value == 1) placeRVAdapter.resetAllItems(viewModel.placeSearchResult.value!!)
-            else placeRVAdapter.addAllItems(viewModel.placeSearchResult.value!!)
+            else {
+                placeRVAdapter.addAllItems(viewModel.placeSearchResult.value!!)
+            }
         }
         // Kakao 위치 검색의 경우, 15개씩 결과값 리턴
         // So, 만약 스크롤 최하단에 도착했다면, 새로운 15개의 값을 얻기 위한 API 호출
@@ -148,54 +130,40 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         categoryRVAdapter = CategoryRVAdapter()
         binding.categoryRv.adapter = categoryRVAdapter
         binding.categoryRv.layoutManager = FlexboxLayoutManager(this)
+        binding.categoryRv.itemAnimator = null
         categoryRVAdapter.setCategoryClickListener(object: CategoryRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int, isSelected: Boolean) {
-                // TOOD: 선택되어 있는 카테고리의 경우, 해제
                 if (categoryRVAdapter.getItem(position) == Category.ETC) {
                     viewModel.setCategoryETC("")
                 } else viewModel.setCategoryETC(null)
+
+                categoryRVAdapter.setSelectedIndex(position)
+                viewModel.setCategory(categoryRVAdapter.getItem(position))
             }
         })
 
         imgRVAdapter = PictureRVAdapter(imgList)
         binding.pictureRv.adapter = imgRVAdapter
         binding.pictureRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.pictureRv.itemAnimator = null
         imgRVAdapter.setPictureClickListener(object: PictureRVAdapter.MyItemClickListener {
             @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onPlusItemClick(position: Int) {
-//                imgRVAdapter.addItem("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg")
-//                albumViewModel.getActivityPictureAlbumList(this@RouteActivityActivity)
-
-                galleryPermissionLauncher.launch(version)
-
-//                when {
-//                    ContextCompat.checkSelfPermission(this@RouteActivityActivity, version) == PackageManager.PERMISSION_GRANTED -> {
-//                        val startCustomAlbum = Intent(this, RoutePictureAlbumActivity::class.java)
-//                        activityForResult.launch(startCustomAlbum)
-////                    startActivity(startCustomAlbum)
-//                        //스토리지 읽기 권한이 허용이면 커스텀 앨범 띄워주기
-//                        //권한 있을 경우 : PERMISSION_GRANTED
-//                        //권한 없을 경우 : PERMISSION_DENIED
-//                    }
-//
-//                    shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
-//                        //다이얼로그를 띄워 권한팝업을 허용하여야 접근 가능하다는 사실을 알려줌
-//                        showPermissionAlertDialog()
-//                    }
-//
-//                    else -> {
-//                        //권한 요청
-//                        requestPermissions(
-//                            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-//                            PERMISSION_CODE
-//                        )
-//                    }
-//                }
+                if (ContextCompat.checkSelfPermission(this@RouteActivityActivity, checkVersion()) == PackageManager.PERMISSION_GRANTED) {
+                    val intent = Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java)
+                    resultLauncher.launch(intent)
+                } else {
+                    galleryPermissionLauncher.launch(checkVersion())
+                }
             }
             override fun onPictureItemClick(position: Int) {
-//                imgRVAdapter.removeItem(position)
+                imgRVAdapter.removeItem(position)
             }
         })
+    }
+
+    private fun initObserve() {
+
     }
 
     private fun initClickListener() {
@@ -213,6 +181,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
         binding.categoryEraseIv.setOnClickListener {
             binding.categoryEt.setText("")
+            viewModel.setCategoryETC("")
         }
     }
 
@@ -220,8 +189,22 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         binding.searchEt.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                binding.searchEt.setTypeface(Typeface.DEFAULT)
+                viewModel.setPlaceName("")
                 viewModel.setPlaceSearchKeyword(binding.searchEt.text.toString())
+            }
+            override fun afterTextChanged(p0: Editable?) { }
+        })
+        binding.categoryEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.setCategoryETC(binding.categoryEt.text.toString())
+            }
+            override fun afterTextChanged(p0: Editable?) { }
+        })
+        binding.locationContentEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.setLocationContent(binding.locationContentEt.text.toString())
             }
             override fun afterTextChanged(p0: Editable?) { }
         })

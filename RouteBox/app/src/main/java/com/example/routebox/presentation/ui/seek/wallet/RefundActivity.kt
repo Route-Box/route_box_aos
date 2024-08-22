@@ -40,7 +40,6 @@ class RefundActivity: AppCompatActivity() {
             bankBottomSheet.run {
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
             }
-            bankBottomSheet.show(supportFragmentManager, "BankBottomSheet")
             bankBottomSheet.setOnDialogFinishListener(object:
                 BankBottomSheet.OnDialogFinishListener {
                 override fun finish(data: Bank?) {
@@ -59,6 +58,7 @@ class RefundActivity: AppCompatActivity() {
                     }
                 }
             })
+            bankBottomSheet.show(supportFragmentManager, "BankBottomSheet")
         }
 
         binding.pointEraseIv.setOnClickListener {

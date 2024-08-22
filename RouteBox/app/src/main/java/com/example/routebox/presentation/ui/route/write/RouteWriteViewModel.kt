@@ -7,13 +7,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.routebox.domain.model.Category
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.Locale.Category
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +23,12 @@ class RouteWriteViewModel @Inject constructor(
 ): ViewModel() {
     private val _placeSearchKeyword = MutableLiveData<String>()
     val placeSearchKeyword: LiveData<String> = _placeSearchKeyword
+
+    private val _placeSearchMode = MutableLiveData<Boolean>()
+    val placeSearchMode: LiveData<Boolean> = _placeSearchMode
+
+    private val _placeName = MutableLiveData<String?>()
+    val placeName: LiveData<String?> = _placeName
 
     private val _placeSearchResult = MutableLiveData<ArrayList<SearchActivityResult>>()
     val placeSearchResult: MutableLiveData<ArrayList<SearchActivityResult>> = _placeSearchResult
@@ -54,29 +60,56 @@ class RouteWriteViewModel @Inject constructor(
     private val _locationContent = MutableLiveData<String>()
     val locationContent: LiveData<String> = _locationContent
 
+    private val _btnEnabled = MutableLiveData<Boolean>()
+    val btnEnabled: LiveData<Boolean> = _btnEnabled
+
     init {
         _placeSearchKeyword.value = ""
         _placeSearchResult.value = arrayListOf()
         _placeSearchPage.value = 1
+        _categoryETC.value = null
         _isEndPage.value = true
+        _locationContent.value = ""
     }
 
     fun updateDate(date: LocalDate) {
         _placeSearchKeyword.value = ""
         _date.value = date
+        checkBtnEnabled()
     }
 
     fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
         if (isStartTime) _startTimePair.value = timePair
         else _endTimePair.value = timePair
+        checkBtnEnabled()
+    }
+
+    fun setPlaceSearchMode(mode: Boolean) {
+        _placeSearchMode.value = mode
+    }
+
+    fun setPlaceName(placeName: String) {
+        _placeName.value = placeName
+        checkBtnEnabled()
     }
 
     fun setPlaceSearchKeyword(query: String) {
         _placeSearchKeyword.value = query
+        checkBtnEnabled()
     }
 
-    fun setCategoryETC(category: String?) {
-        _categoryETC.value = category
+    fun setCategory(category: Category) {
+        _category.value = category
+        checkBtnEnabled()
+    }
+
+    fun setCategoryETC(categoryETC: String?) {
+        _categoryETC.value = categoryETC
+        checkBtnEnabled()
+    }
+
+    fun setLocationContent(locationContent: String) {
+        _locationContent.value = locationContent
     }
 
     fun searchPlace() {
@@ -86,6 +119,7 @@ class RouteWriteViewModel @Inject constructor(
             val response = repository.searchKakaoPlace(_placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
             _placeSearchResult.value = response.documents as ArrayList
             _isEndPage.value = response.meta.is_end
+            _placeSearchMode.value = true
         }
     }
 
@@ -94,6 +128,17 @@ class RouteWriteViewModel @Inject constructor(
             val response = repository.searchKakaoPlace(_placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
             _placeSearchResult.value = response.documents as ArrayList
             _isEndPage.value = response.meta.is_end
+        }
+    }
+
+    private fun checkBtnEnabled() {
+        // 카테고리가 기타가 선택됐을 때와 아닐 때로 구분
+        if (_category.value == Category.ETC) {
+            _btnEnabled.value = (_placeName.value != "" && _date.value != null && _startTimePair.value != null
+                    && _endTimePair.value != null && _categoryETC.value!!.isNotEmpty())
+        } else {
+            _btnEnabled.value = (_placeName.value != "" && _date.value != null && _startTimePair.value != null
+                    && _endTimePair.value != null && _category.value != null)
         }
     }
 }

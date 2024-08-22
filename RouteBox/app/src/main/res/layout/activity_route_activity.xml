@@ -119,6 +119,7 @@
                         android:layout_height="34dp"
                         android:padding="5dp"
                         android:onClick="@{() -> viewModel.searchPlace()}"
+                        android:clickable="@{viewModel.placeSearchKeyword.length() == 0 ? false : true}"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_search"/>
 
@@ -127,9 +128,9 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/place_cv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="384dp"
                     android:layout_marginTop="20dp"
-                    android:visibility="@{viewModel.placeSearchResult.size > 0 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.placeSearchMode ? View.VISIBLE : View.GONE}"
                     app:cardCornerRadius="12dp"
                     app:cardBackgroundColor="@color/gray7"
                     app:cardElevation="0dp"
@@ -137,13 +138,48 @@
                     app:layout_constraintStart_toStartOf="@id/activity_searchbox_ll"
                     app:layout_constraintEnd_toEndOf="@id/activity_searchbox_ll">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/place_rv"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="384dp"
-                        tools:listitem="@layout/item_kakao_search_place"
-                        android:orientation="vertical"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        android:layout_height="match_parent">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/place_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="384dp"
+                            tools:listitem="@layout/item_kakao_search_place"
+                            android:orientation="vertical"
+                            android:visibility="@{viewModel.placeSearchResult.size == 0 ? View.GONE : View.VISIBLE}"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <ImageView
+                            android:id="@+id/empty_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/img_empty"
+                            android:layout_marginBottom="14dp"
+                            android:visibility="@{viewModel.placeSearchResult.size == 0 ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/empty_tv"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <TextView
+                            android:id="@+id/empty_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/route_place_search"
+                            android:visibility="@{viewModel.placeSearchResult.size == 0 ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintTop_toBottomOf="@id/empty_iv"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -341,6 +377,76 @@
                     app:layout_constraintStart_toStartOf="parent"
                     style="@style/title_l" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/location_content_cv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/gray5"
+                    app:layout_constraintTop_toBottomOf="@id/place_title"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="20dp"
+                        android:paddingHorizontal="16dp">
+
+                        <EditText
+                            android:id="@+id/location_content_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:hint="@string/route_place_content_title"
+                            android:text="@{String.valueOf(viewModel.locationContent)}"
+                            android:background="@color/transparent"
+                            android:gravity="top"
+                            android:maxLength="40"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/location_content_length"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{String.valueOf(viewModel.locationContent.length())}"
+                            android:textColor="@{viewModel.locationContent.length() > 0 ? @color/main : @color/gray4}"
+                            style="@style/body_r_s"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/location_content_max" />
+
+                        <TextView
+                            android:id="@+id/location_content_max"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="/40"
+                            android:textColor="@color/main"
+                            style="@style/body_r_s"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/next_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="@string/next_btn"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="28dp"
+                    android:enabled="@{viewModel.btnEnabled}"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:background="@drawable/selector_main_btn"
+                    android:textColor="@drawable/selector_main_btn"
+                    app:layout_constraintTop_toBottomOf="@id/location_content_cv"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+                
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

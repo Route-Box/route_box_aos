@@ -60,8 +60,8 @@ data class SearchActivityResult(
 )
 
 data class ActivityPictureAlbum(
-    val uri: Uri,
-    val selectedNumber: Int? = null
+    val uri: Uri?,
+    var selectedNumber: Int? = null
 )
 
 const val pictureImgType = 0

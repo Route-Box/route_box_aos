@@ -2,8 +2,10 @@ package com.example.routebox.presentation.ui.route.write
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import com.example.routebox.R
@@ -45,15 +47,17 @@ class RouteWriteActivity: AppCompatActivity() {
     private fun setTabLayout() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.route_container) as NavHostFragment
         val navController = navHostFragment.navController
+        // navController.navigate(R.id.action_routeConvenienceFragment_to_routeTrackingFragment)
 
         binding.mapTb.addOnTabSelectedListener(object: OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab!!.position) {
                     0 -> {
-                        navController.navigate(R.id.action_routeTrackingFragment_to_routeConvenienceFragment)
+                        // navController.navigate(R.id.action_routeTrackingFragment_to_routeConvenienceFragment)
+                        Toast.makeText(this@RouteWriteActivity, ContextCompat.getString(this@RouteWriteActivity, R.string.update), Toast.LENGTH_LONG).show()
                     }
                     1 -> {
-                        navController.navigate(R.id.action_routeConvenienceFragment_to_routeTrackingFragment)
+                        // navController.navigate(R.id.action_routeConvenienceFragment_to_routeTrackingFragment)
                     }
                 }
             }

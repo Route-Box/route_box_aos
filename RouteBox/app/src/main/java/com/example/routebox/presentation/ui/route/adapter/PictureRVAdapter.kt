@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.route.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.example.routebox.domain.model.pictureImgType
 import com.example.routebox.domain.model.pictureAddType
 
 class PictureRVAdapter(
-    private var imgList: ArrayList<String?>
+    private var imgList: ArrayList<Uri?>
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private lateinit var mItemClickListener: MyItemClickListener
@@ -70,21 +71,18 @@ class PictureRVAdapter(
     }
 
     inner class PictureViewHolder(val binding: ItemActivityPictureBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(img: String) {
+        fun bind(img: Uri) {
             binding.img = img
         }
     }
 
-    fun addItem(img: String) {
+    fun addItem(img: Uri) {
         imgList.add(img)
         this.notifyDataSetChanged()
-
-        Log.d("PICTURE-TEST", "imgList = $imgList")
     }
 
     fun removeItem(position: Int) {
         imgList.removeAt(position)
         this.notifyDataSetChanged()
-        Log.d("PICTURE-TEST", "imgList = $imgList")
     }
 }
