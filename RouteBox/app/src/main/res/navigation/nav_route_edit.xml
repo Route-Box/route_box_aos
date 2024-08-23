@@ -12,24 +12,8 @@
         android:label="RouteEditFragment"
         tools:layout="@layout/fragment_route_edit">
         <action
-            android:id="@+id/action_routeEditFragment_self"
-            app:destination="@id/routeEditFragment"
-            app:popUpTo="@id/routeEditFragment"
-            app:popUpToInclusive="true"/>
-        <action
             android:id="@+id/action_routeEditFragment_to_routeEditActivityFragment"
-            app:destination="@id/routeEditActivityFragment">
-            <argument
-                android:name="route"
-                app:argType="com.example.routebox.domain.model.Route"
-                app:nullable="true"
-                android:defaultValue="@null"/>
-        </action>
-        <argument
-            android:name="route"
-            app:argType="com.example.routebox.domain.model.Route"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:destination="@id/routeEditActivityFragment"/>
     </fragment>
 
     <!-- 활동 수정 -->

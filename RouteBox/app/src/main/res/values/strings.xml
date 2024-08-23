@@ -144,10 +144,19 @@
     <string name="route_max_picture">이미지는 최대 3장까지\n첨부할 수 있어요</string>
     <string name="route_place_title">장소 설명</string>
     <string name="route_place_content_title">장소에 대한 간략한 설명</string>
+    <string name="route_style_title">이번 루트의 스타일은?</string>
+    <string name="route_question1_with_whom">누구와 함께 가셨나요?</string>
+    <string name="route_question2_how_many">몇 명과 함께하셨나요?</string>
+    <string name="route_question3_how_long">며칠 동안 머무셨나요?</string>
+    <string name="route_question4_route_style">이번 여행의  루트 스타일을 알려주세요.</string>
+    <string name="route_question5_means_of_transportation">이번 여행의 주요 이동 수단을 알려주세요.</string>
+    <string name="route_style_maximum">최대 %d가지 선택이 가능합니다.</string>
     <!-- 루트 수정 -->
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>
     <string name="route_edit_activity_edit">활동 수정</string>
+    <string name="route_activity_empty">아직 만들어진 활동이 없어요.</string>
+    <string name="activity_delete_popup">삭제하시겠습니까?</string>
 
     <!-- 공통 -->
     <string name="next_btn">다음</string>
@@ -160,6 +169,9 @@
     <string name="edittext_hint">작성해주세요</string>
     <string name="do_activity_add">활동 추가하기</string>
     <string name="update">업데이트 예정입니다</string>
+    <string name="do_route_done">루트 마무리하기</string>
+    <string name="do_route_edit">루트 수정하기</string>
+    <string name="do_activity_edit">활동 수정하기</string>
 
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>

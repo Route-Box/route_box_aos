@@ -53,6 +53,7 @@
                 style="@style/body_r_xs" />
 
             <ImageView
+                android:id="@+id/close_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_close"
@@ -144,6 +145,11 @@
                 style="@style/body_b_m" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <include
+            android:id="@+id/route_write_activity_bottom_sheet"
+            layout="@layout/bottom_sheet_activity"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

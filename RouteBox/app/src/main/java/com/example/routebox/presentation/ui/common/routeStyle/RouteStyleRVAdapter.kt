@@ -1,8 +1,9 @@
-package com.example.routebox.presentation.ui.seek.search.adapter
+package com.example.routebox.presentation.ui.common.routeStyle
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -10,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
 import com.example.routebox.databinding.ItemFilterOptionBinding
 import com.example.routebox.domain.model.FilterOption
+import com.example.routebox.domain.model.FilterType
 
-class FilterOptionsRVAdapter: RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHolder>(){
+class FilterOptionsRVAdapter(private val canDuplicationSelect: Boolean): RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHolder>(){
 
     private var optionList = listOf<FilterOption>()
     private lateinit var mItemClickListener: MyItemClickListener
     private lateinit var context: Context
-    private val selectedOptions = mutableSetOf<FilterOption>()
+    private var selectedOptions = mutableListOf<FilterOption>()
 
     fun setOptionClickListener(itemClickListener: MyItemClickListener) {
         mItemClickListener = itemClickListener
@@ -29,13 +31,24 @@ class FilterOptionsRVAdapter: RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHo
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun initSelectedOptions(selectedOptionList: List<FilterOption>) {
+        this.selectedOptions = selectedOptionList.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun deleteAllOptions() {
         this.selectedOptions.clear()
         notifyDataSetChanged()
     }
 
+    // selectedOptions에 현재 질문 유형이 몇 개 있는지 확인
+    private fun getSameFilterTypeCount(selectedType: FilterType): Int {
+        return selectedOptions.count { it.filterType == selectedType }
+    }
+
     interface MyItemClickListener {
-        fun onItemClick(position: Int, isSelected: Boolean)
+        fun onItemClick(selectedOption: FilterOption, isSelected: Boolean)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -50,13 +63,28 @@ class FilterOptionsRVAdapter: RecyclerView.Adapter<FilterOptionsRVAdapter.ViewHo
         holder.bind(optionList[position])
         holder.itemView.setOnClickListener {
             val selectedOption = optionList[position]
-            if (selectedOptions.contains(selectedOption)) {
-                selectedOptions.remove(selectedOption)
-                mItemClickListener.onItemClick(position, false)
-            } else {
+            if (!canDuplicationSelect) { // 단일 선택 처리
+                if (selectedOptions.contains(selectedOption)) return@setOnClickListener
+                if (getSameFilterTypeCount(selectedOption.filterType) >= selectedOption.filterType.maxSelectionCount) {
+                    // 가장 먼저 선택한 항목을 삭제
+                    val firstOptionToRemove = selectedOptions.firstOrNull { it.filterType == selectedOption.filterType }
+                    firstOptionToRemove?.let { remoteOption ->
+                        val currentTypeOptions = optionList.filter { it.filterType == selectedOption.filterType }
+                        selectedOptions.remove(remoteOption)
+                        holder.updateSelection(remoteOption)
+                        notifyItemChanged(currentTypeOptions.indexOf(remoteOption))
+                    }
+                }
+                // 리스트에 추가
                 selectedOptions.add(selectedOption)
-                mItemClickListener.onItemClick(position, true)
+            } else { // 중복 선택 처리
+                if (selectedOptions.contains(selectedOption)) {
+                    selectedOptions.remove(selectedOption)
+                } else {
+                    selectedOptions.add(selectedOption)
+                }
             }
+            mItemClickListener.onItemClick(optionList[position], selectedOptions.contains(selectedOption))
             holder.updateSelection(selectedOption)
         }
     }

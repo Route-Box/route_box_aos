@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.example.routebox.presentation.ui.route.edit.RouteEditViewModel" />
@@ -29,6 +30,8 @@
                 android:id="@+id/route_edit_back_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:clickable="@{viewModel.stepId == 2 ? true : false}"
+                android:visibility="@{viewModel.stepId == 2 ? View.VISIBLE : View.INVISIBLE}"
                 android:src="@drawable/ic_arrow_left" />
 
             <TextView
@@ -37,7 +40,8 @@
                 android:layout_marginHorizontal="12dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="루트 수정하기"
+                android:text="@{viewModel.stepId == 0 ? @string/do_route_done : (viewModel.stepId == 1 ? @string/do_route_edit : @string/do_activity_edit)}"
+                tools:text="@string/do_route_done"
                 style="@style/body_b_l"/>
 
             <ImageView

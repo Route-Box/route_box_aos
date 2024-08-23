@@ -24,9 +24,14 @@ class RouteViewModel : ViewModel() {
         _isTracking.value = false
         _routeList.value = listOf(
             Route(
-                "루트1", "태그 O, 활동 X", true,
-                FilterOption.findOptionsByFilterType(FilterType.ROUTE_STYLE).map { it.optionName },
-                emptyList()
+                "루트1", "모든 활동 표시 유형 테스트", false,
+                FilterOption.findOptionsByFilterType(FilterType.MEANS_OF_TRANSPORTATION).map { it.optionName },
+                listOf(
+                    Activity("기본", "음식점", "강릉시 경포동 경포로1", "13:00", "17:00", emptyList(), null),
+                    Activity("이미지만 있을 경우", "SNS 스팟", "강릉시 경포동 경포로3", "13:00", "17:00", listOf("https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f", "https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f", "https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f"), null),
+                    Activity("설명만 있을 경우", "화장실", "강릉시 경포동 경포로4", "13:00", "17:00", emptyList(), "장소에 대한 설명이 들어갑니다. 내용이 많을 때는 2줄로 표현합니다."),
+                    Activity("이미지와 설명 모두 있을 경우", "관광명소", "강릉시 경포동 경포로2", "13:00", "17:00", listOf("https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f"), "설명 와랄라"),
+                )
             ),
             Route(
                 "루트2", "태그 X, 활동 하나 있음", false,
@@ -36,13 +41,9 @@ class RouteViewModel : ViewModel() {
                 )
             ),
             Route(
-                "루트3", "태그 O, 활동 3개", false,
-                FilterOption.findOptionsByFilterType(FilterType.HOW_LONG).map { it.optionName },
-                listOf(
-                    Activity("이미지와 설명 모두 있을 경우", "관광명소", "강릉시 경포동 경포로", "13:00", "17:00", listOf("https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f"), "설명 와랄라"),
-                    Activity("이미지만 있을 경우", "관광명소", "강릉시 경포동 경포로2", "13:00", "17:00", listOf("https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f", "https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f", "https://github.com/nahy-512/nahy-512/assets/101113025/3fb8e968-e482-4aff-9334-60c41014a80f"), null),
-                    Activity("설명만 있을 경우", "화장실", "강릉시 경포동 경포로3", "13:00", "17:00", emptyList(), "장소에 대한 설명이 들어갑니다. 내용이 많을 때는 2줄로 표현합니다."),
-                )
+                "루트3", "태그 O, 활동 X", true,
+                FilterOption.findOptionsByFilterType(FilterType.ROUTE_STYLE).map { it.optionName },
+                emptyList()
             ),
             Route("루트4", "nothing", true, emptyList(), emptyList()),
         )
@@ -54,6 +55,5 @@ class RouteViewModel : ViewModel() {
 
     fun setRoute(route: Route) {
         _route.value = route
-
     }
 }
