@@ -6,6 +6,8 @@
     <data>
         <import type="android.view.View"/>
         <import type="com.example.routebox.presentation.utils.DateConverter"/>
+        <import type="com.example.routebox.domain.model.Category" />
+        <import type="com.example.routebox.domain.model.Activity" />
         <variable
             name="viewModel"
             type="com.example.routebox.presentation.ui.route.write.RouteWriteViewModel" />
@@ -281,7 +283,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:visibility="@{viewModel.categoryETC == null ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{viewModel.categoryETC ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toBottomOf="@id/category_rv"
                     app:layout_constraintStart_toStartOf="parent">
 
@@ -304,7 +306,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/category_etc_title"
                         app:layout_constraintStart_toEndOf="@id/category_etc_title"
                         style="@style/body_r_xs" />
-                    
+
                     <EditText
                         android:id="@+id/category_et"
                         android:layout_width="0dp"
@@ -400,7 +402,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="80dp"
                             android:hint="@string/route_place_content_title"
-                            android:text="@{String.valueOf(viewModel.locationContent)}"
+                            android:text="@{String.valueOf(viewModel.activity.description)}"
                             android:background="@color/transparent"
                             android:gravity="top"
                             android:maxLength="40"
@@ -411,8 +413,8 @@
                             android:id="@+id/location_content_length"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(viewModel.locationContent.length())}"
-                            android:textColor="@{viewModel.locationContent.length() > 0 ? @color/main : @color/gray4}"
+                            android:text="@{String.valueOf(viewModel.activity.description.length())}"
+                            android:textColor="@{viewModel.activity.description.length() > 0 ? @color/main : @color/gray4}"
                             style="@style/body_r_s"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/location_content_max" />

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRoutePictureAlbumBinding
 import com.example.routebox.domain.model.ActivityPictureAlbum
-import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.adapter.PictureAlbumRVAdapter
 import com.example.routebox.presentation.utils.CommonPopupDialog
@@ -24,12 +22,6 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
     private lateinit var binding: ActivityRoutePictureAlbumBinding
     private lateinit var albumRVAdapter: PictureAlbumRVAdapter
     private val viewModel: RoutePictureAlbumViewModel by viewModels()
-
-    override fun onRestart() {
-        super.onRestart()
-        viewModel.resetActivityPictureAlbumList()
-        viewModel.getActivityPictureAlbumList(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,16 +41,18 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
 
     private fun initClickListener() {
         binding.backIv.setOnClickListener {
+            viewModel.resetSendPictureList()
             finish()
         }
 
         binding.nextBtn.setOnClickListener {
+//            viewModel.setSendPictureList()
             val intent = Intent(this, RouteActivityActivity::class.java)
-            intent.putExtra("album", arrayListOf(
-                viewModel.selectedPictureAlbumList.value!![0].uri.toString(),
-                viewModel.selectedPictureAlbumList.value!![1].uri.toString(),
-                viewModel.selectedPictureAlbumList.value!![2].uri.toString()
-            ))
+            var imgList = arrayListOf<String>()
+            for (i in 0 until viewModel.selectedPictureAlbumList.value!!.size) {
+                imgList.add(viewModel.selectedPictureAlbumList.value!![i].uri.toString())
+            }
+            intent.putExtra("album", imgList)
             setResult(RESULT_OK, intent)
             finish()
         }
@@ -96,7 +90,6 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
                         albumRVAdapter.notifyItemChanged(albumRVAdapter.returnAllItems().indexOf(viewModel.selectedPictureAlbumList.value!![i]))
                     }
                 }
-
                 albumRVAdapter.notifyItemChanged(position)
             }
             // 카메라 실행
@@ -134,7 +127,7 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
     private fun showPopupDialog() {
         val dialog = CommonPopupDialog(this@RoutePictureAlbumActivity, -1, String.format(resources.getString(R.string.route_max_picture)), null, getString(R.string.close))
         dialog.isCancelable = false // 배경 클릭 막기
-        dialog.show(this.supportFragmentManager, "PopupDialog")
+        dialog.show(supportFragmentManager, "PopupDialog")
     }
 
     override fun onClickPositiveButton(id: Int) { }

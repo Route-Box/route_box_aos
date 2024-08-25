@@ -56,11 +56,11 @@
         <activity android:name=".presentation.ui.RoutePreviewDetailActivity" />
         <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".presentation.ui.route.write.RouteWriteActivity" />
         <activity android:name=".presentation.ui.seek.search.FilterActivity"/>
+        <activity android:name=".presentation.ui.route.write.RouteCreateActivity"/>
+        <activity android:name=".presentation.ui.route.write.RouteWriteActivity" />
         <activity android:name=".presentation.ui.route.RouteActivityActivity" />
         <activity android:name=".presentation.ui.route.write.RoutePictureAlbumActivity" />
-        <activity android:name=".presentation.ui.route.write.RouteCreateActivity"/>
         <activity android:name=".presentation.ui.route.RouteDetailActivity"/>
         <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>

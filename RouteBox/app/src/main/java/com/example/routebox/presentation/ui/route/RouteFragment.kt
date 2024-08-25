@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.route
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,11 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
-import com.example.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
+import com.example.routebox.presentation.ui.route.write.RouteCreateActivity
+import com.example.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteFragment : Fragment() {
     private lateinit var binding: FragmentRouteBinding
 
@@ -56,9 +60,7 @@ class RouteFragment : Fragment() {
         // 루트 시작하기 버튼
         binding.routeRecordStartBtn.setOnClickListener {
             // 루트 시작하기 화면으로 이동
-//            startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
-            // TODO: 임시 나중에 삭제
-            startActivity(Intent(requireActivity(), RouteWriteActivity::class.java))
+            startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
         }
     }
 

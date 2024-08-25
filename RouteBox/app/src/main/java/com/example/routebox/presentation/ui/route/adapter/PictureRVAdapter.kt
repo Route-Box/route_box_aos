@@ -1,13 +1,10 @@
 package com.example.routebox.presentation.ui.route.adapter
 
-import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemActivityAddPictureBinding
-import com.example.routebox.databinding.ItemActivityPictureAlbumBinding
 import com.example.routebox.databinding.ItemActivityPictureBinding
 import com.example.routebox.domain.model.pictureImgType
 import com.example.routebox.domain.model.pictureAddType
@@ -78,6 +75,14 @@ class PictureRVAdapter(
 
     fun addItem(img: Uri) {
         imgList.add(img)
+        this.notifyDataSetChanged()
+    }
+
+    fun addAllItems(imgList: ArrayList<String>) {
+        this.imgList = arrayListOf(null)
+        for (i in 0 until imgList.size) {
+            this.imgList.add(Uri.parse(imgList[i]))
+        }
         this.notifyDataSetChanged()
     }
 

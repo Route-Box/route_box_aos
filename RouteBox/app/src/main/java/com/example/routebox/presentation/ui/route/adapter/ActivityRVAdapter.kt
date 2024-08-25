@@ -9,23 +9,33 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemActivityBinding
 import com.example.routebox.domain.model.Activity
 
+@SuppressLint("NotifyDataSetChanged")
 class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<ActivityRVAdapter.ViewHolder>(){
 
-    private var activityList = emptyList<Activity>()
+    private var activityList = mutableListOf<Activity>()
     private lateinit var mItemClickListener: MyItemClickListener
 
     fun setActivityClickListener(itemClickListener: MyItemClickListener) {
         mItemClickListener = itemClickListener
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun addActivity(activityList: List<Activity>) {
+    fun removeItem(position: Int) {
+        activityList.removeAt(position)
+        this.notifyDataSetChanged()
+    }
+
+    fun addAllActivities(activityList: MutableList<Activity>) {
         this.activityList = activityList
         notifyDataSetChanged()
     }
 
+    fun addActivities(activity: Activity) {
+        activityList.add(activity)
+        notifyDataSetChanged()
+    }
+
     interface MyItemClickListener {
-        fun onEditButtonClick(position: Int)
+        fun onEditButtonClick(position: Int, data: Activity)
         fun onDeleteButtonClick(position: Int)
     }
 
@@ -42,7 +52,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         holder.apply {
             // 수정 버튼 클릭
             binding.itemActivityEditIv.setOnClickListener {
-                mItemClickListener.onEditButtonClick(position)
+                mItemClickListener.onEditButtonClick(position, activityList[position])
             }
             // 삭제 버튼 클릭
             binding.itemActivityDeleteIv.setOnClickListener {
@@ -55,15 +65,14 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
     inner class ViewHolder(val binding: ItemActivityBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(activity: Activity) {
-            Log.d("ActivityRouteAdapter", activity.toString())
             binding.isEditMode = isEditMode
             binding.activity = activity
             //TODO: 활동 번호에 따른 색상 변경
             binding.activityOrder = adapterPosition
 
-            if (!activity.imgUrls.isNullOrEmpty()) { // 이미지 표시
+            if (!activity.activityImages.isNullOrEmpty()) { // 이미지 표시
                 binding.itemActivityImageRv.apply {
-                    adapter = ActivityImageRVAdapter(activity.imgUrls)
+                    adapter = ActivityImageRVAdapter(activity.activityImages!!.asList())
                     layoutManager = GridLayoutManager(context, 3)
                 }
             }

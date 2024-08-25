@@ -29,15 +29,16 @@ class RouteEditViewModel: ViewModel() {
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
+    init {
+        _route.value = Route()
+    }
+
     fun setStepId(stepId: Int) {
         _stepId.value = stepId
     }
 
     fun setRoute(route: Route) {
-        // _route.value = route
-        _route.value = Route(
-            "강릉 해파랑물회"
-        )
+        _route.value = route
         initSelectedOptionMap(FilterOption.findOptionsByNames(_route.value!!.tags))
     }
 

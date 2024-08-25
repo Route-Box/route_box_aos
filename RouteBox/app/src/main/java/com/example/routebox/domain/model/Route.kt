@@ -3,26 +3,30 @@ package com.example.routebox.domain.model
 import android.net.Uri
 import com.bumptech.glide.load.model.StringLoader
 import java.io.Serializable
+import java.time.LocalDate
 
 // 내 루트
 data class Route(
-    val title: String = "",
-    val content: String = "",
-    val isPrivate: Boolean = true,
-    val tags: List<String> = emptyList(), // 루트 스타일
-    val activities: List<Activity> = emptyList() // 활동 목록
+    var title: String = "",
+    var content: String = "",
+    var isPrivate: Boolean = true,
+    var tags: List<String> = emptyList(), // 루트 스타일
+    var activities: MutableList<Activity?> = mutableListOf() // 활동 목록
     //TODO: 구매 수, 댓글 수, 생성 날짜 등 서버 데이터 추가
 ) : Serializable
 
 // 활동
 data class Activity(
-    val name: String,
-    val type: String, // 음식점, 관광명소 등
-    val address: String,
-    val startTime: String,
-    val endTime: String,
-    val imgUrls: List<String>?,
-    val description: String?
+    var locationName: String,
+    var address: String,
+    var latitude: String,
+    var longitude: String,
+    var visitDate: String,
+    var startTime: String,
+    var endTime: String,
+    var category: String, // 음식점, 관광명소 등
+    var description: String?,
+    var activityImages: Array<String>?,
 )
 
 /** 카카오 장소 검색 */

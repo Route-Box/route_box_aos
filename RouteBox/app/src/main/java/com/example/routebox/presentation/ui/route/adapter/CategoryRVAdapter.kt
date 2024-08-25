@@ -75,4 +75,15 @@ class CategoryRVAdapter: RecyclerView.Adapter<CategoryRVAdapter.ViewHolder>(){
 
         preSelectedIndex = selectedIndex
     }
+
+    fun setSelectedName(category: String) {
+        for (i in 0 until categoryList.size) {
+            if (categoryList[i].categoryName == category) {
+                selectedIndex = i
+            }
+        }
+        this.notifyItemChanged(selectedIndex)
+
+        preSelectedIndex = selectedIndex
+    }
 }

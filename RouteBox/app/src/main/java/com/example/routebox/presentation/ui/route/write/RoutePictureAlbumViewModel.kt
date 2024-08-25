@@ -9,7 +9,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.ActivityPictureAlbum
+import kotlinx.coroutines.launch
 import java.io.File
 
 private const val INDEX_MEDIA_ID = MediaStore.MediaColumns._ID
@@ -24,9 +26,14 @@ class RoutePictureAlbumViewModel: ViewModel() {
     private val _selectedPictureAlbumList = MutableLiveData<ArrayList<ActivityPictureAlbum>>()
     val selectedPictureAlbumList: LiveData<ArrayList<ActivityPictureAlbum>> = _selectedPictureAlbumList
 
+    // 활동 추가 화면으로 데이터를 전송하기 위한 데이터
+    private val _sendPictureList = MutableLiveData<ArrayList<String>>()
+    val sendPictureList: LiveData<ArrayList<String>> = _sendPictureList
+
     init {
         _activityPictureAlbumList.value = arrayListOf(ActivityPictureAlbum(null, null))
         _selectedPictureAlbumList.value = arrayListOf()
+        _sendPictureList.value = arrayListOf()
     }
 
     @SuppressLint("Range")
@@ -73,5 +80,17 @@ class RoutePictureAlbumViewModel: ViewModel() {
         }
 
         _selectedPictureAlbumList.value = selectedPictureAlbumList.value
+    }
+
+    fun setSendPictureList() {
+        if (_selectedPictureAlbumList.value?.size != 0) {
+            for (i in 0 until _selectedPictureAlbumList.value!!.size) {
+                _sendPictureList.value!!.add(_selectedPictureAlbumList.value!![i].uri.toString())
+            }
+        }
+    }
+
+    fun resetSendPictureList() {
+        _sendPictureList.value = arrayListOf()
     }
 }

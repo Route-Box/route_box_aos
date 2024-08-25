@@ -7,12 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.routebox.domain.model.Category
+import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
+import com.example.routebox.presentation.utils.DateConverter.getAPIFormattedDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -21,95 +23,98 @@ import javax.inject.Inject
 class RouteWriteViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
+    private val _activity = MutableLiveData<Activity>()
+    val activity: LiveData<Activity> = _activity
+
     private val _placeSearchKeyword = MutableLiveData<String>()
     val placeSearchKeyword: LiveData<String> = _placeSearchKeyword
 
     private val _placeSearchMode = MutableLiveData<Boolean>()
     val placeSearchMode: LiveData<Boolean> = _placeSearchMode
 
-    private val _placeName = MutableLiveData<String?>()
-    val placeName: LiveData<String?> = _placeName
-
     private val _placeSearchResult = MutableLiveData<ArrayList<SearchActivityResult>>()
-    val placeSearchResult: MutableLiveData<ArrayList<SearchActivityResult>> = _placeSearchResult
+    val placeSearchResult: LiveData<ArrayList<SearchActivityResult>> = _placeSearchResult
 
     private val _placeSearchPage = MutableLiveData<Int>()
-    val placeSearchPage: MutableLiveData<Int> = _placeSearchPage
+    val placeSearchPage: LiveData<Int> = _placeSearchPage
 
+    // 장소 검색 API 결과가 마지막 페이지인지 확인 후 페이징 마무리
     private val _isEndPage = MutableLiveData<Boolean>()
-    val isEndPage: MutableLiveData<Boolean> = _isEndPage
+    val isEndPage: LiveData<Boolean> = _isEndPage
 
     private val _date = MutableLiveData<LocalDate>(TODAY)
     val date: LiveData<LocalDate> = _date
 
-    private val _startTimePair = MutableLiveData<Pair<Int, Int>>()
-    val startTimePair: LiveData<Pair<Int, Int>> = _startTimePair
+    private val _startTimePair = MutableLiveData<Pair<Int, Int>?>()
+    val startTimePair: LiveData<Pair<Int, Int>?> = _startTimePair
 
-    private val _endTimePair = MutableLiveData<Pair<Int, Int>>()
-    val endTimePair: LiveData<Pair<Int, Int>> = _endTimePair
+    private val _endTimePair = MutableLiveData<Pair<Int, Int>?>()
+    val endTimePair: LiveData<Pair<Int, Int>?> = _endTimePair
 
-    private val _category = MutableLiveData<Category>()
-    val category: LiveData<Category> = _category
-
-    private val _categoryETC = MutableLiveData<String?>()
-    val categoryETC: LiveData<String?> = _categoryETC
-
-    private val _placeImage = MutableLiveData<ArrayList<String>>()
-    val placeImage: LiveData<ArrayList<String>> = _placeImage
-
-    private val _locationContent = MutableLiveData<String>()
-    val locationContent: LiveData<String> = _locationContent
+    private val _categoryETC = MutableLiveData<Boolean>()
+    val categoryETC: LiveData<Boolean> = _categoryETC
 
     private val _btnEnabled = MutableLiveData<Boolean>()
     val btnEnabled: LiveData<Boolean> = _btnEnabled
 
     init {
-        _placeSearchKeyword.value = ""
-        _placeSearchResult.value = arrayListOf()
-        _placeSearchPage.value = 1
-        _categoryETC.value = null
-        _isEndPage.value = true
-        _locationContent.value = ""
+        _activity.value = Activity("", "", "", "",
+            TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
+            "", "", null)
+        _categoryETC.value = false
     }
 
-    fun updateDate(date: LocalDate) {
-        _placeSearchKeyword.value = ""
-        _date.value = date
-        checkBtnEnabled()
+    fun setPlaceSearchResult(result: ArrayList<SearchActivityResult>) {
+        _placeSearchResult.value = result
     }
 
-    fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
-        if (isStartTime) _startTimePair.value = timePair
-        else _endTimePair.value = timePair
-        checkBtnEnabled()
+    fun setPlaceSearchPage(page: Int) {
+        _placeSearchPage.value = page
     }
 
     fun setPlaceSearchMode(mode: Boolean) {
         _placeSearchMode.value = mode
     }
 
-    fun setPlaceName(placeName: String) {
-        _placeName.value = placeName
-        checkBtnEnabled()
-    }
-
     fun setPlaceSearchKeyword(query: String) {
         _placeSearchKeyword.value = query
+    }
+
+    fun updateDate(date: LocalDate) {
+        _activity.value?.visitDate = getAPIFormattedDate(date)
+
         checkBtnEnabled()
     }
 
-    fun setCategory(category: Category) {
-        _category.value = category
+    fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
+        if (isStartTime) {
+            _activity.value?.startTime = changeTimeToString(timePair)
+            _startTimePair.value = timePair
+        }
+        else {
+            _activity.value?.endTime = changeTimeToString(timePair)
+            _endTimePair.value = timePair
+        }
+
         checkBtnEnabled()
     }
 
-    fun setCategoryETC(categoryETC: String?) {
-        _categoryETC.value = categoryETC
-        checkBtnEnabled()
+    fun changeTimeToString(time: Pair<Int, Int>?): String {
+        if (time != null) {
+            val df = DecimalFormat("00")
+            return "${df.format(time.first)}:${df.format(time.second)}"
+        }
+
+        return ""
     }
 
-    fun setLocationContent(locationContent: String) {
-        _locationContent.value = locationContent
+    fun setCategoryETC(category: Boolean) {
+        _categoryETC.value = category
+    }
+
+    fun resetActivityResult() {
+        _activity.value = Activity("", "", "", "", "", "", "", "", "", null)
+        checkBtnEnabled()
     }
 
     fun searchPlace() {
@@ -131,14 +136,17 @@ class RouteWriteViewModel @Inject constructor(
         }
     }
 
-    private fun checkBtnEnabled() {
-        // 카테고리가 기타가 선택됐을 때와 아닐 때로 구분
-        if (_category.value == Category.ETC) {
-            _btnEnabled.value = (_placeName.value != "" && _date.value != null && _startTimePair.value != null
-                    && _endTimePair.value != null && _categoryETC.value!!.isNotEmpty())
-        } else {
-            _btnEnabled.value = (_placeName.value != "" && _date.value != null && _startTimePair.value != null
-                    && _endTimePair.value != null && _category.value != null)
-        }
+    fun resetCategory() {
+        _activity.value?.category = ""
+    }
+
+    fun checkBtnEnabled() {
+        Log.d("ROUTE-TEST", "locationName = ${_activity.value?.locationName}\n" +
+                "visitDate = ${_activity.value?.visitDate}\nstart = ${_activity.value?.startTime}\n" +
+                "end = ${_activity.value?.endTime}\ncategory = ${_activity.value?.category}\n" +
+                "image = ${_activity.value?.activityImages?.size}\ndescription = ${_activity.value?.description}")
+        _btnEnabled.value = _activity.value?.locationName != ""
+                && _activity.value?.visitDate != "" && _activity.value?.startTime != ""
+                && _activity.value?.endTime != "" && _activity.value?.category != ""
     }
 }

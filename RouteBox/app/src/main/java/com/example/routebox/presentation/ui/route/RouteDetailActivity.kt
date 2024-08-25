@@ -1,16 +1,19 @@
 package com.example.routebox.presentation.ui.route
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteDetailBinding
+import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.Route
@@ -23,6 +26,7 @@ import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private lateinit var binding: ActivityRouteDetailBinding
 
@@ -85,7 +89,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(this@RouteDetailActivity, LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addActivity(viewModel.route.value!!.activities)
+        activityAdapter.addAllActivities(viewModel.route.value!!.activities as MutableList<Activity>)
     }
 
     private fun initObserve() {
@@ -94,7 +98,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 setTagAdapter()
             }
 
-            if (route.activities.isNotEmpty()) { // 활동 정보가 있다면
+            if (route.activities.size != 0) { // 활동 정보가 있다면
                 setActivityAdapter()
             }
         }
