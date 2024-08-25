@@ -151,6 +151,12 @@
     <string name="route_question4_route_style">이번 여행의  루트 스타일을 알려주세요.</string>
     <string name="route_question5_means_of_transportation">이번 여행의 주요 이동 수단을 알려주세요.</string>
     <string name="route_style_maximum">최대 %d가지 선택이 가능합니다.</string>
+    <string name="route_write_complete">루트 기록이 끝났어요!\n여행은 즐거우셨나요?</string>
+    <string name="route_write_complete_content">루트 마무리를 통해 내 루트를 완성해보세요!</string>
+    <string name="route_complete">박스에 새로운 루트가 담겼어요!</string>
+    <string name="route_complete_content">내 루트에서 확인이 가능해요.</string>
+    <string name="route_complete_later">나중에 하기</string>
+    <string name="route_complete_check">확인하러 가기</string>
     <!-- 루트 수정 -->
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>
@@ -170,6 +176,7 @@
     <string name="do_activity_add">활동 추가하기</string>
     <string name="update">업데이트 예정입니다</string>
     <string name="do_route_done">루트 마무리하기</string>
+    <string name="do_route_done_2">루트 마무리하러 가기</string>
     <string name="do_route_edit">루트 수정하기</string>
     <string name="do_activity_edit">활동 수정하기</string>
 
