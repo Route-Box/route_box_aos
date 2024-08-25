@@ -16,17 +16,20 @@ import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.domain.model.Activity
+import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.RouteViewModel
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditViewModel
+import com.example.routebox.presentation.utils.CommonPopupDialog
+import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class RouteWriteActivity: AppCompatActivity() {
+class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
     private lateinit var binding: ActivityRouteWriteBinding
     private val viewModel: RouteViewModel by viewModels()
@@ -124,26 +127,25 @@ class RouteWriteActivity: AppCompatActivity() {
         }
         activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: Activity) {
-//                writeViewModel.setPlaceName(data.name)
-//                writeViewModel.setPlaceSearchKeyword(data.name)
-//                writeViewModel.updateDate(data.date)
-//                writeViewModel.startTimePair.value = Pair(Integer.parseInt(data.startTime.substring(0, 2)), Integer.parseInt(data.startTime.substring(3, 5)))
-//                writeViewModel.endTimePair.value = Pair(Integer.parseInt(data.endTime.substring(0, 2)), Integer.parseInt(data.endTime.substring(3, 5)))
-//
-//                if (data.type == Category.ETC) {
-//                    // writeViewModel.categoryETC.value = Category.ETC.categoryName
-//                } else writeViewModel.category.value = data.type
-//
-//                writeViewModel.placeImage.value = data.imgUrls as ArrayList<String>?
-//                Log.d("ROUTE-TEST", "writeViewModel.placeImage = ${writeViewModel.placeImage.value}")
-//                writeViewModel.locationContent.value = data.description
-//
-//                findNavController().navigate(R.id.action_routeWriteFragment_to_routeActivityFragment)
+                //TODO: RouteId를 통한 정보 전달
+                startActivity(Intent(this@RouteWriteActivity, RouteActivityActivity::class.java))
             }
             override fun onDeleteButtonClick(position: Int) {
-                activityAdapter.removeItem(position)
+                // 활동 삭제 팝업 띄우기
+                showPopupDialog()
             }
         })
         activityAdapter.addAllActivities(editViewModel.route.value?.activities as MutableList<Activity>)
+    }
+
+    private fun showPopupDialog() {
+        val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(supportFragmentManager, "PopupDialog")
+    }
+
+    override fun onClickPositiveButton(id: Int) {
+        //TODO: 활동 삭제 진행
+        Toast.makeText(this, "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
     }
 }

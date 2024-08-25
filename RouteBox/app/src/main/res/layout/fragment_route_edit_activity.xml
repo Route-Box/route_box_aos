@@ -13,14 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/route_edit_activity_map"
+        <com.kakao.vectormap.MapView
+            android:id="@+id/kakao_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAlignment="center"
-            android:paddingVertical="170dp"
-            android:text="맵뷰 띄우기"
-            android:background="@color/gray5"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <include
             android:id="@+id/route_edit_activity_bottom_sheet"

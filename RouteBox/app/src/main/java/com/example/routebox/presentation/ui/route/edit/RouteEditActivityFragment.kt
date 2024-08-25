@@ -2,6 +2,7 @@ package com.example.routebox.presentation.ui.route.edit
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +19,16 @@ import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.MapLifeCycleCallback
 
 class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private lateinit var binding: FragmentRouteEditActivityBinding
 
     private val viewModel: RouteEditViewModel by activityViewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
+    private lateinit var kakaoMap: KakaoMap
     private val activityAdapter = ActivityRVAdapter(true)
 
     override fun onCreateView(
@@ -38,11 +43,31 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
             lifecycleOwner = this@RouteEditActivityFragment
         }
 
+        initMapSetting()
         setInit()
         initClickListeners()
         initObserve()
 
         return binding.root
+    }
+
+    private fun initMapSetting() {
+        binding.kakaoMap.start(object : MapLifeCycleCallback() {
+            override fun onMapDestroy() {
+                // 지도 API 가 정상적으로 종료될 때 호출
+                Log.d("KakaoMap", "onMapDestroy: ")
+            }
+            override fun onMapError(error: Exception) {
+                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
+                Log.d("KakaoMap", "onMapError: $error")
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(kakaoMap: KakaoMap) {
+                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                Log.d("KakaoMap", "onMapReady: $kakaoMap")
+                this@RouteEditActivityFragment.kakaoMap = kakaoMap
+            }
+        })
     }
 
     private fun setInit() {
@@ -64,8 +89,8 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
         // 활동 아이템 클릭
         activityAdapter.setActivityClickListener(object : ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: Activity) {
-                //TODO: 수정 화면으로 이동
-                Toast.makeText(requireContext(), "활동 수정 버튼 클릭", Toast.LENGTH_SHORT).show()
+                //TODO: RouteId를 통한 정보 전달
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java))
             }
 
             override fun onDeleteButtonClick(position: Int) {

@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.route.edit
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +13,15 @@ import com.example.routebox.databinding.FragmentRouteEditBinding
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.MapLifeCycleCallback
 
 class RouteEditFragment : Fragment(), FilterOptionClickListener {
+
     private lateinit var binding: FragmentRouteEditBinding
-
     private val viewModel: RouteEditViewModel by activityViewModels()
-
+    private lateinit var kakaoMap: KakaoMap
     private lateinit var routeStyleFragment: RouteStyleFragment
 
     override fun onCreateView(
@@ -32,11 +36,31 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
             lifecycleOwner = this@RouteEditFragment
         }
 
+        initMapSetting()
         setInit()
         initClickListeners()
         initObserve()
 
         return binding.root
+    }
+
+    private fun initMapSetting() {
+        binding.kakaoMap.start(object : MapLifeCycleCallback() {
+            override fun onMapDestroy() {
+                // 지도 API 가 정상적으로 종료될 때 호출
+                Log.d("KakaoMap", "onMapDestroy: ")
+            }
+            override fun onMapError(error: Exception) {
+                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
+                Log.d("KakaoMap", "onMapError: $error")
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(kakaoMap: KakaoMap) {
+                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                Log.d("KakaoMap", "onMapReady: $kakaoMap")
+                this@RouteEditFragment.kakaoMap = kakaoMap
+            }
+        })
     }
 
     private fun setInit() {
