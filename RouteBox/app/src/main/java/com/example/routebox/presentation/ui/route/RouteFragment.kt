@@ -80,7 +80,7 @@ class RouteFragment : Fragment() {
                 // 댓글 화면으로 이동
                 val intent = Intent(requireActivity(), CommentActivity::class.java)
                 //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
-                intent.putExtra("comment", viewModel.routeList.value!![position].title)
+                intent.putExtra("comment", viewModel.routeList.value!![position].routeName)
                 startActivity(intent)
             }
 

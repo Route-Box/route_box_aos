@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemActivityImageBinding
+import com.example.routebox.domain.model.ActivityImage
 
-class ActivityImageRVAdapter(private val images: List<String>): RecyclerView.Adapter<ActivityImageRVAdapter.ViewHolder>(){
+class ActivityImageRVAdapter(private val images: List<ActivityImage>): RecyclerView.Adapter<ActivityImageRVAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val binding: ItemActivityImageBinding = ItemActivityImageBinding.inflate(
@@ -27,8 +28,8 @@ class ActivityImageRVAdapter(private val images: List<String>): RecyclerView.Ada
     override fun getItemCount(): Int = 3
 
     inner class ViewHolder(val binding: ItemActivityImageBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(imgUrl: String?) {
-            binding.imageUrl = imgUrl
+        fun bind(activityImage: ActivityImage?) {
+            binding.activityImage = activityImage
         }
     }
 }

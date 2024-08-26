@@ -1,18 +1,26 @@
 package com.example.routebox.presentation.ui.route.edit
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
-import com.example.routebox.domain.model.Route
+import com.example.routebox.domain.model.RouteDetail
+import com.example.routebox.domain.repositories.RouteRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
-class RouteEditViewModel: ViewModel() {
-
-    private val _route = MutableLiveData<Route>()
-    val route: LiveData<Route> = _route
+@HiltViewModel
+@RequiresApi(Build.VERSION_CODES.O)
+class RouteEditViewModel @Inject constructor(
+    private val repository: RouteRepository
+): ViewModel() {
+    private val _route = MutableLiveData<RouteDetail>()
+    val route: LiveData<RouteDetail> = _route
 
     // 현재 단계 ID를 담는 LiveData
     private val _stepId = MutableLiveData<Int>()
@@ -30,16 +38,16 @@ class RouteEditViewModel: ViewModel() {
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
     init {
-        _route.value = Route()
+        _route.value = RouteDetail()
     }
 
     fun setStepId(stepId: Int) {
         _stepId.value = stepId
     }
 
-    fun setRoute(route: Route) {
+    fun setRoute(route: RouteDetail) {
         _route.value = route
-        initSelectedOptionMap(FilterOption.findOptionsByNames(_route.value!!.tags))
+        initSelectedOptionMap(FilterOption.findOptionsByNames(_route.value!!.routeStyles))
     }
 
     private fun initSelectedOptionMap(filterOptions: List<FilterOption>) {
@@ -84,8 +92,8 @@ class RouteEditViewModel: ViewModel() {
     }
 
     fun initRouteTitleAndContent() {
-        routeTitle.value = _route.value?.title
-        routeContent.value = _route.value?.content
+        routeTitle.value = _route.value?.routeName
+        routeContent.value = _route.value?.routeDescription
     }
 
     // 선택된 옵션 중에 '누구와 - 혼자'가 있을 경우

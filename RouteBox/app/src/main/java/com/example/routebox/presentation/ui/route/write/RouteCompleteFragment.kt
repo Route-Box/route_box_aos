@@ -1,11 +1,13 @@
 package com.example.routebox.presentation.ui.route.write
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +23,7 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteCompleteFragment : Fragment(), FilterOptionClickListener {
 
     private lateinit var binding: FragmentRouteCompleteBinding

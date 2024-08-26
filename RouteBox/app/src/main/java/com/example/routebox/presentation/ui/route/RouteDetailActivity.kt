@@ -14,10 +14,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteDetailBinding
-import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.domain.model.FilterOption
-import com.example.routebox.domain.model.Route
+import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.seek.adapter.RouteTagRVAdapter
@@ -76,7 +75,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private fun initRoute() {
         // intent가 넘어왔는지 확인
         intent.getStringExtra("route")?.let { routeJson ->
-            val route = Gson().fromJson(routeJson, Route::class.java) // 값이 넘어왔다면 route 인스턴스에 gson 형태로 받아온 데이터를 넣어줌
+            val route = Gson().fromJson(routeJson, RouteDetail::class.java) // 값이 넘어왔다면 route 인스턴스에 gson 형태로 받아온 데이터를 넣어줌
             viewModel.setRoute(route)
         }
     }
@@ -95,13 +94,13 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             // 댓글 화면으로 이동
             val intent = Intent(this, CommentActivity::class.java)
             //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
-            intent.putExtra("comment", viewModel.route.value!!.title)
+            intent.putExtra("comment", viewModel.route.value!!.routeName)
             startActivity(intent)
         }
     }
 
     private fun setTagAdapter() {
-        tagAdapter = RouteTagRVAdapter(FilterOption.findOptionsByNames(viewModel.route.value!!.tags) as ArrayList<FilterOption>)
+        tagAdapter = RouteTagRVAdapter(FilterOption.findOptionsByNames(viewModel.route.value!!.routes) as ArrayList<FilterOption>)
         binding.routeDetailTagRv.apply {
             adapter = tagAdapter
             layoutManager = FlexboxLayoutManager(this@RouteDetailActivity)
@@ -114,16 +113,16 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(this@RouteDetailActivity, LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addAllActivities(viewModel.route.value!!.activities as MutableList<Activity>)
+        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<RouteDetail>)
     }
 
     private fun initObserve() {
         viewModel.route.observe(this) { route ->
-            if (route.tags.isNotEmpty()) { // 태그 정보가 있다면
+            if (route.routeStyles.isNotEmpty()) { // 태그 정보가 있다면
                 setTagAdapter()
             }
 
-            if (route.activities.size != 0) { // 활동 정보가 있다면
+            if (route.routeActivities.size != 0) { // 활동 정보가 있다면
                 setActivityAdapter()
             }
         }
@@ -134,7 +133,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         popupMenu.inflate(R.menu.route_my_menu)
         // 공개 여부에 따라 메뉴 아이템의 텍스트 변경
         val changeShowMenuItem = popupMenu.menu.findItem(R.id.menu_make_public_or_private)
-        if (viewModel.route.value!!.isPrivate) {
+        if (viewModel.route.value!!.isPublic) {
             changeShowMenuItem.setTitle(R.string.route_my_make_public)
         } else {
             changeShowMenuItem.setTitle(R.string.route_my_make_private)
@@ -167,7 +166,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun showPopupDialog() {
-        val popupContent = if (viewModel.route.value!!.isPrivate) R.string.route_my_change_to_public_popup_content else R.string.route_my_change_to_private_popup_content
+        val popupContent = if (viewModel.route.value!!.isPublic) R.string.route_my_change_to_public_popup_content else R.string.route_my_change_to_private_popup_content
         val dialog = CommonPopupDialog(this@RouteDetailActivity, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(this.supportFragmentManager, "PopupDialog")

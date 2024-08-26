@@ -2,19 +2,6 @@ package com.example.routebox.domain.model
 
 import android.graphics.drawable.Drawable
 
-data class RoutePreview(
-    var profileImg: String?,
-    val nickname: String?,
-    val createAt: String?,
-    val img: ArrayList<String>?,
-    val title: String?,
-    val content: String?,
-    // TODO: 서버 형식 맞춰서 수정 필요
-    val tag: ArrayList<FilterOption>?,
-    val save: Int?,
-    val comment: Int?
-)
-
 data class Bank(
     var bankName: String,
     var bankImg: Drawable

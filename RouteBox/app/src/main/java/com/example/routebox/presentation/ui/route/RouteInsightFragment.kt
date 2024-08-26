@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.route
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -20,6 +22,7 @@ import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteInsightFragment : Fragment() {
     private lateinit var binding: FragmentRouteInsightBinding
 
@@ -74,7 +77,7 @@ class RouteInsightFragment : Fragment() {
                 // 댓글 화면으로 이동
                 val intent = Intent(requireActivity(), CommentActivity::class.java)
                 //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
-                intent.putExtra("comment", viewModel.routeList.value!![position].title)
+                intent.putExtra("comment", viewModel.routeList.value!![position].routeName)
                 startActivity(intent)
             }
 

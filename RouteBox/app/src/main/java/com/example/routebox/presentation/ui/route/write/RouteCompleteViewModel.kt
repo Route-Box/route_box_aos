@@ -1,18 +1,22 @@
 package com.example.routebox.presentation.ui.route.write
 
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
-import com.example.routebox.domain.model.Route
+import com.example.routebox.domain.model.MyRoute
+import com.example.routebox.domain.repositories.RouteRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RouteCompleteViewModel: ViewModel() {
-
-    private val _route = MutableLiveData<Route>()
-    val route: LiveData<Route> = _route
+@HiltViewModel
+class RouteCompleteViewModel @Inject constructor(
+    private val repository: RouteRepository
+): ViewModel() {
+    private val _route = MutableLiveData<MyRoute>()
+    val route: LiveData<MyRoute> = _route
 
     val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
 
@@ -23,12 +27,12 @@ class RouteCompleteViewModel: ViewModel() {
     val routeContent: MutableLiveData<String> = MutableLiveData()
 
     init {
-        _route.value = Route()
+        _route.value = MyRoute()
     }
 
     fun initRouteTitleAndContent() {
-        routeTitle.value = _route.value?.title
-        routeContent.value = _route.value?.content
+        routeTitle.value = _route.value?.routeName
+        routeContent.value = _route.value?.routeDescription
     }
 
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {

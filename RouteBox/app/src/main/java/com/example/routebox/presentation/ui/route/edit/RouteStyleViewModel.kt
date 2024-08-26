@@ -1,13 +1,22 @@
 package com.example.routebox.presentation.ui.route.edit
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
+import com.example.routebox.domain.repositories.RouteRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RouteStyleViewModel: ViewModel() {
+@HiltViewModel
+@RequiresApi(Build.VERSION_CODES.O)
+class RouteStyleViewModel @Inject constructor(
+    private val repository: RouteRepository
+): ViewModel() {
     private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
 
     private val _isEnabledButton = MutableLiveData<Boolean>()

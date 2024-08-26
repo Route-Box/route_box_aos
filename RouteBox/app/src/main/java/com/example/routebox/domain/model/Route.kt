@@ -5,17 +5,126 @@ import com.bumptech.glide.load.model.StringLoader
 import java.io.Serializable
 import java.time.LocalDate
 
-// 내 루트
-data class Route(
-    var title: String = "",
-    var content: String = "",
-    var isPrivate: Boolean = true,
-    var tags: List<String> = emptyList(), // 루트 스타일
-    var activities: MutableList<Activity?> = mutableListOf() // 활동 목록
-    //TODO: 구매 수, 댓글 수, 생성 날짜 등 서버 데이터 추가
-) : Serializable
+// 루트 미리보기
+data class RoutePreview(
+    var routeId: Int,
+    var userId: Int,
+    var profileImageUrl: String,
+    var nickname: String,
+    var routeName: String,
+    var routeDescription: String,
+    var routeImageUrls: ArrayList<String>,
+    var isPurchased: Boolean,
+    var purchaseCount: Int,
+    var commentCount: Int,
+    var routeStyles: ArrayList<String>,
+    var whoWith: String,
+    var transportation: String,
+    var numberOfPeople: Int,
+    var numberOfDays: String,
+    var createdAt: String
+)
 
-// 활동
+// 루트 구매 후 상세보기
+data class RouteDetail(
+    var routeId: Int = -1,
+    var userId: Int = -1,
+    var profileImageUrl: String = "",
+    var nickname: String = "",
+    var routeName: String = "",
+    var routeDescription: String = "",
+    var startTime: String = "",
+    var endTime: String = "",
+    var whoWith: String = "",
+    var routeStyles: ArrayList<String> = arrayListOf(),
+    var numberOfPeople: Int = -1,
+    var numberOfDays: String = "",
+    var transportation: String = "",
+    var createdAt: String = "",
+    var routePath: ArrayList<RoutePath> = arrayListOf(),
+    var routeActivities: ArrayList<ActivityResult> = arrayListOf(),
+    // TODO: 내 루트의 경우, isPublic 데이터 서버에 추가 요청! 구매한 다른 사람의 루트는 공개 여부 필요 X!
+    var isPublic: Boolean
+)
+
+data class RoutePath(
+    var latitude: Double,
+    var longitude: Double
+)
+
+// 인사이트
+data class Insight(
+    var routeCount: Int,
+    var purchaseCount: Int,
+    var commentCount: Int
+)
+
+// 내 루트
+data class MyRoute(
+    var routeId: Int = -1,
+    var routeName: String = "",
+    var routeDescription: String = "",
+    var routeImageUrl: String = "",
+    var isPublic: Boolean = false,
+    var purchaseCount: Int = 0,
+    var commentCount: Int = 0,
+    var createdAt: String = ""
+)
+
+// 내 루트 공개/비공개
+data class RoutePublicRequest(
+    var isPublic: Boolean = false
+)
+
+data class RoutePublicResult(
+    var routeId: Int,
+    var isPublic: Boolean
+)
+
+// 루트 기록 시작 등록
+data class RouteWriteTime(
+    var startTime: String,
+    var endTime: String
+)
+
+data class RouteId(
+    var routeId: Int
+)
+
+// 루트 점 기록
+data class RoutePointRequest(
+    var latitude: String,
+    var longitude: String,
+    var pointOrder: Int
+)
+
+data class RoutePointResult(
+    var pointId: Int
+)
+
+// 내 루트 수정
+data class RouteUpdateRequest(
+    var routeName: String,
+    var routeDescription: String,
+    var whoWith: String,
+    var numberOfPeople: Int,
+    var numberOfDays: String,
+    var routeStyles: ArrayList<String>,
+    var transportation: String
+)
+
+data class RouteUpdateResult(
+    var routeId: Int,
+    var routeName: String,
+    var routeDescription: String,
+    var whoWith: String,
+    var numberOfPeople: Int,
+    var numberOfDays: String,
+    var routeStyles: ArrayList<String>,
+    var transportation: String
+)
+
+// 활동 추가
 data class Activity(
     var locationName: String,
     var address: String,
@@ -29,7 +138,45 @@ data class Activity(
     var activityImages: Array<String>?,
 )
 
-/** 카카오 장소 검색 */
+data class ActivityResult(
+    var activityId: Int,
+    var locationName: String,
+    var address: String,
+    var latitude: String,
+    var longitude: String,
+    var visitDate: String,
+    var startTime: String,
+    var endTime: String,
+    var category: String,
+    var description: String,
+    var activityImages: ArrayList<ActivityImage>
+)
+
+data class ActivityImage(
+    var id: Int,
+    var url: String
+)
+
+data class ActivityId(
+    var activityId: Int
+)
+
+// 활동 수정
+data class ActivityUpdateRequest(
+    var locationName: String,
+    var address: String,
+    var latitude: String?,
+    var longitude: String?,
+    var visitDate: String,
+    var startTime: String,
+    var endTime: String,
+    var category: String,
+    var description: String?,
+    var addedActivityImages: ArrayList<String>?,
+    var deletedActivityImageIds: ArrayList<String>?
+)
+
+// 카카오 장소 검색
 data class KakaoSearchResult(
     val meta: PlaceMeta, // 장소 메타데이터
     val documents: List<SearchActivityResult> // 검색 결과
@@ -70,3 +217,19 @@ data class ActivityPictureAlbum(
 
 const val pictureImgType = 0
 const val pictureAddType = 1
+
+data class ReportId(
+    var reportId: Int
+)
+
+// 사용자 신고
+data class ReportUser(
+    var userId: Int,
+    var content: String
+)
+
+// 루트 신고
+data class ReportRoute(
+    var routeId: Int,
+    var content: String
+)

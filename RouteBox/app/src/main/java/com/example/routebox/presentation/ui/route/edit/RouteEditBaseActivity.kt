@@ -1,16 +1,18 @@
 package com.example.routebox.presentation.ui.route.edit
 
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteEditBinding
-import com.example.routebox.domain.model.Route
+import com.example.routebox.domain.model.RouteDetail
 import com.google.gson.Gson
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteEditBaseActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRouteEditBinding
@@ -33,7 +35,7 @@ class RouteEditBaseActivity : AppCompatActivity() {
     private fun setInit() {
         // intent가 넘어왔는지 확인
         intent.getStringExtra("route")?.let { routeJson ->
-            val route = Gson().fromJson(routeJson, Route::class.java) // 값이 넘어왔다면 route 인스턴스에 gson 형태로 받아온 데이터를 넣어줌
+            val route = Gson().fromJson(routeJson, RouteDetail::class.java) // 값이 넘어왔다면 route 인스턴스에 gson 형태로 받아온 데이터를 넣어줌
             viewModel.setRoute(route)
             viewModel.initRouteTitleAndContent()
         }

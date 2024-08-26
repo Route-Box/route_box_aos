@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="route"
-            type="com.example.routebox.domain.model.Route" />
+            type="com.example.routebox.domain.model.MyRoute" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
