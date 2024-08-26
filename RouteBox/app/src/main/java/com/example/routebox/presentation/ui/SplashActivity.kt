@@ -29,16 +29,10 @@ class SplashActivity : AppCompatActivity() {
         handler.postDelayed({
             // TODO: 자동 로그인 -> MainActivity / 로그인 X -> LoginActivity
             startActivity(Intent(this, LoginActivity::class.java))
-
-            // 화면이 중간에 깜빡 거리는 문제가 있어 finish에 delay 추가
-            handler.postDelayed({
-                finish()
-            }, 500)
         }, 1500)
     }
 
     private fun checkHashKey() {
-        // var keyHash = Utility.getKeyHash(this)
-        // Log.d("Hash_Key", keyHash)
+         Log.d("Hash_Key", Utility.getKeyHash(this))
     }
 }

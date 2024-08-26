@@ -8,7 +8,7 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def kakaoApiKey = properties.getProperty('kakao_api_key')
+def kakaoApiKey = properties.getProperty('kakao_api_key_no_quotes')
 
 android {
     namespace 'com.example.routebox'
@@ -23,9 +23,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField "String", "BASE_URL", properties['base_url']
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
-        manifestPlaceholders["KAKAO_API_KEY"] = properties['kakao_api_key']
+        manifestPlaceholders = [KAKAO_API_KEY : kakaoApiKey]
     }
 
     buildTypes {
@@ -98,4 +99,7 @@ dependencies {
 
     // gson
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // DataStore
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
 }

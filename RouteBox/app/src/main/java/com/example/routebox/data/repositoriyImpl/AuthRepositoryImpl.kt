@@ -9,6 +9,7 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val remoteAuthDataSource: RemoteAuthDataSource
 ) : AuthRepository {
+
     override suspend fun postKakaoLogin(body: LoginRequest): LoginResponse {
         return remoteAuthDataSource.postKakaoLogin(body)
     }

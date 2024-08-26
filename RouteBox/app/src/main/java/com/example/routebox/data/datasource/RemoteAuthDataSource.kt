@@ -1,35 +1,34 @@
 package com.example.routebox.data.datasource
 
 import android.util.Log
-import com.example.routebox.data.remote.AuthApiService
+import com.example.routebox.data.remote.auth.AnonymousApiService
 import com.example.routebox.domain.model.LoginRequest
 import com.example.routebox.domain.model.LoginResponse
-import com.example.routebox.domain.model.LoginResult
+import com.example.routebox.domain.model.TokenResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RemoteAuthDataSource @Inject constructor(
-    private val authApiService: AuthApiService
+    private val anonymousApiService: AnonymousApiService,
 ) {
     suspend fun postKakaoLogin(
         tokenBody: LoginRequest
     ): LoginResponse {
         var loginResponse = LoginResponse(
-            result = LoginResult(
-                accessToken = "",
-                refreshToken = "",
-                newUser = false
-            )
+            isNew = false,
+            loginType = "",
+            accessToken = TokenResult("", ""),
+            refreshToken = TokenResult("", "")
         )
         withContext(Dispatchers.IO) {
             runCatching {
-                authApiService.postKakaoSDK(tokenBody)
+                anonymousApiService.postKakaoLogin(tokenBody)
             }.onSuccess {
-                Log.d("RemoteAuthDataSource", "postKakaoLogin Success $it")
+                Log.d("RemoteAuthDataSource", "login Success $it")
                 loginResponse = it
             }.onFailure {
-                Log.d("RemoteAuthDataSource", "postKakaoLogin Fail $it")
+                Log.d("RemoteAuthDataSource", "login Fail $it")
             }
         }
         return loginResponse
