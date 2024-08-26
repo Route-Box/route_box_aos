@@ -2,6 +2,7 @@ package com.example.routebox.presentation.config
 
 import android.util.Log
 import com.example.routebox.data.remote.auth.RefreshApiService
+import com.example.routebox.domain.model.RefreshRequest
 import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -22,7 +23,7 @@ class XAccessTokenInterceptor @Inject constructor(
         val newRequest = request.newBuilder()
 
         if (accessToken != null) {
-            newRequest.addHeader("Authorization", "Bearer $accessToken")
+            newRequest.addHeader("Authorization", "Bearer $accessToken") // 요청 헤더에 토큰 붙이기
         }
 
         val response = chain.proceed(newRequest.build())
@@ -43,7 +44,27 @@ class XAccessTokenInterceptor @Inject constructor(
                     Log.d("RefreshToken", "$refreshToken")
                 }
 
-                //TODO: 재발급 api 호출
+                // 재발급 API 호출
+                // 받은 토큰 다시 넣어서 기존 api 재호출
+                val newTokenResponse = runBlocking { apiService.refreshToken(RefreshRequest(refreshToken.toString())) }
+
+                Log.d("Token", newTokenResponse.toString())
+
+                runBlocking {
+                    dsManager.saveAccessToken(newTokenResponse.accessToken.token)
+                    dsManager.saveRefreshToken(newTokenResponse.refreshToken.token)
+                }
+                Log.d("onTokenResponse", "토큰 재발급 성공!")
+
+                val newJwtToken = newTokenResponse.accessToken.token
+
+                // 새로운 토큰으로 하던 작업 서버 재요청
+                val finalRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $newJwtToken")
+                    .build()
+
+                response.close()
+                return chain.proceed(finalRequest)
             }
             404 -> {
                 // Show NotFound Message

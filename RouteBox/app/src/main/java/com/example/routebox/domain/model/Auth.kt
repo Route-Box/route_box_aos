@@ -15,3 +15,12 @@ data class TokenResult(
     val token: String,
     val expiresAt: String
 )
+
+data class RefreshRequest(
+    val refreshToken: String,
+)
+
+data class RefreshResponse(
+    val accessToken: TokenResult,
+    val refreshToken: TokenResult,
+)

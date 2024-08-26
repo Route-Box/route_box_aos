@@ -15,6 +15,10 @@ import javax.inject.Inject
 class ApplicationClass : Application() {
 
     @Inject
+    @NetworkModule.BasicRetrofit
+    lateinit var basicRetrofit: Retrofit
+
+    @Inject
     @NetworkModule.AnonymousRetrofit
     lateinit var anonymousRetrofit: Retrofit
 
