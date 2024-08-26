@@ -24,7 +24,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
-        manifestPlaceholders = [KAKAO_API_KEY : kakaoApiKey]
+        buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
+        manifestPlaceholders["KAKAO_API_KEY"] = properties['kakao_api_key']
     }
 
     buildTypes {
@@ -73,8 +74,9 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.48'
     kapt 'com.google.dagger:hilt-compiler:2.48'
 
-    // 카카오 로그인
+    // 카카오 로그인 및 카카오맵
     implementation "com.kakao.sdk:v2-user:2.15.0"
+    implementation 'com.kakao.maps.open:android:2.11.9'
 
     // Flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'

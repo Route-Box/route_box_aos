@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.utils
 
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -10,11 +11,19 @@ import com.example.routebox.R
 object BindingAdapter {
     @JvmStatic
     @BindingAdapter("app:imageUrl", "app:placeHolder")
-    fun setImage (imageview : ImageView, url : String?, placeHolder: Drawable){
-        Glide.with(imageview.context)
+    fun setImage (imageView : ImageView, url : String?, placeHolder: Drawable){
+        Glide.with(imageView.context)
             .load(url)
             .placeholder(placeHolder)
-            .into(imageview)
+            .into(imageView)
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:imageUri")
+    fun setUriImage (imageView: ImageView, uri: Uri?) {
+        Glide.with(imageView.context)
+            .load(uri)
+            .into(imageView)
     }
 
     @JvmStatic

@@ -1,11 +1,11 @@
-package com.example.routebox.presentation.ui.route.record
+package com.example.routebox.presentation.ui.route.write
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.routebox.presentation.ui.route.record.RouteCreateActivity.Companion.TODAY
+import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -26,7 +26,6 @@ class RouteCreateViewModel: ViewModel() {
     val buttonActivation: LiveData<Boolean> = _buttonActivation
 
     fun updateDate(isStartDate: Boolean, date: LocalDate) {
-
         if (isStartDate) _startDate.value = date
         else _endDate.value = date
     }

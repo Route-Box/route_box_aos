@@ -29,6 +29,10 @@ class RouteEditViewModel: ViewModel() {
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
+    init {
+        _route.value = Route()
+    }
+
     fun setStepId(stepId: Int) {
         _stepId.value = stepId
     }

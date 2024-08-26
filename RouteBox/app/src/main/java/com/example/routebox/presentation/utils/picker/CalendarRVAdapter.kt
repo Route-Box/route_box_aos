@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.R
 import com.example.routebox.databinding.ItemCalendarDateBinding
-import com.example.routebox.presentation.ui.route.record.RouteCreateActivity.Companion.TODAY
+import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)

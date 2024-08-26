@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- WebView 설정을 위한 Internet 접근 요청 -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 앨범 및 카메라 접근 권한 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".presentation.config.ApplicationClass"
@@ -54,13 +57,23 @@
         <activity android:name=".presentation.ui.seek.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".presentation.ui.seek.search.FilterActivity"/>
-        <activity android:name=".presentation.ui.route.record.RouteCreateActivity"/>
+        <activity android:name=".presentation.ui.route.write.RouteCreateActivity"/>
+        <activity android:name=".presentation.ui.route.write.RouteWriteActivity" />
+        <activity android:name=".presentation.ui.route.RouteActivityActivity" />
+        <activity android:name=".presentation.ui.route.write.RoutePictureAlbumActivity" />
         <activity android:name=".presentation.ui.route.RouteDetailActivity"/>
+        <activity android:name=".presentation.ui.route.RouteWriteCompleteActivity" />
+        <activity android:name=".presentation.ui.route.RouteCompleteTagActivity" />
+        <activity android:name=".presentation.ui.route.write.RouteCompleteBaseActivity" />
+        <activity android:name=".presentation.ui.route.RouteCompleteActivity" />
         <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.route.edit.RouteStyleActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
+            android:value="${KAKAO_API_KEY}" />
+        <meta-data
+            android:name="com.kakao.vectormap.AppKey"
             android:value="${KAKAO_API_KEY}" />
     </application>
 

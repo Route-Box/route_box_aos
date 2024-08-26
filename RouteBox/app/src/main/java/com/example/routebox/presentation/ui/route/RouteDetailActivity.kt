@@ -1,16 +1,20 @@
 package com.example.routebox.presentation.ui.route
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteDetailBinding
+import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.Route
@@ -22,13 +26,18 @@ import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.MapLifeCycleCallback
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private lateinit var binding: ActivityRouteDetailBinding
 
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var tagAdapter: RouteTagRVAdapter
     private lateinit var activityAdapter: ActivityRVAdapter
+    private lateinit var kakaoMap: KakaoMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +48,29 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             lifecycleOwner = this@RouteDetailActivity
         }
 
+        initMapSetting()
         initRoute()
         initClickListeners()
         initObserve()
+    }
+
+    private fun initMapSetting() {
+        binding.kakaoMap.start(object : MapLifeCycleCallback() {
+            override fun onMapDestroy() {
+                // 지도 API 가 정상적으로 종료될 때 호출
+                Log.d("KakaoMap", "onMapDestroy: ")
+            }
+            override fun onMapError(error: Exception) {
+                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
+                Log.d("KakaoMap", "onMapError: $error")
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(kakaoMap: KakaoMap) {
+                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                Log.d("KakaoMap", "onMapReady: $kakaoMap")
+                this@RouteDetailActivity.kakaoMap = kakaoMap
+            }
+        })
     }
 
     private fun initRoute() {
@@ -85,7 +114,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(this@RouteDetailActivity, LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addActivity(viewModel.route.value!!.activities)
+        activityAdapter.addAllActivities(viewModel.route.value!!.activities as MutableList<Activity>)
     }
 
     private fun initObserve() {
@@ -94,7 +123,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 setTagAdapter()
             }
 
-            if (route.activities.isNotEmpty()) { // 활동 정보가 있다면
+            if (route.activities.size != 0) { // 활동 정보가 있다면
                 setActivityAdapter()
             }
         }

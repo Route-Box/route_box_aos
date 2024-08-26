@@ -1,5 +1,6 @@
-package com.example.routebox.presentation.ui.route.record
+package com.example.routebox.presentation.ui.route.write
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -42,7 +43,7 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
 
         // 다음 버튼
         binding.routeCreateNextBtn.setOnClickListener {
-            //TODO: 루트 기록 화면으로 이동
+            startActivity(Intent(this, RouteWriteActivity::class.java))
         }
 
         // 시작 날짜

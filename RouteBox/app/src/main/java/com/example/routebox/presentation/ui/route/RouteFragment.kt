@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.route
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,11 +18,11 @@ import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteBinding
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
-import com.example.routebox.presentation.ui.route.edit.RouteStyleActivity
-import com.example.routebox.presentation.ui.route.record.RouteCreateActivity
+import com.example.routebox.presentation.ui.route.write.RouteCreateActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteFragment : Fragment() {
     private lateinit var binding: FragmentRouteBinding
 
@@ -126,11 +128,11 @@ class RouteFragment : Fragment() {
                     startActivity(intent)
                     true
                 }
-                R.id.menu_make_public_or_private -> { // 공개/비공개 전환
+                R.id.menu_make_public_or_private -> {
                     Toast.makeText(requireContext(), "공개/비공개 전환 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }
-                R.id.menu_delete -> { // 삭제하기
+                R.id.menu_delete -> {
                     Toast.makeText(requireContext(), "삭제하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
                     true
                 }
