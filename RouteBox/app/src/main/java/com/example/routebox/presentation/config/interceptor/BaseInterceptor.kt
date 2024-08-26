@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.config
+package com.example.routebox.presentation.config.interceptor
 
 import android.util.Log
 import com.example.routebox.data.remote.auth.RefreshApiService
@@ -11,7 +11,7 @@ import okhttp3.Response
 import java.io.IOException
 import javax.inject.Inject
 
-class XAccessTokenInterceptor @Inject constructor(
+class BaseInterceptor @Inject constructor(
     private val apiService: RefreshApiService
 ) : Interceptor {
     @Throws(IOException::class)

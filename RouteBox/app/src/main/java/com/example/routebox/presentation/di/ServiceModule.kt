@@ -2,6 +2,7 @@ package com.example.routebox.presentation.di
 
 import com.example.routebox.data.remote.auth.AnonymousApiService
 import com.example.routebox.data.remote.RouteApiService
+import com.example.routebox.data.remote.UserApiService
 import com.example.routebox.data.remote.auth.RefreshApiService
 import dagger.Module
 import dagger.Provides
@@ -22,7 +23,7 @@ object ServiceModule {
     /** 토큰 재발급 */
     @Provides
     @Singleton
-    fun provideRefreshService(@NetworkModule.AnonymousRetrofit retrofit: Retrofit) : RefreshApiService =
+    fun provideRefreshService(@NetworkModule.RefreshRetrofit retrofit: Retrofit) : RefreshApiService =
         retrofit.create(RefreshApiService::class.java)
 
     @Provides

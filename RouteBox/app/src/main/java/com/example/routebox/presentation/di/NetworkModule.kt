@@ -2,7 +2,8 @@ package com.example.routebox.presentation.di
 
 import com.example.routebox.data.remote.auth.RefreshApiService
 import com.example.routebox.presentation.config.Constants.BASE_URL
-import com.example.routebox.presentation.config.XAccessTokenInterceptor
+import com.example.routebox.presentation.config.interceptor.BaseInterceptor
+import com.example.routebox.presentation.config.interceptor.TokenRefreshInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +19,57 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    // 인터셉터 O, 403 재발급 O
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class BasicRetrofit
+
+    // 인터셉터 X (로그인)
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class AnonymousRetrofit
+
+    // 인터셉터 O, 403 재발급 X
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class RefreshRetrofit
+
+    @Provides
+    @Singleton
+    @BasicRetrofit
+    fun provideBasicOkHttpClient(
+        interceptor: HttpLoggingInterceptor,
+        @BasicRetrofit authInterceptor: BaseInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .readTimeout(5000, TimeUnit.MILLISECONDS)
+            .connectTimeout(5000, TimeUnit.MILLISECONDS)
+            .addInterceptor(interceptor)
+            .addInterceptor(authInterceptor)
+            .build()
+
+    @Provides
+    @Singleton
+    @BasicRetrofit
+    fun provideBasicRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @BasicRetrofit client: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @BasicRetrofit
+    fun provideBasicTokenInterceptor(
+        apiService: RefreshApiService
+    ): BaseInterceptor {
+        return BaseInterceptor(apiService)
+    }
 
     @Provides
     @Singleton
@@ -47,6 +96,41 @@ object NetworkModule {
             .connectTimeout(5000, TimeUnit.MILLISECONDS)
             .addInterceptor(interceptor)
             .build()
+
+    @Provides
+    @Singleton
+    @RefreshRetrofit
+    fun provideRefreshOkHttpClient(
+        interceptor: HttpLoggingInterceptor,
+        @RefreshRetrofit authInterceptor: TokenRefreshInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .readTimeout(5000, TimeUnit.MILLISECONDS)
+            .connectTimeout(5000, TimeUnit.MILLISECONDS)
+            .addInterceptor(interceptor)
+            .addInterceptor(authInterceptor)
+            .build()
+
+    @Provides
+    @Singleton
+    @RefreshRetrofit
+    fun provideRefreshRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @RefreshRetrofit client: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @RefreshRetrofit
+    fun provideTokenRefreshInterceptor(): TokenRefreshInterceptor {
+        return TokenRefreshInterceptor()
+    }
 
     @Provides
     @Singleton

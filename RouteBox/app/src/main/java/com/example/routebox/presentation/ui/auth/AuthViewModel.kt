@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.LoginRequest
 import com.example.routebox.domain.model.LoginResponse
+import com.example.routebox.domain.model.RefreshRequest
+import com.example.routebox.domain.model.RefreshResponse
 import com.example.routebox.domain.repositories.AuthRepository
 import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +38,9 @@ class AuthViewModel @Inject constructor(
     private val _loginResponse = MutableLiveData<LoginResponse?>()
     val loginResponse: LiveData<LoginResponse?> = _loginResponse
 
+    private val _refreshResponse = MutableLiveData<RefreshResponse?>()
+    val refreshResponse: LiveData<RefreshResponse?> = _refreshResponse
+
     init {
         _step.value = 1
         _nickname.value = ""
@@ -48,8 +55,18 @@ class AuthViewModel @Inject constructor(
             // 로그인 진행
             val response = repository.postKakaoLogin(LoginRequest(kakaoAccessToken))
             // 토큰 정보 저장
-            saveToken(response)
+            saveToken(response.accessToken.token, response.refreshToken.token)
             _loginResponse.value = response
+        }
+    }
+
+    /** 토큰 재발급 */
+    fun tryRefreshToken() {
+        viewModelScope.launch {
+            val response = repository.postRefreshToken(RefreshRequest(getSavedRefreshToken()))
+            // 토큰 정보 저장
+            saveToken(response.accessToken.token, response.refreshToken.token)
+            _refreshResponse.value = response
         }
     }
 
@@ -73,10 +90,20 @@ class AuthViewModel @Inject constructor(
         _terms.value = terms
     }
 
+    /** 토큰 */
+    // 앱 내 저장된 토큰 정보 가져오기
+    private fun getSavedAccessToken(): String = runBlocking {
+        dsManager.getAccessToken().first().orEmpty()
+    }
+
+    private fun getSavedRefreshToken(): String = runBlocking {
+        dsManager.getRefreshToken().first().orEmpty()
+    }
+
     // 토큰 정보 앱 내에 저장
-    private suspend fun saveToken(tokenResult: LoginResponse) {
-        dsManager.saveAccessToken(tokenResult.accessToken.token)
-        dsManager.saveRefreshToken(tokenResult.refreshToken.token)
+    private suspend fun saveToken(accessToken: String, refreshToken: String) {
+        dsManager.saveAccessToken(accessToken)
+        dsManager.saveRefreshToken(refreshToken)
     }
 
     // 앱 내에 저장된 토큰 정보 삭제
