@@ -11,7 +11,9 @@ import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteEditBinding
 import com.example.routebox.domain.model.RouteDetail
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteEditBaseActivity : AppCompatActivity() {
 

@@ -33,7 +33,7 @@ class SeekHomeRouteRVAdapter(
 
     // 뷰의 타입을 정해주는 부분
     override fun getItemViewType(position: Int): Int {
-        return when (routeList[position].title) {
+        return when (routeList[position].routeName) {
             null -> loadingType
             else -> routeType
         }
@@ -55,7 +55,7 @@ class SeekHomeRouteRVAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (routeList[position].title == null) {
+        if (routeList[position].routeName == null) {
             (holder as LoadingTypeViewHolder).bind(routeList[position])
             holder.setIsRecyclable(false)
         } else {
@@ -80,7 +80,7 @@ class SeekHomeRouteRVAdapter(
     inner class RouteTypeViewHolder(val binding: ItemSeekHomeRouteBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: RoutePreview) {
             // ViewPager 연결
-            setVPAdapter(binding, data.img, data.tag)
+            setVPAdapter(binding, data.routeImageUrls, data.routeStyles)
 
             binding.preview = data
         }
@@ -92,7 +92,7 @@ class SeekHomeRouteRVAdapter(
         }
     }
 
-    private fun setVPAdapter(binding: ItemSeekHomeRouteBinding, imageList: ArrayList<String>?, tagList: ArrayList<FilterOption>?) {
+    private fun setVPAdapter(binding: ItemSeekHomeRouteBinding, imageList: ArrayList<String>?, tagList: ArrayList<String>?) {
         if (imageList != null) {
             val imageVPAdapter = RouteImageVPAdapter(imageList)
             binding.imageVp.adapter = imageVPAdapter
@@ -109,7 +109,7 @@ class SeekHomeRouteRVAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun addLoading() {
-        var loadingList = arrayListOf(RoutePreview(null, null, null, null, null, null, null, null, null))
+        var loadingList = arrayListOf(RoutePreview())
         loadingList.addAll(routeList)
         routeList = loadingList
         this.notifyDataSetChanged()
@@ -122,6 +122,6 @@ class SeekHomeRouteRVAdapter(
     }
 
     fun checkLoading(): Boolean {
-        return routeList[0].title == null
+        return routeList[0].routeName == null
     }
 }

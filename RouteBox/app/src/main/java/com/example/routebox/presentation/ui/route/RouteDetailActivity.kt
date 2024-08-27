@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteDetailBinding
+import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.RouteDetail
@@ -28,7 +29,9 @@ import com.google.gson.Gson
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private lateinit var binding: ActivityRouteDetailBinding
@@ -100,11 +103,12 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun setTagAdapter() {
-        tagAdapter = RouteTagRVAdapter(FilterOption.findOptionsByNames(viewModel.route.value!!.routes) as ArrayList<FilterOption>)
-        binding.routeDetailTagRv.apply {
-            adapter = tagAdapter
-            layoutManager = FlexboxLayoutManager(this@RouteDetailActivity)
-        }
+        // TODO: 오류 임시 주석
+//        tagAdapter = RouteTagRVAdapter(FilterOption.findOptionsByNames(viewModel.route.value!!.routes) as ArrayList<FilterOption>)
+//        binding.routeDetailTagRv.apply {
+//            adapter = tagAdapter
+//            layoutManager = FlexboxLayoutManager(this@RouteDetailActivity)
+//        }
     }
 
     private fun setActivityAdapter() {
@@ -113,7 +117,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(this@RouteDetailActivity, LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<RouteDetail>)
+        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
     private fun initObserve() {

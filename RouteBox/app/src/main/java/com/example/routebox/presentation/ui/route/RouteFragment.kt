@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
@@ -21,13 +22,14 @@ import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteFragment : Fragment() {
     private lateinit var binding: FragmentRouteBinding
 
     private lateinit var myRouteAdapter: MyRouteRVAdapter
-
     private val viewModel: RouteViewModel by viewModels()
 
     override fun onCreateView(

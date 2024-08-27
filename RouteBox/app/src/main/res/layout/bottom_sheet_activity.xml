@@ -78,7 +78,7 @@
                 android:drawablePadding="16dp"
                 android:text="@string/route_activity_empty"
                 android:textColor="@color/gray1"
-                android:visibility="@{viewModel.route.activities.empty ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.route.routeActivities.empty ? View.VISIBLE : View.GONE}"
                 tools:visibility="gone"
                 style="@style/body_r_s"/>
 

@@ -96,7 +96,7 @@ class RemoteRouteDataSource @Inject constructor(
     ): RouteDetail {
         var routeDetail = RouteDetail(
             -1, -1, "", "", "", "", "", "", "",
-            arrayListOf(), -1, "", "", "", arrayListOf(), arrayListOf()
+            arrayListOf(), -1, "", "", "", arrayListOf(), arrayListOf(), false
         )
         withContext(Dispatchers.IO) {
             runCatching {

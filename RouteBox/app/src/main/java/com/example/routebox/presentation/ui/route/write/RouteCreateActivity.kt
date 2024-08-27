@@ -14,9 +14,11 @@ import com.example.routebox.presentation.utils.picker.CalendarBottomSheet
 import com.example.routebox.presentation.utils.picker.DateClickListener
 import com.example.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.example.routebox.presentation.utils.picker.TimeChangedListener
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.util.Calendar
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedListener {
     private lateinit var binding: ActivityRouteCreateBinding

@@ -21,7 +21,9 @@ import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteInsightFragment : Fragment() {
     private lateinit var binding: FragmentRouteInsightBinding

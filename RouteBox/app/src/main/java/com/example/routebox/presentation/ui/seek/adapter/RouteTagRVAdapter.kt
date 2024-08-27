@@ -6,16 +6,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemRouteTagBinding
-import com.example.routebox.domain.model.FilterOption
 
 class RouteTagRVAdapter(
-    private var tagList: ArrayList<FilterOption>
+    private var tagList: ArrayList<String>
 ): RecyclerView.Adapter<RouteTagRVAdapter.ViewHolder>() {
 
     private lateinit var context: Context
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addTag(tagList: ArrayList<FilterOption>) {
+    fun addTag(tagList: ArrayList<String>) {
         this.tagList = tagList
         notifyDataSetChanged()
     }
@@ -35,8 +34,8 @@ class RouteTagRVAdapter(
     override fun getItemCount(): Int = tagList.size
 
     inner class ViewHolder(val binding: ItemRouteTagBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(tag: FilterOption) {
-            binding.option = tag
+        fun bind(tag: String) {
+            binding.tag = tag
         }
     }
 }

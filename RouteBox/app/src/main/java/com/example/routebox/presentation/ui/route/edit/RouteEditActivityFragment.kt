@@ -16,6 +16,7 @@ import com.example.routebox.R
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.databinding.FragmentRouteEditActivityBinding
 import com.example.routebox.domain.model.Activity
+import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
@@ -91,7 +92,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
 
         // 활동 아이템 클릭
         activityAdapter.setActivityClickListener(object : ActivityRVAdapter.MyItemClickListener {
-            override fun onEditButtonClick(position: Int, data: Activity) {
+            override fun onEditButtonClick(position: Int, data: ActivityResult) {
                 //TODO: RouteId를 통한 정보 전달
                 startActivity(Intent(requireActivity(), RouteActivityActivity::class.java))
             }
@@ -108,7 +109,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<Activity>)
+        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
     private fun initObserve() {

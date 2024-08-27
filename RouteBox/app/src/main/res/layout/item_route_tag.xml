@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="option"
-            type="com.example.routebox.domain.model.FilterOption" />
+            name="tag"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{option.optionName}"
+            android:text="@{tag}"
             android:textColor="@color/gray1"
             android:paddingVertical="8dp"
             android:paddingHorizontal="12dp"

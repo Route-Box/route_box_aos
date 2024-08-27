@@ -7,22 +7,22 @@ import java.time.LocalDate
 
 // 루트 미리보기
 data class RoutePreview(
-    var routeId: Int,
-    var userId: Int,
-    var profileImageUrl: String,
-    var nickname: String,
-    var routeName: String,
-    var routeDescription: String,
-    var routeImageUrls: ArrayList<String>,
-    var isPurchased: Boolean,
-    var purchaseCount: Int,
-    var commentCount: Int,
-    var routeStyles: ArrayList<String>,
-    var whoWith: String,
-    var transportation: String,
-    var numberOfPeople: Int,
-    var numberOfDays: String,
-    var createdAt: String
+    var routeId: Int = -1,
+    var userId: Int = -1,
+    var profileImageUrl: String = "",
+    var nickname: String = "",
+    var routeName: String = "",
+    var routeDescription: String = "",
+    var routeImageUrls: ArrayList<String> = arrayListOf(),
+    var isPurchased: Boolean = false,
+    var purchaseCount: Int = -1,
+    var commentCount: Int = -1,
+    var routeStyles: ArrayList<String> = arrayListOf(),
+    var whoWith: String = "",
+    var transportation: String = "",
+    var numberOfPeople: Int = -1,
+    var numberOfDays: String = "",
+    var createdAt: String = ""
 )
 
 // 루트 구매 후 상세보기
@@ -44,7 +44,7 @@ data class RouteDetail(
     var routePath: ArrayList<RoutePath> = arrayListOf(),
     var routeActivities: ArrayList<ActivityResult> = arrayListOf(),
     // TODO: 내 루트의 경우, isPublic 데이터 서버에 추가 요청! 구매한 다른 사람의 루트는 공개 여부 필요 X!
-    var isPublic: Boolean
+    var isPublic: Boolean = false
 )
 
 data class RoutePath(
