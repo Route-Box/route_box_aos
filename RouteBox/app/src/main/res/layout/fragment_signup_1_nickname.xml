@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.auth.AuthViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,32 +34,34 @@
             android:background="@color/transparent"
             android:layout_marginStart="22dp"
             android:layout_marginEnd="20dp"
-            android:textColorHint="@color/gray5"
-            android:textColor="@color/title_black"
             android:textCursorDrawable="@null"
             android:maxLines="1"
             android:inputType="text"
+            android:text="@={viewModel.nickname}"
             android:theme="@style/EditTextTheme"
             app:layout_constraintTop_toTopOf="@id/nickname_check_btn"
             app:layout_constraintBottom_toBottomOf="@id/nickname_check_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/nickname_check_btn" />
+            app:layout_constraintEnd_toStartOf="@id/nickname_check_btn"
+            style="@style/body_r_l"/>
 
-        <Button
+        <TextView
             android:id="@+id/nickname_check_btn"
-            android:layout_width="69dp"
-            android:layout_height="34dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="12dp"
             android:text="@string/signup_nickname_btn"
+            android:onClick="@{viewModel::onClickNicknameDuplicationCheckBtn}"
             android:layout_marginEnd="22dp"
             android:layout_marginTop="56dp"
-            android:enabled="false"
-            android:textSize="12sp"
-            android:fontFamily="@font/pretendard_regular"
+            android:enabled="@{viewModel.isValidNickname()}"
             android:background="@drawable/selector_nickname"
             android:textColor="@drawable/selector_nickname"
             app:layout_constraintStart_toEndOf="@id/nickname_et"
             app:layout_constraintTop_toBottomOf="@id/nickname_title"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/body_r_xs"/>
 
         <View
             android:id="@+id/nickname_bottom_line"
@@ -71,6 +81,7 @@
             android:text="@string/signup_nickname_condition"
             android:textColor="@color/gray3"
             android:layout_marginTop="6dp"
+            android:visibility="@{viewModel.isAvailableNickname() == null ? View.VISIBLE : View.GONE}"
             style="@style/body_r_xs"
             app:layout_constraintTop_toBottomOf="@id/nickname_bottom_line"
             app:layout_constraintStart_toStartOf="@id/nickname_bottom_line" />
@@ -82,7 +93,8 @@
             android:text="@string/signup_nickname_o"
             android:textColor="@color/main"
             android:layout_marginTop="6dp"
-            android:visibility="gone"
+            android:visibility="@{viewModel.isAvailableNickname() ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone"
             style="@style/body_r_xs"
             app:layout_constraintTop_toBottomOf="@id/nickname_bottom_line"
             app:layout_constraintStart_toStartOf="@id/nickname_bottom_line" />
@@ -94,7 +106,8 @@
             android:text="@string/signup_nickname_x"
             android:textColor="@color/red1_warning"
             android:layout_marginTop="6dp"
-            android:visibility="gone"
+            android:visibility="@{(viewModel.isAvailableNickname != null &amp;&amp; !viewModel.isAvailableNickname) ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone"
             style="@style/body_r_xs"
             app:layout_constraintTop_toBottomOf="@id/nickname_bottom_line"
             app:layout_constraintStart_toStartOf="@id/nickname_bottom_line" />

@@ -26,6 +26,12 @@ object ServiceModule {
     fun provideRefreshService(@NetworkModule.RefreshRetrofit retrofit: Retrofit) : RefreshApiService =
         retrofit.create(RefreshApiService::class.java)
 
+    /** 유저 */
+    @Provides
+    @Singleton
+    fun provideUserService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : UserApiService =
+        retrofit.create(UserApiService::class.java)
+
     @Provides
     @Singleton
     fun provideRouteKakaoSearchService(@NetworkModule.BasicRetrofit retrofit: Retrofit): RouteApiService =

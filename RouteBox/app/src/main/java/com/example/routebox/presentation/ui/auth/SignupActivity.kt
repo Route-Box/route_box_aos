@@ -7,12 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.Navigation.findNavController
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivitySignupBinding
 import com.example.routebox.presentation.ui.MainActivity
@@ -35,17 +30,19 @@ class SignupActivity: AppCompatActivity() {
 
     private fun initObserve() {
         // 회원가입 각 과정에서 값 입력 여부에 따라 다음 버튼 활성화
-        viewModel.nickname.observe(this) {
-            binding.nextBtn.isEnabled = viewModel.nickname.value != ""
-        }
-        viewModel.birth.observe(this) {
-            binding.nextBtn.isEnabled = viewModel.birth.value != ""
-        }
-        viewModel.gender.observe(this) {
-            binding.nextBtn.isEnabled = viewModel.birth.value != ""
-        }
-        viewModel.terms.observe(this) {
-            binding.nextBtn.isEnabled = viewModel.terms.value != false
+        binding.nextBtn.apply {
+            viewModel.isAvailableNickname.observe(this@SignupActivity) { isAvailableNickname ->
+               isEnabled = isAvailableNickname == true // 중복 확인이 끝났을 경우
+            }
+            viewModel.birth.observe(this@SignupActivity) {
+                isEnabled = viewModel.birth.value != ""
+            }
+            viewModel.gender.observe(this@SignupActivity) {
+                isEnabled = viewModel.birth.value != ""
+            }
+            viewModel.terms.observe(this@SignupActivity) {
+                isEnabled = viewModel.terms.value != false
+            }
         }
     }
 
@@ -57,14 +54,14 @@ class SignupActivity: AppCompatActivity() {
         binding.nextBtn.setOnClickListener {
             when (viewModel.step.value) {
                 1 -> {
-                    Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup1NicknameFragment_to_signup2BirthFragment)
+                    findNavController(binding.signupContainer).navigate(R.id.action_signup1NicknameFragment_to_signup2BirthFragment)
                 }
                 2 -> {
-                    Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup3GenderFragment)
+                    findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup3GenderFragment)
                     binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
                 }
                 3 -> {
-                    Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup4TermsFragment)
+                    findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup4TermsFragment)
                     binding.nextBtn.text = ContextCompat.getString(this, R.string.signup_complete_btn)
                 }
                 4 -> {
@@ -94,15 +91,15 @@ class SignupActivity: AppCompatActivity() {
         when (viewModel.step.value) {
             1 -> { finish() }
             2 -> {
-                Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup1NicknameFragment2)
+                findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup1NicknameFragment2)
                 viewModel.setNickname("")
             }
             3 -> {
-                Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup2BirthFragment)
+                findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup2BirthFragment)
                 viewModel.setBirth("")
             }
             4 -> {
-                Navigation.findNavController(binding.signupContainer).navigate(R.id.action_signup4TermsFragment_to_signup3GenderFragment)
+                findNavController(binding.signupContainer).navigate(R.id.action_signup4TermsFragment_to_signup3GenderFragment)
                 viewModel.setGender("")
                 viewModel.setTerms(false)
                 binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)

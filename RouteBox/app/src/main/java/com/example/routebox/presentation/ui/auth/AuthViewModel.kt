@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.auth
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.example.routebox.domain.model.LoginResponse
 import com.example.routebox.domain.model.RefreshRequest
 import com.example.routebox.domain.model.RefreshResponse
 import com.example.routebox.domain.repositories.AuthRepository
+import com.example.routebox.domain.repositories.UserRepository
 import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -18,13 +20,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository
-): ViewModel() {
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
     private val _step = MutableLiveData<Int>()
     val step: LiveData<Int> = _step
 
-    private val _nickname = MutableLiveData<String>()
-    val nickname: LiveData<String> = _nickname
+    val nickname = MutableLiveData<String>()
 
     private val _birth = MutableLiveData<String>()
     val birth: LiveData<String> = _birth
@@ -35,6 +37,14 @@ class AuthViewModel @Inject constructor(
     private val _terms = MutableLiveData<Boolean>()
     val terms: LiveData<Boolean> = _terms
 
+    // 유효한 닉네임
+    private val _isValidNickname = MutableLiveData<Boolean>()
+    val isValidNickname: LiveData<Boolean> = _isValidNickname
+
+    // 닉네임 중복 확인
+    private val _isAvailableNickname = MutableLiveData<Boolean?>()
+    val isAvailableNickname: LiveData<Boolean?> = _isAvailableNickname
+
     private val _loginResponse = MutableLiveData<LoginResponse?>()
     val loginResponse: LiveData<LoginResponse?> = _loginResponse
 
@@ -43,7 +53,7 @@ class AuthViewModel @Inject constructor(
 
     init {
         _step.value = 1
-        _nickname.value = ""
+        nickname.value = ""
         _birth.value = ""
         _gender.value = ""
         _terms.value = false
@@ -53,7 +63,7 @@ class AuthViewModel @Inject constructor(
     fun tryLogin(kakaoAccessToken: String) {
         viewModelScope.launch {
             // 로그인 진행
-            val response = repository.postKakaoLogin(LoginRequest(kakaoAccessToken))
+            val response = authRepository.postKakaoLogin(LoginRequest(kakaoAccessToken))
             // 토큰 정보 저장
             saveToken(response.accessToken.token, response.refreshToken.token)
             _loginResponse.value = response
@@ -63,10 +73,17 @@ class AuthViewModel @Inject constructor(
     /** 토큰 재발급 */
     fun tryRefreshToken() {
         viewModelScope.launch {
-            val response = repository.postRefreshToken(RefreshRequest(getSavedRefreshToken()))
+            val response = authRepository.postRefreshToken(RefreshRequest(getSavedRefreshToken()))
             // 토큰 정보 저장
             saveToken(response.accessToken.token, response.refreshToken.token)
             _refreshResponse.value = response
+        }
+    }
+
+    /** 닉네임 중복 확인 */
+    private fun tryGetNicknameAvailability() {
+        viewModelScope.launch {
+            _isAvailableNickname.value = userRepository.getNicknameAvailability(nickname.value.toString()).isAvailable
         }
     }
 
@@ -75,7 +92,10 @@ class AuthViewModel @Inject constructor(
     }
 
     fun setNickname(nickname: String) {
-        _nickname.value = nickname
+        this.nickname.value = nickname
+        if (nickname.isEmpty()) {
+            _isAvailableNickname.value = null
+        }
     }
 
     fun setBirth(birth: String) {
@@ -88,6 +108,16 @@ class AuthViewModel @Inject constructor(
 
     fun setTerms(terms: Boolean) {
         _terms.value = terms
+    }
+
+    // 닉네임 중복 확인 버튼 클릭
+    fun onClickNicknameDuplicationCheckBtn(view: View) {
+        tryGetNicknameAvailability()
+    }
+
+    // 유효한 닉네임 확인
+    fun setNicknameValidation() {
+        _isValidNickname.value = nickname.value!!.matches(NICKNAME_REGEX)
     }
 
     /** 토큰 */
@@ -109,5 +139,9 @@ class AuthViewModel @Inject constructor(
     // 앱 내에 저장된 토큰 정보 삭제
     private suspend fun deleteToken() {
         dsManager.clearTokens()
+    }
+
+    companion object {
+        val NICKNAME_REGEX = "^[가-힣a-zA-Z0-9]{2,8}$".toRegex() // 닉네임 정규식 - 한글, 영문, 숫자만 허용한 2~8 글자
     }
 }
