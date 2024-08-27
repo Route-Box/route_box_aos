@@ -45,7 +45,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun initObserve() {
         viewModel.refreshResponse.observe(this) { response ->
-            if (response?.accessToken == null) { // 토큰 재발급 실패 -> 로그인 화면
+            if (response?.accessToken?.token?.isEmpty() == true) { // 토큰 재발급 실패 -> 로그인 화면
                 startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                 finish()
             } else { // 토큰 재발급 성공 -> 메인 화면
