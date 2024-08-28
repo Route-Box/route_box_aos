@@ -60,6 +60,10 @@ data class Insight(
 )
 
 // 내 루트
+data class MyRouteResponse(
+    var result: ArrayList<MyRoute>
+)
+
 data class MyRoute(
     var routeId: Int = -1,
     var routeName: String = "",

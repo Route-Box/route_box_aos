@@ -119,7 +119,7 @@ class RemoteRouteDataSource @Inject constructor(
                 routeApiService.getMyRouteList()
             }.onSuccess {
                 Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
-                myRouteList = it
+                myRouteList = it.result
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getMyRouteList Fail\ne = $e")
             }

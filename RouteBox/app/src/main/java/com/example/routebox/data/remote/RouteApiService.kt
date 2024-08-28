@@ -6,7 +6,7 @@ import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.KakaoSearchResult
-import com.example.routebox.domain.model.MyRoute
+import com.example.routebox.domain.model.MyRouteResponse
 import com.example.routebox.domain.model.ReportId
 import com.example.routebox.domain.model.ReportRoute
 import com.example.routebox.domain.model.ReportUser
@@ -55,7 +55,7 @@ interface RouteApiService {
 
     // 내 루트 목록 조회
     @GET("routes/my")
-    suspend fun getMyRouteList(): ArrayList<MyRoute>
+    suspend fun getMyRouteList(): MyRouteResponse
 
     @GET("/api/v1/routes/progress")
     suspend fun checkRouteIsRecording(
