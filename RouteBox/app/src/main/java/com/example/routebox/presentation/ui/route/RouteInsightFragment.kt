@@ -17,15 +17,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteInsightBinding
+import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
+import com.example.routebox.presentation.utils.CommonPopupDialog
+import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteInsightFragment : Fragment() {
+class RouteInsightFragment : Fragment(), PopupDialogInterface {
     private lateinit var binding: FragmentRouteInsightBinding
 
     private lateinit var myRouteAdapter: MyRouteRVAdapter
@@ -75,10 +78,10 @@ class RouteInsightFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
         }
         myRouteAdapter.setRouteClickListener(object: MyRouteRVAdapter.MyItemClickListener {
-            override fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean) { // 더보기 버튼 클릭
-                viewModel.selectedPosition = position
-                // 옵션 메뉴 띄우기
-                showMenu(view!!, isPrivate)
+            override fun onMoreButtonClick(view: View?, routeId: Int, isPublic: Boolean) { // 더보기 버튼 클릭
+                viewModel.selectedRouteId = routeId // 선택 id 업데이트
+                viewModel.isPublic = isPublic
+                showMenu(view!!)  // 옵션 메뉴 띄우기
             }
 
             override fun onCommentButtonClick(position: Int) { // 댓글 아이콘 클릭
@@ -107,15 +110,15 @@ class RouteInsightFragment : Fragment() {
         }
     }
 
-    private fun showMenu(view: View, isPrivate: Boolean) {
+    private fun showMenu(view: View) {
         val popupMenu = PopupMenu(requireActivity(), view)
         popupMenu.inflate(R.menu.route_my_menu)
         // 공개 여부에 따라 메뉴 아이템의 텍스트 변경
         val changeShowMenuItem = popupMenu.menu.findItem(R.id.menu_make_public_or_private)
-        if (isPrivate) {
-            changeShowMenuItem.setTitle(R.string.route_my_make_public)
-        } else {
+        if (viewModel.isPublic) {
             changeShowMenuItem.setTitle(R.string.route_my_make_private)
+        } else {
+            changeShowMenuItem.setTitle(R.string.route_my_make_public)
         }
         // 메뉴 노출
         popupMenu.setOnMenuItemClickListener { menuItem ->
@@ -124,15 +127,14 @@ class RouteInsightFragment : Fragment() {
                     // 루트 수정 화면으로 이동
                     val intent = Intent(requireActivity(), RouteEditBaseActivity::class.java)
                     intent.apply {
-                        putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedPosition]))
+                        putExtra("route", Gson().toJson(viewModel.routeList.value!![viewModel.selectedRouteId]))
                         putExtra("isEditMode", true)
                     }
                     startActivity(intent)
                     true
                 }
                 R.id.menu_make_public_or_private -> { // 공개/비공개 전환
-                    //TODO: 공개/비공개 상태로 바꾸기
-                    Toast.makeText(requireContext(), "공개/비공개 전환 메뉴 클릭", Toast.LENGTH_SHORT).show()
+                    showPopupDialog()
                     true
                 }
                 R.id.menu_delete -> { // 삭제하기
@@ -143,5 +145,17 @@ class RouteInsightFragment : Fragment() {
             }
         }
         popupMenu.show()
+    }
+
+    private fun showPopupDialog() {
+        val popupContent = if (viewModel.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
+        val dialog = CommonPopupDialog(this, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(parentFragmentManager, "PopupDialog")
+    }
+
+    override fun onClickPositiveButton(id: Int) {
+        // 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
+        viewModel.tryChangePublic()
     }
 }

@@ -48,7 +48,8 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RoutePreview
 
-    @GET("/api/v1/routes/{routeId}/detail")
+    // 루트 상세보기
+    @GET("routes/{routeId}/detail")
     suspend fun getRouteDetail(
         @Path("routeId") routeId: Int
     ): RouteDetail
@@ -67,9 +68,11 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RoutePointRequest
 
-    @PATCH("/api/v1/routes/{routeId}/public")
+    // 루트 공개여부 수정
+    @PATCH("routes/{routeId}/public")
     suspend fun updateRoutePublic(
-        @Path("routeId") routeId: Int
+        @Path("routeId") routeId: Int,
+        @Body isPublic: RoutePublicRequest
     ): RoutePublicRequest
 
     @POST("/api/v1/routes/start")

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.RouteDetail
+import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.repositories.RouteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -31,7 +32,8 @@ class RouteViewModel @Inject constructor(
     private val _route = MutableLiveData<RouteDetail>(RouteDetail())
     val route: LiveData<RouteDetail> = _route
 
-    var selectedPosition: Int = 0
+    var isPublic: Boolean = false
+    var selectedRouteId: Int = 0
 
     init {
         _isTracking.value = false
@@ -55,7 +57,17 @@ class RouteViewModel @Inject constructor(
     fun tryGetMyRouteDetail(routeId: Int) {
        viewModelScope.launch {
            _route.value = repository.getRouteDetail(routeId)
+           selectedRouteId = routeId
+           isPublic = _route.value!!.isPublic
        }
+    }
+
+    /** 루트 공개 여부 수정 */
+    fun tryChangePublic() {
+        viewModelScope.launch {
+            val response = repository.updateRoutePublic(selectedRouteId, RoutePublicRequest(!isPublic))
+            _route.value = _route.value!!.copy(isPublic = response.isPublic)
+        }
     }
 
     fun setIsTracking() {

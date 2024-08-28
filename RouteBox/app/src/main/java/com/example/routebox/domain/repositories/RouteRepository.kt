@@ -60,7 +60,8 @@ interface RouteRepository {
 
     /** 루트 공개 여부 수정 */
     suspend fun updateRoutePublic(
-        routeId: Int
+        routeId: Int,
+        isPublic: RoutePublicRequest
     ): RoutePublicRequest
 
     /** 루트 생성 (루트 기록 시작) */

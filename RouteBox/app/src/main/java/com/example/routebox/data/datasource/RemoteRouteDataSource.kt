@@ -165,12 +165,13 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun updateRoutePublic(
-        routeId: Int
+        routeId: Int,
+        isPublicBody: RoutePublicRequest
     ): RoutePublicRequest {
         var isPublic = RoutePublicRequest(false)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.updateRoutePublic(routeId)
+                routeApiService.updateRoutePublic(routeId, isPublicBody)
             }.onSuccess {
                 Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
                 isPublic = it

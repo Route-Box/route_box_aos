@@ -16,7 +16,6 @@ import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteDetailBinding
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
-import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
@@ -139,7 +138,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         popupMenu.inflate(R.menu.route_my_menu)
         // 공개 여부에 따라 메뉴 아이템의 텍스트 변경
         val changeShowMenuItem = popupMenu.menu.findItem(R.id.menu_make_public_or_private)
-        if (viewModel.route.value!!.isPublic) {
+        if (viewModel.isPublic) {
             changeShowMenuItem.setTitle(R.string.route_my_make_private)
         } else {
             changeShowMenuItem.setTitle(R.string.route_my_make_public)
@@ -158,7 +157,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                     true
                 }
                 R.id.menu_make_public_or_private -> { // 공개/비공개 전환
-                    showPopupDialog()
+                    showPopupDialog() // 확인 다이얼로그 노출
                     true
                 }
                 R.id.menu_delete -> { // 삭제하기
@@ -172,13 +171,14 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun showPopupDialog() {
-        val popupContent = if (viewModel.route.value!!.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
+        val popupContent = if (viewModel.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
         val dialog = CommonPopupDialog(this@RouteDetailActivity, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(this.supportFragmentManager, "PopupDialog")
     }
 
     override fun onClickPositiveButton(id: Int) {
-        //TODO: 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
+        // 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
+        viewModel.tryChangePublic()
     }
 }

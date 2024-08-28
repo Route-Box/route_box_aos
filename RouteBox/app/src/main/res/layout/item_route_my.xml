@@ -33,14 +33,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/route_private_dim"
-                android:visibility="@{route.isPublic ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{route.isPublic ? View.GONE : View.VISIBLE}" />
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_lock"
                 app:tint="@color/white"
                 android:layout_gravity="center"
-                android:visibility="@{route.isPublic ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{route.isPublic ? View.GONE : View.VISIBLE}" />
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
