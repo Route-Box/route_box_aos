@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSignup3GenderBinding
+import com.example.routebox.domain.model.Gender
 
 class Signup3GenderFragment : Fragment() {
 
@@ -29,10 +30,11 @@ class Signup3GenderFragment : Fragment() {
 
     private fun initRadioButton() {
         binding.genderRadiogroup.setOnCheckedChangeListener { _, buttonId ->
-            if (buttonId == R.id.gender_m) viewModel.setGender(binding.genderM.text.toString())
-            else if (buttonId == R.id.gender_f) viewModel.setGender(binding.genderF.text.toString())
-            // TODO: 비공개의 경우, 서버 처리 확인하고 수정!
-            else viewModel.setGender("secret")
+            when (buttonId) {
+                R.id.gender_m -> viewModel.setGender(Gender.MALE.text) // 남자
+                R.id.gender_f -> viewModel.setGender(Gender.FEMALE.text) // 여자
+                else -> viewModel.setGender(Gender.PRIVATE.text) // 비공개
+            }
         }
     }
 }

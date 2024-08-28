@@ -23,40 +23,21 @@ class Signup1NicknameFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSignup1NicknameBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
 
-        initClickListener()
-        initEditTextListener()
+        binding.apply {
+            viewModel = this@Signup1NicknameFragment.viewModel
+            lifecycleOwner = this@Signup1NicknameFragment
+        }
+
+        initObserve()
 
         return binding.root
     }
 
-    private fun initClickListener() {
-        binding.nicknameCheckBtn.setOnClickListener {
-            // 사용 가능한 닉네임
-            nicknameConditionText(View.GONE, View.VISIBLE, View.GONE)
-            viewModel.setNickname(binding.nicknameEt.text.toString())
-
-            // 사용 불가한 닉네임
-            // nicknameConditionText(View.GONE, View.GONE, View.VISIBLE)
+    private fun initObserve() {
+        viewModel.nickname.observe(viewLifecycleOwner) {
+            viewModel.setNicknameValidation()
         }
-    }
-
-    private fun initEditTextListener() {
-        binding.nicknameEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun afterTextChanged(p0: Editable?) {
-                viewModel.setNickname("")
-                nicknameConditionText(View.VISIBLE, View.GONE, View.GONE)
-                binding.nicknameCheckBtn.isEnabled = binding.nicknameEt.text.isNotEmpty()
-            }
-        })
-    }
-
-    private fun nicknameConditionText(condition: Int, conditionO: Int, conditionX: Int) {
-        binding.nicknameCondition.visibility = condition
-        binding.nicknameConditionO.visibility = conditionO
-        binding.nicknameConditionX.visibility = conditionX
     }
 }

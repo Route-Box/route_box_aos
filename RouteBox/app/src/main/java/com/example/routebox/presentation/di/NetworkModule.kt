@@ -1,15 +1,12 @@
 package com.example.routebox.presentation.di
 
-import android.content.Context
-import com.example.routebox.data.remote.AuthApiService
-import com.example.routebox.data.remote.NetworkChecker
+import com.example.routebox.data.remote.auth.RefreshApiService
 import com.example.routebox.presentation.config.Constants.BASE_URL
-import com.example.routebox.presentation.config.XAccessTokenInterceptor
-import com.example.routebox.presentation.utils.NetworkCheckerImpl
+import com.example.routebox.presentation.config.interceptor.BaseInterceptor
+import com.example.routebox.presentation.config.interceptor.TokenRefreshInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,22 +19,27 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    // 인터셉터 있는 API Retrofit
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class InterceptorRetrofit
-
-    // 인터셉터 없는 API Retrofit
+    // 인터셉터 O, 403 재발급 O
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class BasicRetrofit
 
+    // 인터셉터 X (로그인)
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AnonymousRetrofit
+
+    // 인터셉터 O, 403 재발급 X
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class RefreshRetrofit
+
     @Provides
     @Singleton
-    @InterceptorRetrofit
-    fun provideInterceptorOkHttpClient(
+    @BasicRetrofit
+    fun provideBasicOkHttpClient(
         interceptor: HttpLoggingInterceptor,
-        @InterceptorRetrofit authInterceptor: XAccessTokenInterceptor
+        @BasicRetrofit authInterceptor: BaseInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
             .readTimeout(5000, TimeUnit.MILLISECONDS)
@@ -48,45 +50,87 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @InterceptorRetrofit
-    fun provideInterceptorRetrofit(
-        gsonConverterFactory: GsonConverterFactory,
-        @InterceptorRetrofit client: OkHttpClient
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(gsonConverterFactory)
-        .build()
-
-    @Provides
-    @Singleton
-    @InterceptorRetrofit
-    fun provideAuthInterceptor(apiService: AuthApiService)
-            : XAccessTokenInterceptor = XAccessTokenInterceptor(apiService)
-
-    @Provides
-    @Singleton
     @BasicRetrofit
     fun provideBasicRetrofit(
         gsonConverterFactory: GsonConverterFactory,
-        @BasicRetrofit client: OkHttpClient
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(gsonConverterFactory)
-        .build()
+        @BasicRetrofit client: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
 
     @Provides
     @Singleton
     @BasicRetrofit
-    fun provideBasicOkHttpClient(
-        //interceptor: HttpLoggingInterceptor
+    fun provideBasicTokenInterceptor(
+        apiService: RefreshApiService
+    ): BaseInterceptor {
+        return BaseInterceptor(apiService)
+    }
+
+    @Provides
+    @Singleton
+    @AnonymousRetrofit
+    fun provideAnonymousRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @AnonymousRetrofit client: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @AnonymousRetrofit
+    fun provideAnonymousOkHttpClient(
+        interceptor: HttpLoggingInterceptor,
     ): OkHttpClient =
         OkHttpClient.Builder()
             .readTimeout(5000, TimeUnit.MILLISECONDS)
             .connectTimeout(5000, TimeUnit.MILLISECONDS)
-            //.addInterceptor(interceptor)
+            .addInterceptor(interceptor)
             .build()
+
+    @Provides
+    @Singleton
+    @RefreshRetrofit
+    fun provideRefreshOkHttpClient(
+        interceptor: HttpLoggingInterceptor,
+        @RefreshRetrofit authInterceptor: TokenRefreshInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .readTimeout(5000, TimeUnit.MILLISECONDS)
+            .connectTimeout(5000, TimeUnit.MILLISECONDS)
+            .addInterceptor(interceptor)
+            .addInterceptor(authInterceptor)
+            .build()
+
+    @Provides
+    @Singleton
+    @RefreshRetrofit
+    fun provideRefreshRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @RefreshRetrofit client: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @RefreshRetrofit
+    fun provideTokenRefreshInterceptor(): TokenRefreshInterceptor {
+        return TokenRefreshInterceptor()
+    }
 
     @Provides
     @Singleton
@@ -97,8 +141,4 @@ object NetworkModule {
     @Singleton
     fun provideConverterFactory(): GsonConverterFactory =
         GsonConverterFactory.create()
-
-    @Provides
-    @Singleton
-    fun provideNetworkChecker(@ApplicationContext context: Context): NetworkChecker = NetworkCheckerImpl(context)
 }

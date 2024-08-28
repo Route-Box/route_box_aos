@@ -2,23 +2,25 @@ package com.example.routebox.presentation.config
 
 import android.app.Application
 import android.content.SharedPreferences
+import com.example.routebox.BuildConfig
 import com.example.routebox.presentation.di.NetworkModule
+import com.example.routebox.presentation.utils.DataStoreManager
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.HiltAndroidApp
 import retrofit2.Retrofit
 import javax.inject.Inject
 
 @HiltAndroidApp
-class ApplicationClass: Application() {
-    // 서버 주소
-    val API_URL = Constants.BASE_URL
-
-    @Inject
-    @NetworkModule.InterceptorRetrofit
-    lateinit var interceptorRetrofit: Retrofit
+class ApplicationClass : Application() {
 
     @Inject
     @NetworkModule.BasicRetrofit
     lateinit var basicRetrofit: Retrofit
+
+    @Inject
+    @NetworkModule.AnonymousRetrofit
+    lateinit var anonymousRetrofit: Retrofit
 
     init {
         instance = this
@@ -32,16 +34,19 @@ class ApplicationClass: Application() {
         val sSharedPreferences: SharedPreferences
             get() = instance.getSharedPreferences("RouteBox", MODE_PRIVATE)
 
-        // 버전
-        const val VERSION = "1.0.4"
+        lateinit var dsManager: DataStoreManager
 
-        // JWT Token Header 키 값
-        const val X_ACCESS_TOKEN = "X_ACCESS_TOKEN"
-        const val X_REFRESH_TOKEN = "X_REFRESH_TOKEN"
+        // 버전
+        const val VERSION = "1.0.0"
     }
 
     override fun onCreate() {
         super.onCreate()
 
+        dsManager = DataStoreManager(applicationContext)
+
+        // SDK 초기화
+        KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
+        KakaoMapSdk.init(this, BuildConfig.KAKAO_API_KEY)
     }
 }

@@ -38,8 +38,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="oauth"
+
+                <data android:host="oauth"
                     android:scheme="kakao${KAKAO_API_KEY}" />
             </intent-filter>
         </activity>
@@ -71,9 +71,6 @@
         <activity android:name=".presentation.ui.route.edit.RouteStyleActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="${KAKAO_API_KEY}" />
-        <meta-data
-            android:name="com.kakao.vectormap.AppKey"
             android:value="${KAKAO_API_KEY}" />
     </application>
 
