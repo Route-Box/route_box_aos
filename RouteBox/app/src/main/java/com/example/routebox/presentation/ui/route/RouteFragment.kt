@@ -45,10 +45,15 @@ class RouteFragment : Fragment() {
             lifecycleOwner = this@RouteFragment
         }
 
+        setInit()
         initClickListeners()
         initObserve()
 
         return binding.root
+    }
+
+    private fun setInit() {
+        viewModel.tryGetMyRoute() // 내 루트 목록 조회 API 호출
     }
 
     private fun initClickListeners() {

@@ -5,10 +5,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.repositories.RouteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,9 +31,13 @@ class RouteViewModel @Inject constructor(
 
     init {
         _isTracking.value = false
-        _routeList.value = listOf(
-            MyRoute()
-        )
+    }
+
+    /** 내 루트 목록 조회 */
+    fun tryGetMyRoute() {
+        viewModelScope.launch {
+            _routeList.value = repository.getMyRouteList()
+        }
     }
 
     fun setIsTracking() {

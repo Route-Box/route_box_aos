@@ -53,7 +53,8 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RouteDetail
 
-    @GET("/api/v1/routes/my")
+    // 내 루트 목록 조회
+    @GET("routes/my")
     suspend fun getMyRouteList(): ArrayList<MyRoute>
 
     @GET("/api/v1/routes/progress")
