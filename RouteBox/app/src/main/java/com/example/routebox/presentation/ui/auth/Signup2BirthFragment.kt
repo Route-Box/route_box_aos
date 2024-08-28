@@ -40,8 +40,6 @@ class Signup2BirthFragment : Fragment() {
         binding.birthYearEt.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                // TODO: 임시로 날짜 지정 -> 서버 API 보고 형식에 맞춰 바꾸기!
-                viewModel.setBirth("")
                 isBirthValid()
             }
             override fun afterTextChanged(p0: Editable?) { }
@@ -49,8 +47,6 @@ class Signup2BirthFragment : Fragment() {
         binding.birthMonthEt.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                // TODO: 임시로 날짜 지정 -> 서버 API 보고 형식에 맞춰 바꾸기!
-                viewModel.setBirth("")
                 isBirthValid()
             }
             override fun afterTextChanged(p0: Editable?) { }
@@ -58,8 +54,6 @@ class Signup2BirthFragment : Fragment() {
         binding.birthDayEt.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                // TODO: 임시로 날짜 지정 -> 서버 API 보고 형식에 맞춰 바꾸기!
-                viewModel.setBirth("")
                 isBirthValid()
             }
             override fun afterTextChanged(p0: Editable?) { }
@@ -67,7 +61,7 @@ class Signup2BirthFragment : Fragment() {
     }
 
     private fun isBirthValid()  {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFormat = SimpleDateFormat(BIRTH_FORMAT)
         val thisYear = dateFormat.format(Calendar.getInstance().time).substring(0, 4)
         val date = "${binding.birthYearEt.text}-${binding.birthMonthEt.text}-${binding.birthDayEt.text}"
 
@@ -78,5 +72,9 @@ class Signup2BirthFragment : Fragment() {
                 viewModel.setBirth(date)
             } catch (_: ParseException) { }
         }
+    }
+
+    companion object {
+        val BIRTH_FORMAT = "yyyy-MM-dd"
     }
 }

@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.auth
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -51,6 +52,10 @@ class AuthViewModel @Inject constructor(
     private val _refreshResponse = MutableLiveData<RefreshResponse?>()
     val refreshResponse: LiveData<RefreshResponse?> = _refreshResponse
 
+    // 회원가입 성공
+    private val _isSignupSuccess = MutableLiveData<Boolean>()
+    val isSignupSuccess: LiveData<Boolean> = _isSignupSuccess
+
     init {
         _step.value = 1
         nickname.value = ""
@@ -84,6 +89,14 @@ class AuthViewModel @Inject constructor(
     private fun tryGetNicknameAvailability() {
         viewModelScope.launch {
             _isAvailableNickname.value = userRepository.getNicknameAvailability(nickname.value.toString()).isAvailable
+        }
+    }
+
+    /** 회원가입 (내 정보 수정) */
+    fun trySignup() {
+        Log.d("AuthViewModel", "birth: ${_birth.value}")
+        viewModelScope.launch {
+            _isSignupSuccess.value = userRepository.signup(nickname.value!!, _birth.value!!, _gender.value!!).id != 0
         }
     }
 

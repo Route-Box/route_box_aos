@@ -1,7 +1,13 @@
 package com.example.routebox.data.remote
 
+import com.example.routebox.domain.model.EditProfileResponse
 import com.example.routebox.domain.model.NicknameAvailabilityResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.PATCH
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface UserApiService {
@@ -10,4 +16,15 @@ interface UserApiService {
     suspend fun getNicknameAvailability(
         @Path("nickname") nickname: String
     ): NicknameAvailabilityResponse
+
+    // 내 정보 수정
+    @PATCH("users/me")
+    @Multipart
+    suspend fun patchMyInfo(
+        @Part("nickname") nickname: RequestBody?,
+        @Part("gender") gender: RequestBody?,
+        @Part("birthDay") birthDay: RequestBody?,
+        @Part("introduction") introduction: RequestBody?,
+        @Part profileImage: MultipartBody.Part?,
+    ): EditProfileResponse
 }

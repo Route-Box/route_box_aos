@@ -44,6 +44,13 @@ class SignupActivity: AppCompatActivity() {
                 isEnabled = viewModel.terms.value != false
             }
         }
+
+        viewModel.isSignupSuccess.observe(this) {
+            if (it == true) { // 회원가입 성공 -> MainActivity로 이동
+                startActivity(Intent(this, MainActivity::class.java))
+                finishAffinity()
+            }
+        }
     }
 
     private fun initClickListener() {
@@ -65,10 +72,7 @@ class SignupActivity: AppCompatActivity() {
                     binding.nextBtn.text = ContextCompat.getString(this, R.string.signup_complete_btn)
                 }
                 4 -> {
-                    // TODO: 서버 회원가입 API와 연동!!
-                    // 회원가입 API 성공했을 때 MainActivity로 이동!
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finishAffinity()
+                    viewModel.trySignup() // 회원가입 API 호출
                 }
             }
 
