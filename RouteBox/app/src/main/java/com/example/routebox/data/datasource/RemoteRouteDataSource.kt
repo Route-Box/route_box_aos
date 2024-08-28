@@ -305,7 +305,7 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getInsight()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = ${insight}")
+                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = $it")
                 insight = it
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getInsight Fail\ne = $e")

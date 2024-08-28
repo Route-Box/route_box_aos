@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.repositories.RouteRepository
@@ -24,6 +25,9 @@ class RouteViewModel @Inject constructor(
     private val _routeList = MutableLiveData<List<MyRoute>>(emptyList())
     val routeList: LiveData<List<MyRoute>> = _routeList
 
+    private val _insight = MutableLiveData<Insight>()
+    val insight: LiveData<Insight> = _insight
+
     private val _route = MutableLiveData<RouteDetail>()
     val route: LiveData<RouteDetail> = _route
 
@@ -37,6 +41,13 @@ class RouteViewModel @Inject constructor(
     fun tryGetMyRoute() {
         viewModelScope.launch {
             _routeList.value = repository.getMyRouteList()
+        }
+    }
+
+    /** 내 루트 인사이트 조회 */
+    fun tryGetInsight() {
+        viewModelScope.launch {
+            _insight.value = repository.getInsight()
         }
     }
 

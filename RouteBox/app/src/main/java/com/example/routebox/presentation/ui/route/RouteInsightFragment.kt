@@ -53,6 +53,7 @@ class RouteInsightFragment : Fragment() {
     }
 
     private fun setInit() {
+        viewModel.tryGetInsight() // 인사이트 조회 API 호출
         viewModel.tryGetMyRoute() // 내 루트 목록 조회 API 호출
     }
 

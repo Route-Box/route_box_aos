@@ -74,7 +74,8 @@
                             android:id="@+id/insight_my_route_create_num_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="5"
+                            android:text="@{String.valueOf(viewModel.insight.routeCount)}"
+                            tools:text="5"
                             android:textColor="#3D80F4"
                             style="@style/heading_m"/>
 
@@ -96,7 +97,8 @@
                             android:id="@+id/insight_my_route_buy_num_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="100"
+                            android:text="@{String.valueOf(viewModel.insight.purchaseCount)}"
+                            tools:text="100"
                             android:textColor="#F97563"
                             style="@style/heading_m"/>
 
@@ -117,7 +119,8 @@
                             android:id="@+id/insight_my_route_comment_num_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="80"
+                            android:text="@{String.valueOf(viewModel.insight.commentCount)}"
+                            tools:text="80"
                             android:textColor="#70BE90"
                             style="@style/heading_m"/>
 

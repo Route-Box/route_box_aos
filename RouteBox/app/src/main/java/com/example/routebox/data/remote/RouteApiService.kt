@@ -105,7 +105,8 @@ interface RouteApiService {
         @Path("activityId") activityId: Int
     ): ActivityId
 
-    @GET("/api/v1/routes/insight")
+    // 인사이트 조회
+    @GET("routes/insight")
     suspend fun getInsight(): Insight
 
     @POST("/api/v1/reports/user")
