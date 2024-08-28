@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.Activity
+import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
@@ -23,8 +24,8 @@ import javax.inject.Inject
 class RouteWriteViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
-    private val _activity = MutableLiveData<Activity>()
-    val activity: LiveData<Activity> = _activity
+    private val _activity = MutableLiveData<ActivityResult>()
+    val activity: LiveData<ActivityResult> = _activity
 
     private val _placeSearchKeyword = MutableLiveData<String>()
     val placeSearchKeyword: LiveData<String> = _placeSearchKeyword
@@ -58,9 +59,10 @@ class RouteWriteViewModel @Inject constructor(
     val btnEnabled: LiveData<Boolean> = _btnEnabled
 
     init {
-        _activity.value = Activity("", "", "", "",
+        _activity.value = ActivityResult(-1, "", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
-            "", "", null)
+            "", "", arrayListOf()
+        )
         _categoryETC.value = false
     }
 
@@ -113,7 +115,10 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     fun resetActivityResult() {
-        _activity.value = Activity("", "", "", "", "", "", "", "", "", null)
+        _activity.value = ActivityResult(-1, "", "", "", "",
+            TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
+            "", "", arrayListOf()
+        )
         checkBtnEnabled()
     }
 

@@ -16,6 +16,7 @@ import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.domain.model.Activity
+import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.RouteViewModel
@@ -43,7 +44,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
         if (writeViewModel.activity.value?.locationName != "") {
             activityAdapter.addActivities(writeViewModel.activity.value!!)
-            editViewModel.route.value?.activities?.add(writeViewModel.activity.value)
+            editViewModel.route.value?.routeActivities?.add(writeViewModel.activity.value!!)
         }
         writeViewModel.resetActivityResult()
     }
@@ -114,7 +115,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
     private fun initObserve() {
         editViewModel.route.observe(this) { route ->
-            if (route.activities.isNotEmpty()) {
+            if (route.routeActivities.isNotEmpty()) {
                 setActivityAdapter()
             }
         }
@@ -126,7 +127,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             this.layoutManager = LinearLayoutManager(this@RouteWriteActivity, LinearLayoutManager.VERTICAL, false)
         }
         activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
-            override fun onEditButtonClick(position: Int, data: Activity) {
+            override fun onEditButtonClick(position: Int, data: ActivityResult) {
                 //TODO: RouteId를 통한 정보 전달
                 startActivity(Intent(this@RouteWriteActivity, RouteActivityActivity::class.java))
             }
@@ -135,7 +136,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
                 showPopupDialog()
             }
         })
-        activityAdapter.addAllActivities(editViewModel.route.value?.activities as MutableList<Activity>)
+        activityAdapter.addAllActivities(editViewModel.route.value?.routeActivities as MutableList<ActivityResult>)
     }
 
     private fun showPopupDialog() {

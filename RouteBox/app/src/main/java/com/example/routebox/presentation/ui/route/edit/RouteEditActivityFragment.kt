@@ -1,12 +1,14 @@
 package com.example.routebox.presentation.ui.route.edit
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +16,7 @@ import com.example.routebox.R
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.databinding.FragmentRouteEditActivityBinding
 import com.example.routebox.domain.model.Activity
+import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
@@ -23,6 +26,7 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private lateinit var binding: FragmentRouteEditActivityBinding
 
@@ -88,7 +92,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
 
         // 활동 아이템 클릭
         activityAdapter.setActivityClickListener(object : ActivityRVAdapter.MyItemClickListener {
-            override fun onEditButtonClick(position: Int, data: Activity) {
+            override fun onEditButtonClick(position: Int, data: ActivityResult) {
                 //TODO: RouteId를 통한 정보 전달
                 startActivity(Intent(requireActivity(), RouteActivityActivity::class.java))
             }
@@ -105,12 +109,12 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addAllActivities(viewModel.route.value!!.activities as MutableList<Activity>)
+        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
     private fun initObserve() {
         viewModel.route.observe(viewLifecycleOwner) { route ->
-            if (route.activities.isNotEmpty()) {
+            if (route.routeActivities.isNotEmpty()) {
                 setActivityAdapter()
             }
         }

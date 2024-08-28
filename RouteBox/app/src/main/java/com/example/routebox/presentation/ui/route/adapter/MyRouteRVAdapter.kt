@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemRouteMyBinding
-import com.example.routebox.domain.model.Route
+import com.example.routebox.domain.model.MyRoute
 
 class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
 
-    private var routeList = emptyList<Route>()
+    private var routeList = emptyList<MyRoute>()
     private lateinit var mItemClickListener: MyItemClickListener
 
     fun setRouteClickListener(itemClickListener: MyItemClickListener) {
@@ -18,7 +18,7 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addRoute(routeList: List<Route>) {
+    fun addRoute(routeList: List<MyRoute>) {
         this.routeList = routeList
         notifyDataSetChanged()
     }
@@ -46,7 +46,7 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
             }
             // 더보기 버튼 클릭
             binding.itemRouteMyMoreIv.setOnClickListener {
-                mItemClickListener.onMoreButtonClick(binding.itemRouteMyMoreIv, position, routeList[position].isPrivate)
+                mItemClickListener.onMoreButtonClick(binding.itemRouteMyMoreIv, position, routeList[position].isPublic)
             }
             // 댓글 아이콘 클릭
             binding.itemSearchResultCommentNumTv.setOnClickListener {
@@ -59,7 +59,7 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
 
     inner class ViewHolder(val binding: ItemRouteMyBinding) : RecyclerView.ViewHolder(binding.root) {
         //TODO: 실제 Route 데이터로 변경
-        fun bind(route: Route) {
+        fun bind(route: MyRoute) {
             binding.route = route
         }
     }

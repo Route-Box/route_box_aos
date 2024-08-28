@@ -1,14 +1,16 @@
 package com.example.routebox.presentation.ui.route.edit
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteStyleBinding
 import com.example.routebox.domain.model.FilterOption
-import com.example.routebox.domain.model.Route
+import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 import com.google.gson.Gson
@@ -44,7 +46,7 @@ class RouteStyleActivity : AppCompatActivity(), FilterOptionClickListener {
             // 루트 수정 화면으로 이동
             startActivity(
                 Intent(this, RouteEditBaseActivity::class.java)
-                    .putExtra("route", Gson().toJson(Route())) //TODO: 루트 정보 넘기기
+                    .putExtra("route", Gson().toJson(RouteDetail())) //TODO: 루트 정보 넘기기
                     .putExtra("isEditMode", false)
             )
             finish()
@@ -59,6 +61,7 @@ class RouteStyleActivity : AppCompatActivity(), FilterOptionClickListener {
             .commit()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionItemClick(option: FilterOption, isSelected: Boolean) {
         viewModel.updateSelectedOption(option, isSelected)
     }

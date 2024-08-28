@@ -5,11 +5,17 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import javax.inject.Inject
 
+@HiltViewModel
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteCreateViewModel: ViewModel() {
+class RouteCreateViewModel @Inject constructor(
+    private val repository: RouteRepository
+): ViewModel() {
     private val _startDate = MutableLiveData<LocalDate>(TODAY)
     val startDate: LiveData<LocalDate> = _startDate
 

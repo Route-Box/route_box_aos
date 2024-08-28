@@ -35,36 +35,45 @@ class SeekFragment : Fragment() {
 
         // 더미데이터
         routeList.add(
-            RoutePreview("https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-            "1", "2024-07-23",
+            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
             arrayListOf(
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-            ), "제목", "내용", arrayListOf(FilterOption.MANY_TWO, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION, FilterOption.WITH_CHILD, FilterOption.STYLE_ETC, FilterOption.MANY_FOUR, FilterOption.STYLE_HEALING),  1, 1)
+                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
+                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
+            ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
+                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
         )
-        routeList.add( RoutePreview(null, "2", "2024-07-1",
-            arrayListOf(
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-            ), "제목", "내용", arrayListOf(FilterOption.MANY_TWO, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION, FilterOption.WITH_CHILD, FilterOption.STYLE_ETC), 1, 1) )
-        routeList.add( RoutePreview(null, "3", "2024-07-2",
-            arrayListOf(
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-            ), "제목", "내용", arrayListOf(FilterOption.MANY_TWO, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION, FilterOption.WITH_CHILD, FilterOption.STYLE_ETC, FilterOption.MANY_FOUR), 1, 1) )
-        routeList.add( RoutePreview(null, "4", "2024-07-3",
-            arrayListOf(
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-            ), "제목", "내용", arrayListOf(FilterOption.MANY_TWO, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION), 1, 1) )
-        routeList.add( RoutePreview(null, "5", "2024-07-4", null, "제목", "내용", null, 1, 1) )
-        routeList.add( RoutePreview(null, "6", "2024-07-5", null, "제목", "내용", null, 1, 1) )
-        routeList.add( RoutePreview(null, "7", "2024-07-6", null, "제목", "내용", null, 1, 1) )
-        routeList.add( RoutePreview(null, "8", "2024-07-7", null, "제목", "내용", null, 1, 1) )
-        routeList.add( RoutePreview(null, "9", "2024-07-8", null, "제목", "내용", null, 1, 1) )
-        routeList.add( RoutePreview(null, "10", "2024-07-9", null, "제목", "내용", null, 1, 1) )
+        routeList.add(
+            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
+                arrayListOf(
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
+                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
+                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
+        )
+        routeList.add(
+            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
+                arrayListOf(
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
+                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
+                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
+        )
+        routeList.add(
+            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
+                arrayListOf(
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
+                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
+                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
+        )
+        routeList.add(
+            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
+                arrayListOf(
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
+                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
+                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
+                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
+        )
 
         setAdapter()
         initClickListener()

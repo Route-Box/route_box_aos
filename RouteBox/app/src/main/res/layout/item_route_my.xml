@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="route"
-            type="com.example.routebox.domain.model.Route" />
+            type="com.example.routebox.domain.model.MyRoute" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,14 +32,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/route_private_dim"
-                android:visibility="@{route.isPrivate ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{route.isPublic ? View.VISIBLE : View.GONE}" />
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_lock"
                 app:tint="@color/white"
                 android:layout_gravity="center"
-                android:visibility="@{route.isPrivate ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{route.isPublic ? View.VISIBLE : View.GONE}" />
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -63,7 +63,7 @@
                     android:layout_weight="1"
                     android:lines="1"
                     android:ellipsize="end"
-                    android:text="@{route.title}"
+                    android:text="@{route.routeName}"
                     tools:text="루트 제목"
                     style="@style/body_r_m"/>
 
@@ -83,7 +83,7 @@
                 android:layout_marginTop="4dp"
                 android:lines="1"
                 android:ellipsize="end"
-                android:text="@{route.content}"
+                android:text="@{route.routeDescription}"
                 android:textColor="@color/gray3"
                 tools:text="루트 내용"
                 style="@style/body_r_s"/>

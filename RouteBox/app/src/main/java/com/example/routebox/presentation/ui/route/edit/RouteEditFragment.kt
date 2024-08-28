@@ -1,10 +1,12 @@
 package com.example.routebox.presentation.ui.route.edit
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,6 +19,7 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteEditFragment : Fragment(), FilterOptionClickListener {
 
     private lateinit var binding: FragmentRouteEditBinding
@@ -87,7 +90,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
 
     private fun setRouteStyleFragment() {
         // 프래그먼트를 생성하고 저장
-        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = false, FilterOption.findOptionsByNames(viewModel.route.value!!.tags))
+        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = false, FilterOption.findOptionsByNames(viewModel.route.value!!.routeStyles))
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_route_style_frm, routeStyleFragment)
             .commit()

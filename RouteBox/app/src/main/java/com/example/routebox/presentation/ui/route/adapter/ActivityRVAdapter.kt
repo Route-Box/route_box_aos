@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemActivityBinding
 import com.example.routebox.domain.model.Activity
+import com.example.routebox.domain.model.ActivityResult
 
 @SuppressLint("NotifyDataSetChanged")
 class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<ActivityRVAdapter.ViewHolder>(){
 
-    private var activityList = mutableListOf<Activity>()
+    private var activityList = mutableListOf<ActivityResult>()
     private lateinit var mItemClickListener: MyItemClickListener
 
     fun setActivityClickListener(itemClickListener: MyItemClickListener) {
@@ -24,18 +25,18 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         this.notifyDataSetChanged()
     }
 
-    fun addAllActivities(activityList: MutableList<Activity>) {
+    fun addAllActivities(activityList: MutableList<ActivityResult>) {
         this.activityList = activityList
         notifyDataSetChanged()
     }
 
-    fun addActivities(activity: Activity) {
+    fun addActivities(activity: ActivityResult) {
         activityList.add(activity)
         notifyDataSetChanged()
     }
 
     interface MyItemClickListener {
-        fun onEditButtonClick(position: Int, data: Activity)
+        fun onEditButtonClick(position: Int, data: ActivityResult)
         fun onDeleteButtonClick(position: Int)
     }
 
@@ -64,7 +65,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
     override fun getItemCount(): Int = activityList.size
 
     inner class ViewHolder(val binding: ItemActivityBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(activity: Activity) {
+        fun bind(activity: ActivityResult) {
             binding.isEditMode = isEditMode
             binding.activity = activity
             //TODO: 활동 번호에 따른 색상 변경
@@ -72,7 +73,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
             if (!activity.activityImages.isNullOrEmpty()) { // 이미지 표시
                 binding.itemActivityImageRv.apply {
-                    adapter = ActivityImageRVAdapter(activity.activityImages!!.asList())
+                    adapter = ActivityImageRVAdapter(activity.activityImages!!.toList())
                     layoutManager = GridLayoutManager(context, 3)
                 }
             }
