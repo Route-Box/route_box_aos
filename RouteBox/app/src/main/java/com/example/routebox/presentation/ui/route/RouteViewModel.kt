@@ -28,7 +28,7 @@ class RouteViewModel @Inject constructor(
     private val _insight = MutableLiveData<Insight>()
     val insight: LiveData<Insight> = _insight
 
-    private val _route = MutableLiveData<RouteDetail>()
+    private val _route = MutableLiveData<RouteDetail>(RouteDetail())
     val route: LiveData<RouteDetail> = _route
 
     var selectedPosition: Int = 0
@@ -51,11 +51,14 @@ class RouteViewModel @Inject constructor(
         }
     }
 
-    fun setIsTracking() {
-        _isTracking.value = !_isTracking.value!!
+    /** 내 루트 상세조회 */
+    fun tryGetMyRouteDetail(routeId: Int) {
+       viewModelScope.launch {
+           _route.value = repository.getRouteDetail(routeId)
+       }
     }
 
-    fun setRoute(route: RouteDetail) {
-        _route.value = route
+    fun setIsTracking() {
+        _isTracking.value = !_isTracking.value!!
     }
 }

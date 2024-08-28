@@ -46,7 +46,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_route_detail)
 
         binding.apply {
-            viewModel = this@RouteDetailActivity.viewModel
+            binding.route = RouteDetail()
             lifecycleOwner = this@RouteDetailActivity
         }
 
@@ -76,11 +76,9 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun initRoute() {
-        // intent가 넘어왔는지 확인
-        intent.getStringExtra("route")?.let { routeJson ->
-            val route = Gson().fromJson(routeJson, RouteDetail::class.java) // 값이 넘어왔다면 route 인스턴스에 gson 형태로 받아온 데이터를 넣어줌
-            viewModel.setRoute(route)
-        }
+        // 내 루트 상세조회 API 호출
+        val routeId = intent.getIntExtra("routeId", 0)
+        viewModel.tryGetMyRouteDetail(routeId)
     }
 
     private fun initClickListeners() {
@@ -103,12 +101,12 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun setTagAdapter() {
-        // TODO: 오류 임시 주석
-//        tagAdapter = RouteTagRVAdapter(FilterOption.findOptionsByNames(viewModel.route.value!!.routes) as ArrayList<FilterOption>)
-//        binding.routeDetailTagRv.apply {
-//            adapter = tagAdapter
-//            layoutManager = FlexboxLayoutManager(this@RouteDetailActivity)
-//        }
+        //TODO: 루트 스타일 외 다른 태그 설정 필요
+        tagAdapter = RouteTagRVAdapter(viewModel.route.value!!.routeStyles)
+        binding.routeDetailTagRv.apply {
+            adapter = tagAdapter
+            layoutManager = FlexboxLayoutManager(this@RouteDetailActivity)
+        }
     }
 
     private fun setActivityAdapter() {
@@ -122,6 +120,10 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
 
     private fun initObserve() {
         viewModel.route.observe(this) { route ->
+            if (route.routeId != -1) {
+                binding.route = route
+            }
+
             if (route.routeStyles.isNotEmpty()) { // 태그 정보가 있다면
                 setTagAdapter()
             }
@@ -138,9 +140,9 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         // 공개 여부에 따라 메뉴 아이템의 텍스트 변경
         val changeShowMenuItem = popupMenu.menu.findItem(R.id.menu_make_public_or_private)
         if (viewModel.route.value!!.isPublic) {
-            changeShowMenuItem.setTitle(R.string.route_my_make_public)
-        } else {
             changeShowMenuItem.setTitle(R.string.route_my_make_private)
+        } else {
+            changeShowMenuItem.setTitle(R.string.route_my_make_public)
         }
         // 메뉴 노출
         popupMenu.setOnMenuItemClickListener { menuItem ->
@@ -170,7 +172,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun showPopupDialog() {
-        val popupContent = if (viewModel.route.value!!.isPublic) R.string.route_my_change_to_public_popup_content else R.string.route_my_change_to_private_popup_content
+        val popupContent = if (viewModel.route.value!!.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
         val dialog = CommonPopupDialog(this@RouteDetailActivity, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(this.supportFragmentManager, "PopupDialog")

@@ -90,12 +90,9 @@ class RouteFragment : Fragment() {
                 startActivity(intent)
             }
 
-            override fun onItemClick(position: Int) { // 아이템 전체 클릭
+            override fun onItemClick(routeId: Int) { // 아이템 전체 클릭
                 // 루트 보기 화면으로 이동
-                val intent = Intent(requireActivity(), RouteDetailActivity::class.java)
-                val routeJson = Gson().toJson(viewModel.routeList.value!![position])
-                intent.putExtra("route", routeJson)
-                startActivity(intent)
+                startActivity(Intent(requireActivity(), RouteDetailActivity::class.java).putExtra("routeId", routeId))
             }
         })
     }

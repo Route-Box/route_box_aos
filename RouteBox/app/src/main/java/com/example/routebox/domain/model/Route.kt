@@ -1,9 +1,7 @@
 package com.example.routebox.domain.model
 
 import android.net.Uri
-import com.bumptech.glide.load.model.StringLoader
-import java.io.Serializable
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 // 루트 미리보기
 data class RoutePreview(
@@ -40,10 +38,9 @@ data class RouteDetail(
     var numberOfPeople: Int = -1,
     var numberOfDays: String = "",
     var transportation: String = "",
-    var createdAt: String = "",
+    var createdAt: String = LocalDateTime.now().toString(),
     var routePath: ArrayList<RoutePath> = arrayListOf(),
     var routeActivities: ArrayList<ActivityResult> = arrayListOf(),
-    // TODO: 내 루트의 경우, isPublic 데이터 서버에 추가 요청! 구매한 다른 사람의 루트는 공개 여부 필요 X!
     var isPublic: Boolean = false
 )
 

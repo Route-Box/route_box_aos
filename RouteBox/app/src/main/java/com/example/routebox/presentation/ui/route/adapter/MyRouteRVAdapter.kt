@@ -26,7 +26,7 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
     interface MyItemClickListener {
         fun onMoreButtonClick(view: View?, position: Int, isPrivate: Boolean)
         fun onCommentButtonClick(position: Int)
-        fun onItemClick(position: Int)
+        fun onItemClick(routeId: Int)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -42,7 +42,7 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
         holder.apply {
             // 아이템 전체 클릭
             itemView.setOnClickListener {
-                mItemClickListener.onItemClick(position)
+                mItemClickListener.onItemClick(routeList[position].routeId)
             }
             // 더보기 버튼 클릭
             binding.itemRouteMyMoreIv.setOnClickListener {

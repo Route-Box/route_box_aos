@@ -89,9 +89,9 @@ class RouteInsightFragment : Fragment() {
                 startActivity(intent)
             }
 
-            override fun onItemClick(position: Int) { // 아이템 전체 클릭
+            override fun onItemClick(routeId: Int) { // 아이템 전체 클릭
                 // 루트 보기 화면으로 이동
-                startActivity(Intent(requireActivity(), RouteDetailActivity::class.java))
+                startActivity(Intent(requireActivity(), RouteDetailActivity::class.java).putExtra("routeId", routeId))
             }
         })
     }
