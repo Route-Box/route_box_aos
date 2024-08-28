@@ -10,10 +10,11 @@
             type="com.example.routebox.presentation.ui.route.RouteViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingHorizontal="22dp"
         android:fitsSystemWindows="true"
         android:background="@color/gray7">
 
@@ -21,7 +22,7 @@
             android:id="@+id/insight_top_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="26dp"
+            android:paddingHorizontal="4dp"
             android:paddingVertical="20dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -35,139 +36,127 @@
 
         </LinearLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingHorizontal="22dp"
-            app:layout_constraintTop_toBottomOf="@id/insight_top_ll"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/insight_title"
+                style="@style/heading_m"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="인사이트"
-                    style="@style/heading_m"/>
+                android:layout_marginTop="28dp"
+                android:paddingHorizontal="30dp"
+                android:paddingVertical="24dp"
+                android:background="@drawable/bg_insight_statistics_shadow"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
-                    android:paddingHorizontal="30dp"
-                    android:paddingVertical="24dp"
-                    android:background="@drawable/bg_insight_statistics_shadow"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/insight_my_route_create_num_tv"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal">
+                        android:text="@{String.valueOf(viewModel.insight.routeCount)}"
+                        tools:text="5"
+                        android:textColor="#3D80F4"
+                        style="@style/heading_m"/>
 
-                        <TextView
-                            android:id="@+id/insight_my_route_create_num_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(viewModel.insight.routeCount)}"
-                            tools:text="5"
-                            android:textColor="#3D80F4"
-                            style="@style/heading_m"/>
-
-                        <TextView
-                            android:text="@string/insight_my_route_create_num"
-                            style="@style/insight_statistics_description_tv" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginHorizontal="16dp"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal">
-
-                        <TextView
-                            android:id="@+id/insight_my_route_buy_num_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(viewModel.insight.purchaseCount)}"
-                            tools:text="100"
-                            android:textColor="#F97563"
-                            style="@style/heading_m"/>
-
-                        <TextView
-                            android:text="@string/insight_my_route_buy_num"
-                            style="@style/insight_statistics_description_tv" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal">
-
-                        <TextView
-                            android:id="@+id/insight_my_route_comment_num_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(viewModel.insight.commentCount)}"
-                            tools:text="80"
-                            android:textColor="#70BE90"
-                            style="@style/heading_m"/>
-
-                        <TextView
-                            android:text="@string/insight_my_route_comment_num"
-                            style="@style/insight_statistics_description_tv" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:text="@string/insight_my_route_create_num"
+                        style="@style/insight_statistics_description_tv" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:text="@string/insight_my_route_collection"
-                    style="@style/heading_s"/>
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="16dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/route_my_empty_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="52dp"
-                    android:drawableTop="@drawable/img_empty"
-                    android:drawablePadding="16dp"
-                    android:text="@string/route_my_empty"
-                    android:textColor="@color/gray1"
-                    android:visibility="@{viewModel.routeList.empty ? View.VISIBLE : View.GONE}"
-                    tools:visibility="gone"
-                    style="@style/body_r_s"/>
+                    <TextView
+                        android:id="@+id/insight_my_route_buy_num_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{String.valueOf(viewModel.insight.purchaseCount)}"
+                        tools:text="100"
+                        android:textColor="#F97563"
+                        style="@style/heading_m"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/route_my_rv"
-                    android:layout_width="match_parent"
+                    <TextView
+                        android:text="@string/insight_my_route_buy_num"
+                        style="@style/insight_statistics_description_tv" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="20dp"
-                    android:overScrollMode="never"
-                    android:nestedScrollingEnabled="false"
-                    android:visibility="@{viewModel.routeList.empty ? View.GONE : View.VISIBLE}"
-                    tools:listitem="@layout/item_route_my"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/insight_my_route_comment_num_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{String.valueOf(viewModel.insight.commentCount)}"
+                        tools:text="80"
+                        android:textColor="#70BE90"
+                        style="@style/heading_m"/>
+
+                    <TextView
+                        android:text="@string/insight_my_route_comment_num"
+                        style="@style/insight_statistics_description_tv" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </androidx.core.widget.NestedScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:text="@string/insight_my_route_collection"
+                style="@style/heading_s"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/route_my_empty_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="52dp"
+                android:drawableTop="@drawable/img_empty"
+                android:drawablePadding="16dp"
+                android:text="@string/route_my_empty"
+                android:textColor="@color/gray1"
+                android:visibility="@{viewModel.routeList.empty ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone"
+                style="@style/body_r_s"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/route_my_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="@{viewModel.routeList.empty ? View.GONE : View.VISIBLE}"
+                tools:listitem="@layout/item_route_my"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </layout>

@@ -114,6 +114,7 @@
     <string name="route_my_change_to_public_popup_content">해당 루트를 전체 공개로\n변경하시겠습니까?</string>
     <string name="route_my_change_to_private_popup_content">해당 루트를 비공개로\n변경하시겠습니까?</string>
     <!-- 인사이트 -->
+    <string name="insight_title">인사이트</string>
     <string name="insight_my_route_create_num">내 루트 수</string>
     <string name="insight_my_route_buy_num">내 루트 구매 수</string>
     <string name="insight_my_route_comment_num">내 루트 댓글 수</string>
