@@ -141,4 +141,12 @@ object NetworkModule {
     @Singleton
     fun provideConverterFactory(): GsonConverterFactory =
         GsonConverterFactory.create()
+
+    @Provides
+    @Singleton
+    fun provideKakaoRetrofit(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl("https://dapi.kakao.com/v2/local/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 }

@@ -29,6 +29,7 @@ object RepositoryModule {
         remoteUserDataSource: RemoteUserDataSource
     ): UserRepository = UserRepositoryImpl(remoteUserDataSource)
 
+    /** 루트 */
     @Provides
     fun provideRouteRepository(
         remoteRouteDataSource: RemoteRouteDataSource,

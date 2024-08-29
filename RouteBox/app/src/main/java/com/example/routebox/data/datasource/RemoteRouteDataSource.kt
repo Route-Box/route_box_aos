@@ -2,6 +2,7 @@ package com.example.routebox.data.datasource
 
 import android.util.Log
 import com.example.routebox.BuildConfig
+import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
@@ -28,7 +29,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RemoteRouteDataSource @Inject constructor(
-    private val routeApiService: RouteApiService
+    private val routeApiService: RouteApiService,
+    private val kakaoApiService: KakaoApiService
 ) {
     suspend fun searchKakaoPlace(
         query: String,
@@ -43,7 +45,7 @@ class RemoteRouteDataSource @Inject constructor(
         )
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.searchKakaoPlace("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", query, page)
+                kakaoApiService.searchKakaoPlace("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", query, page)
             }.onSuccess {
                 Log.d("RemoteRouteDataSource", "searchKakaoPlace Success\nmeta = ${it.meta}\ndocuments = ${it.documents}")
                 kakaoSearchResult = it
