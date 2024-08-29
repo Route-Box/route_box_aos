@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -131,6 +130,12 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 setActivityAdapter()
             }
         }
+
+        viewModel.isDeleteRouteSuccess.observe(this) { isSuccess ->
+            if (isSuccess) { // 삭제 완료 후 뒤로가기
+                finish()
+            }
+        }
     }
 
     private fun showMenu(view: View) {
@@ -157,11 +162,11 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                     true
                 }
                 R.id.menu_make_public_or_private -> { // 공개/비공개 전환
-                    showPopupDialog() // 확인 다이얼로그 노출
+                    showChangePublicPopupDialog() // 확인 다이얼로그 노출
                     true
                 }
                 R.id.menu_delete -> { // 삭제하기
-                    Toast.makeText(this, "삭제하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
+                    showDeletePopupDialog() // 확인 다이얼로그 노출
                     true
                 }
                 else -> { false }
@@ -170,15 +175,25 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         popupMenu.show()
     }
 
-    private fun showPopupDialog() {
+    private fun showChangePublicPopupDialog() {
         val popupContent = if (viewModel.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
-        val dialog = CommonPopupDialog(this@RouteDetailActivity, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
+        val dialog = CommonPopupDialog(this, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(this.supportFragmentManager, "PopupDialog")
+    }
+
+    private fun showDeletePopupDialog() {
+        val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(this.supportFragmentManager, "PopupDialog")
     }
 
     override fun onClickPositiveButton(id: Int) {
-        // 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
-        viewModel.tryChangePublic()
+        if (DialogType.getDialogTypeById(id) == DialogType.CHANGE_PUBLIC) { // 공개 여부 전환 확인
+            // 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
+            viewModel.tryChangePublic()
+        } else { // 삭제 확인
+            viewModel.tryDeleteRoute()
+        }
     }
 }

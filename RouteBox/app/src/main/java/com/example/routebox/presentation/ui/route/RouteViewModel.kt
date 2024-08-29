@@ -35,12 +35,15 @@ class RouteViewModel @Inject constructor(
     var isPublic: Boolean = false
     var selectedRouteId: Int = 0
 
+    private val _isDeleteRouteSuccess = MutableLiveData<Boolean>(false)
+    val isDeleteRouteSuccess: LiveData<Boolean> = _isDeleteRouteSuccess
+
     init {
         _isTracking.value = false
     }
 
     /** 내 루트 목록 조회 */
-    fun tryGetMyRoute() {
+    fun tryGetMyRouteList() {
         viewModelScope.launch {
             _routeList.value = repository.getMyRouteList()
         }
@@ -67,6 +70,13 @@ class RouteViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.updateRoutePublic(selectedRouteId, RoutePublicRequest(!isPublic))
             _route.value = _route.value!!.copy(isPublic = response.isPublic)
+        }
+    }
+
+    /** 루트 삭제 */
+    fun tryDeleteRoute() {
+        viewModelScope.launch {
+            _isDeleteRouteSuccess.value = (repository.deleteRoute(selectedRouteId).routeId != -1)
         }
     }
 

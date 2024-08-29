@@ -100,7 +100,8 @@ interface RouteApiService {
         @Body activityUpdateRequest: ActivityUpdateRequest
     ): ActivityResult
 
-    @DELETE("/api/v1/routes/{routeId}")
+    // 루트 삭제
+    @DELETE("routes/{routeId}")
     suspend fun deleteRoute(
         @Path("routeId") routeId: Int
     ): RouteId

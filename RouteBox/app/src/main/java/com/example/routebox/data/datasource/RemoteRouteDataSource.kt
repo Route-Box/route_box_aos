@@ -118,8 +118,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getMyRouteList()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
                 myRouteList = it.result
+                Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getMyRouteList Fail\ne = $e")
             }
@@ -274,8 +274,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.deleteRoute(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "deleteRoute Success\nrouteId = ${deleteRouteId}")
                 deleteRouteId = it
+                Log.d("RemoteRouteDataSource", "deleteRoute Success\nrouteId = ${deleteRouteId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "deleteRoute Fail\ne = $e")
             }

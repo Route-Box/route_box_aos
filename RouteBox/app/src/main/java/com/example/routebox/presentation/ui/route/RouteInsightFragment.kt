@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -56,8 +55,9 @@ class RouteInsightFragment : Fragment(), PopupDialogInterface {
     }
 
     private fun setInit() {
+        setAdapter()
         viewModel.tryGetInsight() // 인사이트 조회 API 호출
-        viewModel.tryGetMyRoute() // 내 루트 목록 조회 API 호출
+        viewModel.tryGetMyRouteList() // 내 루트 목록 조회 API 호출
     }
 
     private fun initClickListeners() {
@@ -104,8 +104,14 @@ class RouteInsightFragment : Fragment(), PopupDialogInterface {
         viewModel.routeList.observe(viewLifecycleOwner) { routeList ->
             Log.d("RouteFragment", "routeList: $routeList")
             if (!routeList.isNullOrEmpty()) {
-                setAdapter()
                 myRouteAdapter.addRoute(routeList)
+            }
+        }
+
+        // 삭제 성공 유무를 관측하여 삭제 시 routeList 업데이트
+        viewModel.isDeleteRouteSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            if (isSuccess) {
+                viewModel.tryGetMyRouteList()
             }
         }
     }
@@ -134,11 +140,11 @@ class RouteInsightFragment : Fragment(), PopupDialogInterface {
                     true
                 }
                 R.id.menu_make_public_or_private -> { // 공개/비공개 전환
-                    showPopupDialog()
+                    showChangePublicPopupDialog()
                     true
                 }
                 R.id.menu_delete -> { // 삭제하기
-                    Toast.makeText(requireContext(), "삭제하기 메뉴 클릭", Toast.LENGTH_SHORT).show()
+                    showDeletePopupDialog()
                     true
                 }
                 else -> { false }
@@ -147,15 +153,25 @@ class RouteInsightFragment : Fragment(), PopupDialogInterface {
         popupMenu.show()
     }
 
-    private fun showPopupDialog() {
+    private fun showChangePublicPopupDialog() {
         val popupContent = if (viewModel.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
         val dialog = CommonPopupDialog(this, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(parentFragmentManager, "PopupDialog")
     }
 
+    private fun showDeletePopupDialog() {
+        val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(parentFragmentManager, "PopupDialog")
+    }
+
     override fun onClickPositiveButton(id: Int) {
-        // 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
-        viewModel.tryChangePublic()
+        if (DialogType.getDialogTypeById(id) == DialogType.CHANGE_PUBLIC) { // 공개 여부 전환 확인
+            // 공개 상태라면 비공개 전환, 비공개 상태라면 공개 전환
+            viewModel.tryChangePublic()
+        } else { // 삭제 확인
+            viewModel.tryDeleteRoute()
+        }
     }
 }
