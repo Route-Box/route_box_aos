@@ -1,44 +1,56 @@
-package com.example.routebox.presentation.ui.route
+package com.example.routebox.presentation.ui.route.edit
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteCompleteTagBinding
 import com.example.routebox.domain.model.FilterOption
+import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
-import com.example.routebox.presentation.ui.route.write.RouteCompleteBaseActivity
-import com.example.routebox.presentation.ui.route.write.RouteCompleteViewModel
+import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 
-class RouteCompleteTagActivity: AppCompatActivity(), FilterOptionClickListener {
-
+@AndroidEntryPoint
+class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener {
     private lateinit var binding: ActivityRouteCompleteTagBinding
+
+    private val viewModel: RouteCompleteTagViewModel by viewModels()
+
     private lateinit var routeStyleFragment: RouteStyleFragment
-    private val viewModel: RouteCompleteViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_route_complete_tag)
+
         binding.apply {
             viewModel = this@RouteCompleteTagActivity.viewModel
             lifecycleOwner = this@RouteCompleteTagActivity
         }
 
-        initClickListener()
+        initClickListeners()
         setRouteStyleFragment()
     }
 
-    private fun initClickListener() {
-        binding.closeIv.setOnClickListener {
+    private fun initClickListeners() {
+        // x 버튼
+        binding.routeStyleCloseIv.setOnClickListener {
             finish()
         }
 
-        binding.completeBtn.setOnClickListener {
-            startActivity(Intent(this, RouteCompleteBaseActivity::class.java))
+        // 완료 버튼
+        binding.routeStyleDoneBtn.setOnClickListener {
+            // 루트 수정 화면으로 이동
+            startActivity(
+                Intent(this, RouteEditBaseActivity::class.java)
+                    .putExtra("route", Gson().toJson(RouteDetail())) //TODO: 루트 정보 넘기기
+                    .putExtra("isEditMode", false)
+            )
             finish()
         }
     }
@@ -47,12 +59,12 @@ class RouteCompleteTagActivity: AppCompatActivity(), FilterOptionClickListener {
         // 프래그먼트를 생성하고 저장
         routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = false, null)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_route_style_frm, routeStyleFragment)
+            .replace(R.id.route_style_frm, routeStyleFragment)
             .commit()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionItemClick(option: FilterOption, isSelected: Boolean) {
         viewModel.updateSelectedOption(option, isSelected)
-        Log.d("ROUTE-TEST", "viewModel = ${viewModel.selectedOptionMap.value}")
     }
 }
