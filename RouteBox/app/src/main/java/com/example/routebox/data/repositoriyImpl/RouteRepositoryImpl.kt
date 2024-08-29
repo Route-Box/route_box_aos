@@ -57,8 +57,8 @@ class RouteRepositoryImpl @Inject constructor(
         return remoteRouteDataSource.updateRoutePublic(routeId, isPublic)
     }
 
-    override suspend fun createRoute(): RouteWriteTime {
-        return remoteRouteDataSource.createRoute()
+    override suspend fun createRoute(startTime: String, endTime: String): RouteId {
+        return remoteRouteDataSource.createRoute(startTime, endTime)
     }
 
     override suspend fun createActivity(routeId: Int, activity: Activity): ActivityResult {

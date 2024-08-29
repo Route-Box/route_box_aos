@@ -65,7 +65,10 @@ interface RouteRepository {
     ): RoutePublicRequest
 
     /** 루트 생성 (루트 기록 시작) */
-    suspend fun createRoute(): RouteWriteTime
+    suspend fun createRoute(
+        startTime: String,
+        endTime: String
+    ): RouteId
 
     /** 루트 활동 추가 */
     // TODO: Multipart 추가 필요

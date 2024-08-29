@@ -75,8 +75,11 @@ interface RouteApiService {
         @Body isPublic: RoutePublicRequest
     ): RoutePublicRequest
 
-    @POST("/api/v1/routes/start")
-    suspend fun createRoute(): RouteWriteTime
+    // 루트 생성 (루트 기록 시작)
+    @POST("routes/start")
+    suspend fun createRoute(
+        @Body timeBody: RouteWriteTime
+    ): RouteId
 
     @POST("/api/v1/routes/{routeId}/activity")
     suspend fun createActivity(

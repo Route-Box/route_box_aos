@@ -173,8 +173,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.updateRoutePublic(routeId, isPublicBody)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
                 isPublic = it
+                Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateRoutePublic Fail\ne = $e")
             }
@@ -183,20 +183,23 @@ class RemoteRouteDataSource @Inject constructor(
         return isPublic
     }
 
-    suspend fun createRoute(): RouteWriteTime {
-        var writeTime = RouteWriteTime("", "")
+    suspend fun createRoute(
+        startTime: String,
+        endTime: String
+    ): RouteId {
+        var routeId = RouteId(-1)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.createRoute()
+                routeApiService.createRoute(RouteWriteTime(startTime, endTime))
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "createRoute Success\nwriteTime = ${writeTime}")
-                writeTime = it
+                routeId = it
+                Log.d("RemoteRouteDataSource", "createRoute Success\nrouteId = $routeId")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "createRoute Fail\ne = $e")
             }
         }
 
-        return writeTime
+        return routeId
     }
 
     suspend fun createActivity(

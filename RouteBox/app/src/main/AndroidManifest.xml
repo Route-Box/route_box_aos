@@ -66,6 +66,7 @@
         <activity android:name=".presentation.ui.route.RouteCompleteTagActivity" />
         <activity android:name=".presentation.ui.route.write.RouteCompleteBaseActivity" />
         <activity android:name=".presentation.ui.route.RouteCompleteActivity" />
+        <activity android:name=".presentation.ui.route.write.RouteNotYetActivity"/>
         <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.route.edit.RouteStyleActivity"/>

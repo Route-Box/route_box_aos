@@ -31,6 +31,10 @@ object DateConverter {
         return date.format(DateTimeFormatter.ofPattern(DATE_API_PATTERN))
     }
 
+    fun getAPIFormattedDateAndTime(date: LocalDate, timePair: Pair<Int, Int>): String {
+        return "${getAPIFormattedDate(date)}T${format(MINUTE_FORMAT, timePair.first)}:${format(MINUTE_FORMAT, timePair.second)}:00" // "2024-08-28T14:11:52" 형태의 서버 데이터로 변환
+    }
+
     @JvmStatic
     fun getFormattedCreatedDateTime(serverDate: String): String { // "2024-08-28T14:11:52" 형태의 서버 데이터
         // 서버로부터 받은 날짜를 LocalDateTime으로 파싱
