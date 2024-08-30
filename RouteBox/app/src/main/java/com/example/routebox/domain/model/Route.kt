@@ -2,8 +2,13 @@ package com.example.routebox.domain.model
 
 import android.net.Uri
 import com.bumptech.glide.load.model.StringLoader
+import java.io.File
 import java.io.Serializable
 import java.time.LocalDate
+
+data class RoutePreviewResult(
+    var result: ArrayList<RoutePreview> = arrayListOf()
+)
 
 // 루트 미리보기
 data class RoutePreview(
@@ -13,7 +18,7 @@ data class RoutePreview(
     var nickname: String = "",
     var routeName: String = "",
     var routeDescription: String = "",
-    var routeImageUrls: ArrayList<String> = arrayListOf(),
+    var routeImageUrls: ArrayList<String>? = arrayListOf(),
     var isPurchased: Boolean = false,
     var purchaseCount: Int = -1,
     var commentCount: Int = -1,
@@ -126,16 +131,16 @@ data class RouteUpdateResult(
 
 // 활동 추가
 data class Activity(
-    var locationName: String,
-    var address: String,
-    var latitude: String,
-    var longitude: String,
-    var visitDate: String,
-    var startTime: String,
-    var endTime: String,
-    var category: String, // 음식점, 관광명소 등
-    var description: String?,
-    var activityImages: Array<String>?,
+    var locationName: String = "",
+    var address: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
+    var visitDate: String = "",
+    var startTime: String = "",
+    var endTime: String = "",
+    var category: String = "", // 음식점, 관광명소 등
+    var description: String? = null,
+    var activityImages: ArrayList<File?> = arrayListOf(),
 )
 
 data class ActivityResult(

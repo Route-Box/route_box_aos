@@ -445,6 +445,7 @@
                     android:fontFamily="@font/pretendard_bold"
                     android:background="@drawable/selector_main_btn"
                     android:textColor="@drawable/selector_main_btn"
+                    android:onClick="@{() -> viewModel.addActivity()}"
                     app:layout_constraintTop_toBottomOf="@id/location_content_cv"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />

@@ -24,8 +24,11 @@ import javax.inject.Inject
 class RouteWriteViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
-    private val _activity = MutableLiveData<ActivityResult>()
-    val activity: LiveData<ActivityResult> = _activity
+    private val _routeId = MutableLiveData<Int>()
+    val routeId: LiveData<Int> = _routeId
+
+    private val _activity = MutableLiveData<Activity>()
+    val activity: LiveData<Activity> = _activity
 
     private val _placeSearchKeyword = MutableLiveData<String>()
     val placeSearchKeyword: LiveData<String> = _placeSearchKeyword
@@ -59,7 +62,7 @@ class RouteWriteViewModel @Inject constructor(
     val btnEnabled: LiveData<Boolean> = _btnEnabled
 
     init {
-        _activity.value = ActivityResult(-1, "", "", "", "",
+        _activity.value = Activity("", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
             "", "", arrayListOf()
         )
@@ -114,8 +117,8 @@ class RouteWriteViewModel @Inject constructor(
         _categoryETC.value = category
     }
 
-    fun resetActivityResult() {
-        _activity.value = ActivityResult(-1, "", "", "", "",
+    fun resetActivity() {
+        _activity.value = Activity("", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
             "", "", arrayListOf()
         )
@@ -150,8 +153,29 @@ class RouteWriteViewModel @Inject constructor(
                 "visitDate = ${_activity.value?.visitDate}\nstart = ${_activity.value?.startTime}\n" +
                 "end = ${_activity.value?.endTime}\ncategory = ${_activity.value?.category}\n" +
                 "image = ${_activity.value?.activityImages?.size}\ndescription = ${_activity.value?.description}")
+        if (_activity.value?.activityImages?.size != 0) {
+            for (i in 0 until _activity.value?.activityImages?.size!!) {
+                Log.d("ROUTE-TEST", "image = ${_activity.value?.activityImages!![i]}")
+            }
+        }
+
         _btnEnabled.value = _activity.value?.locationName != ""
                 && _activity.value?.visitDate != "" && _activity.value?.startTime != ""
                 && _activity.value?.endTime != "" && _activity.value?.category != ""
     }
+
+    fun addActivity() {
+        viewModelScope.launch {
+            Log.d("ROUTE-TEST", "addActivity Click")
+            repository.createActivity(
+                // _routeId.value!!,
+                49,
+                _activity.value!!.locationName, _activity.value!!.address,
+                _activity.value!!.latitude, _activity.value!!.longitude, _activity.value!!.visitDate,
+                _activity.value!!.startTime, _activity.value!!.endTime, _activity.value!!.category,
+                _activity.value!!.description, _activity.value!!.activityImages
+            )
+        }
+    }
+
 }

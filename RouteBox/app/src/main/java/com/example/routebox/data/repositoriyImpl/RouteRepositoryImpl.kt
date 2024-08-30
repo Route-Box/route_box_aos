@@ -1,6 +1,7 @@
 package com.example.routebox.data.repositoriyImpl
 
 import com.example.routebox.data.datasource.RemoteRouteDataSource
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
@@ -20,6 +21,8 @@ import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
 import com.example.routebox.domain.repositories.RouteRepository
+import retrofit2.http.Part
+import java.io.File
 import javax.inject.Inject
 
 class RouteRepositoryImpl @Inject constructor(
@@ -29,7 +32,7 @@ class RouteRepositoryImpl @Inject constructor(
         return remoteRouteDataSource.searchKakaoPlace(query, page)
     }
 
-    override suspend fun getSearchRouteList(page: Int, size: Int): ArrayList<RoutePreview> {
+    override suspend fun getSearchRouteList(page: Int, size: Int): RoutePreviewResult {
         return remoteRouteDataSource.getSearchRouteList(page, size)
     }
 
@@ -61,8 +64,23 @@ class RouteRepositoryImpl @Inject constructor(
         return remoteRouteDataSource.createRoute()
     }
 
-    override suspend fun createActivity(routeId: Int, activity: Activity): ActivityResult {
-        return remoteRouteDataSource.createActivity(routeId, activity)
+    override suspend fun createActivity(
+        routeId: Int,
+        locationName: String,
+        address: String,
+        latitude: String?,
+        longitude: String?,
+        visitDate: String,
+        startTime: String,
+        endTime: String,
+        category: String,
+        description: String?,
+        activityImages: ArrayList<File?>
+    ): ActivityResult {
+        return remoteRouteDataSource.createActivity(
+            routeId, locationName, address, latitude, longitude,
+            visitDate, startTime, endTime, category, description, activityImages
+        )
     }
 
     override suspend fun updateRoute(

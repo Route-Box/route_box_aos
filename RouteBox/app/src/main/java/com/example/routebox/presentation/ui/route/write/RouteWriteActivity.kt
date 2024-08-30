@@ -43,10 +43,10 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
         super.onResume()
 
         if (writeViewModel.activity.value?.locationName != "") {
-            activityAdapter.addActivities(writeViewModel.activity.value!!)
-            editViewModel.route.value?.routeActivities?.add(writeViewModel.activity.value!!)
+//            activityAdapter.addActivities(writeViewModel.activity.value!!)
+//            editViewModel.route.value?.routeActivities?.add(writeViewModel.activity.value!!)
         }
-        writeViewModel.resetActivityResult()
+//        writeViewModel.resetActivityResult()
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

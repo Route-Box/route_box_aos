@@ -1,5 +1,6 @@
 package com.example.routebox.data.remote
 
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
@@ -17,12 +18,16 @@ import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -31,7 +36,7 @@ interface RouteApiService {
     suspend fun getSearchRouteList(
         @Query("page") page: Int,
         @Query("size") size: Int
-    ): ArrayList<RoutePreview>
+    ): RoutePreviewResult
 
     @GET("routes/{routeId}")
     suspend fun getRouteDetailPreview(
@@ -65,9 +70,19 @@ interface RouteApiService {
     suspend fun createRoute(): RouteWriteTime
 
     @POST("routes/{routeId}/activity")
+    @Multipart
     suspend fun createActivity(
-        @Path("routeId") routeId: Int,
-        @Body activity: Activity
+        @Path("routeId") routeId: RequestBody,
+        @Part("locationName") locationName: RequestBody,
+        @Part("address") address: RequestBody,
+        @Part("latitude") latitude: RequestBody?,
+        @Part("longitude") longitude: RequestBody?,
+        @Part("visitDate") visitDate: RequestBody,
+        @Part("startTime") startTime: RequestBody,
+        @Part("endTime") endTime: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part("description") description: RequestBody?,
+        @Part activityImages: List<MultipartBody.Part?>
     ): ActivityResult
 
     @PUT("routes/{routeId}")

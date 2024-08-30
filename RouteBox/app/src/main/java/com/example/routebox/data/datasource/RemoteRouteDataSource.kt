@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
@@ -26,6 +27,12 @@ import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class RemoteRouteDataSource @Inject constructor(
@@ -47,8 +54,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 kakaoApiService.searchKakaoPlace("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", query, page)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "searchKakaoPlace Success\nmeta = ${it.meta}\ndocuments = ${it.documents}")
                 kakaoSearchResult = it
+                Log.d("RemoteRouteDataSource", "searchKakaoPlace Success\nmeta = ${it.meta}\ndocuments = ${it.documents}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "searchKakaoPlace Fail\ne = $e")
             }
@@ -59,14 +66,14 @@ class RemoteRouteDataSource @Inject constructor(
     suspend fun getSearchRouteList(
         page: Int,
         size: Int
-    ): ArrayList<RoutePreview> {
-        var routePreviewList = arrayListOf<RoutePreview>()
+    ): RoutePreviewResult {
+        var routePreviewList = RoutePreviewResult()
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.getSearchRouteList(page, size)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getSearchRouteList Success\nroutePreviewList = ${routePreviewList}")
                 routePreviewList = it
+                Log.d("RemoteRouteDataSource", "getSearchRouteList Success\nroutePreviewList = ${routePreviewList}\npage = $page size = $size")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getSearchRouteList Fail\ne = $e")
             }
@@ -83,8 +90,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getRouteDetailPreview(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getRouteDetailPreview Success\nroutePreview = ${routePreview}")
                 routePreview = it
+                Log.d("RemoteRouteDataSource", "getRouteDetailPreview Success\nroutePreview = ${routePreview}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getRouteDetailPreview Fail\ne = $e")
             }
@@ -104,8 +111,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getRouteDetail(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getRouteDetail Success\nrouteDetail = ${routeDetail}")
                 routeDetail = it
+                Log.d("RemoteRouteDataSource", "getRouteDetail Success\nrouteDetail = ${routeDetail}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getRouteDetail Fail\ne = $e")
             }
@@ -120,8 +127,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getMyRouteList()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
                 myRouteList = it
+                Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getMyRouteList Fail\ne = $e")
             }
@@ -156,8 +163,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.addRouteDot(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")
                 routeDot = it
+                Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "addRouteDot Fail\ne = $e")
             }
@@ -174,8 +181,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.updateRoutePublic(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
                 isPublic = it
+                Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateRoutePublic Fail\ne = $e")
             }
@@ -190,8 +197,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.createRoute()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "createRoute Success\nwriteTime = ${writeTime}")
                 writeTime = it
+                Log.d("RemoteRouteDataSource", "createRoute Success\nwriteTime = ${writeTime}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "createRoute Fail\ne = $e")
             }
@@ -202,17 +209,39 @@ class RemoteRouteDataSource @Inject constructor(
 
     suspend fun createActivity(
         routeId: Int,
-        activity: Activity
+        locationName: String,
+        address: String,
+        latitude: String?,
+        longitude: String?,
+        visitDate: String,
+        startTime: String,
+        endTime: String,
+        category: String,
+        description: String?,
+        activityImages: ArrayList<File?>
     ): ActivityResult {
         var activityResult = ActivityResult(
             -1, "", "", "", "", "", "", "", "", "", arrayListOf()
         )
+
+        var activityImagesPart = mutableListOf<MultipartBody.Part?>()
+        if (activityImages.isNotEmpty()) {
+            for (i in 0 until activityImages.size) {
+                activityImagesPart.add(MultipartBody.Part.createFormData("activityImages",
+                    activityImages.get(i)!!.name, activityImages.get(i)!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                ))
+            }
+        }
+
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.createActivity(routeId, activity)
+                routeApiService.createActivity(
+                    createPartFromString(routeId.toString())!!, createPartFromString(locationName)!!, createPartFromString(address)!!, createPartFromString(latitude)!!, createPartFromString(longitude)!!,
+                        createPartFromString(visitDate)!!, createPartFromString(startTime)!!, createPartFromString(endTime)!!, createPartFromString(category)!!, createPartFromString(description), activityImagesPart
+                )
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "createActivity Success\nactivityResult = ${activityResult}")
                 activityResult = it
+                Log.d("RemoteRouteDataSource", "createActivity Success\nactivityResult = ${activityResult}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "createActivity Fail\ne = $e")
             }
@@ -232,8 +261,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.updateRoute(routeId, routeUpdateRequest)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateRoute Success\nrouteUpdateResult = ${routeUpdateResult}")
                 routeUpdateResult = it
+                Log.d("RemoteRouteDataSource", "updateRoute Success\nrouteUpdateResult = ${routeUpdateResult}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateRoute Fail\ne = $e")
             }
@@ -254,8 +283,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.updateActivity(routeId, activityId, activityUpdateRequest)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateActivity Success\nactivityUpdateResult = ${activityUpdateResult}")
                 activityUpdateResult = it
+                Log.d("RemoteRouteDataSource", "updateActivity Success\nactivityUpdateResult = ${activityUpdateResult}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateActivity Fail\ne = $e")
             }
@@ -272,8 +301,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.deleteRoute(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "deleteRoute Success\nrouteId = ${deleteRouteId}")
                 deleteRouteId = it
+                Log.d("RemoteRouteDataSource", "deleteRoute Success\nrouteId = ${deleteRouteId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "deleteRoute Fail\ne = $e")
             }
@@ -291,8 +320,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.deleteActivity(routeId, activityId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "deleteActivity Success\nrouteId = ${deleteActivityId}")
                 deleteActivityId = it
+                Log.d("RemoteRouteDataSource", "deleteActivity Success\nrouteId = ${deleteActivityId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "deleteActivity Fail\ne = $e")
             }
@@ -307,8 +336,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getInsight()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = ${insight}")
                 insight = it
+                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = ${insight}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getInsight Fail\ne = $e")
             }
@@ -325,8 +354,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.reportUser(reportUserBody)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "reportUser Success\nreportId = ${reportId}")
                 reportId = it
+                Log.d("RemoteRouteDataSource", "reportUser Success\nreportId = ${reportId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "reportUser Fail\ne = $e")
             }
@@ -343,13 +372,17 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.reportRoute(reportRouteBody)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "reportRoute Success\nreportId = ${reportId}")
                 reportId = it
+                Log.d("RemoteRouteDataSource", "reportRoute Success\nreportId = ${reportId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "reportRoute Fail\ne = $e")
             }
         }
 
         return reportId
+    }
+
+    private fun createPartFromString(value: String?): RequestBody? {
+        return value?.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 }

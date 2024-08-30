@@ -35,6 +35,7 @@ import com.example.routebox.presentation.utils.picker.TimeChangedListener
 import com.example.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.google.android.flexbox.FlexboxLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -49,7 +50,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private var placeList: ArrayList<SearchActivityResult> = arrayListOf()
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
-    private var imgList = arrayListOf<Uri?>(null)
+    private var imgList: ArrayList<String?> = arrayListOf(null)
 
     private val viewModel: RouteWriteViewModel by viewModels()
     private val albumViewModel: RoutePictureAlbumViewModel by viewModels()
@@ -91,7 +92,9 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if (result.resultCode == RESULT_OK) {
                 for (i in 0 until result.data?.getStringArrayListExtra("album")!!.size) {
-                    imgRVAdapter.addItem(Uri.parse(result.data?.getStringArrayListExtra("album")!![i]))
+                    imgRVAdapter.addItem(result.data?.getStringArrayListExtra("album")!![i])
+                    // viewModel.activity.value?.activityImages?.add(File(result.data?.getStringArrayListExtra("album")!![i]))
+                    viewModel.activity.value?.activityImages?.add(File(result.data?.getStringArrayListExtra("album")!![i]))
                 }
             }
         }
@@ -193,7 +196,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     private fun initClickListener() {
         binding.closeIv.setOnClickListener {
-            viewModel.resetActivityResult()
+            viewModel.resetActivity()
             finish()
         }
 

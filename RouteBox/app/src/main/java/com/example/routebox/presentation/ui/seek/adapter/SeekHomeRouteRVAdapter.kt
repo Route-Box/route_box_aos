@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.seek.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +17,9 @@ import com.example.routebox.domain.model.loadingType
 import com.example.routebox.domain.model.routeType
 import com.google.android.flexbox.FlexboxLayoutManager
 
-class SeekHomeRouteRVAdapter(
-    private var routeList: ArrayList<RoutePreview>
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SeekHomeRouteRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var routeList = arrayListOf<RoutePreview>()
 
     private lateinit var mItemClickListener: MyItemClickListener
 
@@ -80,9 +81,18 @@ class SeekHomeRouteRVAdapter(
     inner class RouteTypeViewHolder(val binding: ItemSeekHomeRouteBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: RoutePreview) {
             // ViewPager 연결
-            setVPAdapter(binding, data.routeImageUrls, data.routeStyles)
-
+            setVPAdapter(binding, data.routeImageUrls, data.routeStyles, data.nickname)
             binding.preview = data
+            if (data.routeImageUrls?.size!! > 1) {
+                binding.multipleImages = true
+                binding.indicator = true
+            } else if (data.routeImageUrls?.size!! == 1) {
+                binding.multipleImages = true
+                binding.indicator = false
+            } else {
+                binding.multipleImages = false
+                binding.indicator = false
+            }
         }
     }
 
@@ -92,9 +102,9 @@ class SeekHomeRouteRVAdapter(
         }
     }
 
-    private fun setVPAdapter(binding: ItemSeekHomeRouteBinding, imageList: ArrayList<String>?, tagList: ArrayList<String>?) {
+    private fun setVPAdapter(binding: ItemSeekHomeRouteBinding, imageList: ArrayList<String>?, tagList: ArrayList<String>?, nickname: String) {
         if (imageList != null) {
-            val imageVPAdapter = RouteImageVPAdapter(imageList)
+            val imageVPAdapter = RouteImageVPAdapter(imageList, nickname)
             binding.imageVp.adapter = imageVPAdapter
             binding.imageVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
             binding.imageCi.setViewPager(binding.imageVp)
@@ -107,21 +117,20 @@ class SeekHomeRouteRVAdapter(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun addLoading() {
-        var loadingList = arrayListOf(RoutePreview())
-        loadingList.addAll(routeList)
-        routeList = loadingList
-        this.notifyDataSetChanged()
+    fun addItems(items: ArrayList<RoutePreview>) {
+        routeList.addAll(items)
+        // 깜빡임 문제를 해결하기 위한 임시 코드
+        for (i in 0 until items.size) {
+            this.notifyItemInserted(routeList.size + i)
+        }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun deleteLoading() {
-        routeList.removeAt(0)
-        this.notifyDataSetChanged()
+    fun returnItems(): ArrayList<RoutePreview> {
+        return routeList
     }
 
-    fun checkLoading(): Boolean {
-        return routeList[0].routeName == null
+    fun resetItems() {
+        routeList = arrayListOf()
+        this.notifyDataSetChanged()
     }
 }

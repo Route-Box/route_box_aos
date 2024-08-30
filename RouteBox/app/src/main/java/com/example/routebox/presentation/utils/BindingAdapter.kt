@@ -15,6 +15,7 @@ object BindingAdapter {
         Glide.with(imageView.context)
             .load(url)
             .placeholder(placeHolder)
+            .centerCrop()
             .into(imageView)
     }
 

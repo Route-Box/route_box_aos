@@ -1,5 +1,6 @@
 package com.example.routebox.domain.repositories
 
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
@@ -18,6 +19,7 @@ import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
+import java.io.File
 
 interface RouteRepository {
     /** 활동 추가하기 장소 검색 */
@@ -31,7 +33,7 @@ interface RouteRepository {
     suspend fun getSearchRouteList(
         page: Int,
         size: Int
-    ): ArrayList<RoutePreview>
+    ): RoutePreviewResult
 
     /** 루트 미리보기 상세 조회 */
     // TODO: 루트 구매 전 상세보기 화면 연결
@@ -70,7 +72,16 @@ interface RouteRepository {
     // TODO: Multipart 추가 필요
     suspend fun createActivity(
         routeId: Int,
-        activity: Activity
+        locationName: String,
+        address: String,
+        latitude: String?,
+        longitude: String?,
+        visitDate: String,
+        startTime: String,
+        endTime: String,
+        category: String,
+        description: String?,
+        activityImages: ArrayList<File?>
     ): ActivityResult
 
     /** 루트 수정 */
