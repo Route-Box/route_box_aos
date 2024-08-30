@@ -37,6 +37,19 @@ object DateConverter {
         return "${getAPIFormattedDate(date)}T${format(MINUTE_FORMAT, timePair.first)}:${format(MINUTE_FORMAT, timePair.second)}:00" // "2024-08-28T14:11:52" 형태의 서버 데이터로 변환
     }
 
+    // KST 시간을 서버 포멧으로 변경
+    fun convertKSTLocalDateTimeToUTCString(kstDateTime: LocalDateTime): String {
+        // KST (Asia/Seoul) 시간을 ZonedDateTime으로 변환
+        val kstZonedDateTime = kstDateTime.atZone(ZoneId.of("Asia/Seoul"))
+
+        // UTC 시간대로 변환
+        val utcZonedDateTime = kstZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"))
+
+        // UTC 시간을 "2024-08-28T14:11:52" 형태의 문자열로 포맷
+        val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        return utcZonedDateTime.format(formatter)
+    }
+
     @JvmStatic
     fun getFormattedCreatedDateTime(serverDate: String): String { // "2024-08-28T14:11:52" 형태의 서버 데이터
         // 서버로부터 받은 날짜를 LocalDateTime으로 파싱

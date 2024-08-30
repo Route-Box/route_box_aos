@@ -105,8 +105,10 @@
 
     <!-- 내 루트 -->
     <!-- 홈 -->
-    <string name="route_start_question">내 여행 루트\n기록해볼까요?</string>
+    <string name="route_start_title">내 여행 루트\n기록해볼까요?</string>
+    <string name="route_isTracking_title">현재 기록중인\n루트가 있어요</string>
     <string name="route_record_start">루트 기록 시작하기</string>
+    <string name="route_record_isTracking">기록중인 루트 보러가기</string>
     <string name="route_create_by_me">내가 만들었어요</string>
     <string name="route_my_empty">아직 만들어진 루트가 없어요.</string>
     <string name="route_my_make_public">공개 전환하기</string>

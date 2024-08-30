@@ -12,9 +12,6 @@ import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.PlaceMeta
 import com.example.routebox.domain.model.RegionInfo
-import com.example.routebox.domain.model.ReportId
-import com.example.routebox.domain.model.ReportRoute
-import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
@@ -136,8 +133,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.checkRouteIsRecording(checkRouteIsRecording)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "checkRouteIsRecording Success\nrouteId = ${routeId}")
                 routeId = it
+                Log.d("RemoteRouteDataSource", "checkRouteIsRecording Success\nrouteId = ${routeId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "checkRouteIsRecording Fail\ne = $e")
             }

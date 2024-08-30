@@ -19,6 +19,7 @@ import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.adapter.MyRouteRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity
+import com.example.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
@@ -60,6 +61,7 @@ class RouteFragment : Fragment(), PopupDialogInterface {
 
     private fun setInit() {
         viewModel.tryGetMyRouteList() // 내 루트 목록 조회 API 호출
+        viewModel.tryGetIsRouteRecording() // 기록 진행 중인 루트 여부 조회 API 호출
     }
 
     private fun initClickListeners() {
@@ -73,6 +75,13 @@ class RouteFragment : Fragment(), PopupDialogInterface {
         binding.routeRecordStartBtn.setOnClickListener {
             // 루트 시작하기 화면으로 이동
             startActivity(Intent(requireActivity(), RouteCreateActivity::class.java))
+        }
+
+        // 기록중인 루트 보러가기 버튼
+        binding.routeSeeTrackingBtn.setOnClickListener {
+            //TODO: 기록중인 루트 보기 화면으로 이동
+            //TODO: routeId 전달
+            startActivity(Intent(requireActivity(), RouteWriteActivity::class.java))
         }
     }
 

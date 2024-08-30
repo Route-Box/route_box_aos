@@ -13,8 +13,10 @@ import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.repositories.RouteRepository
+import com.example.routebox.presentation.utils.DateConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +24,7 @@ import javax.inject.Inject
 class RouteViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
-    private val _isTracking = MutableLiveData<Boolean>()
+    private val _isTracking = MutableLiveData<Boolean>(false) // 기록중인 루트가 있을 경우
     val isTracking: LiveData<Boolean> = _isTracking
 
     private val _routeList = MutableLiveData<List<MyRoute>>(emptyList())
@@ -39,18 +41,25 @@ class RouteViewModel @Inject constructor(
 
     var isPublic: Boolean = false
     var selectedRouteId: Int = 0
+    var recordingRouteId: Int = -1
 
     private val _isDeleteRouteSuccess = MutableLiveData<Boolean>(false)
     val isDeleteRouteSuccess: LiveData<Boolean> = _isDeleteRouteSuccess
-
-    init {
-        _isTracking.value = false
-    }
 
     /** 내 루트 목록 조회 */
     fun tryGetMyRouteList() {
         viewModelScope.launch {
             _routeList.value = repository.getMyRouteList()
+        }
+    }
+
+    /** 기록 진행 중인 루트 여부 조회 */
+    fun tryGetIsRouteRecording() {
+        val time = DateConverter.convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
+        Log.d("RouteViewModel", "time: $time")
+        viewModelScope.launch {
+            recordingRouteId = repository.checkRouteIsRecording(time).routeId
+            _isTracking.value = (recordingRouteId != -1)
         }
     }
 

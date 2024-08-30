@@ -58,7 +58,8 @@ interface RouteApiService {
     @GET("routes/my")
     suspend fun getMyRouteList(): MyRouteResponse
 
-    @GET("/api/v1/routes/progress")
+    // 기록 진행 중인 루트 여부 조회
+    @GET("routes/progress")
     suspend fun checkRouteIsRecording(
         @Query("userLocalTime") userLocalTime: String
     ): RouteId
