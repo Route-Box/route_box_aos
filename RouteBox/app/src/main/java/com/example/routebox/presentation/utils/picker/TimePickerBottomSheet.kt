@@ -1,6 +1,5 @@
 package com.example.routebox.presentation.utils.picker
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.widget.TimePicker
 import androidx.annotation.IntRange
 import com.example.routebox.databinding.BottomSheetTimePickerBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.lang.String.format
 
 interface TimeChangedListener {
     fun onTimeSelected(isStartTime: Boolean, hour: Int, minute: Int)
@@ -64,42 +62,19 @@ class TimePickerBottomSheet(private var listener: TimeChangedListener, private v
         timeInterval: Int = MINUTES_INTERVAL
     ) {
         try {
-            val minutePicker = findMinutePicker()
-            minutePicker?.apply {
-                minValue = MINUTES_MIN
-                maxValue = (MINUTES_MAX / timeInterval) - 1
-                displayedValues = getDisplayedValues(timeInterval)
-            }
+            // 분 단위 스피너 찾기
+            val minutePicker = findViewById<NumberPicker>(
+                resources.getIdentifier("minute", "id", "android")
+            )
+
+            // 5분 간격의 배열을 생성해 분 단위 스피너에 적용하기
+            val minuteValues = Array(MINUTES_MAX / timeInterval) { (it * timeInterval).toString().padStart(2, '0') }
+            minutePicker.minValue = MINUTES_MIN
+            minutePicker.maxValue = MINUTES_MAX / timeInterval - 1
+            minutePicker.displayedValues = minuteValues
         } catch (e: Exception) {
             e.printStackTrace()  // 필요에 따라 Log.e로 변경 가능
         }
-    }
-
-    @SuppressLint("DefaultLocale")
-    private fun TimePicker.getDisplayedValues(
-        @IntRange(from = 1, to = 30)
-        timeInterval: Int = MINUTES_INTERVAL
-    ): Array<String> {
-        return (MINUTES_MIN until MINUTES_MAX step timeInterval)
-            .map { format(MINUTE_FORMAT, it) }
-            .toTypedArray()
-    }
-
-    private fun TimePicker.getDisplayedMinutes(): Int {
-        val minutePicker = findMinutePicker()
-        return (minutePicker?.value ?: 0) * MINUTES_INTERVAL
-    }
-
-    @SuppressLint("PrivateApi")
-    private fun TimePicker.findMinutePicker(): NumberPicker? {
-        try {
-            val classForId = Class.forName("com.android.internal.R\$id")
-            val fieldId = classForId.getField("minute").getInt(null)
-            return findViewById(fieldId) as? NumberPicker
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
     }
 
     companion object {
