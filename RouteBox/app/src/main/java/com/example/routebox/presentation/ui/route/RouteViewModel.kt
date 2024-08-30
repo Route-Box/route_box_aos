@@ -82,8 +82,6 @@ class RouteViewModel @Inject constructor(
            isPublic = _route.value!!.isPublic
            _tagList.value = combineAllServerTagsByList()
            Log.d("RouteViewModel", "tagList: ${_tagList.value}")
-
-           Log.d("ROUTE-TEST", "route = ${_route.value}")
        }
     }
 

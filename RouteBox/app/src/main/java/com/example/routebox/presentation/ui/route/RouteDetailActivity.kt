@@ -81,7 +81,6 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private fun initRoute() {
         // 내 루트 상세조회 API 호출
         val routeId = intent.getIntExtra("routeId", 0)
-        Log.d("ROUTE-TEST", "routeId = ${routeId}")
         viewModel.tryGetMyRouteDetail(routeId)
     }
 

@@ -27,7 +27,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
     fun addAllActivities(activityList: MutableList<ActivityResult>) {
         this.activityList = activityList
-        notifyDataSetChanged()
+        this.notifyDataSetChanged()
     }
 
     fun addActivities(activity: ActivityResult) {
@@ -37,6 +37,10 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
     fun returnAllItems(): MutableList<ActivityResult> {
         return activityList
+    }
+
+    fun returnActivityId(position: Int): Int {
+        return activityList[position].activityId
     }
 
     interface MyItemClickListener {

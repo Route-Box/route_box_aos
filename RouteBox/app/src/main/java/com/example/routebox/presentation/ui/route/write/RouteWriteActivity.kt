@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
 import com.example.routebox.databinding.BottomSheetActivityBinding
-import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
@@ -35,18 +34,16 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
     private lateinit var binding: ActivityRouteWriteBinding
     private val viewModel: RouteViewModel by viewModels()
-    private val writeViewModel: RouteWriteViewModel by viewModels()
     private val editViewModel: RouteEditViewModel by viewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
     private val activityAdapter = ActivityRVAdapter(true)
     private var routeId: Int = -1
+    private var deleteId: Int = -1
+    private var deleteActivityIndex: Int = -1
 
     override fun onResume() {
         super.onResume()
-
         viewModel.tryGetMyRouteDetail(routeId)
-
-        Log.d("ROUTE-TEST", "onResume viewModel.tryGetMyRouteDetail = ${viewModel.route.value?.routeActivities}")
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -59,7 +56,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
         }
 
         routeId = Integer.parseInt(intent.getStringExtra("routeId"))
-        writeViewModel.setRouteId(routeId)
+        editViewModel.setRouteId(routeId)
 
         initObserve()
         setTabLayout()
@@ -87,14 +84,12 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
         // 활동이 없을 때 나타나는 활동 추가 버튼
         binding.addCv.setOnClickListener {
-//            findNavController().navigate(R.id.action_routeWriteFragment_to_routeActivityFragment)
-            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value.toString()))
+            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()))
         }
 
         // 활동이 1개 이상일 때 나타나는 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-//            findNavController().navigate(R.id.action_routeWriteFragment_to_routeActivityFragment)
-            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value.toString()))
+            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()))
         }
     }
 
@@ -118,10 +113,17 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
     private fun initObserve() {
         viewModel.route.observe(this) {
-            Log.d("ROUTE-TEST", "viewModel.route.observe()")
             if (viewModel.route.value?.routeActivities?.size != 0) {
+                editViewModel.setRoute(viewModel.route.value!!)
                 activityAdapter.addAllActivities(viewModel.route.value?.routeActivities!!)
-                Log.d("ROUTE-TEST", "activityAdapter.returnAllItems() = ${activityAdapter.returnAllItems()}")
+            }
+        }
+
+        editViewModel.deleteActivityId.observe(this) {
+            if (editViewModel.deleteActivityId.value == deleteId && deleteId != -1) {
+                activityAdapter.removeItem(deleteActivityIndex)
+                deleteId = -1
+                editViewModel.setDeleteActivityId(-1)
             }
         }
 
@@ -137,12 +139,15 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(this@RouteWriteActivity, LinearLayoutManager.VERTICAL, false)
         }
+        bottomSheetDialog.activityRv.itemAnimator = null
         activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: ActivityResult) {
                 //TODO: RouteId를 통한 정보 전달
                 startActivity(Intent(this@RouteWriteActivity, RouteActivityActivity::class.java))
             }
             override fun onDeleteButtonClick(position: Int) {
+                deleteId = activityAdapter.returnActivityId(position)
+                deleteActivityIndex = position
                 // 활동 삭제 팝업 띄우기
                 showPopupDialog()
             }
@@ -159,5 +164,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
     override fun onClickPositiveButton(id: Int) {
         //TODO: 활동 삭제 진행
         Toast.makeText(this, "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
+        editViewModel.deleteActivity(deleteId)
     }
 }
