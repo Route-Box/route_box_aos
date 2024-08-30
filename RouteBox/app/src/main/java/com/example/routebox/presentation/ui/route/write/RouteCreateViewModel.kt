@@ -38,8 +38,8 @@ class RouteCreateViewModel @Inject constructor(
     fun tryCreateRoute() {
         viewModelScope.launch {
             repository.createRoute(
-                DateConverter.getAPIFormattedDateAndTime(_startDate.value!!, _startTimePair.value!!),
-                DateConverter.getAPIFormattedDateAndTime(_endDate.value!!, _endTimePair.value!!),
+                DateConverter.convertDateAndTimeToUTCString(_startDate.value!!, _startTimePair.value!!),
+                DateConverter.convertDateAndTimeToUTCString(_endDate.value!!, _endTimePair.value!!),
             )
         }
     }
