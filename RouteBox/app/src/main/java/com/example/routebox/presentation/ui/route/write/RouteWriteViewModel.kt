@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route.write
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -172,9 +173,10 @@ class RouteWriteViewModel @Inject constructor(
                 && _activity.value?.endTime != "" && _activity.value?.category != ""
     }
 
-    fun addActivity() {
+    fun addActivity(context: Context) {
         viewModelScope.launch {
             _activityResult.value = repository.createActivity(
+                context,
                 _routeId.value!!,
                 _activity.value?.locationName!!,
                 _activity.value?.address!!,
@@ -184,8 +186,8 @@ class RouteWriteViewModel @Inject constructor(
                 _activity.value?.startTime!!,
                 _activity.value?.endTime!!,
                 _activity.value?.category!!,
-                _activity.value!!.description,
-                _activity.value!!.activityImages
+                _activity.value?.description,
+                _activity.value?.activityImages!!
             )
         }
     }

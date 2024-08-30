@@ -105,17 +105,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 }
             }
         }
-
-//        if (viewModel.activity.value?.activityImages != null) {
-//            val arrayList = viewModel.activity.value?.activityImages!!.toCollection(ArrayList<String>())
-//            imgRVAdapter.addAllItems(arrayList)
-//        }
-//
-//        if (albumViewModel.sendPictureList.value != null) {
-//            imgRVAdapter.addAllItems(albumViewModel.sendPictureList.value!!)
-//            viewModel.activity.value?.activityImages = albumViewModel.sendPictureList.value!!.toTypedArray()
-//            albumViewModel.resetSendPictureList()
-//        }
     }
 
     private fun initObserve() {
@@ -132,9 +121,11 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             override fun onItemClick(place: SearchActivityResult) {
                 binding.searchEt.setText(place.place_name)
                 viewModel.activity.value?.locationName = place.place_name
+                viewModel.activity.value?.address = place.address_name
+                viewModel.activity.value?.longitude = place.x
+                viewModel.activity.value?.latitude = place.y
                 viewModel.setPlaceSearchResult(arrayListOf())
                 viewModel.setPlaceSearchMode(false)
-                viewModel.activity.value?.address = place.address_name
 
                 viewModel.checkBtnEnabled()
             }
@@ -195,8 +186,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 if (ContextCompat.checkSelfPermission(this@RouteActivityActivity, checkVersion()) == PackageManager.PERMISSION_GRANTED) {
                     val intent = Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java)
                     resultLauncher.launch(intent)
-//                    findNavController().navigate(R.id.action_routeActivityFragment_to_routePictureAlbumFragment)
-//                    startActivity(Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java))
                 } else {
                     galleryPermissionLauncher.launch(checkVersion())
                 }
@@ -231,7 +220,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
 
         binding.nextBtn.setOnClickListener {
-            viewModel.addActivity()
+            viewModel.addActivity(this)
         }
     }
 

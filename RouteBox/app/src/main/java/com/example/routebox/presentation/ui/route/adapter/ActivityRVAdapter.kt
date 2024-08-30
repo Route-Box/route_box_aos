@@ -61,7 +61,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         holder.apply {
             // 수정 버튼 클릭
             binding.itemActivityEditIv.setOnClickListener {
-                mItemClickListener.onEditButtonClick(position, activityList[position])
+//                mItemClickListener.onEditButtonClick(position, activityList[position])
             }
             // 삭제 버튼 클릭
             binding.itemActivityDeleteIv.setOnClickListener {

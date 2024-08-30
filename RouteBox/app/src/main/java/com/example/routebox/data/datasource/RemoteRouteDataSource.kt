@@ -1,8 +1,15 @@
 package com.example.routebox.data.datasource
 
+import android.annotation.SuppressLint
+import android.content.ContentUris
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
@@ -27,6 +34,7 @@ import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
+import com.example.routebox.presentation.utils.ImageTranslator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -215,6 +223,7 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun createActivity(
+        context: Context,
         routeId: Int,
         locationName: String,
         address: String,
@@ -231,12 +240,37 @@ class RemoteRouteDataSource @Inject constructor(
             -1, "", "", "", "", "", "", "", "", "", arrayListOf()
         )
 
-        var activityImagesPart = mutableListOf<MultipartBody.Part?>()
-        if (activityImages.isNotEmpty()) {
-            for (i in 0 until activityImages.size) {
-                activityImagesPart.add(MultipartBody.Part.createFormData("activityImages",
-                    activityImages.get(i)!!.name, activityImages.get(i)!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                ))
+//        // 이미지 파일들을 MultipartBody.Part 형태로 변환
+//        var activityImagesPart = mutableListOf<MultipartBody.Part>()
+//        for (i in 0 until activityImages.size) {
+//            var placeFile = ImageTranslator.optimizeBitmap(context, activityImages[i]!!.toUri())
+//                ?.let { File(it) }
+//            var placeMultipartFile = placeFile?.let {
+//                MultipartBody.Part.createFormData("activityImages", placeFile.name, it.asRequestBody("image/*".toMediaTypeOrNull()))
+//            }
+//            if (placeMultipartFile != null) {
+//                activityImagesPart.add(placeMultipartFile)
+//            }
+//        }
+
+        // 이미지 파일들을 MultipartBody.Part 형태로 변환
+        val activityImagesPart = mutableListOf<MultipartBody.Part>()
+        for (file in activityImages) {
+            // 파일 존재 여부 확인
+            if (file != null && file.exists()) {
+                // File 객체를 그대로 사용하여 파일에 접근
+                val optimizedFilePath = ImageTranslator.optimizeBitmap(context, getUriFromPath(file.toString(), context))
+                val optimizedFile = optimizedFilePath?.let { File(it) }
+
+                optimizedFile?.let {
+                    // MultipartBody.Part 생성
+                    val requestFile = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    val multipartBody =
+                        MultipartBody.Part.createFormData("activityImages", it.name, requestFile)
+                    activityImagesPart.add(multipartBody)
+                }
+            } else {
+                Log.e("RemoteRouteDataSource", "File does not exist: ${file?.absolutePath}")
             }
         }
 
@@ -256,6 +290,21 @@ class RemoteRouteDataSource @Inject constructor(
 
         return activityResult
     }
+
+    @SuppressLint("Range")
+    fun getUriFromPath(filePath: String, context: Context): Uri {
+        val cursor = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null, "_data = '$filePath'", null, null
+        )
+        cursor!!.moveToNext()
+        val id = cursor!!.getInt(cursor!!.getColumnIndex("_id"))
+        val uri =
+            ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toLong())
+
+        return uri
+    }
+
 
     suspend fun updateRoute(
         routeId: Int,
@@ -355,5 +404,11 @@ class RemoteRouteDataSource @Inject constructor(
 
     private fun createPartFromString(value: String?): RequestBody? {
         return value?.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    // 이미지 파일을 MultipartBody.Part로 변환하는 함수
+    fun createMultipartBodyPart(file: File, partName: String): MultipartBody.Part {
+        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
     }
 }

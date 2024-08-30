@@ -1,9 +1,12 @@
 package com.example.routebox.presentation.ui.route.write
 
+import android.annotation.SuppressLint
+import android.content.ContentUris
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -27,6 +30,7 @@ import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint

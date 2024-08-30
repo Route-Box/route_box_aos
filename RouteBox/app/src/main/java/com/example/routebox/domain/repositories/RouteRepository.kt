@@ -1,5 +1,6 @@
 package com.example.routebox.domain.repositories
 
+import android.content.Context
 import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
@@ -74,6 +75,7 @@ interface RouteRepository {
 
     /** 루트 활동 추가 */
     suspend fun createActivity(
+        context: Context,
         routeId: Int,
         locationName: String,
         address: String,

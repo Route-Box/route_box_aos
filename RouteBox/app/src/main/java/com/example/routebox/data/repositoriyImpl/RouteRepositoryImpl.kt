@@ -1,5 +1,6 @@
 package com.example.routebox.data.repositoriyImpl
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.routebox.data.datasource.RemoteRouteDataSource
@@ -64,6 +65,7 @@ class RouteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createActivity(
+        context: Context,
         routeId: Int,
         locationName: String,
         address: String,
@@ -77,6 +79,7 @@ class RouteRepositoryImpl @Inject constructor(
         activityImages: ArrayList<File?>
     ): ActivityResult {
         return remoteRouteDataSource.createActivity(
+            context,
             routeId, locationName, address, latitude, longitude,
             visitDate, startTime, endTime, category, description, activityImages
         )
