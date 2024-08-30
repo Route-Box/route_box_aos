@@ -28,6 +28,7 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.ArrayList
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -49,9 +50,13 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         }
 
         initMapSetting()
-        initRoute()
         initClickListeners()
         initObserve()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initRoute()
     }
 
     private fun initMapSetting() {
@@ -99,8 +104,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun setTagAdapter() {
-        //TODO: 루트 스타일 외 다른 태그 설정 필요
-        tagAdapter = RouteTagRVAdapter(viewModel.route.value!!.routeStyles)
+        tagAdapter = RouteTagRVAdapter(viewModel.tagList.value!!)
         binding.routeDetailTagRv.apply {
             adapter = tagAdapter
             layoutManager = FlexboxLayoutManager(this@RouteDetailActivity)
@@ -122,12 +126,14 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 binding.route = route
             }
 
-            if (route.routeStyles.isNotEmpty()) { // 태그 정보가 있다면
-                setTagAdapter()
-            }
-
             if (route.routeActivities.size != 0) { // 활동 정보가 있다면
                 setActivityAdapter()
+            }
+        }
+
+        viewModel.tagList.observe(this) { tagList ->
+            if (!tagList.isNullOrEmpty()) { // 태그 정보가 있다면
+                setTagAdapter()
             }
         }
 

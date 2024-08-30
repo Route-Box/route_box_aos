@@ -87,7 +87,8 @@ interface RouteApiService {
         @Body activity: Activity
     ): ActivityResult
 
-    @PUT("/api/v1/routes/{routeId}")
+    // 루트 수정
+    @PUT("routes/{routeId}")
     suspend fun updateRoute(
         @Path("routeId") routeId: Int,
         @Body routeUpdateRequest: RouteUpdateRequest

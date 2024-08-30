@@ -7,6 +7,8 @@ import com.example.routebox.presentation.utils.picker.TimePickerBottomSheet.Comp
 import java.lang.String.format
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -41,10 +43,15 @@ object DateConverter {
         val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val parsedDate = LocalDateTime.parse(serverDate, formatter)
 
+        // UTC로 파싱된 LocalDateTime을 ZonedDateTime으로 변환하여 KST로 설정
+        val kstDateTime = parsedDate.atZone(ZoneId.of("UTC"))
+            .withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+            .toLocalDateTime()
+
         // 현재 시간과의 차이를 계산
         val now = LocalDateTime.now()
-        val hoursDifference = ChronoUnit.HOURS.between(parsedDate, now)
-        val daysDifference = ChronoUnit.DAYS.between(parsedDate.toLocalDate(), now.toLocalDate())
+        val hoursDifference = ChronoUnit.HOURS.between(kstDateTime, now)
+        val daysDifference = ChronoUnit.DAYS.between(kstDateTime.toLocalDate(), now.toLocalDate())
 
         return when {
             hoursDifference in 0..23 -> "${hoursDifference}시간 전" // 올린 지 0~23시간 : 시간으로 표시

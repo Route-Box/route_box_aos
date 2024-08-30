@@ -25,6 +25,7 @@ class RouteWriteCompleteActivity: AppCompatActivity() {
         }
 
         binding.finishBtn.setOnClickListener {
+            //TODO: routeId 넘기기
             startActivity(Intent(this, RouteCompleteTagActivity::class.java))
             finish()
         }

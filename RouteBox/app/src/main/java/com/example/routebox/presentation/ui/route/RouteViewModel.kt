@@ -1,11 +1,13 @@
 package com.example.routebox.presentation.ui.route
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.RouteDetail
@@ -31,6 +33,9 @@ class RouteViewModel @Inject constructor(
 
     private val _route = MutableLiveData<RouteDetail>(RouteDetail())
     val route: LiveData<RouteDetail> = _route
+
+    private val _tagList = MutableLiveData<ArrayList<String>>()
+    val tagList: LiveData<ArrayList<String>> = _tagList
 
     var isPublic: Boolean = false
     var selectedRouteId: Int = 0
@@ -62,6 +67,8 @@ class RouteViewModel @Inject constructor(
            _route.value = repository.getRouteDetail(routeId)
            selectedRouteId = routeId
            isPublic = _route.value!!.isPublic
+           _tagList.value = combineAllServerTagsByList()
+           Log.d("RouteViewModel", "tagList: ${_tagList.value}")
        }
     }
 
@@ -78,6 +85,17 @@ class RouteViewModel @Inject constructor(
         viewModelScope.launch {
             _isDeleteRouteSuccess.value = (repository.deleteRoute(selectedRouteId).routeId != -1)
         }
+    }
+
+    // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
+    private fun combineAllServerTagsByList(): ArrayList<String> {
+        val tagNameList: ArrayList<String> = arrayListOf()
+        tagNameList.add(_route.value!!.whoWith)
+        tagNameList.add(_route.value!!.numberOfDays)
+        tagNameList.add(FilterOption.getNumberOfPeopleText(_route.value!!.numberOfPeople))
+        tagNameList.addAll(_route.value!!.routeStyles)
+        tagNameList.add(_route.value!!.transportation)
+        return tagNameList
     }
 
     fun setIsTracking() {

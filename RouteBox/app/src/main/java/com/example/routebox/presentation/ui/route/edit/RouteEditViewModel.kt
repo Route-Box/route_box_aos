@@ -6,11 +6,14 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
 import com.example.routebox.domain.model.RouteDetail
+import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.repositories.RouteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -18,7 +21,7 @@ import kotlin.properties.Delegates
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteEditViewModel @Inject constructor(
     private val repository: RouteRepository
-): ViewModel() {
+) : ViewModel() {
     private val _route = MutableLiveData<RouteDetail>()
     val route: LiveData<RouteDetail> = _route
 
@@ -32,13 +35,38 @@ class RouteEditViewModel @Inject constructor(
 
     val routeContent: MutableLiveData<String> = MutableLiveData()
 
-    private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
+    var tagList: ArrayList<String> = arrayListOf()
+
+    private val selectedOptionMap: MutableLiveData<Map<FilterType, List<FilterOption>>> =
+        MutableLiveData(mapOf())
 
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
+    private val _isEditSuccess = MutableLiveData<Boolean>()
+    val isEditSuccess: LiveData<Boolean> = _isEditSuccess
+
     init {
         _route.value = RouteDetail()
+    }
+
+    /** 루트 수정 */
+    fun tryEditRoute() {
+        viewModelScope.launch {
+            val routeUpdateRequest = RouteUpdateRequest(
+                routeTitle.value, routeContent.value,
+                whoWith = convertToServerTagData(FilterType.WITH_WHOM)?.first(),
+                numberOfPeople = convertToServerTagData(FilterType.HOW_MANY)?.first()?.take(1)?.toInt(),
+                numberOfDays = convertToServerTagData(FilterType.HOW_LONG)?.first(),
+                routeStyles = convertToServerTagData(FilterType.ROUTE_STYLE),
+                transportation = convertToServerTagData(FilterType.MEANS_OF_TRANSPORTATION)?.first()
+            )
+            _isEditSuccess.value = repository.updateRoute(
+                _route.value!!.routeId,
+                routeUpdateRequest
+            ).routeId != -1
+            Log.d("RouteEditViewModel", "EditRouteRequest: $routeUpdateRequest")
+        }
     }
 
     fun setStepId(stepId: Int) {
@@ -47,7 +75,19 @@ class RouteEditViewModel @Inject constructor(
 
     fun setRoute(route: RouteDetail) {
         _route.value = route
-        initSelectedOptionMap(FilterOption.findOptionsByNames(_route.value!!.routeStyles))
+        tagList = combineAllServerTagsByList()
+        initSelectedOptionMap(FilterOption.findOptionsByNames(tagList))
+    }
+    
+    // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
+    private fun combineAllServerTagsByList(): ArrayList<String> {
+        val tagNameList: ArrayList<String> = arrayListOf()
+        tagNameList.add(_route.value!!.whoWith)
+        tagNameList.add(_route.value!!.numberOfDays)
+        tagNameList.add(FilterOption.getNumberOfPeopleText(_route.value!!.numberOfPeople))
+        tagNameList.addAll(_route.value!!.routeStyles)
+        tagNameList.add(_route.value!!.transportation)
+        return tagNameList
     }
 
     private fun initSelectedOptionMap(filterOptions: List<FilterOption>) {
@@ -57,7 +97,7 @@ class RouteEditViewModel @Inject constructor(
         // filterOptions 리스트를 순회하며 각 FilterOption의 filterType에 따라 그룹화
         filterOptions.groupBy { it.filterType }.forEach { (filterType, options) ->
             // 필터 타입에 따라 Set<FilterOption>으로 변환하여 맵에 저장
-            currentMap[filterType] = options.toSet()
+            currentMap[filterType] = options
         }
 
         // MutableLiveData에 새로운 맵을 저장
@@ -67,21 +107,20 @@ class RouteEditViewModel @Inject constructor(
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
         val prevOptionMap = selectedOptionMap.value!!.toMutableMap()
         if (prevOptionMap.contains(option.filterType)) { // 기존 filterType가 존재하는 경우
-            val set = prevOptionMap[option.filterType]?.toMutableSet() ?: mutableSetOf()
-            if (isSelected) { // set에 추가
-                set.add(option)
-            } else { // set에서 삭제
-                set.remove(option)
+            val tagList = prevOptionMap[option.filterType]?.toMutableList() ?: mutableListOf()
+            if (isSelected) { // 리스트에 추가
+                tagList.add(option)
+            } else { // 리스트에서 삭제
+                tagList.remove(option)
             }
-            if (set.isEmpty()) { // set이 비어있을 경우
-                // key도 삭제
-                prevOptionMap.remove(option.filterType)
+            if (tagList.isEmpty()) { // 리스트가 비어있을 경우
+                prevOptionMap.remove(option.filterType) // key도 삭제
             } else {
-                prevOptionMap[option.filterType] = set
+                prevOptionMap[option.filterType] = tagList.toList()
             }
-        } else { // 기존 filterType가 비어있을 경우
+        } else { // 기존 filterType이 비어있을 경우
             if (!isSelected) return
-            prevOptionMap[option.filterType] = setOf(option) // 해당 필터에 처음 추가
+            prevOptionMap[option.filterType] = listOf(option) // 해당 필터에 처음 추가
         }
         if (option == FilterOption.WITH_ALONE) { // '누구와'의 혼자 옵션
             prevOptionMap.remove(FilterType.HOW_MANY) // 몇 명과 옵션 삭제
@@ -98,7 +137,8 @@ class RouteEditViewModel @Inject constructor(
 
     // 선택된 옵션 중에 '누구와 - 혼자'가 있을 경우
     private fun isHasWithAloneOption(): Boolean {
-        return selectedOptionMap.value?.get(FilterType.WITH_WHOM)?.contains(FilterOption.WITH_ALONE) ?: false
+        return selectedOptionMap.value?.get(FilterType.WITH_WHOM)?.contains(FilterOption.WITH_ALONE)
+            ?: false
     }
 
     // 루트 제목과 내용이 잘 채워졌는지 확인
@@ -123,6 +163,14 @@ class RouteEditViewModel @Inject constructor(
     }
 
     fun checkButtonEnable() {
-        _isEnabledButton.value = if (isEditMode) (isAllContentFilled() && isAllQuestionTypeSelected()) else isAllContentFilled()
+        _isEnabledButton.value =
+            if (isEditMode) (isAllContentFilled() && isAllQuestionTypeSelected()) else isAllContentFilled()
+    }
+
+    // 서버에서 받은 tag 데이터를 필터 타입 별로 String으로 변환
+    private fun convertToServerTagData(filterType: FilterType): List<String>? {
+        return selectedOptionMap.value?.get(filterType)?.map {
+            it.optionName
+        }
     }
 }

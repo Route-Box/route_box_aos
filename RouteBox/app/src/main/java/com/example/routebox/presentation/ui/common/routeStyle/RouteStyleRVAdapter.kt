@@ -63,7 +63,7 @@ class FilterOptionsRVAdapter(private val canDuplicationSelect: Boolean): Recycle
         holder.bind(optionList[position])
         holder.itemView.setOnClickListener {
             val selectedOption = optionList[position]
-            if (!canDuplicationSelect) { // 단일 선택 처리
+            if (!canDuplicationSelect) { // 단일 선택 처리 (루트 스타일 화면)
                 if (selectedOptions.contains(selectedOption)) return@setOnClickListener
                 if (getSameFilterTypeCount(selectedOption.filterType) >= selectedOption.filterType.maxSelectionCount) {
                     // 가장 먼저 선택한 항목을 삭제
@@ -72,12 +72,13 @@ class FilterOptionsRVAdapter(private val canDuplicationSelect: Boolean): Recycle
                         val currentTypeOptions = optionList.filter { it.filterType == selectedOption.filterType }
                         selectedOptions.remove(remoteOption)
                         holder.updateSelection(remoteOption)
+                        mItemClickListener.onItemClick(firstOptionToRemove, false)
                         notifyItemChanged(currentTypeOptions.indexOf(remoteOption))
                     }
                 }
                 // 리스트에 추가
                 selectedOptions.add(selectedOption)
-            } else { // 중복 선택 처리
+            } else { // 중복 선택 처리 (필터 화면)
                 if (selectedOptions.contains(selectedOption)) {
                     selectedOptions.remove(selectedOption)
                 } else {

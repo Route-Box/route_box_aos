@@ -2,6 +2,7 @@ package com.example.routebox.presentation.ui.seek.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ class RouteTagRVAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun addTag(tagList: ArrayList<String>) {
         this.tagList = tagList
+        Log.d("RouteTagRVAdapter", "$tagList")
         notifyDataSetChanged()
     }
 

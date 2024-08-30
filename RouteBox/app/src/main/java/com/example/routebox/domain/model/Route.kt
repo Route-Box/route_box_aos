@@ -105,13 +105,13 @@ data class RoutePointResult(
 
 // 내 루트 수정
 data class RouteUpdateRequest(
-    var routeName: String,
-    var routeDescription: String,
-    var whoWith: String,
-    var numberOfPeople: Int,
-    var numberOfDays: String,
-    var routeStyles: ArrayList<String>,
-    var transportation: String
+    var routeName: String?,
+    var routeDescription: String?,
+    var whoWith: String?,
+    var numberOfPeople: Int?,
+    var numberOfDays: String?,
+    var routeStyles: List<String>?,
+    var transportation: String?
 )
 
 data class RouteUpdateResult(

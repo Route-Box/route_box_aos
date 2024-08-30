@@ -2,25 +2,51 @@ package com.example.routebox.presentation.ui.route.edit
 
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
+import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.repositories.RouteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@RequiresApi(Build.VERSION_CODES.O)
 class RouteCompleteTagViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
     private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
 
+    //TODO: 넘겨받은 루트 id 저장
+    private var routeId: Int = 0
+
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
+
+    private val _isEditSuccess = MutableLiveData<Boolean>()
+    val isEditSuccess: LiveData<Boolean> = _isEditSuccess
+
+    /** 루트 수정 */
+    fun tryEditRoute() {
+        viewModelScope.launch {
+            val routeUpdateRequest = RouteUpdateRequest(
+                null, null,
+                whoWith = convertToServerTagData(FilterType.WITH_WHOM)?.first(),
+                numberOfPeople = convertToServerTagData(FilterType.HOW_MANY)?.first()?.take(1)?.toInt(),
+                numberOfDays = convertToServerTagData(FilterType.HOW_LONG)?.first(),
+                routeStyles = convertToServerTagData(FilterType.ROUTE_STYLE),
+                transportation = convertToServerTagData(FilterType.MEANS_OF_TRANSPORTATION)?.first()
+            )
+            _isEditSuccess.value = repository.updateRoute(
+                routeId,
+                routeUpdateRequest
+            ).routeId != -1
+            Log.d("RouteCompleteTagViewModel", "EditRouteRequest: $routeUpdateRequest")
+        }
+    }
 
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
         val prevOptionMap = selectedOptionMap.value!!.toMutableMap()
@@ -72,5 +98,12 @@ class RouteCompleteTagViewModel @Inject constructor(
 
     private fun checkButtonEnable() {
         _isEnabledButton.value = isAllQuestionTypeSelected()
+    }
+
+
+    private fun convertToServerTagData(filterType: FilterType): List<String>? {
+        return selectedOptionMap.value?.get(filterType)?.map {
+            it.optionName
+        }
     }
 }
