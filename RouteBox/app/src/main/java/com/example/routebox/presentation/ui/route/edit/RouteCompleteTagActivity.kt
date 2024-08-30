@@ -8,29 +8,32 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.routebox.R
-import com.example.routebox.databinding.ActivityRouteStyleBinding
+import com.example.routebox.databinding.ActivityRouteCompleteTagBinding
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 
-class RouteStyleActivity : AppCompatActivity(), FilterOptionClickListener {
-    private lateinit var binding: ActivityRouteStyleBinding
+@AndroidEntryPoint
+class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener {
+    private lateinit var binding: ActivityRouteCompleteTagBinding
 
-    private val viewModel: RouteStyleViewModel by viewModels()
+    private val viewModel: RouteCompleteTagViewModel by viewModels()
 
     private lateinit var routeStyleFragment: RouteStyleFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_route_style)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_route_complete_tag)
 
         binding.apply {
-            viewModel = this@RouteStyleActivity.viewModel
-            lifecycleOwner = this@RouteStyleActivity
+            viewModel = this@RouteCompleteTagActivity.viewModel
+            lifecycleOwner = this@RouteCompleteTagActivity
         }
 
+        initObserve()
         initClickListeners()
         setRouteStyleFragment()
     }
@@ -43,13 +46,8 @@ class RouteStyleActivity : AppCompatActivity(), FilterOptionClickListener {
 
         // 완료 버튼
         binding.routeStyleDoneBtn.setOnClickListener {
-            // 루트 수정 화면으로 이동
-            startActivity(
-                Intent(this, RouteEditBaseActivity::class.java)
-                    .putExtra("route", Gson().toJson(RouteDetail())) //TODO: 루트 정보 넘기기
-                    .putExtra("isEditMode", false)
-            )
-            finish()
+            // 루트 수정 API
+            viewModel.tryEditRoute()
         }
     }
 
@@ -59,6 +57,20 @@ class RouteStyleActivity : AppCompatActivity(), FilterOptionClickListener {
         supportFragmentManager.beginTransaction()
             .replace(R.id.route_style_frm, routeStyleFragment)
             .commit()
+    }
+
+    private fun initObserve() {
+        viewModel.isEditSuccess.observe(this) { isSuccess ->
+            if (isSuccess) {
+                // 태그 수정 완료 후 루트 수정 화면으로 이동
+                startActivity(
+                    Intent(this, RouteEditBaseActivity::class.java)
+                        .putExtra("route", Gson().toJson(RouteDetail())) //TODO: 루트 정보 넘기기
+                        .putExtra("isEditMode", false)
+                )
+                finish()
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

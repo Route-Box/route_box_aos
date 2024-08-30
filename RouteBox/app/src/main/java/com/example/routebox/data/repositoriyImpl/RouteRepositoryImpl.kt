@@ -8,9 +8,6 @@ import com.example.routebox.domain.model.ActivityUpdateRequest
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
-import com.example.routebox.domain.model.ReportId
-import com.example.routebox.domain.model.ReportRoute
-import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
@@ -18,7 +15,6 @@ import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
-import com.example.routebox.domain.model.RouteWriteTime
 import com.example.routebox.domain.repositories.RouteRepository
 import javax.inject.Inject
 
@@ -53,12 +49,12 @@ class RouteRepositoryImpl @Inject constructor(
         return remoteRouteDataSource.addRouteDot(routeId)
     }
 
-    override suspend fun updateRoutePublic(routeId: Int): RoutePublicRequest {
-        return remoteRouteDataSource.updateRoutePublic(routeId)
+    override suspend fun updateRoutePublic(routeId: Int, isPublic: RoutePublicRequest): RoutePublicRequest {
+        return remoteRouteDataSource.updateRoutePublic(routeId, isPublic)
     }
 
-    override suspend fun createRoute(): RouteWriteTime {
-        return remoteRouteDataSource.createRoute()
+    override suspend fun createRoute(startTime: String, endTime: String): RouteId {
+        return remoteRouteDataSource.createRoute(startTime, endTime)
     }
 
     override suspend fun createActivity(routeId: Int, activity: Activity): ActivityResult {
@@ -90,13 +86,5 @@ class RouteRepositoryImpl @Inject constructor(
 
     override suspend fun getInsight(): Insight {
         return remoteRouteDataSource.getInsight()
-    }
-
-    override suspend fun reportUser(reportUserBody: ReportUser): ReportId {
-        return remoteRouteDataSource.reportUser(reportUserBody)
-    }
-
-    override suspend fun reportRoute(reportRouteBody: ReportRoute): ReportId {
-        return remoteRouteDataSource.reportRoute(reportRouteBody)
     }
 }

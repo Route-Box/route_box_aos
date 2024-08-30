@@ -53,6 +53,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
                 // 지도 API 가 정상적으로 종료될 때 호출
                 Log.d("KakaoMap", "onMapDestroy: ")
             }
+
             override fun onMapError(error: Exception) {
                 // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
                 Log.d("KakaoMap", "onMapError: $error")
@@ -83,14 +84,17 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
         }
         // 완료 버튼
         binding.routeEditDoneBtn.setOnClickListener {
-            //TODO: 루트 제목, 내용 저장 진행
-            requireActivity().finish()
+            viewModel.tryEditRoute() // 루트 제목, 내용 저장 진행
         }
     }
 
     private fun setRouteStyleFragment() {
         // 프래그먼트를 생성하고 저장
-        routeStyleFragment = RouteStyleFragment.newInstance(this, isFilterScreen = false, FilterOption.findOptionsByNames(viewModel.route.value!!.routeStyles))
+        routeStyleFragment = RouteStyleFragment.newInstance(
+            this,
+            isFilterScreen = false,
+            FilterOption.findOptionsByNames(viewModel.tagList)
+        )
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_route_style_frm, routeStyleFragment)
             .commit()
@@ -103,6 +107,12 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
 
         viewModel.routeContent.observe(viewLifecycleOwner) {
             viewModel.checkButtonEnable()
+        }
+
+        viewModel.isEditSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            if (isSuccess) {
+                requireActivity().finish() // 저장이 성공했다면 닫기
+            }
         }
     }
 

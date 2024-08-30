@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteCompleteBinding
+import com.example.routebox.presentation.ui.route.edit.RouteCompleteTagActivity
 
 class RouteWriteCompleteActivity: AppCompatActivity() {
 
@@ -24,6 +25,7 @@ class RouteWriteCompleteActivity: AppCompatActivity() {
         }
 
         binding.finishBtn.setOnClickListener {
+            //TODO: routeId 넘기기
             startActivity(Intent(this, RouteCompleteTagActivity::class.java))
             finish()
         }

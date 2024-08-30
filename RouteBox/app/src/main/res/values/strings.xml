@@ -105,8 +105,10 @@
 
     <!-- 내 루트 -->
     <!-- 홈 -->
-    <string name="route_start_question">내 여행 루트\n기록해볼까요?</string>
+    <string name="route_start_title">내 여행 루트\n기록해볼까요?</string>
+    <string name="route_isTracking_title">현재 기록중인\n루트가 있어요</string>
     <string name="route_record_start">루트 기록 시작하기</string>
+    <string name="route_record_isTracking">기록중인 루트 보러가기</string>
     <string name="route_create_by_me">내가 만들었어요</string>
     <string name="route_my_empty">아직 만들어진 루트가 없어요.</string>
     <string name="route_my_make_public">공개 전환하기</string>
@@ -114,9 +116,11 @@
     <string name="route_my_change_to_public_popup_content">해당 루트를 전체 공개로\n변경하시겠습니까?</string>
     <string name="route_my_change_to_private_popup_content">해당 루트를 비공개로\n변경하시겠습니까?</string>
     <!-- 인사이트 -->
+    <string name="insight_title">인사이트</string>
     <string name="insight_my_route_create_num">내 루트 수</string>
     <string name="insight_my_route_buy_num">내 루트 구매 수</string>
     <string name="insight_my_route_comment_num">내 루트 댓글 수</string>
+    <string name="insight_my_route_collection">내 루트 모아보기</string>
     <!-- 루트 시작 -->
     <string name="create_route_title">내 여행 루트 기록해볼까요?</string>
     <string name="create_route_description">설정한 시간동안 여행 루트가 작성돼요.</string>

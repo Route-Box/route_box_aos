@@ -1,9 +1,7 @@
 package com.example.routebox.domain.model
 
 import android.net.Uri
-import com.bumptech.glide.load.model.StringLoader
-import java.io.Serializable
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 // 루트 미리보기
 data class RoutePreview(
@@ -40,10 +38,9 @@ data class RouteDetail(
     var numberOfPeople: Int = -1,
     var numberOfDays: String = "",
     var transportation: String = "",
-    var createdAt: String = "",
+    var createdAt: String = LocalDateTime.now().toString(),
     var routePath: ArrayList<RoutePath> = arrayListOf(),
     var routeActivities: ArrayList<ActivityResult> = arrayListOf(),
-    // TODO: 내 루트의 경우, isPublic 데이터 서버에 추가 요청! 구매한 다른 사람의 루트는 공개 여부 필요 X!
     var isPublic: Boolean = false
 )
 
@@ -60,6 +57,10 @@ data class Insight(
 )
 
 // 내 루트
+data class MyRouteResponse(
+    var result: ArrayList<MyRoute>
+)
+
 data class MyRoute(
     var routeId: Int = -1,
     var routeName: String = "",
@@ -104,13 +105,13 @@ data class RoutePointResult(
 
 // 내 루트 수정
 data class RouteUpdateRequest(
-    var routeName: String,
-    var routeDescription: String,
-    var whoWith: String,
-    var numberOfPeople: Int,
-    var numberOfDays: String,
-    var routeStyles: ArrayList<String>,
-    var transportation: String
+    var routeName: String?,
+    var routeDescription: String?,
+    var whoWith: String?,
+    var numberOfPeople: Int?,
+    var numberOfDays: String?,
+    var routeStyles: List<String>?,
+    var transportation: String?
 )
 
 data class RouteUpdateResult(
@@ -217,19 +218,3 @@ data class ActivityPictureAlbum(
 
 const val pictureImgType = 0
 const val pictureAddType = 1
-
-data class ReportId(
-    var reportId: Int
-)
-
-// 사용자 신고
-data class ReportUser(
-    var userId: Int,
-    var content: String
-)
-
-// 루트 신고
-data class ReportRoute(
-    var routeId: Int,
-    var content: String
-)

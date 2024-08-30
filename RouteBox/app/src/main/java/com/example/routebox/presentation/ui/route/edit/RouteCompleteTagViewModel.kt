@@ -1,38 +1,51 @@
-package com.example.routebox.presentation.ui.route.write
+package com.example.routebox.presentation.ui.route.edit
 
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.FilterOption
 import com.example.routebox.domain.model.FilterType
-import com.example.routebox.domain.model.MyRoute
+import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.repositories.RouteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RouteCompleteViewModel @Inject constructor(
+class RouteCompleteTagViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
-    private val _route = MutableLiveData<MyRoute>()
-    val route: LiveData<MyRoute> = _route
+    private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
 
-    val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
+    //TODO: 넘겨받은 루트 id 저장
+    private var routeId: Int = 0
 
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
-    val routeTitle: MutableLiveData<String> = MutableLiveData()
-    val routeContent: MutableLiveData<String> = MutableLiveData()
+    private val _isEditSuccess = MutableLiveData<Boolean>()
+    val isEditSuccess: LiveData<Boolean> = _isEditSuccess
 
-    init {
-        _route.value = MyRoute()
-    }
-
-    fun initRouteTitleAndContent() {
-        routeTitle.value = _route.value?.routeName
-        routeContent.value = _route.value?.routeDescription
+    /** 루트 수정 */
+    fun tryEditRoute() {
+        viewModelScope.launch {
+            val routeUpdateRequest = RouteUpdateRequest(
+                null, null,
+                whoWith = convertToServerTagData(FilterType.WITH_WHOM)?.first(),
+                numberOfPeople = convertToServerTagData(FilterType.HOW_MANY)?.first()?.take(1)?.toInt(),
+                numberOfDays = convertToServerTagData(FilterType.HOW_LONG)?.first(),
+                routeStyles = convertToServerTagData(FilterType.ROUTE_STYLE),
+                transportation = convertToServerTagData(FilterType.MEANS_OF_TRANSPORTATION)?.first()
+            )
+            _isEditSuccess.value = repository.updateRoute(
+                routeId,
+                routeUpdateRequest
+            ).routeId != -1
+            Log.d("RouteCompleteTagViewModel", "EditRouteRequest: $routeUpdateRequest")
+        }
     }
 
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
@@ -58,7 +71,7 @@ class RouteCompleteViewModel @Inject constructor(
             prevOptionMap.remove(FilterType.HOW_MANY) // 몇 명과 옵션 삭제
         }
         selectedOptionMap.value = prevOptionMap
-        Log.d("RouteEditViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
+        Log.d("RouteStyleViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
         checkButtonEnable()
     }
 
@@ -83,19 +96,14 @@ class RouteCompleteViewModel @Inject constructor(
         return selectedMap.keys.containsAll(requiredFilterTypes) && requiredFilterTypes.all { selectedMap[it]?.isNotEmpty() == true }
     }
 
-    // 루트 제목과 내용이 잘 채워졌는지 확인
-    private fun isAllContentFilled(): Boolean {
-        return !routeTitle.value.isNullOrEmpty() && !routeContent.value.isNullOrEmpty()
-    }
-
-    // 옵션 선택 버튼 활성화 여부 체크
     private fun checkButtonEnable() {
-        Log.d("ROUTE-TEST", "checkButtonEnable = ${isAllQuestionTypeSelected()}")
         _isEnabledButton.value = isAllQuestionTypeSelected()
     }
 
-    // 루트 제목/설명 버튼 활성화 여부 체크
-    fun checkContentButtonEnable() {
-        _isEnabledButton.value = isAllContentFilled()
+
+    private fun convertToServerTagData(filterType: FilterType): List<String>? {
+        return selectedOptionMap.value?.get(filterType)?.map {
+            it.optionName
+        }
     }
 }

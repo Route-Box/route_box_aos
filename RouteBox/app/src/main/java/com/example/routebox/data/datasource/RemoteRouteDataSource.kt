@@ -12,9 +12,6 @@ import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.PlaceMeta
 import com.example.routebox.domain.model.RegionInfo
-import com.example.routebox.domain.model.ReportId
-import com.example.routebox.domain.model.ReportRoute
-import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
@@ -102,8 +99,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getRouteDetail(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getRouteDetail Success\nrouteDetail = ${routeDetail}")
                 routeDetail = it
+                Log.d("RemoteRouteDataSource", "getRouteDetail Success\nrouteDetail = ${routeDetail}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getRouteDetail Fail\ne = $e")
             }
@@ -118,8 +115,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getMyRouteList()
             }.onSuccess {
+                myRouteList = it.result
                 Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
-                myRouteList = it
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getMyRouteList Fail\ne = $e")
             }
@@ -136,8 +133,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.checkRouteIsRecording(checkRouteIsRecording)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "checkRouteIsRecording Success\nrouteId = ${routeId}")
                 routeId = it
+                Log.d("RemoteRouteDataSource", "checkRouteIsRecording Success\nrouteId = ${routeId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "checkRouteIsRecording Fail\ne = $e")
             }
@@ -165,15 +162,16 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun updateRoutePublic(
-        routeId: Int
+        routeId: Int,
+        isPublicBody: RoutePublicRequest
     ): RoutePublicRequest {
         var isPublic = RoutePublicRequest(false)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.updateRoutePublic(routeId)
+                routeApiService.updateRoutePublic(routeId, isPublicBody)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
                 isPublic = it
+                Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateRoutePublic Fail\ne = $e")
             }
@@ -182,20 +180,23 @@ class RemoteRouteDataSource @Inject constructor(
         return isPublic
     }
 
-    suspend fun createRoute(): RouteWriteTime {
-        var writeTime = RouteWriteTime("", "")
+    suspend fun createRoute(
+        startTime: String,
+        endTime: String
+    ): RouteId {
+        var routeId = RouteId(-1)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.createRoute()
+                routeApiService.createRoute(RouteWriteTime(startTime, endTime))
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "createRoute Success\nwriteTime = ${writeTime}")
-                writeTime = it
+                routeId = it
+                Log.d("RemoteRouteDataSource", "createRoute Success\nrouteId = $routeId")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "createRoute Fail\ne = $e")
             }
         }
 
-        return writeTime
+        return routeId
     }
 
     suspend fun createActivity(
@@ -230,8 +231,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.updateRoute(routeId, routeUpdateRequest)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateRoute Success\nrouteUpdateResult = ${routeUpdateResult}")
                 routeUpdateResult = it
+                Log.d("RemoteRouteDataSource", "updateRoute Success\nrouteUpdateResult = ${routeUpdateResult}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateRoute Fail\ne = $e")
             }
@@ -270,8 +271,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.deleteRoute(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "deleteRoute Success\nrouteId = ${deleteRouteId}")
                 deleteRouteId = it
+                Log.d("RemoteRouteDataSource", "deleteRoute Success\nrouteId = ${deleteRouteId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "deleteRoute Fail\ne = $e")
             }
@@ -305,7 +306,7 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getInsight()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = ${insight}")
+                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = $it")
                 insight = it
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getInsight Fail\ne = $e")
@@ -313,41 +314,5 @@ class RemoteRouteDataSource @Inject constructor(
         }
 
         return insight
-    }
-
-    suspend fun reportUser(
-        reportUserBody: ReportUser
-    ): ReportId {
-        var reportId = ReportId(-1)
-        withContext(Dispatchers.IO) {
-            runCatching {
-                routeApiService.reportUser(reportUserBody)
-            }.onSuccess {
-                Log.d("RemoteRouteDataSource", "reportUser Success\nreportId = ${reportId}")
-                reportId = it
-            }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportUser Fail\ne = $e")
-            }
-        }
-
-        return reportId
-    }
-
-    suspend fun reportRoute(
-        reportRouteBody: ReportRoute
-    ): ReportId {
-        var reportId = ReportId(-1)
-        withContext(Dispatchers.IO) {
-            runCatching {
-                routeApiService.reportRoute(reportRouteBody)
-            }.onSuccess {
-                Log.d("RemoteRouteDataSource", "reportRoute Success\nreportId = ${reportId}")
-                reportId = it
-            }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportRoute Fail\ne = $e")
-            }
-        }
-
-        return reportId
     }
 }

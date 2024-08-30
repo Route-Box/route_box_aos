@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.route.write.RouteCompleteViewModel" />
+            type="com.example.routebox.presentation.ui.route.edit.RouteCompleteTagViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,35 +16,18 @@
         android:background="@color/white">
 
         <LinearLayout
-            android:id="@+id/filter_top_ll"
+            android:id="@+id/route_style_top_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="26dp"
             android:paddingVertical="20dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:gravity="end"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:id="@+id/filter_back_iv"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_left"
-                android:visibility="invisible"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="12dp"
-                android:gravity="center_horizontal"
-                android:text="@string/filter_appbar_title"
-                android:visibility="invisible"
-                style="@style/body_b_l"/>
-
-            <ImageView
-                android:id="@+id/close_iv"
+                android:id="@+id/route_style_close_iv"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_close"/>
@@ -52,54 +35,60 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/filter_title_tv"
+            android:id="@+id/route_style_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
             android:layout_marginTop="40dp"
             android:text="@string/route_style_title"
-            app:layout_constraintTop_toBottomOf="@id/filter_top_ll"
+            app:layout_constraintTop_toBottomOf="@id/route_style_top_ll"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/heading_m"/>
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/filter_option_sv"
+            android:id="@+id/route_style_sv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scrollbars="none"
             android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="17dp"
-            app:layout_constraintTop_toBottomOf="@id/filter_title_tv"
-            app:layout_constraintBottom_toTopOf="@id/complete_btn"
+            app:layout_constraintTop_toBottomOf="@id/route_style_title_tv"
+            app:layout_constraintBottom_toTopOf="@id/route_style_bottom_ll"
             android:fillViewport="true">
 
             <FrameLayout
-                android:id="@+id/fragment_route_style_frm"
+                android:id="@+id/route_style_frm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="22dp"
                 android:layout_marginEnd="38dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 tools:layout="@layout/fragment_route_style"/>
 
         </androidx.core.widget.NestedScrollView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/complete_btn"
+        <LinearLayout
+            android:id="@+id/route_style_bottom_ll"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="@string/done_btn"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginBottom="28dp"
-            android:enabled="@{viewModel.isEnabledButton}"
-            android:textSize="16sp"
-            android:fontFamily="@font/pretendard_bold"
-            android:background="@drawable/selector_main_btn"
-            android:textColor="@drawable/selector_main_btn"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="22dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/route_style_done_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="18dp"
+                android:layout_weight="1"
+                android:enabled="@{viewModel.isEnabledButton()}"
+                android:background="@drawable/selector_main_btn"
+                android:textColor="@drawable/selector_main_btn"
+                android:text="@string/done_btn"
+                style="@style/body_b_m"/>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

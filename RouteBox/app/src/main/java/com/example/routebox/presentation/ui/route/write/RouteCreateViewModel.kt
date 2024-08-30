@@ -5,9 +5,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
+import com.example.routebox.presentation.utils.DateConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -15,7 +18,7 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteCreateViewModel @Inject constructor(
     private val repository: RouteRepository
-): ViewModel() {
+) : ViewModel() {
     private val _startDate = MutableLiveData<LocalDate>(TODAY)
     val startDate: LiveData<LocalDate> = _startDate
 
@@ -30,6 +33,16 @@ class RouteCreateViewModel @Inject constructor(
 
     private val _buttonActivation = MutableLiveData<Boolean>()
     val buttonActivation: LiveData<Boolean> = _buttonActivation
+
+    /** 루트 생성 */
+    fun tryCreateRoute() {
+        viewModelScope.launch {
+            repository.createRoute(
+                DateConverter.convertDateAndTimeToUTCString(_startDate.value!!, _startTimePair.value!!),
+                DateConverter.convertDateAndTimeToUTCString(_endDate.value!!, _endTimePair.value!!),
+            )
+        }
+    }
 
     fun updateDate(isStartDate: Boolean, date: LocalDate) {
         if (isStartDate) _startDate.value = date
