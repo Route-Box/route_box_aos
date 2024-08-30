@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -52,6 +53,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private lateinit var imgRVAdapter: PictureRVAdapter
     private var imgList: ArrayList<String?> = arrayListOf(null)
 
+    private var routeId: Int = -1
+
     private val viewModel: RouteWriteViewModel by viewModels()
     private val albumViewModel: RoutePictureAlbumViewModel by viewModels()
 
@@ -84,9 +87,13 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             lifecycleOwner = this@RouteActivityActivity
         }
 
+        routeId = Integer.parseInt(intent.getStringExtra("routeId"))
+        viewModel.setRouteId(routeId)
+
         setAdapter()
         initClickListener()
         initEditTextListener()
+        initObserve()
 
         // 선택한 사진을 받기 위한 launcher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
@@ -109,6 +116,12 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 //            viewModel.activity.value?.activityImages = albumViewModel.sendPictureList.value!!.toTypedArray()
 //            albumViewModel.resetSendPictureList()
 //        }
+    }
+
+    private fun initObserve() {
+        viewModel.activityResult.observe(this@RouteActivityActivity) {
+            if (viewModel.activityResult.value?.activityId != -1) finish()
+        }
     }
 
     private fun setAdapter() {
@@ -218,7 +231,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
 
         binding.nextBtn.setOnClickListener {
-            finish()
+            viewModel.addActivity()
         }
     }
 

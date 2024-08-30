@@ -7,6 +7,8 @@ import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.MyRoute
+import com.example.routebox.domain.model.KakaoSearchResult
+import com.example.routebox.domain.model.MyRouteResponse
 import com.example.routebox.domain.model.ReportId
 import com.example.routebox.domain.model.ReportRoute
 import com.example.routebox.domain.model.ReportUser
@@ -43,14 +45,17 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RoutePreview
 
+    // 루트 상세보기
     @GET("routes/{routeId}/detail")
     suspend fun getRouteDetail(
         @Path("routeId") routeId: Int
     ): RouteDetail
 
+    // 내 루트 목록 조회
     @GET("routes/my")
-    suspend fun getMyRouteList(): ArrayList<MyRoute>
+    suspend fun getMyRouteList(): MyRouteResponse
 
+    // 기록 진행 중인 루트 여부 조회
     @GET("routes/progress")
     suspend fun checkRouteIsRecording(
         @Query("userLocalTime") userLocalTime: String
@@ -61,18 +66,23 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RoutePointRequest
 
+    // 루트 공개여부 수정
     @PATCH("routes/{routeId}/public")
     suspend fun updateRoutePublic(
-        @Path("routeId") routeId: Int
+        @Path("routeId") routeId: Int,
+        @Body isPublic: RoutePublicRequest
     ): RoutePublicRequest
 
+    // 루트 생성 (루트 기록 시작)
     @POST("routes/start")
-    suspend fun createRoute(): RouteWriteTime
+    suspend fun createRoute(
+        @Body timeBody: RouteWriteTime
+    ): RouteId
 
     @POST("routes/{routeId}/activity")
     @Multipart
     suspend fun createActivity(
-        @Path("routeId") routeId: RequestBody,
+        @Path("routeId") routeId: Int,
         @Part("locationName") locationName: RequestBody,
         @Part("address") address: RequestBody,
         @Part("latitude") latitude: RequestBody?,
@@ -85,6 +95,7 @@ interface RouteApiService {
         @Part activityImages: List<MultipartBody.Part?>
     ): ActivityResult
 
+    // 루트 수정
     @PUT("routes/{routeId}")
     suspend fun updateRoute(
         @Path("routeId") routeId: Int,
@@ -98,6 +109,7 @@ interface RouteApiService {
         @Body activityUpdateRequest: ActivityUpdateRequest
     ): ActivityResult
 
+    // 루트 삭제
     @DELETE("routes/{routeId}")
     suspend fun deleteRoute(
         @Path("routeId") routeId: Int
@@ -109,6 +121,7 @@ interface RouteApiService {
         @Path("activityId") activityId: Int
     ): ActivityId
 
+    // 인사이트 조회
     @GET("routes/insight")
     suspend fun getInsight(): Insight
 

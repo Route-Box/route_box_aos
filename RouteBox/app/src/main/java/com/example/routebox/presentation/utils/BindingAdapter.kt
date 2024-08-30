@@ -34,4 +34,16 @@ object BindingAdapter {
         val tintColor = categoryColorArr[activityOrder % categoryColorArr.size]
         textView.background.setTint(tintColor)
     }
+
+    @JvmStatic
+    @BindingAdapter("app:myRouteTitleText")
+    fun setMyRouteTitle(textView: TextView, title: String?) {
+        textView.text = title ?: "아직 루트 제목이 없어요"
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:myRouteContentText")
+    fun setMyRouteContent(textView: TextView, content: String?) {
+        textView.text = content ?: "수정하기를 눌러 제목과 내용을 추가해주세요"
+    }
 }

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import com.example.routebox.R
-import com.example.routebox.databinding.ActivityRouteEditBinding
+import com.example.routebox.databinding.ActivityRouteBaseEditBinding
 import com.example.routebox.domain.model.RouteDetail
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,13 +17,13 @@ import dagger.hilt.android.AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteEditBaseActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityRouteEditBinding
+    private lateinit var binding: ActivityRouteBaseEditBinding
 
     private val viewModel: RouteEditViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_route_edit)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_route_base_edit)
 
         binding.apply {
             viewModel = this@RouteEditBaseActivity.viewModel

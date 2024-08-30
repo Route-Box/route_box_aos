@@ -1,10 +1,11 @@
 package com.example.routebox.data.datasource
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
-import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
@@ -21,6 +22,7 @@ import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.RoutePreview
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
@@ -35,6 +37,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RemoteRouteDataSource @Inject constructor(
     private val routeApiService: RouteApiService,
     private val kakaoApiService: KakaoApiService
@@ -127,7 +130,7 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getMyRouteList()
             }.onSuccess {
-                myRouteList = it
+                myRouteList = it.result
                 Log.d("RemoteRouteDataSource", "getMyRouteList Success\nmyRouteList = ${myRouteList}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getMyRouteList Fail\ne = $e")
@@ -145,8 +148,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.checkRouteIsRecording(checkRouteIsRecording)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "checkRouteIsRecording Success\nrouteId = ${routeId}")
                 routeId = it
+                Log.d("RemoteRouteDataSource", "checkRouteIsRecording Success\nrouteId = ${routeId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "checkRouteIsRecording Fail\ne = $e")
             }
@@ -174,12 +177,13 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun updateRoutePublic(
-        routeId: Int
+        routeId: Int,
+        isPublicBody: RoutePublicRequest
     ): RoutePublicRequest {
         var isPublic = RoutePublicRequest(false)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.updateRoutePublic(routeId)
+                routeApiService.updateRoutePublic(routeId, isPublicBody)
             }.onSuccess {
                 isPublic = it
                 Log.d("RemoteRouteDataSource", "updateRoutePublic Success\nisPublic = ${isPublic}")
@@ -191,20 +195,23 @@ class RemoteRouteDataSource @Inject constructor(
         return isPublic
     }
 
-    suspend fun createRoute(): RouteWriteTime {
-        var writeTime = RouteWriteTime("", "")
+    suspend fun createRoute(
+        startTime: String,
+        endTime: String
+    ): RouteId {
+        var routeId = RouteId(-1)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.createRoute()
+                routeApiService.createRoute(RouteWriteTime(startTime, endTime))
             }.onSuccess {
-                writeTime = it
-                Log.d("RemoteRouteDataSource", "createRoute Success\nwriteTime = ${writeTime}")
+                routeId = it
+                Log.d("RemoteRouteDataSource", "createRoute Success\nrouteId = $routeId")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "createRoute Fail\ne = $e")
             }
         }
 
-        return writeTime
+        return routeId
     }
 
     suspend fun createActivity(
@@ -236,7 +243,7 @@ class RemoteRouteDataSource @Inject constructor(
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.createActivity(
-                    createPartFromString(routeId.toString())!!, createPartFromString(locationName)!!, createPartFromString(address)!!, createPartFromString(latitude)!!, createPartFromString(longitude)!!,
+                    routeId, createPartFromString(locationName)!!, createPartFromString(address)!!, createPartFromString(latitude)!!, createPartFromString(longitude)!!,
                         createPartFromString(visitDate)!!, createPartFromString(startTime)!!, createPartFromString(endTime)!!, createPartFromString(category)!!, createPartFromString(description), activityImagesPart
                 )
             }.onSuccess {
@@ -344,42 +351,6 @@ class RemoteRouteDataSource @Inject constructor(
         }
 
         return insight
-    }
-
-    suspend fun reportUser(
-        reportUserBody: ReportUser
-    ): ReportId {
-        var reportId = ReportId(-1)
-        withContext(Dispatchers.IO) {
-            runCatching {
-                routeApiService.reportUser(reportUserBody)
-            }.onSuccess {
-                reportId = it
-                Log.d("RemoteRouteDataSource", "reportUser Success\nreportId = ${reportId}")
-            }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportUser Fail\ne = $e")
-            }
-        }
-
-        return reportId
-    }
-
-    suspend fun reportRoute(
-        reportRouteBody: ReportRoute
-    ): ReportId {
-        var reportId = ReportId(-1)
-        withContext(Dispatchers.IO) {
-            runCatching {
-                routeApiService.reportRoute(reportRouteBody)
-            }.onSuccess {
-                reportId = it
-                Log.d("RemoteRouteDataSource", "reportRoute Success\nreportId = ${reportId}")
-            }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportRoute Fail\ne = $e")
-            }
-        }
-
-        return reportId
     }
 
     private fun createPartFromString(value: String?): RequestBody? {

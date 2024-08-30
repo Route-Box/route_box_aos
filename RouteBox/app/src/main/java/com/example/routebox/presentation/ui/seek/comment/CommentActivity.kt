@@ -98,7 +98,8 @@ class CommentActivity : AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    Toast.makeText(this, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    // TODO: 임시
+                    Toast.makeText(this, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> { false }

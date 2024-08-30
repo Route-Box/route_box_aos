@@ -35,6 +35,10 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         notifyDataSetChanged()
     }
 
+    fun returnAllItems(): MutableList<ActivityResult> {
+        return activityList
+    }
+
     interface MyItemClickListener {
         fun onEditButtonClick(position: Int, data: ActivityResult)
         fun onDeleteButtonClick(position: Int)

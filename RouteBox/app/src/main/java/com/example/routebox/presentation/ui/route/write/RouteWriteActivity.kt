@@ -3,6 +3,7 @@ package com.example.routebox.presentation.ui.route.write
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -38,15 +39,14 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
     private val editViewModel: RouteEditViewModel by viewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
     private val activityAdapter = ActivityRVAdapter(true)
+    private var routeId: Int = -1
 
     override fun onResume() {
         super.onResume()
 
-        if (writeViewModel.activity.value?.locationName != "") {
-//            activityAdapter.addActivities(writeViewModel.activity.value!!)
-//            editViewModel.route.value?.routeActivities?.add(writeViewModel.activity.value!!)
-        }
-//        writeViewModel.resetActivityResult()
+        viewModel.tryGetMyRouteDetail(routeId)
+
+        Log.d("ROUTE-TEST", "onResume viewModel.tryGetMyRouteDetail = ${viewModel.route.value?.routeActivities}")
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -57,6 +57,9 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             viewModel = this@RouteWriteActivity.viewModel
             lifecycleOwner = this@RouteWriteActivity
         }
+
+        routeId = Integer.parseInt(intent.getStringExtra("routeId"))
+        writeViewModel.setRouteId(routeId)
 
         initObserve()
         setTabLayout()
@@ -85,13 +88,13 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
         // 활동이 없을 때 나타나는 활동 추가 버튼
         binding.addCv.setOnClickListener {
 //            findNavController().navigate(R.id.action_routeWriteFragment_to_routeActivityFragment)
-            startActivity(Intent(this, RouteActivityActivity::class.java))
+            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value.toString()))
         }
 
         // 활동이 1개 이상일 때 나타나는 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
 //            findNavController().navigate(R.id.action_routeWriteFragment_to_routeActivityFragment)
-            startActivity(Intent(this, RouteActivityActivity::class.java))
+            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value.toString()))
         }
     }
 
@@ -114,6 +117,14 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun initObserve() {
+        viewModel.route.observe(this) {
+            Log.d("ROUTE-TEST", "viewModel.route.observe()")
+            if (viewModel.route.value?.routeActivities?.size != 0) {
+                activityAdapter.addAllActivities(viewModel.route.value?.routeActivities!!)
+                Log.d("ROUTE-TEST", "activityAdapter.returnAllItems() = ${activityAdapter.returnAllItems()}")
+            }
+        }
+
         editViewModel.route.observe(this) { route ->
             if (route.routeActivities.isNotEmpty()) {
                 setActivityAdapter()

@@ -1,12 +1,15 @@
 package com.example.routebox.presentation.di
 
 import com.example.routebox.data.datasource.RemoteAuthDataSource
+import com.example.routebox.data.datasource.RemoteReportDataSource
 import com.example.routebox.data.datasource.RemoteRouteDataSource
 import com.example.routebox.data.datasource.RemoteUserDataSource
 import com.example.routebox.data.repositoriyImpl.AuthRepositoryImpl
+import com.example.routebox.data.repositoriyImpl.ReportRepositoryImpl
 import com.example.routebox.data.repositoriyImpl.RouteRepositoryImpl
 import com.example.routebox.data.repositoriyImpl.UserRepositoryImpl
 import com.example.routebox.domain.repositories.AuthRepository
+import com.example.routebox.domain.repositories.ReportRepository
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.domain.repositories.UserRepository
 import dagger.Module
@@ -34,4 +37,10 @@ object RepositoryModule {
     fun provideRouteRepository(
         remoteRouteDataSource: RemoteRouteDataSource,
     ): RouteRepository = RouteRepositoryImpl(remoteRouteDataSource)
+
+    /** 신고 */
+    @Provides
+    fun provideReportRepository(
+        remoteReportDataSource: RemoteReportDataSource
+    ): ReportRepository = ReportRepositoryImpl(remoteReportDataSource)
 }

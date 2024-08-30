@@ -45,7 +45,9 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
 
         // 다음 버튼
         binding.routeCreateNextBtn.setOnClickListener {
-            startActivity(Intent(this, RouteWriteActivity::class.java))
+            viewModel.tryCreateRoute() // 루트 생성 API
+            startActivity(Intent(this, RouteNotYetActivity::class.java))
+            finish()
         }
 
         // 시작 날짜

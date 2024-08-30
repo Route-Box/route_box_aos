@@ -64,8 +64,9 @@
                     android:id="@+id/route_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/route_start_question"
+                    android:text="@{viewModel.isTracking() ? @string/route_isTracking_title : @string/route_start_title}"
                     android:layout_marginTop="32dp"
+                    tools:text="@string/route_start_title"
                     style="@style/heading_m"/>
 
                 <TextView
@@ -74,9 +75,25 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:paddingVertical="17dp"
+                    android:visibility="@{viewModel.isTracking() ? View.GONE : View.VISIBLE}"
                     android:text="@string/route_record_start"
                     android:textAlignment="center"
                     android:textColor="@color/white"
+                    android:background="@drawable/bg_gradient_btn"
+                    style="@style/body_b_l"/>
+
+                <TextView
+                    android:id="@+id/route_see_tracking_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:paddingVertical="17dp"
+                    android:visibility="@{viewModel.isTracking() ? View.VISIBLE : View.GONE}"
+                    tools:visibility="gone"
+                    android:text="@string/route_record_isTracking"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/sub_black"
                     android:background="@drawable/bg_gradient_btn"
                     style="@style/body_b_l"/>
 

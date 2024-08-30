@@ -63,12 +63,11 @@
         <activity android:name=".presentation.ui.route.write.RoutePictureAlbumActivity" />
         <activity android:name=".presentation.ui.route.RouteDetailActivity"/>
         <activity android:name=".presentation.ui.route.RouteWriteCompleteActivity" />
-        <activity android:name=".presentation.ui.route.RouteCompleteTagActivity" />
-        <activity android:name=".presentation.ui.route.write.RouteCompleteBaseActivity" />
         <activity android:name=".presentation.ui.route.RouteCompleteActivity" />
+        <activity android:name=".presentation.ui.route.write.RouteNotYetActivity"/>
         <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".presentation.ui.route.edit.RouteStyleActivity"/>
+        <activity android:name=".presentation.ui.route.edit.RouteCompleteTagActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />

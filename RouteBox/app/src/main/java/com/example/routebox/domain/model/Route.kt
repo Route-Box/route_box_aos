@@ -1,10 +1,13 @@
 package com.example.routebox.domain.model
 
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.bumptech.glide.load.model.StringLoader
 import java.io.File
 import java.io.Serializable
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class RoutePreviewResult(
     var result: ArrayList<RoutePreview> = arrayListOf()
@@ -31,7 +34,8 @@ data class RoutePreview(
 )
 
 // 루트 구매 후 상세보기
-data class RouteDetail(
+@RequiresApi(Build.VERSION_CODES.O)
+data class RouteDetail (
     var routeId: Int = -1,
     var userId: Int = -1,
     var profileImageUrl: String = "",
@@ -45,10 +49,9 @@ data class RouteDetail(
     var numberOfPeople: Int = -1,
     var numberOfDays: String = "",
     var transportation: String = "",
-    var createdAt: String = "",
+    var createdAt: String = LocalDateTime.now().toString(),
     var routePath: ArrayList<RoutePath> = arrayListOf(),
     var routeActivities: ArrayList<ActivityResult> = arrayListOf(),
-    // TODO: 내 루트의 경우, isPublic 데이터 서버에 추가 요청! 구매한 다른 사람의 루트는 공개 여부 필요 X!
     var isPublic: Boolean = false
 )
 
@@ -65,6 +68,10 @@ data class Insight(
 )
 
 // 내 루트
+data class MyRouteResponse(
+    var result: ArrayList<MyRoute>
+)
+
 data class MyRoute(
     var routeId: Int = -1,
     var routeName: String = "",
@@ -109,13 +116,13 @@ data class RoutePointResult(
 
 // 내 루트 수정
 data class RouteUpdateRequest(
-    var routeName: String,
-    var routeDescription: String,
-    var whoWith: String,
-    var numberOfPeople: Int,
-    var numberOfDays: String,
-    var routeStyles: ArrayList<String>,
-    var transportation: String
+    var routeName: String?,
+    var routeDescription: String?,
+    var whoWith: String?,
+    var numberOfPeople: Int?,
+    var numberOfDays: String?,
+    var routeStyles: List<String>?,
+    var transportation: String?
 )
 
 data class RouteUpdateResult(
@@ -144,17 +151,17 @@ data class Activity(
 )
 
 data class ActivityResult(
-    var activityId: Int,
-    var locationName: String,
-    var address: String,
-    var latitude: String,
-    var longitude: String,
-    var visitDate: String,
-    var startTime: String,
-    var endTime: String,
-    var category: String,
-    var description: String,
-    var activityImages: ArrayList<ActivityImage>
+    var activityId: Int = -1,
+    var locationName: String = "",
+    var address: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
+    var visitDate: String = "",
+    var startTime: String = "",
+    var endTime: String = "",
+    var category: String = "",
+    var description: String = "",
+    var activityImages: ArrayList<ActivityImage> = arrayListOf()
 )
 
 data class ActivityImage(
@@ -222,19 +229,3 @@ data class ActivityPictureAlbum(
 
 const val pictureImgType = 0
 const val pictureAddType = 1
-
-data class ReportId(
-    var reportId: Int
-)
-
-// 사용자 신고
-data class ReportUser(
-    var userId: Int,
-    var content: String
-)
-
-// 루트 신고
-data class ReportRoute(
-    var routeId: Int,
-    var content: String
-)
