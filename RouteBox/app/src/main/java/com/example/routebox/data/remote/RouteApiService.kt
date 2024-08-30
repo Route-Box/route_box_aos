@@ -116,14 +116,4 @@ interface RouteApiService {
     // 인사이트 조회
     @GET("routes/insight")
     suspend fun getInsight(): Insight
-
-    @POST("/api/v1/reports/user")
-    suspend fun reportUser(
-        @Body reportUserBody: ReportUser
-    ): ReportId
-
-    @POST("/api/v1/reports/route")
-    suspend fun reportRoute(
-        @Body reportRouteBody: ReportRoute
-    ): ReportId
 }

@@ -103,14 +103,4 @@ interface RouteRepository {
 
     /** 인사이트 조회 */
     suspend fun getInsight(): Insight
-
-    /** 사용자 신고 */
-    suspend fun reportUser(
-        reportUserBody: ReportUser
-    ): ReportId
-
-    /** 루트 신고 */
-    suspend fun reportRoute(
-        reportRouteBody: ReportRoute
-    ): ReportId
 }

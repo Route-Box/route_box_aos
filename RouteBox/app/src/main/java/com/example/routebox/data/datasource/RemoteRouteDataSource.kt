@@ -318,40 +318,4 @@ class RemoteRouteDataSource @Inject constructor(
 
         return insight
     }
-
-    suspend fun reportUser(
-        reportUserBody: ReportUser
-    ): ReportId {
-        var reportId = ReportId(-1)
-        withContext(Dispatchers.IO) {
-            runCatching {
-                routeApiService.reportUser(reportUserBody)
-            }.onSuccess {
-                Log.d("RemoteRouteDataSource", "reportUser Success\nreportId = ${reportId}")
-                reportId = it
-            }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportUser Fail\ne = $e")
-            }
-        }
-
-        return reportId
-    }
-
-    suspend fun reportRoute(
-        reportRouteBody: ReportRoute
-    ): ReportId {
-        var reportId = ReportId(-1)
-        withContext(Dispatchers.IO) {
-            runCatching {
-                routeApiService.reportRoute(reportRouteBody)
-            }.onSuccess {
-                Log.d("RemoteRouteDataSource", "reportRoute Success\nreportId = ${reportId}")
-                reportId = it
-            }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportRoute Fail\ne = $e")
-            }
-        }
-
-        return reportId
-    }
 }
