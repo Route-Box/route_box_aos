@@ -11,6 +11,7 @@ import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
@@ -25,6 +26,7 @@ import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -124,6 +126,18 @@ class RouteFragment : Fragment(), PopupDialogInterface {
             }
         }
 
+        viewModel.isGetRouteDetailSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            if (isSuccess) {
+                // 루트 수정 화면으로 이동
+                val intent = Intent(requireActivity(), RouteEditBaseActivity::class.java)
+                intent.apply {
+                    putExtra("route", Gson().toJson(viewModel.route.value))
+                    putExtra("isEditMode", true)
+                }
+                startActivity(intent)
+            }
+        }
+
         // 삭제 성공 유무를 관측하여 삭제 시 routeList 업데이트
         viewModel.isDeleteRouteSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (isSuccess) {
@@ -146,13 +160,8 @@ class RouteFragment : Fragment(), PopupDialogInterface {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> { // 수정하기
-                    // 루트 수정 화면으로 이동
-                    val intent = Intent(requireActivity(), RouteEditBaseActivity::class.java)
-                    intent.apply {
-                        putExtra("route", Gson().toJson(viewModel.route.value))
-                        putExtra("isEditMode", true)
-                    }
-                    startActivity(intent)
+                    // 루트 상세조회 API 호출 후 화면 이동
+                    viewModel.tryGetMyRouteDetail(viewModel.selectedRouteId)
                     true
                 }
                 R.id.menu_make_public_or_private -> { // 공개/비공개 전환

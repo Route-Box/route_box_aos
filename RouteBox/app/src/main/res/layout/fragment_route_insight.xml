@@ -68,7 +68,7 @@
                         android:id="@+id/insight_my_route_create_num_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(viewModel.insight.routeCount)}"
+                        android:text="@{String.valueOf(viewModel.routeList.size())}"
                         tools:text="5"
                         android:textColor="#3D80F4"
                         style="@style/heading_m"/>

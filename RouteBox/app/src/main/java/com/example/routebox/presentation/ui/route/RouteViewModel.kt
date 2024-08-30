@@ -41,7 +41,10 @@ class RouteViewModel @Inject constructor(
 
     var isPublic: Boolean = false
     var selectedRouteId: Int = 0
-    var recordingRouteId: Int = -1
+    var recordingRouteId: Int = -1 // 현재 기록중인 루트의 id
+
+    private val _isGetRouteDetailSuccess = MutableLiveData<Boolean>(false)
+    val isGetRouteDetailSuccess: LiveData<Boolean> = _isGetRouteDetailSuccess
 
     private val _isDeleteRouteSuccess = MutableLiveData<Boolean>(false)
     val isDeleteRouteSuccess: LiveData<Boolean> = _isDeleteRouteSuccess
@@ -74,6 +77,7 @@ class RouteViewModel @Inject constructor(
     fun tryGetMyRouteDetail(routeId: Int) {
        viewModelScope.launch {
            _route.value = repository.getRouteDetail(routeId)
+           _isGetRouteDetailSuccess.value = (_route.value?.routeId != -1)
            selectedRouteId = routeId
            isPublic = _route.value!!.isPublic
            _tagList.value = combineAllServerTagsByList()
