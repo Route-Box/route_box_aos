@@ -2,6 +2,7 @@ package com.example.routebox.presentation.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,9 @@ import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.routebox.databinding.FragmentHomeBinding
+import com.example.routebox.presentation.config.Constants.ENDPOINT_HOME
+import com.example.routebox.presentation.config.Constants.WEB_BASE_URL
+import com.example.routebox.presentation.utils.JavaScriptBridge
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -36,11 +40,16 @@ class HomeFragment : Fragment() {
         webSetting.loadWithOverviewMode = true
 
         // WebView 리다이렉트할 때 브라우저가 열리는 것을 방지!
-        binding.homeWebView.webViewClient = WebViewClient()
-        binding.homeWebView.webChromeClient = WebChromeClient()
-
-        // TODO: URL 추가하기
-        binding.homeWebView.loadUrl("https://www.naver.com")
+        binding.homeWebView.apply {
+            webViewClient = WebViewClient()
+            webChromeClient = WebChromeClient()
+            addJavascriptInterface(object : JavaScriptBridge() {
+                fun sendMessageToNative(datas: HashMap<String, @JvmSuppressWildcards Any>) {
+                    Log.d("HomeFragment", "webData type: ${datas["type"]}, payload: ${datas["payload"]}")
+                }
+            }, JavaScriptBridge.INTF)
+            loadUrl("$WEB_BASE_URL$ENDPOINT_HOME")
+        }
 
         // WebView 뒤로가기 설정
         binding.homeWebView.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
@@ -50,8 +59,9 @@ class HomeFragment : Fragment() {
                 if (binding.homeWebView.canGoBack()) {
                     binding.homeWebView.goBack()
                 } else {
-                    requireActivity().onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
-                        override fun handleOnBackPressed() { }
+                    requireActivity().onBackPressedDispatcher.addCallback(object :
+                        OnBackPressedCallback(true) {
+                        override fun handleOnBackPressed() {}
                     })
                 }
                 return@OnKeyListener true
