@@ -162,11 +162,6 @@ class RouteWriteViewModel @Inject constructor(
                 "visitDate = ${_activity.value?.visitDate}\nstart = ${_activity.value?.startTime}\n" +
                 "end = ${_activity.value?.endTime}\ncategory = ${_activity.value?.category}\n" +
                 "image = ${_activity.value?.activityImages?.size}\ndescription = ${_activity.value?.description}")
-        if (_activity.value?.activityImages?.size != 0) {
-            for (i in 0 until _activity.value?.activityImages?.size!!) {
-                Log.d("ROUTE-TEST", "image = ${_activity.value?.activityImages!![i]}")
-            }
-        }
 
         _btnEnabled.value = _activity.value?.locationName != ""
                 && _activity.value?.visitDate != "" && _activity.value?.startTime != ""

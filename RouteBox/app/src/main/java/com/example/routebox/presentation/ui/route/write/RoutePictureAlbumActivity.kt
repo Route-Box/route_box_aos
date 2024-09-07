@@ -2,10 +2,12 @@ package com.example.routebox.presentation.ui.route.write
 
 import android.content.ComponentName
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +19,7 @@ import com.example.routebox.presentation.ui.route.adapter.PictureAlbumRVAdapter
 import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
 
     private lateinit var binding: ActivityRoutePictureAlbumBinding
@@ -46,7 +49,6 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
         }
 
         binding.nextBtn.setOnClickListener {
-//            viewModel.setSendPictureList()
             val intent = Intent(this, RouteActivityActivity::class.java)
             var imgList = arrayListOf<String>()
             for (i in 0 until viewModel.selectedPictureAlbumList.value!!.size) {
@@ -65,6 +67,7 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
         binding.pictureRv.itemAnimator = null
         albumRVAdapter.setPictureClickListener(object: PictureAlbumRVAdapter.MyItemClickListener {
             override fun onPictureItemClick(position: Int, data: ActivityPictureAlbum) {
+                Log.d("ROUTE-TEST", "data = ${data}")
                 var selectedStatus = data.selectedNumber != null
                 var selectedNumber: Int? = null
                 

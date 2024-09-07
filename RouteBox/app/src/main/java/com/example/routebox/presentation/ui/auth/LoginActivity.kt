@@ -75,7 +75,7 @@ class LoginActivity: AppCompatActivity() {
                 return@observe
             }
             if (it.accessToken.token.isNotEmpty()) {
-                Toast.makeText(this, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
                 // 메인 화면으로 이동
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()

@@ -1,13 +1,11 @@
 package com.example.routebox.presentation.ui.route.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routebox.databinding.ItemActivityBinding
-import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityResult
 
 @SuppressLint("NotifyDataSetChanged")
@@ -28,15 +26,6 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
     fun addAllActivities(activityList: MutableList<ActivityResult>) {
         this.activityList = activityList
         this.notifyDataSetChanged()
-    }
-
-    fun addActivities(activity: ActivityResult) {
-        activityList.add(activity)
-        notifyDataSetChanged()
-    }
-
-    fun returnAllItems(): MutableList<ActivityResult> {
-        return activityList
     }
 
     fun returnActivityId(position: Int): Int {
@@ -61,7 +50,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         holder.apply {
             // 수정 버튼 클릭
             binding.itemActivityEditIv.setOnClickListener {
-//                mItemClickListener.onEditButtonClick(position, activityList[position])
+                mItemClickListener.onEditButtonClick(position, activityList[position])
             }
             // 삭제 버튼 클릭
             binding.itemActivityDeleteIv.setOnClickListener {

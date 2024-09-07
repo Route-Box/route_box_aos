@@ -76,7 +76,7 @@ class RouteRepositoryImpl @Inject constructor(
         endTime: String,
         category: String,
         description: String?,
-        activityImages: ArrayList<File?>
+        activityImages: MutableList<String>
     ): ActivityResult {
         return remoteRouteDataSource.createActivity(
             context,

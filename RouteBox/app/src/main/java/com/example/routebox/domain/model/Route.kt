@@ -147,7 +147,7 @@ data class Activity(
     var endTime: String = "",
     var category: String = "", // 음식점, 관광명소 등
     var description: String? = null,
-    var activityImages: ArrayList<File?> = arrayListOf(),
+    var activityImages: MutableList<String> = mutableListOf(),
 )
 
 data class ActivityResult(

@@ -61,7 +61,6 @@ class RouteTrackingFragment: Fragment() {
 
                 if (viewModel.route.value?.routeActivities != null) {
                     for (i in 0 until viewModel.route.value?.routeActivities!!.size) {
-                        Log.d("ROUTE-TEST", "viewModel.activity.dots = ${viewModel.route.value!!.routeActivities[0].latitude}")
                         addDot(viewModel.route.value?.routeActivities!![i].longitude, viewModel.route.value?.routeActivities!![i].latitude)
                     }
                 }

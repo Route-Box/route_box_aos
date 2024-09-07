@@ -3,13 +3,15 @@ package com.example.routebox.presentation.ui.route
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -37,6 +39,7 @@ import com.example.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.google.android.flexbox.FlexboxLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.io.IOException
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -56,7 +59,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private var routeId: Int = -1
 
     private val viewModel: RouteWriteViewModel by viewModels()
-    private val albumViewModel: RoutePictureAlbumViewModel by viewModels()
 
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
@@ -72,7 +74,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         ActivityResultContracts.RequestPermission()
     ) {
         if (ContextCompat.checkSelfPermission(this@RouteActivityActivity, it.toString()) == PackageManager.PERMISSION_GRANTED) {
-            startActivity(Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java))
+            val intent = Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java).putExtra("album", viewModel.activity.value?.activityImages?.toTypedArray())
+            resultLauncher.launch(intent)
         } else {
             Log.d("ALBUM-PERMISSION", "권한 필요")
         }
@@ -87,7 +90,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             lifecycleOwner = this@RouteActivityActivity
         }
 
-        routeId = Integer.parseInt(intent.getStringExtra("routeId"))
+        Log.d("ROUTE-TEST", "routeId = ${intent.getIntExtra("routeId", -1)}")
+        routeId = intent.getIntExtra("routeId", -1)
         viewModel.setRouteId(routeId)
 
         setAdapter()
@@ -98,10 +102,11 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         // 선택한 사진을 받기 위한 launcher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if (result.resultCode == RESULT_OK) {
-                for (i in 0 until result.data?.getStringArrayListExtra("album")!!.size) {
-                    imgRVAdapter.addItem(result.data?.getStringArrayListExtra("album")!![i])
-                    // viewModel.activity.value?.activityImages?.add(File(result.data?.getStringArrayListExtra("album")!![i]))
-                    viewModel.activity.value?.activityImages?.add(File(result.data?.getStringArrayListExtra("album")!![i]))
+                var imgList = result.data?.getStringArrayListExtra("album")
+
+                for (i in 0 until imgList?.size!!) {
+                    imgRVAdapter.addItem(imgList[i])
+                    viewModel.activity.value?.activityImages?.add(imgList[i])
                 }
             }
         }
@@ -184,7 +189,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onPlusItemClick(position: Int) {
                 if (ContextCompat.checkSelfPermission(this@RouteActivityActivity, checkVersion()) == PackageManager.PERMISSION_GRANTED) {
-                    val intent = Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java)
+                    val intent = Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java).putExtra("album", viewModel.activity.value?.activityImages?.toTypedArray())
                     resultLauncher.launch(intent)
                 } else {
                     galleryPermissionLauncher.launch(checkVersion())
@@ -192,6 +197,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             }
             override fun onPictureItemClick(position: Int) {
                 imgRVAdapter.removeItem(position)
+                viewModel.activity.value?.activityImages!!.removeAt(position)
             }
         })
     }

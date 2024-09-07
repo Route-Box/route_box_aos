@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -146,8 +147,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
         bottomSheetDialog.activityRv.itemAnimator = null
         activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                //TODO: RouteId를 통한 정보 전달
-                startActivity(Intent(this@RouteWriteActivity, RouteActivityActivity::class.java))
+                startActivity(Intent(this@RouteWriteActivity, RouteActivityActivity::class.java).putExtra("routeId", routeId))
             }
             override fun onDeleteButtonClick(position: Int) {
                 deleteId = activityAdapter.returnActivityId(position)

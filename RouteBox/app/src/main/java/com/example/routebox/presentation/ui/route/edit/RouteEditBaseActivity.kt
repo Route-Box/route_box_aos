@@ -20,6 +20,7 @@ class RouteEditBaseActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRouteBaseEditBinding
 
     private val viewModel: RouteEditViewModel by viewModels()
+    private var routeId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,8 @@ class RouteEditBaseActivity : AppCompatActivity() {
             viewModel.initRouteTitleAndContent()
         }
         viewModel.isEditMode = intent.getBooleanExtra("isEditMode", false)
+        routeId = intent.getIntExtra("routeId", -1)
+        viewModel.setRouteId(routeId)
     }
 
     private fun initClickListeners() {

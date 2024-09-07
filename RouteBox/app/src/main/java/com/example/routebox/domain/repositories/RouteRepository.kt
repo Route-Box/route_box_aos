@@ -86,7 +86,7 @@ interface RouteRepository {
         endTime: String,
         category: String,
         description: String?,
-        activityImages: ArrayList<File?>
+        activityImages: MutableList<String>
     ): ActivityResult
 
     /** 루트 수정 */
