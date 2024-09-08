@@ -20,14 +20,18 @@ class RouteCompleteTagViewModel @Inject constructor(
 ): ViewModel() {
     private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
 
-    //TODO: 넘겨받은 루트 id 저장
-    private var routeId: Int = 0
+    private val _routeId = MutableLiveData<Int>()
+    val routeId: LiveData<Int> = _routeId
 
     private val _isEnabledButton = MutableLiveData<Boolean>()
     val isEnabledButton: LiveData<Boolean> = _isEnabledButton
 
     private val _isEditSuccess = MutableLiveData<Boolean>()
     val isEditSuccess: LiveData<Boolean> = _isEditSuccess
+
+    fun setRouteId(routeId: Int) {
+        _routeId.value = routeId
+    }
 
     /** 루트 수정 */
     fun tryEditRoute() {
@@ -41,7 +45,7 @@ class RouteCompleteTagViewModel @Inject constructor(
                 transportation = convertToServerTagData(FilterType.MEANS_OF_TRANSPORTATION)?.first()
             )
             _isEditSuccess.value = repository.updateRoute(
-                routeId,
+                _routeId.value!!,
                 routeUpdateRequest
             ).routeId != -1
             Log.d("RouteCompleteTagViewModel", "EditRouteRequest: $routeUpdateRequest")

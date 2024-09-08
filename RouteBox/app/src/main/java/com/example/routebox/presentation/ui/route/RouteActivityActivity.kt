@@ -90,7 +90,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             lifecycleOwner = this@RouteActivityActivity
         }
 
-        Log.d("ROUTE-TEST", "routeId = ${intent.getIntExtra("routeId", -1)}")
         routeId = intent.getIntExtra("routeId", -1)
         viewModel.setRouteId(routeId)
 

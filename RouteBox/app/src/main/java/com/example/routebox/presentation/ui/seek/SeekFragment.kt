@@ -18,9 +18,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSeekBinding
+import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.example.routebox.presentation.ui.seek.wallet.WalletActivity
+import com.example.routebox.presentation.utils.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.Boolean
 import kotlin.Int
@@ -69,14 +71,11 @@ class SeekFragment : Fragment() {
         binding.seekHomeRv.adapter = routeAdapter
         binding.seekHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         routeAdapter.setRouteCommentClickListener(object: SeekHomeRouteRVAdapter.MyItemClickListener {
-            override fun commentItemClick(position: Int) {
-                val intent = Intent(context, CommentActivity::class.java)
-                // TODO: 루트 아이디 보내주기
-                intent.putExtra("routeId", 0)
-                startActivity(intent)
+            override fun commentItemClick(position: Int, data: RoutePreview) {
+                startActivity(Intent(context, CommentActivity::class.java).putExtra("routeId", data.routeId))
             }
             override fun moreItemClick(view: View, position: Int) {
-                reportMenuShow(view!!)
+                reportMenuShow(view)
             }
         })
         binding.seekHomeRv.itemAnimator = null
@@ -84,7 +83,10 @@ class SeekFragment : Fragment() {
 
     private fun initClickListener() {
         binding.topPointIv.setOnClickListener {
-            startActivity(Intent(context, WalletActivity::class.java))
+            // TODO: 닉네임 전달 or 지갑 API 연동 후 닉네임 연결
+            // startActivity(Intent(context, WalletActivity::class.java))
+            val loading = LoadingDialog(requireActivity())
+            loading.show()
         }
 
         binding.topSearchIv.setOnClickListener {
@@ -98,7 +100,7 @@ class SeekFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    // TODO: 임시
+                    // TODO: 신고하기 연결하기
                     Toast.makeText(activity, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
                     true
                 }

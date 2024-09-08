@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="22dp"
                     android:layout_marginTop="20dp"
-                    android:background="@color/gray7"
+                    app:cardBackgroundColor="@color/gray7"
                     app:cardElevation="0dp"
                     app:cardCornerRadius="10dp"
                     app:strokeWidth="1dp"
@@ -359,7 +359,7 @@
                             android:id="@+id/agree_refund_iv"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_term_check_x"
+                            android:src="@drawable/ic_check_term_x"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" />

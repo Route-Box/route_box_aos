@@ -30,20 +30,17 @@ interface RouteRepository {
     ): KakaoSearchResult
 
     /** 루트 탐색 */
-    // TODO: 탐색 홈 부분 연결
     suspend fun getSearchRouteList(
         page: Int,
         size: Int
     ): RoutePreviewResult
 
     /** 루트 미리보기 상세 조회 */
-    // TODO: 루트 구매 전 상세보기 화면 연결
     suspend fun getRouteDetailPreview(
         routeId: Int
     ): RoutePreview
 
     /** 구매한 루트 / 내 루트 상세 조회 */
-    // TODO: 구매 후에 나오는 루트 상세 보기 및 내 루트 상세 보기 화면 연결
     suspend fun getRouteDetail(
         routeId: Int
     ): RouteDetail

@@ -58,7 +58,6 @@ class MyRouteRVAdapter: RecyclerView.Adapter<MyRouteRVAdapter.ViewHolder>(){
     override fun getItemCount(): Int = routeList.size
 
     inner class ViewHolder(val binding: ItemRouteMyBinding) : RecyclerView.ViewHolder(binding.root) {
-        //TODO: 실제 Route 데이터로 변경
         fun bind(route: MyRoute) {
             binding.route = route
         }

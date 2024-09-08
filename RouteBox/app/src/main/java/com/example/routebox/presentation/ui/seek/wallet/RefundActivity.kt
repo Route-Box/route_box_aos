@@ -80,11 +80,11 @@ class RefundActivity: AppCompatActivity() {
             checkNext[4] = !checkNext[4]
 
             if (!checkNext[4]) {
-                binding.agreeRefundIv.setImageResource(R.drawable.ic_term_check_x)
+                binding.agreeRefundIv.setImageResource(R.drawable.ic_check_term_x)
                 checkNextBtn()
             }
             else {
-                binding.agreeRefundIv.setImageResource(R.drawable.ic_term_check_o)
+                binding.agreeRefundIv.setImageResource(R.drawable.ic_check_term_o)
                 checkNextBtn()
             }
         }

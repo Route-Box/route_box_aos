@@ -16,6 +16,7 @@ import com.example.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
+@RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener {
     private lateinit var binding: ActivityRouteCompleteTagBinding
@@ -23,6 +24,7 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
     private val viewModel: RouteCompleteTagViewModel by viewModels()
 
     private lateinit var routeStyleFragment: RouteStyleFragment
+    private var routeId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,7 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
             viewModel = this@RouteCompleteTagActivity.viewModel
             lifecycleOwner = this@RouteCompleteTagActivity
         }
+        routeId = intent.getIntExtra("routeId", -1)
 
         initObserve()
         initClickListeners()
@@ -71,6 +74,8 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
                 finish()
             }
         }
+
+        viewModel.setRouteId(routeId)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

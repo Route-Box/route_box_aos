@@ -166,7 +166,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
     }
 
     override fun onClickPositiveButton(id: Int) {
-        //TODO: 활동 삭제 진행
         Toast.makeText(this, "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
         editViewModel.deleteActivity(deleteId)
     }

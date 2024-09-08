@@ -56,7 +56,6 @@ class PictureAlbumRVAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             (holder as CameraViewHolder).bind()
             holder.setIsRecyclable(false)
             holder.itemView.setOnClickListener { 
-                // TODO: 카메라 연결
                 mItemClickListener.onCameraItemClick()
             }
         } else {

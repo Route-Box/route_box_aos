@@ -3,7 +3,9 @@ package com.example.routebox.presentation.ui.seek.wallet
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
@@ -48,7 +50,9 @@ class WalletActivity: AppCompatActivity() {
         }
 
         binding.refundCv.setOnClickListener {
-            startActivity(Intent(this, RefundActivity::class.java))
+            Toast.makeText(this, ContextCompat.getString(this, R.string.update), Toast.LENGTH_LONG).show()
+            // TODO: 인앱 결제 기능 추가 했을 때 아래 화면으로 이동 
+            // startActivity(Intent(this, RefundActivity::class.java))
         }
     }
 

@@ -35,6 +35,9 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private lateinit var kakaoMap: KakaoMap
     private val activityAdapter = ActivityRVAdapter(true)
 
+    private var deleteId: Int = -1
+    private var deleteActivityIndex: Int = -1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,11 +96,12 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
         // 활동 아이템 클릭
         activityAdapter.setActivityClickListener(object : ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                //TODO: RouteId를 통한 정보 전달
-                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java))
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", viewModel.routeId.value))
             }
 
             override fun onDeleteButtonClick(position: Int) {
+                deleteId = activityAdapter.returnActivityId(position)
+                deleteActivityIndex = position
                 // 활동 삭제 팝업 띄우기
                 showPopupDialog()
             }
@@ -127,7 +131,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     }
 
     override fun onClickPositiveButton(id: Int) {
-        //TODO: 활동 삭제 진행
         Toast.makeText(requireContext(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
+        viewModel.deleteActivity(deleteId)
     }
 }

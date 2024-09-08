@@ -40,8 +40,8 @@ class Signup4TermsFragment : Fragment() {
 
         binding.term1Check.setOnClickListener {
             if (term1) {
-                binding.term1Check.setImageResource(R.drawable.ic_term_check_x)
-            } else binding.term1Check.setImageResource(R.drawable.ic_term_check_o)
+                binding.term1Check.setImageResource(R.drawable.ic_check_term_x)
+            } else binding.term1Check.setImageResource(R.drawable.ic_check_term_o)
 
             term1 = !term1
             viewModel.setTerms(term1 && term2)
@@ -49,8 +49,8 @@ class Signup4TermsFragment : Fragment() {
 
         binding.term2Check.setOnClickListener {
             if (term2) {
-                binding.term2Check.setImageResource(R.drawable.ic_term_check_x)
-            } else binding.term2Check.setImageResource(R.drawable.ic_term_check_o)
+                binding.term2Check.setImageResource(R.drawable.ic_check_term_x)
+            } else binding.term2Check.setImageResource(R.drawable.ic_check_term_o)
 
             term2 = !term2
             viewModel.setTerms(term1 && term2)

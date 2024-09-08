@@ -1,12 +1,17 @@
 package com.example.routebox.presentation.ui.seek.wallet
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRefundCompleteBinding
+import com.example.routebox.presentation.ui.MainActivity
 
+@SuppressLint("ResourceType")
 class RefundCompleteActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityRefundCompleteBinding
@@ -23,9 +28,9 @@ class RefundCompleteActivity: AppCompatActivity() {
             finish()
         }
 
-        // TODO: 홈으로 연결 필요
         binding.homeBtn.setOnClickListener {
-            finish()
+            startActivity(Intent(this@RefundCompleteActivity, MainActivity::class.java))
+            finishAffinity()
         }
     }
 }

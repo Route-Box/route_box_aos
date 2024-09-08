@@ -59,6 +59,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_coupon"
                 android:layout_marginEnd="14dp"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/top_point_iv" />
@@ -68,7 +69,7 @@
                 android:layout_height="14dp"
                 android:layout_marginEnd="-8dp"
                 android:layout_marginBottom="-2dp"
-                android:visibility="@{coupon == 0 ? View.GONE : View.VISIBLE}"
+                android:visibility="gone"
                 app:strokeColor="@color/white"
                 app:strokeWidth="1dp"
                 app:cardBackgroundColor="@color/main_gradient_bottom"
@@ -76,6 +77,7 @@
                 app:cardCornerRadius="13dp"
                 app:layout_constraintBottom_toBottomOf="@id/top_coupon_iv"
                 app:layout_constraintEnd_toEndOf="@id/top_coupon_iv">
+<!--                android:visibility="@{coupon == 0 ? View.GONE : View.VISIBLE}"-->
 
                 <TextView
                     android:layout_width="wrap_content"
