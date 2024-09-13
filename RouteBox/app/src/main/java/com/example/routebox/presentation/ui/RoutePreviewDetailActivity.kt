@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRoutePreviewDetailBinding
+import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 
 class RoutePreviewDetailActivity: AppCompatActivity() {
@@ -45,8 +45,8 @@ class RoutePreviewDetailActivity: AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    // TODO: 임시
-                    Toast.makeText(this, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 신고하기 화면으로 이동
+                    startActivity(Intent(this, ReportFeedActivity::class.java))
                     true
                 }
                 else -> { false }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSeekBinding
+import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.example.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.example.routebox.presentation.ui.seek.wallet.WalletActivity
@@ -98,8 +99,8 @@ class SeekFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    // TODO: 임시
-                    Toast.makeText(activity, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 신고하기 화면으로 이동
+                    startActivity(Intent(requireActivity(), ReportFeedActivity::class.java))
                     true
                 }
                 else -> { false }
