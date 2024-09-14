@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route
 
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -109,6 +110,10 @@ class RouteViewModel @Inject constructor(
         tagNameList.addAll(_route.value!!.routeStyles)
         tagNameList.add(_route.value!!.transportation)
         return tagNameList
+    }
+
+    fun getIsTracking(isTracking: Boolean) {
+        _isTracking.value = isTracking
     }
 
     fun setIsTracking() {

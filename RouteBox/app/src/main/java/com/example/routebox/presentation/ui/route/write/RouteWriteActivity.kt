@@ -1,18 +1,19 @@
 package com.example.routebox.presentation.ui.route.write
 
-import android.annotation.SuppressLint
-import android.content.ContentUris
+import android.Manifest
+import android.Manifest.permission
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
@@ -22,22 +23,32 @@ import com.example.routebox.databinding.ActivityRouteWriteBinding
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
+import com.example.routebox.presentation.ui.route.GPSBackgroundService
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.RouteViewModel
 import com.example.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.example.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
+import com.example.routebox.presentation.utils.SharedPreferencesHelper
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 
+
+/**
+ * TODO: 1분 간격으로 실시간 위치 API 전송
+ * TODO: 지도에 위치 띄우기
+ * TODO: 기록 중이라면 기록 화면 왔을 때 진행 중 아이콘으로 띄우기!!! -> ViewModel 이용!
+ */
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
     private lateinit var binding: ActivityRouteWriteBinding
+    private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
     private val viewModel: RouteViewModel by viewModels()
     private val editViewModel: RouteEditViewModel by viewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
@@ -60,13 +71,60 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             lifecycleOwner = this@RouteWriteActivity
         }
 
-        routeId = Integer.parseInt(intent.getStringExtra("routeId"))
-        editViewModel.setRouteId(routeId)
-
+        checkGPSPermission()
         initObserve()
         setTabLayout()
         setInit()
         initClickListener()
+
+        sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        Log.d("LOCATION_SERVICE", "getIsTracking = ${sharedPreferencesHelper.getRouteTracking()}")
+        viewModel.getIsTracking(sharedPreferencesHelper.getRouteTracking())
+        Log.d("LOCATION_SERVICE", "viewModel getIsTracking = ${viewModel.isTracking.value}")
+
+        routeId = Integer.parseInt(intent.getStringExtra("routeId"))
+        editViewModel.setRouteId(routeId)
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 2
+        private const val LOCATION_BACKGROUND_PERMISSION_REQUEST_CODE = 3
+    }
+
+    // Background GPS 권한 허용을 위한 부분
+    // Android 11 이상부터는 Background에서 접근하는 권한이 처음 권한 확인 문구에 뜨지 않는다 -> So, 추가로 권한을 한번 더 확인하여 Background에서 동작이 가능하도록 구성
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // 첫 권한 확인이 완료 되었는지 확인
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // SDK 29 이상일 때는 한번 더 권한 요청
+                // SDK 29 미만일 경우, 항상 허용 옵션이 첫 권한 요청 화면에 뜨기 때문에 추가로 요청 X
+                // 만약 첫 권한을 허용했다면, Background에서 작동하도록 "항상 허용" 권한 요청
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                    && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this@RouteWriteActivity, ContextCompat.getString(this@RouteWriteActivity, R.string.gps_always_grant), Toast.LENGTH_SHORT).show()
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), LOCATION_BACKGROUND_PERMISSION_REQUEST_CODE)
+                }
+            } else {
+                // 권한이 거부되었을 경우, 아래 문구 띄우기
+                Toast.makeText(this@RouteWriteActivity, ContextCompat.getString(this@RouteWriteActivity, R.string.gps_deny), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkGPSPermission() {
+        // 권한을 구분하기 위한 LOCATION_PERMISSION_REQUEST_CODE 필요!
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION
+                ,Manifest.permission.ACCESS_COARSE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun setInit() {
@@ -122,6 +180,22 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
                 editViewModel.setRoute(viewModel.route.value!!)
                 activityAdapter.addAllActivities(viewModel.route.value?.routeActivities!!)
             }
+        }
+
+        viewModel.isTracking.observe(this) {
+            Log.d("LOCATION_SERVICE", "viewModel.isTracking.observe")
+            if (viewModel.isTracking.value == true) {
+                Intent(applicationContext, GPSBackgroundService::class.java).apply {
+                    action = GPSBackgroundService.SERVICE_START
+                    startService(this)
+                }
+            } else {
+                Intent(applicationContext, GPSBackgroundService::class.java).apply {
+                    action = GPSBackgroundService.SERVICE_STOP
+                    stopService(this)
+                }
+            }
+            sharedPreferencesHelper.setRouteTracking(!sharedPreferencesHelper.getRouteTracking())
         }
 
         editViewModel.deleteActivityId.observe(this) {

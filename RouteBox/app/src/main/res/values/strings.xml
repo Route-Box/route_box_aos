@@ -161,6 +161,9 @@
     <string name="route_complete_content">내 루트에서 확인이 가능해요.</string>
     <string name="route_complete_later">나중에 하기</string>
     <string name="route_complete_check">확인하러 가기</string>
+    <string name="gps_deny">위치 권한이 거부되었습니다.\n원활한 서비스 이용을 위해 위치 권한을 허용해주세요</string>
+    <string name="gps_always_grant">원활한 서비스 이용을 위해 위치 권한 항상 허용을 선택해주세요</string>
+    <string name="check_gps_internet_permission">인터넷 연결 혹은 GPS 권한을 확인해주세요</string>
     <!-- 루트 수정 -->
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>

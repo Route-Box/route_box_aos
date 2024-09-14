@@ -84,9 +84,9 @@ class SeekFragment : Fragment() {
     private fun initClickListener() {
         binding.topPointIv.setOnClickListener {
             // TODO: 닉네임 전달 or 지갑 API 연동 후 닉네임 연결
-            // startActivity(Intent(context, WalletActivity::class.java))
-            val loading = LoadingDialog(requireActivity())
-            loading.show()
+             startActivity(Intent(context, WalletActivity::class.java))
+//            val loading = LoadingDialog(requireActivity())
+//            loading.show()
         }
 
         binding.topSearchIv.setOnClickListener {

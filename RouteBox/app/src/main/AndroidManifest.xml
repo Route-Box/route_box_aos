@@ -2,12 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- 앨범 및 카메라 접근 권한 -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- GPS 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 네트워크를 이용한 위치 식별 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 네트워크 및 GPS를 이용한 위치 식별 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_LOCATION"
+        android:minSdkVersion="34" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- GPS 위치 알림 권한 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".presentation.config.ApplicationClass"
@@ -21,6 +31,10 @@
         android:theme="@style/Theme.RouteBox"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <service
+            android:name=".presentation.ui.route.GPSBackgroundService"
+            android:enabled="true" android:exported="false"
+            android:foregroundServiceType="location" />
         <activity
             android:name=".presentation.ui.SplashActivity"
             android:exported="true">

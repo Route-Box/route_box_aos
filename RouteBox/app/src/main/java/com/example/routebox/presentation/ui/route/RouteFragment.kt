@@ -83,7 +83,6 @@ class RouteFragment : Fragment(), PopupDialogInterface {
         binding.routeSeeTrackingBtn.setOnClickListener {
             //TODO: 기록이 완료되었다면 기록 완료/루트 스타일 선택 화면으로 돌입
             //TODO: routeId 전달
-
             // 기록중인 루트 보기 화면으로 이동
             startActivity(Intent(requireActivity(), RouteWriteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId.toString()))
         }

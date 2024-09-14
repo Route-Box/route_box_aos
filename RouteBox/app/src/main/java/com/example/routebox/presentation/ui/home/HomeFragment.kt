@@ -1,6 +1,8 @@
 package com.example.routebox.presentation.ui.home
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -9,6 +11,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.routebox.databinding.FragmentHomeBinding
 
@@ -23,6 +26,9 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         initWebViewSetting()
+
+        // SDK 32 이하에서는 자동으로 알림 권한이 활성화! So, SDK 33 이상일 경우에만 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) checkNotificationPermission()
 
         return binding.root
     }
@@ -58,5 +64,19 @@ class HomeFragment : Fragment() {
             }
             false
         })
+    }
+
+    private fun checkNotificationPermission() {
+        // 권한을 구분하기 위한 LOCATION_PERMISSION_REQUEST_CODE 필요!
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(
+                Manifest.permission.POST_NOTIFICATIONS),
+            NOTIFICATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    companion object {
+        private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1
     }
 }

@@ -15,8 +15,21 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
             .apply()
     }
 
+    // 루트를 기록 중인지 확인
+    fun getRouteTracking(): Boolean {
+        return sharedPreferences.getBoolean(TRACKING_KEY, false)
+    }
+
+    // 루트 기록 여부 저장
+    fun setRouteTracking(isTracking: Boolean) {
+        sharedPreferences.edit()
+            .putBoolean(TRACKING_KEY, isTracking)
+            .apply()
+    }
+
     companion object {
         const val APP_PREF_KEY = "app_pref"
         const val RECENT_SEARCHWORD_KEY = "recent_searchword"
+        const val TRACKING_KEY = "route_tracking"
     }
 }

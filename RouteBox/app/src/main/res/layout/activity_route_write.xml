@@ -4,6 +4,7 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="com.example.routebox.presentation.utils.SharedPreferencesHelper" />
         <variable
             name="viewModel"
             type="com.example.routebox.presentation.ui.route.RouteViewModel" />
@@ -40,13 +41,14 @@
                     android:backgroundTint="@color/main"
                     android:text="@{@string/progress_tracking + `  `}"
                     android:textColor="@{viewModel.isTracking ? @color/white : @color/gray6}"
-                    android:drawableEnd="@{viewModel.isTracking ? @drawable/ic_pause : @drawable/ic_play}"
+                    android:drawableEnd="@{SharedPreferencesHelper.getRouteTracking() ? @drawable/ic_pause : @drawable/ic_play}"
                     android:onClick="@{() -> viewModel.setIsTracking()}"
                     android:layout_marginTop="20dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     style="@style/body_r_xs" />
+<!--                android:drawableEnd="@{viewModel.isTracking ? @drawable/ic_pause : @drawable/ic_play}"-->
 
                 <ImageView
                     android:id="@+id/close_iv"
