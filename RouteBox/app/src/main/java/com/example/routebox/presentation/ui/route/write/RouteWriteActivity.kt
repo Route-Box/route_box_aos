@@ -49,6 +49,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
 
     private lateinit var binding: ActivityRouteWriteBinding
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
+    private var firstObserve: Boolean = true
     private val viewModel: RouteViewModel by viewModels()
     private val editViewModel: RouteEditViewModel by viewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
@@ -70,17 +71,14 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             viewModel = this@RouteWriteActivity.viewModel
             lifecycleOwner = this@RouteWriteActivity
         }
+        sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        viewModel.getIsTracking(sharedPreferencesHelper.getRouteTracking())
 
         checkGPSPermission()
         initObserve()
         setTabLayout()
         setInit()
         initClickListener()
-
-        sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
-        Log.d("LOCATION_SERVICE", "getIsTracking = ${sharedPreferencesHelper.getRouteTracking()}")
-        viewModel.getIsTracking(sharedPreferencesHelper.getRouteTracking())
-        Log.d("LOCATION_SERVICE", "viewModel getIsTracking = ${viewModel.isTracking.value}")
 
         routeId = Integer.parseInt(intent.getStringExtra("routeId"))
         editViewModel.setRouteId(routeId)
@@ -141,6 +139,10 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             finish()
         }
 
+        binding.trackingCv.setOnClickListener {
+            viewModel.setIsTracking(this)
+        }
+
         binding.closeIv.setOnClickListener {
             finish()
         }
@@ -183,7 +185,11 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
         }
 
         viewModel.isTracking.observe(this) {
-            Log.d("LOCATION_SERVICE", "viewModel.isTracking.observe")
+            if (firstObserve) sharedPreferencesHelper.setRouteTracking(sharedPreferencesHelper.getRouteTracking())
+            else sharedPreferencesHelper.setRouteTracking(!sharedPreferencesHelper.getRouteTracking())
+
+            firstObserve = false
+
             if (viewModel.isTracking.value == true) {
                 Intent(applicationContext, GPSBackgroundService::class.java).apply {
                     action = GPSBackgroundService.SERVICE_START
@@ -195,7 +201,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
                     stopService(this)
                 }
             }
-            sharedPreferencesHelper.setRouteTracking(!sharedPreferencesHelper.getRouteTracking())
         }
 
         editViewModel.deleteActivityId.observe(this) {

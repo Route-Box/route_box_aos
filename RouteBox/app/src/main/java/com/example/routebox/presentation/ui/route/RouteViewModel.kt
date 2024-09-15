@@ -1,6 +1,8 @@
 package com.example.routebox.presentation.ui.route
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -15,6 +17,8 @@ import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.utils.DateConverter
+import com.example.routebox.presentation.utils.SharedPreferencesHelper
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -116,7 +120,8 @@ class RouteViewModel @Inject constructor(
         _isTracking.value = isTracking
     }
 
-    fun setIsTracking() {
-        _isTracking.value = !_isTracking.value!!
+    fun setIsTracking(context: Context) {
+        var sharedPreferencesHelper = SharedPreferencesHelper(context.getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        _isTracking.value = !sharedPreferencesHelper.getRouteTracking()
     }
 }

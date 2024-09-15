@@ -27,8 +27,6 @@ import com.google.android.gms.location.LocationServices
 // Service는 사용자와 상호작용 하지 않고, 백그라운드에서 작업을 수행할 수 있도록 하는 요소!
 class GPSBackgroundService: Service() {
 
-    private lateinit var notificationBuilder: NotificationCompat.Builder
-
     // Service와 Client 사이에 인터페이스 역할!!
     override fun onBind(p0: Intent?): IBinder? {
         Log.d("LOCATION-TEST", "결과 넣기")
@@ -48,8 +46,7 @@ class GPSBackgroundService: Service() {
 
     @SuppressLint("ForegroundServiceType")
     private fun serviceStart() {
-        setNotification()
-
+        var notificationBuilder = setNotification()
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         // GPS 및 네트워크 권한 확인
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -76,15 +73,15 @@ class GPSBackgroundService: Service() {
         }
     }
 
-    // TODO: 코드 다시 확인
     private fun serviceStop() {
+        LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback)
         stopForeground(true)
         stopSelf()
     }
 
-    private fun setNotification() {
+    private fun setNotification(): NotificationCompat.Builder {
         // 위치 알림 띄워주기
-        Log.d("LOCATION_SERVICE", "setNotification")
+        lateinit var notificationBuilder: NotificationCompat.Builder
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Android SDK 26 이상부터는 NotificationChannel을 통해 Notification을 Build!
@@ -100,9 +97,9 @@ class GPSBackgroundService: Service() {
             notificationBuilder = NotificationCompat.Builder(this)
         }
 
-        notificationBuilder
+        return notificationBuilder
             .setContentTitle("당신의 루트를 기록하고 있습니다.")
-            .setSmallIcon(R.drawable.ic_logo_alarm)
+            .setSmallIcon(R.drawable.ic_notification_foreground)
             .setOngoing(true)
     }
 
