@@ -5,6 +5,8 @@ import com.example.routebox.data.remote.ReportApiService
 import com.example.routebox.domain.model.ReportId
 import com.example.routebox.domain.model.ReportRoute
 import com.example.routebox.domain.model.ReportUser
+import com.example.routebox.domain.model.RouteReportId
+import com.example.routebox.domain.model.RouteReportReason
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -32,8 +34,8 @@ class RemoteReportDataSource @Inject constructor(
 
     suspend fun reportRoute(
         reportRouteBody: ReportRoute
-    ): ReportId {
-        var reportId = ReportId(-1)
+    ): RouteReportId {
+        var reportId = RouteReportId(-1)
         withContext(Dispatchers.IO) {
             runCatching {
                 reportApiService.reportRoute(reportRouteBody)

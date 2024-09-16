@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.di
 
 import com.example.routebox.data.remote.KakaoApiService
+import com.example.routebox.data.remote.ReportApiService
 import com.example.routebox.data.remote.auth.AnonymousApiService
 import com.example.routebox.data.remote.RouteApiService
 import com.example.routebox.data.remote.UserApiService
@@ -38,6 +39,12 @@ object ServiceModule {
     @Singleton
     fun provideRouteService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : RouteApiService =
         retrofit.create(RouteApiService::class.java)
+
+    /** 신고 */
+    @Provides
+    @Singleton
+    fun provideReportService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : ReportApiService =
+        retrofit.create(ReportApiService::class.java)
 
     /** 카카오 **/
     @Provides

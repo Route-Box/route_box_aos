@@ -1,14 +1,30 @@
 package com.example.routebox.presentation.ui.common.report
 
+import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.routebox.R
+import com.example.routebox.domain.model.ReportRoute
+import com.example.routebox.domain.model.RouteReportReason
+import com.example.routebox.domain.repositories.ReportRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ReportViewModel: ViewModel() {
+@HiltViewModel
+class ReportViewModel @Inject constructor(
+    private val repository: ReportRepository,
+    @ApplicationContext private val context: Context // Hilt로 Context 주입
+): ViewModel() {
+
+    var routeId = 0 // 신고할 루트 id
+
     private var _feedReportCheckedReasons: ArrayList<CheckBox> = arrayListOf() // 체크한 신고 목록
 
     private val _isReportBtnEnable = MutableLiveData<Boolean>()
@@ -18,6 +34,23 @@ class ReportViewModel: ViewModel() {
     val isEtcBtnChecked: LiveData<Boolean> = _isEtcBtnChecked
 
     val etcReasonDirectInput = MutableLiveData<String>() // '기타' 내용 직접 입력
+
+    private val _isReportSuccess = MutableLiveData<Boolean>()
+    val isReportSuccess: LiveData<Boolean> = _isReportSuccess
+
+    /** 게시글 신고 */
+    fun tryReportFeed() {
+        viewModelScope.launch {
+            _isReportSuccess.value = repository.reportRoute(
+                //TODO: 신고 사유 중복 선택 가능
+                ReportRoute(
+                    routeId,
+                    RouteReportReason.convertReportTypeByDescription(context, _feedReportCheckedReasons.first().text.toString()), // Context 사용
+                    etcReasonDirectInput.value
+                )
+            ).routeReportId != -1
+        }
+    }
 
     // 신고 사유 체크박스 상태 업데이트
     fun updateIsCheckedReportReason(checkBox: View) {

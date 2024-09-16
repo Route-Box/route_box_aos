@@ -46,7 +46,10 @@ class RoutePreviewDetailActivity: AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.menu_report -> {
                     // 신고하기 화면으로 이동
-                    startActivity(Intent(this, ReportFeedActivity::class.java))
+                    //TODO: 루트 id 넘기기
+                    startActivity(Intent(this, ReportFeedActivity::class.java)
+                        .putExtra("routeId", 0)
+                    )
                     true
                 }
                 else -> { false }

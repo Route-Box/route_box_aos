@@ -77,7 +77,8 @@ class SeekFragment : Fragment() {
                 startActivity(intent)
             }
             override fun moreItemClick(view: View, position: Int) {
-                reportMenuShow(view!!)
+                viewModel.selectedRouteId = viewModel.routeList.value!![position].routeId
+                reportMenuShow(view)
             }
         })
         binding.seekHomeRv.itemAnimator = null
@@ -100,7 +101,9 @@ class SeekFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.menu_report -> {
                     // 신고하기 화면으로 이동
-                    startActivity(Intent(requireActivity(), ReportFeedActivity::class.java))
+                    startActivity(Intent(requireActivity(), ReportFeedActivity::class.java)
+                        .putExtra("routeId", viewModel.selectedRouteId)
+                    )
                     true
                 }
                 else -> { false }
