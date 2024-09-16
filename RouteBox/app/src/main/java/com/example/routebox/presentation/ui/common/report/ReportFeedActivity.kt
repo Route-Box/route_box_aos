@@ -44,7 +44,7 @@ class ReportFeedActivity: AppCompatActivity() {
 
         viewModel.isReportSuccess.observe(this) { isSuccess ->
             if (isSuccess) {
-                Toast.makeText(this, "신고가 완료되었습니다., ${viewModel.routeId}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
