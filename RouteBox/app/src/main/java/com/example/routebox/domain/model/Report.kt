@@ -1,7 +1,6 @@
 package com.example.routebox.domain.model
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.ContextCompat.getString
 import com.example.routebox.R
 
@@ -22,7 +21,7 @@ data class ReportUser(
 // 루트 신고
 data class ReportRoute(
     var routeId: Int,
-    var reasonType: String,
+    var reasonTypes: List<String>,
     var reasonDetail: String?
 )
 
@@ -36,8 +35,10 @@ enum class RouteReportReason(val type: String, val description: Int) {
     ETC("ETC", R.string.report_reason_etc);
 
     companion object {
-        fun convertReportTypeByDescription(context: Context, description: String): String {
-            return entries.find { getString(context, it.description) == description }?.type ?: ""
+        fun convertReportTypesByDescriptions(context: Context, description: List<String>): List<String> {
+            return entries.filter { getString(context, it.description) in description }.map {
+                it.type
+            }
         }
     }
 }

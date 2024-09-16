@@ -42,10 +42,9 @@ class ReportViewModel @Inject constructor(
     fun tryReportFeed() {
         viewModelScope.launch {
             _isReportSuccess.value = repository.reportRoute(
-                //TODO: 신고 사유 중복 선택 가능
                 ReportRoute(
                     routeId,
-                    RouteReportReason.convertReportTypeByDescription(context, _feedReportCheckedReasons.first().text.toString()), // Context 사용
+                    RouteReportReason.convertReportTypesByDescriptions(context, _feedReportCheckedReasons.map { it.text.toString() }), // Context 사용
                     etcReasonDirectInput.value
                 )
             ).routeReportId != -1

@@ -76,8 +76,8 @@ class SeekFragment : Fragment() {
                 intent.putExtra("routeId", 0)
                 startActivity(intent)
             }
-            override fun moreItemClick(view: View, position: Int) {
-                viewModel.selectedRouteId = viewModel.routeList.value!![position].routeId
+            override fun moreItemClick(view: View, routeId: Int) {
+                viewModel.selectedRouteId = routeId
                 reportMenuShow(view)
             }
         })

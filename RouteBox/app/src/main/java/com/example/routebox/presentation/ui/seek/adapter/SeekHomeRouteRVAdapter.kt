@@ -28,7 +28,7 @@ class SeekHomeRouteRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     interface MyItemClickListener {
-        fun moreItemClick(view: View, position: Int)
+        fun moreItemClick(view: View, routeId: Int)
         fun commentItemClick(position: Int)
     }
 
@@ -70,7 +70,7 @@ class SeekHomeRouteRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                     mItemClickListener.commentItemClick(position)
                 }
                 binding.moreIv.setOnClickListener {
-                    mItemClickListener.moreItemClick(binding.moreIv, position)
+                    mItemClickListener.moreItemClick(binding.moreIv, routeList[position].routeId)
                 }
             }
         }
