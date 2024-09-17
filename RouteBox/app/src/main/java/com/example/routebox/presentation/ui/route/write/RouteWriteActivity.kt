@@ -1,9 +1,9 @@
 package com.example.routebox.presentation.ui.route.write
 
 import android.Manifest
-import android.Manifest.permission
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -17,12 +17,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
+import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.presentation.ui.route.GPSBackgroundService
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.RouteViewModel
@@ -32,26 +34,27 @@ import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.TRACKING_COORDINATE
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
-
+import java.time.LocalDateTime
 
 /**
- * TODO: 1분 간격으로 실시간 위치 API 전송
- * TODO: 지도에 위치 띄우기
- * TODO: 기록 중이라면 기록 화면 왔을 때 진행 중 아이콘으로 띄우기!!! -> ViewModel 이용!
+ * TODO: 현재 위치 마커 띄우기
+ * TODO: 활동 마커 띄우기
  */
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
+class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityRouteWriteBinding
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
     private var firstObserve: Boolean = true
     private val viewModel: RouteViewModel by viewModels()
     private val editViewModel: RouteEditViewModel by viewModels()
+    private val writeViewModel: RouteWriteViewModel by viewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
     private val activityAdapter = ActivityRVAdapter(true)
     private var routeId: Int = -1
@@ -71,7 +74,10 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
             viewModel = this@RouteWriteActivity.viewModel
             lifecycleOwner = this@RouteWriteActivity
         }
-        sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+
+        var sharedPreferences = getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE)
+//        sharedPreferences.registerOnSharedPreferenceChangeListener(prefListener)
+        sharedPreferencesHelper = SharedPreferencesHelper(sharedPreferences)
         viewModel.getIsTracking(sharedPreferencesHelper.getRouteTracking())
 
         checkGPSPermission()
@@ -81,6 +87,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
         initClickListener()
 
         routeId = Integer.parseInt(intent.getStringExtra("routeId"))
+        writeViewModel.setRouteId(routeId)
         editViewModel.setRouteId(routeId)
     }
 
@@ -194,11 +201,13 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
                 Intent(applicationContext, GPSBackgroundService::class.java).apply {
                     action = GPSBackgroundService.SERVICE_START
                     startService(this)
+                    sharedPreferencesHelper.registerPreferences(this@RouteWriteActivity)
                 }
             } else {
                 Intent(applicationContext, GPSBackgroundService::class.java).apply {
                     action = GPSBackgroundService.SERVICE_STOP
-                    stopService(this)
+                    startService(this)
+                    sharedPreferencesHelper.unregisterPreferences(this@RouteWriteActivity)
                 }
             }
         }
@@ -247,5 +256,16 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface {
     override fun onClickPositiveButton(id: Int) {
         Toast.makeText(this, "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
         editViewModel.deleteActivity(deleteId)
+    }
+
+    override fun onSharedPreferenceChanged(spf: SharedPreferences?, key: String?) {
+        if (key == TRACKING_COORDINATE) {
+            if (sharedPreferencesHelper.getLocationCoordinate() != null) {
+                val latitude = sharedPreferencesHelper.getLocationCoordinate()!!.toList()[0]
+                val longitude = sharedPreferencesHelper.getLocationCoordinate()!!.toList()[1]
+                writeViewModel.setCoordinate(RoutePointRequest(latitude, longitude, LocalDateTime.now().toString()))
+                writeViewModel.addDot()
+            }
+        }
     }
 }

@@ -13,24 +13,26 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.routebox.R
+import com.example.routebox.presentation.utils.SharedPreferencesHelper
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import kotlin.random.Random
+
 
 // RouteWriteActivity에서 권한을 먼저 물어보기 때문에 아래에서는 권한 요청을 하지 않도록 구현!
 @SuppressLint("MissingPermission")
 // Service는 사용자와 상호작용 하지 않고, 백그라운드에서 작업을 수행할 수 있도록 하는 요소!
-class GPSBackgroundService: Service() {
+class GPSBackgroundService(): Service() {
 
     // Service와 Client 사이에 인터페이스 역할!!
     override fun onBind(p0: Intent?): IBinder? {
-        Log.d("LOCATION-TEST", "결과 넣기")
-        TODO("Not yet implemented")
+        return null
     }
 
     // 다른 화면에서 startService를 했을 때 호출되는 함수!!
@@ -104,13 +106,17 @@ class GPSBackgroundService: Service() {
     }
 
     // 인식된 위치 정보를 받아오는 부분
-    private val locationCallback: LocationCallback = object : LocationCallback() {
+    private var locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             if (locationResult.lastLocation != null) {
-                val latitude = locationResult.lastLocation!!.latitude
-                val longitude = locationResult.lastLocation!!.longitude
+                val latitude = locationResult.lastLocation!!.latitude + Random.nextDouble()
+                val longitude = locationResult.lastLocation!!.longitude + Random.nextDouble()
                 Log.d("LOCATION_SERVICE", "$latitude, $longitude")
+
+                var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+                sharedPreferencesHelper.setLocationCoordinate(mutableSetOf(latitude.toString(), longitude.toString()))
+                Log.d("LOCATION_SERVICE", "onLocationResult = ${sharedPreferencesHelper.getLocationCoordinate()}")
             }
         }
     }

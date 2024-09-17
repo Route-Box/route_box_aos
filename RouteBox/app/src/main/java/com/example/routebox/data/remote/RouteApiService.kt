@@ -15,6 +15,7 @@ import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
+import com.example.routebox.domain.model.RoutePointResult
 import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
@@ -63,8 +64,9 @@ interface RouteApiService {
 
     @POST("routes/{routeId}/point")
     suspend fun addRouteDot(
-        @Path("routeId") routeId: Int
-    ): RoutePointRequest
+        @Path("routeId") routeId: Int,
+        @Body routePointRequest: RoutePointRequest
+    ): RoutePointResult
 
     // 루트 공개여부 수정
     @PATCH("routes/{routeId}/public")

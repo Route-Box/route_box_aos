@@ -1,22 +1,30 @@
 package com.example.routebox.presentation.ui.route.write
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.routebox.databinding.FragmentRouteConvenienceBinding
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.camera.CameraUpdateFactory
+import kotlinx.coroutines.withContext
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RouteConvenienceFragment: Fragment() {
 
     private lateinit var binding: FragmentRouteConvenienceBinding
     private lateinit var kakaoMap: KakaoMap
+    private val writeViewModel: RouteWriteViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +35,7 @@ class RouteConvenienceFragment: Fragment() {
 
         initMapSetting()
         initClickListener()
+        initObserve()
 
         return binding.root
     }
@@ -54,5 +63,25 @@ class RouteConvenienceFragment: Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack()
         }
+    }
+
+    private fun initObserve() {
+        writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
+            if (writeViewModel.currentCoordinate.value != null) {
+                val cameraUpdate = CameraUpdateFactory.newCenterPosition(LatLng.from(writeViewModel.currentCoordinate.value?.latitude!!.toDouble(), writeViewModel.currentCoordinate.value?.longitude!!.toDouble()))
+                kakaoMap.moveCamera(cameraUpdate)
+            }
+        }
+    }
+
+    // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
+    override fun onResume() {
+        super.onResume()
+        binding.convenienceMap.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.convenienceMap.pause()
     }
 }

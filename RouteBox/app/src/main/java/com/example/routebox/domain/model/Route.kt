@@ -107,7 +107,7 @@ data class RouteId(
 data class RoutePointRequest(
     var latitude: String,
     var longitude: String,
-    var pointOrder: Int
+    var recordAt: String
 )
 
 data class RoutePointResult(

@@ -15,6 +15,7 @@ import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
+import com.example.routebox.domain.model.RoutePointResult
 import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
@@ -52,8 +53,8 @@ class RouteRepositoryImpl @Inject constructor(
         return remoteRouteDataSource.checkRouteIsRecording(userLocalTime)
     }
 
-    override suspend fun addRouteDot(routeId: Int): RoutePointRequest {
-        return remoteRouteDataSource.addRouteDot(routeId)
+    override suspend fun addRouteDot(routeId: Int, routePointRequest: RoutePointRequest): RoutePointResult {
+        return remoteRouteDataSource.addRouteDot(routeId, routePointRequest)
     }
 
     override suspend fun updateRoutePublic(routeId: Int, isPublic: RoutePublicRequest): RoutePublicRequest {

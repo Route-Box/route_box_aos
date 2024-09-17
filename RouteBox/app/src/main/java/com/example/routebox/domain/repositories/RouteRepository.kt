@@ -15,6 +15,7 @@ import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
+import com.example.routebox.domain.model.RoutePointResult
 import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
@@ -55,8 +56,9 @@ interface RouteRepository {
 
     /** 루트 경로 (점) 기록 */
     suspend fun addRouteDot(
-        routeId: Int
-    ): RoutePointRequest
+        routeId: Int,
+        routePointRequest: RoutePointRequest
+    ): RoutePointResult
 
     /** 루트 공개 여부 수정 */
     suspend fun updateRoutePublic(

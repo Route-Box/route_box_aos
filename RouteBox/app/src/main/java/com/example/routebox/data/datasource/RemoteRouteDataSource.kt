@@ -28,6 +28,7 @@ import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
+import com.example.routebox.domain.model.RoutePointResult
 import com.example.routebox.domain.model.RoutePreview
 import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.RoutePublicRequest
@@ -168,12 +169,13 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun addRouteDot(
-        routeId: Int
-    ): RoutePointRequest {
-        var routeDot = RoutePointRequest("", "", -1)
+        routeId: Int,
+        routePointRequest: RoutePointRequest
+    ): RoutePointResult {
+        var routeDot = RoutePointResult(-1)
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.addRouteDot(routeId)
+                routeApiService.addRouteDot(routeId, routePointRequest)
             }.onSuccess {
                 routeDot = it
                 Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")

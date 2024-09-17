@@ -10,14 +10,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityResult
+import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
+import com.example.routebox.presentation.utils.DateConverter
 import com.example.routebox.presentation.utils.DateConverter.getAPIFormattedDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,6 +68,9 @@ class RouteWriteViewModel @Inject constructor(
     private val _activityResult = MutableLiveData<ActivityResult>()
     val activityResult: LiveData<ActivityResult> = _activityResult
 
+    private val _currentCoordinate = MutableLiveData<RoutePointRequest>()
+    val currentCoordinate: LiveData<RoutePointRequest> = _currentCoordinate
+
     init {
         _activity.value = Activity("", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
@@ -76,6 +82,10 @@ class RouteWriteViewModel @Inject constructor(
 
     fun setRouteId(routeId: Int) {
         this._routeId.value = routeId
+    }
+
+    fun setCoordinate(coordinate: RoutePointRequest) {
+        _currentCoordinate.value = coordinate
     }
 
     fun setPlaceSearchResult(result: ArrayList<SearchActivityResult>) {
@@ -158,11 +168,6 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     fun checkBtnEnabled() {
-        Log.d("ROUTE-TEST", "locationName = ${_activity.value?.locationName}\n" +
-                "visitDate = ${_activity.value?.visitDate}\nstart = ${_activity.value?.startTime}\n" +
-                "end = ${_activity.value?.endTime}\ncategory = ${_activity.value?.category}\n" +
-                "image = ${_activity.value?.activityImages?.size}\ndescription = ${_activity.value?.description}")
-
         _btnEnabled.value = _activity.value?.locationName != ""
                 && _activity.value?.visitDate != "" && _activity.value?.startTime != ""
                 && _activity.value?.endTime != "" && _activity.value?.category != ""
@@ -184,6 +189,13 @@ class RouteWriteViewModel @Inject constructor(
                 _activity.value?.description,
                 _activity.value?.activityImages!!
             )
+        }
+    }
+
+    fun addDot() {
+        viewModelScope.launch {
+            if (routeId.value != null && _currentCoordinate.value != null)
+                repository.addRouteDot(_routeId.value!!, _currentCoordinate.value!!)
         }
     }
 }

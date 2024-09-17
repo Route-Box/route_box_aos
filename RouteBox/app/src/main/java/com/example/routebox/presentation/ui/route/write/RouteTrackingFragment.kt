@@ -11,23 +11,20 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteTrackingBinding
 import com.example.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
-
+import com.kakao.vectormap.camera.CameraUpdateFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteTrackingFragment: Fragment() {
 
     private lateinit var binding: FragmentRouteTrackingBinding
     private val viewModel: RouteEditViewModel by activityViewModels()
+    private val writeViewModel: RouteWriteViewModel by activityViewModels()
     private lateinit var kakaoMap: KakaoMap
 
     override fun onCreateView(
@@ -39,6 +36,7 @@ class RouteTrackingFragment: Fragment() {
 
         initMapSetting()
         initClickListener()
+        initObserve()
 
         return binding.root
     }
@@ -61,24 +59,29 @@ class RouteTrackingFragment: Fragment() {
 
                 if (viewModel.route.value?.routeActivities != null) {
                     for (i in 0 until viewModel.route.value?.routeActivities!!.size) {
-                        addDot(viewModel.route.value?.routeActivities!![i].longitude, viewModel.route.value?.routeActivities!![i].latitude)
+                        addMarker(viewModel.route.value?.routeActivities!![i].longitude, viewModel.route.value?.routeActivities!![i].latitude)
                     }
                 }
             }
         })
     }
 
-    private fun setCenter() {
-
-    }
-
-    private fun addDot(latitude: String, longitude: String) {
-
+    private fun addMarker(latitude: String, longitude: String) {
+        // Marker 표시 추가
     }
 
     private fun initClickListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun initObserve() {
+        writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
+            if (writeViewModel.currentCoordinate.value != null) {
+                val cameraUpdate = CameraUpdateFactory.newCenterPosition(LatLng.from(writeViewModel.currentCoordinate.value?.latitude!!.toDouble(), writeViewModel.currentCoordinate.value?.longitude!!.toDouble()))
+                kakaoMap.moveCamera(cameraUpdate)
+            }
         }
     }
 
