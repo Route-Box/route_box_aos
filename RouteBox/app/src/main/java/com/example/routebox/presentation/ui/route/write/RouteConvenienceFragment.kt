@@ -59,6 +59,9 @@ class RouteConvenienceFragment: Fragment() {
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteConvenienceFragment.kakaoMap = kakaoMap
 
+                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
+                kakaoMap.moveCamera(cameraUpdate)
+
                 initObserve()
             }
 

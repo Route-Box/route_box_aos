@@ -201,14 +201,14 @@ class RouteWriteViewModel @Inject constructor(
         }
     }
 
-    fun addDot() {
+    fun addDot(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             if (routeId.value != null && _currentCoordinate.value != null) {
                 repository.addRouteDot(
                     _routeId.value!!,
                     RoutePointRequest(
-                        _currentCoordinate.value!!.latitude.toString(),
-                        _currentCoordinate.value!!.longitude.toString(),
+                        latitude.toString(),
+                        longitude.toString(),
                         convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
                     )
                 )

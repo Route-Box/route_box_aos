@@ -17,14 +17,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
 import com.example.routebox.databinding.BottomSheetActivityBinding
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.DialogType
-import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.presentation.ui.route.GPSBackgroundService
 import com.example.routebox.presentation.ui.route.RouteActivityActivity
 import com.example.routebox.presentation.ui.route.RouteViewModel
@@ -39,10 +37,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.kakao.vectormap.LatLng
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
 
 /**
- * TODO: 현재 위치 마커 띄우기
+ * TODO: 앱 꺼졌을 때 Dot 동시에 보내기 API 추가
  * TODO: 활동 마커 띄우기
  */
 
@@ -77,7 +74,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
         }
 
         var sharedPreferences = getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE)
-//        sharedPreferences.registerOnSharedPreferenceChangeListener(prefListener)
         sharedPreferencesHelper = SharedPreferencesHelper(sharedPreferences)
         viewModel.getIsLiveTracking(sharedPreferencesHelper.getRouteTracking())
 
@@ -260,21 +256,13 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
 
     override fun onSharedPreferenceChanged(spf: SharedPreferences?, key: String?) {
         if (key == TRACKING_COORDINATE) {
-            if (sharedPreferencesHelper.getLocationCoordinate() != null) {
-                var coordinate = sharedPreferencesHelper.getLocationCoordinate()!!.toList()
-                var latitude: Double
-                var longitude: Double
-                if (coordinate[0].split(" ")[0] == "lat") {
-                    latitude = coordinate[0].split(" ")[1].toDouble()
-                    longitude = coordinate[1].split(" ")[1].toDouble()
-                } else {
-                    latitude = coordinate[1].split(" ")[1].toDouble()
-                    longitude = coordinate[0].split(" ")[1].toDouble()
-                }
-                Log.d("LOCATION_SERVICE", "onSharedPreferenceChanged = ${latitude} / ${longitude}")
+            var coordinate = sharedPreferencesHelper.getLocationCoordinate()
+            var latitude = coordinate[0]
+            var longitude = coordinate[1]
 
+            if (latitude != null && longitude != null) {
                 writeViewModel.setCurrentCoordinate(LatLng.from(latitude, longitude))
-                writeViewModel.addDot()
+                writeViewModel.addDot(latitude, longitude)
             }
         }
     }

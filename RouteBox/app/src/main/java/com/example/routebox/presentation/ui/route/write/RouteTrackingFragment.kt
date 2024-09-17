@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route.write
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.routebox.databinding.FragmentRouteTrackingBinding
 import com.example.routebox.presentation.ui.route.edit.RouteEditViewModel
+import com.example.routebox.presentation.utils.SharedPreferencesHelper
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -23,6 +26,7 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 class RouteTrackingFragment: Fragment() {
 
     private lateinit var binding: FragmentRouteTrackingBinding
+    private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
     private val viewModel: RouteEditViewModel by activityViewModels()
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
     private lateinit var kakaoMap: KakaoMap
@@ -34,10 +38,18 @@ class RouteTrackingFragment: Fragment() {
     ): View? {
         binding = FragmentRouteTrackingBinding.inflate(layoutInflater, container, false)
 
+        initSharedPreferences()
+        addBackgroundDots()
         initMapSetting()
         initClickListener()
 
         return binding.root
+    }
+
+    private fun initSharedPreferences() {
+        var sharedPreferences = requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE)
+        sharedPreferencesHelper = SharedPreferencesHelper(sharedPreferences)
+        sharedPreferencesHelper.setIsBackground(false)
     }
 
     private fun initMapSetting() {
@@ -63,6 +75,7 @@ class RouteTrackingFragment: Fragment() {
                 }
 
                 initObserve()
+                addBackgroundDots()
             }
 
             override fun getZoomLevel(): Int {
@@ -90,6 +103,16 @@ class RouteTrackingFragment: Fragment() {
         }
     }
 
+    private fun addBackgroundDots() {
+        if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
+            val backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
+            for (i in 0 until backgroundDots!!.size) {
+                writeViewModel.addDot(backgroundDots[i]!!.latitude, backgroundDots[i]!!.longitude)
+            }
+            sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf())
+        }
+    }
+
     // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
     override fun onResume() {
         super.onResume()
@@ -99,5 +122,6 @@ class RouteTrackingFragment: Fragment() {
     override fun onPause() {
         super.onPause()
         binding.trackingMap.pause()
+        sharedPreferencesHelper.setIsBackground(true)
     }
 }

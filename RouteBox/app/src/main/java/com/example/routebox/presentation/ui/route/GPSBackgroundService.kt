@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.kakao.vectormap.LatLng
 import kotlin.random.Random
 
 
@@ -110,13 +111,23 @@ class GPSBackgroundService(): Service() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             if (locationResult.lastLocation != null) {
-                // SharedPreferences의 Set은 순서가 없이 데이터가 저장되므로, lat와 lng를 구분하기 위한 부분!
-                val latitude = "lat " + (locationResult.lastLocation!!.latitude).toString() //  + Random.nextDouble()
-                val longitude = "lng " + (locationResult.lastLocation!!.longitude).toString() //  + Random.nextDouble()
-
+                val latitude = locationResult.lastLocation!!.latitude + Random.nextDouble()
+                val longitude = locationResult.lastLocation!!.longitude + Random.nextDouble()
+                
+                // 백그라운드에서 저장된 점인지 아닌지 구분
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-                sharedPreferencesHelper.setLocationCoordinate(mutableSetOf(latitude, longitude))
-                Log.d("LOCATION_SERVICE", "onLocationResult = ${sharedPreferencesHelper.getLocationCoordinate()}")
+                if (sharedPreferencesHelper.getIsBackground()) {
+                    // 백그라운드에서 작동되고 있다면, list 형태로 점들을 저장
+                    if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
+                        var dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
+                        dotsList?.add(LatLng.from(latitude, longitude))
+                        sharedPreferencesHelper.setBackgroundCoordinate(dotsList!!)
+                    } else {
+                        sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
+                    }
+                } else {
+                    sharedPreferencesHelper.setLocationCoordinate(arrayListOf(latitude, longitude))
+                }
             }
         }
     }
