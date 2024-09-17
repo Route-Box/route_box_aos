@@ -100,7 +100,7 @@ data class RouteWriteTime(
 )
 
 data class RouteId(
-    var routeId: Int
+    var routeId: Int?
 )
 
 // 루트 점 기록

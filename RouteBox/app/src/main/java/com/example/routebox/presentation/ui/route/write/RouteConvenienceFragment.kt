@@ -11,13 +11,17 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteConvenienceBinding
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.camera.CameraUpdateFactory
-import kotlinx.coroutines.withContext
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteConvenienceFragment: Fragment() {
@@ -35,7 +39,6 @@ class RouteConvenienceFragment: Fragment() {
 
         initMapSetting()
         initClickListener()
-        initObserve()
 
         return binding.root
     }
@@ -55,6 +58,12 @@ class RouteConvenienceFragment: Fragment() {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteConvenienceFragment.kakaoMap = kakaoMap
+
+                initObserve()
+            }
+
+            override fun getZoomLevel(): Int {
+                return 17
             }
         })
     }
@@ -68,8 +77,16 @@ class RouteConvenienceFragment: Fragment() {
     private fun initObserve() {
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
             if (writeViewModel.currentCoordinate.value != null) {
-                val cameraUpdate = CameraUpdateFactory.newCenterPosition(LatLng.from(writeViewModel.currentCoordinate.value?.latitude!!.toDouble(), writeViewModel.currentCoordinate.value?.longitude!!.toDouble()))
+                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
+
+                var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.ic_gps_marker)))
+                val options = LabelOptions.from(LatLng.from(writeViewModel.currentCoordinate.value!!.latitude,
+                    writeViewModel.currentCoordinate.value!!.longitude
+                )).setStyles(styles)
+                val layer = kakaoMap.labelManager!!.layer
+                val label = layer!!.addLabel(options)
+                label.show()
             }
         }
     }

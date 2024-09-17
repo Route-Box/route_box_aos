@@ -15,7 +15,9 @@ import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import com.example.routebox.presentation.utils.DateConverter
+import com.example.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
 import com.example.routebox.presentation.utils.DateConverter.getAPIFormattedDate
+import com.kakao.vectormap.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -68,8 +70,11 @@ class RouteWriteViewModel @Inject constructor(
     private val _activityResult = MutableLiveData<ActivityResult>()
     val activityResult: LiveData<ActivityResult> = _activityResult
 
-    private val _currentCoordinate = MutableLiveData<RoutePointRequest>()
-    val currentCoordinate: LiveData<RoutePointRequest> = _currentCoordinate
+    private val _currentCoordinate = MutableLiveData<LatLng>()
+    val currentCoordinate: LiveData<LatLng> = _currentCoordinate
+
+    private val _preCoordinate = MutableLiveData<LatLng>()
+    val preCoordinate: LiveData<LatLng> = _preCoordinate
 
     init {
         _activity.value = Activity("", "", "", "",
@@ -84,8 +89,12 @@ class RouteWriteViewModel @Inject constructor(
         this._routeId.value = routeId
     }
 
-    fun setCoordinate(coordinate: RoutePointRequest) {
+    fun setCurrentCoordinate(coordinate: LatLng) {
         _currentCoordinate.value = coordinate
+    }
+
+    fun setPreCoordinate(coordinate: LatLng) {
+        _preCoordinate.value = coordinate
     }
 
     fun setPlaceSearchResult(result: ArrayList<SearchActivityResult>) {
@@ -194,8 +203,18 @@ class RouteWriteViewModel @Inject constructor(
 
     fun addDot() {
         viewModelScope.launch {
-            if (routeId.value != null && _currentCoordinate.value != null)
-                repository.addRouteDot(_routeId.value!!, _currentCoordinate.value!!)
+            if (routeId.value != null && _currentCoordinate.value != null) {
+                repository.addRouteDot(
+                    _routeId.value!!,
+                    RoutePointRequest(
+                        _currentCoordinate.value!!.latitude.toString(),
+                        _currentCoordinate.value!!.longitude.toString(),
+                        convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
+                    )
+                )
+
+                setPreCoordinate(_currentCoordinate.value!!)
+            }
         }
     }
 }

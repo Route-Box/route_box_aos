@@ -110,12 +110,12 @@ class GPSBackgroundService(): Service() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             if (locationResult.lastLocation != null) {
-                val latitude = locationResult.lastLocation!!.latitude + Random.nextDouble()
-                val longitude = locationResult.lastLocation!!.longitude + Random.nextDouble()
-                Log.d("LOCATION_SERVICE", "$latitude, $longitude")
+                // SharedPreferences의 Set은 순서가 없이 데이터가 저장되므로, lat와 lng를 구분하기 위한 부분!
+                val latitude = "lat " + (locationResult.lastLocation!!.latitude).toString() //  + Random.nextDouble()
+                val longitude = "lng " + (locationResult.lastLocation!!.longitude).toString() //  + Random.nextDouble()
 
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-                sharedPreferencesHelper.setLocationCoordinate(mutableSetOf(latitude.toString(), longitude.toString()))
+                sharedPreferencesHelper.setLocationCoordinate(mutableSetOf(latitude, longitude))
                 Log.d("LOCATION_SERVICE", "onLocationResult = ${sharedPreferencesHelper.getLocationCoordinate()}")
             }
         }

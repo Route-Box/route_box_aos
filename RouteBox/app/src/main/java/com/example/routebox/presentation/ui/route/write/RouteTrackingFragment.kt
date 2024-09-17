@@ -36,7 +36,6 @@ class RouteTrackingFragment: Fragment() {
 
         initMapSetting()
         initClickListener()
-        initObserve()
 
         return binding.root
     }
@@ -62,6 +61,12 @@ class RouteTrackingFragment: Fragment() {
                         addMarker(viewModel.route.value?.routeActivities!![i].longitude, viewModel.route.value?.routeActivities!![i].latitude)
                     }
                 }
+
+                initObserve()
+            }
+
+            override fun getZoomLevel(): Int {
+                return 17
             }
         })
     }
@@ -79,7 +84,7 @@ class RouteTrackingFragment: Fragment() {
     private fun initObserve() {
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
             if (writeViewModel.currentCoordinate.value != null) {
-                val cameraUpdate = CameraUpdateFactory.newCenterPosition(LatLng.from(writeViewModel.currentCoordinate.value?.latitude!!.toDouble(), writeViewModel.currentCoordinate.value?.longitude!!.toDouble()))
+                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
             }
         }

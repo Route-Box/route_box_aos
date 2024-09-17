@@ -37,6 +37,7 @@ import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.TRACKING_COORDINATE
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.kakao.vectormap.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 
@@ -78,7 +79,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
         var sharedPreferences = getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE)
 //        sharedPreferences.registerOnSharedPreferenceChangeListener(prefListener)
         sharedPreferencesHelper = SharedPreferencesHelper(sharedPreferences)
-        viewModel.getIsTracking(sharedPreferencesHelper.getRouteTracking())
+        viewModel.getIsLiveTracking(sharedPreferencesHelper.getRouteTracking())
 
         checkGPSPermission()
         initObserve()
@@ -147,7 +148,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
         }
 
         binding.trackingCv.setOnClickListener {
-            viewModel.setIsTracking(this)
+            viewModel.setIsLiveTracking(this)
         }
 
         binding.closeIv.setOnClickListener {
@@ -171,7 +172,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
                 when (tab!!.position) {
                     0 -> {
                         Navigation.findNavController(binding.routeContainer).navigate(R.id.action_routeTrackingFragment_to_routeConvenienceFragment)
-                        Toast.makeText(this@RouteWriteActivity, ContextCompat.getString(this@RouteWriteActivity, R.string.update), Toast.LENGTH_LONG).show()
                     }
                     1 -> {
                         Navigation.findNavController(binding.routeContainer).navigate(R.id.action_routeConvenienceFragment_to_routeTrackingFragment)
@@ -191,13 +191,13 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
             }
         }
 
-        viewModel.isTracking.observe(this) {
+        viewModel.isLiveTracking.observe(this) {
             if (firstObserve) sharedPreferencesHelper.setRouteTracking(sharedPreferencesHelper.getRouteTracking())
             else sharedPreferencesHelper.setRouteTracking(!sharedPreferencesHelper.getRouteTracking())
 
             firstObserve = false
 
-            if (viewModel.isTracking.value == true) {
+            if (viewModel.isLiveTracking.value == true) {
                 Intent(applicationContext, GPSBackgroundService::class.java).apply {
                     action = GPSBackgroundService.SERVICE_START
                     startService(this)
@@ -261,9 +261,19 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
     override fun onSharedPreferenceChanged(spf: SharedPreferences?, key: String?) {
         if (key == TRACKING_COORDINATE) {
             if (sharedPreferencesHelper.getLocationCoordinate() != null) {
-                val latitude = sharedPreferencesHelper.getLocationCoordinate()!!.toList()[0]
-                val longitude = sharedPreferencesHelper.getLocationCoordinate()!!.toList()[1]
-                writeViewModel.setCoordinate(RoutePointRequest(latitude, longitude, LocalDateTime.now().toString()))
+                var coordinate = sharedPreferencesHelper.getLocationCoordinate()!!.toList()
+                var latitude: Double
+                var longitude: Double
+                if (coordinate[0].split(" ")[0] == "lat") {
+                    latitude = coordinate[0].split(" ")[1].toDouble()
+                    longitude = coordinate[1].split(" ")[1].toDouble()
+                } else {
+                    latitude = coordinate[1].split(" ")[1].toDouble()
+                    longitude = coordinate[0].split(" ")[1].toDouble()
+                }
+                Log.d("LOCATION_SERVICE", "onSharedPreferenceChanged = ${latitude} / ${longitude}")
+
+                writeViewModel.setCurrentCoordinate(LatLng.from(latitude, longitude))
                 writeViewModel.addDot()
             }
         }

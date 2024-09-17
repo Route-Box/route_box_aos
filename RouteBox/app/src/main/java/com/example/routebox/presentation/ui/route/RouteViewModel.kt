@@ -29,8 +29,12 @@ import javax.inject.Inject
 class RouteViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
-    private val _isTracking = MutableLiveData<Boolean>(false) // 기록중인 루트가 있을 경우
+    // 기록중인 루트가 있을 경우
+    private val _isTracking = MutableLiveData<Boolean>(false)
     val isTracking: LiveData<Boolean> = _isTracking
+
+    private val _isLiveTracking = MutableLiveData<Boolean>()
+    val isLiveTracking: LiveData<Boolean> = _isLiveTracking
 
     private val _routeList = MutableLiveData<List<MyRoute>>(emptyList())
     val routeList: LiveData<List<MyRoute>> = _routeList
@@ -46,7 +50,7 @@ class RouteViewModel @Inject constructor(
 
     var isPublic: Boolean = false
     var selectedRouteId: Int = 0
-    var recordingRouteId: Int = -1 // 현재 기록중인 루트의 id
+    var recordingRouteId: Int? = null // 현재 기록 중인 루트의 id (null = 기록 중인 루트 X / Int = 기록 중인 루트 O)
 
     private val _isGetRouteDetailSuccess = MutableLiveData<Boolean>(false)
     val isGetRouteDetailSuccess: LiveData<Boolean> = _isGetRouteDetailSuccess
@@ -67,7 +71,8 @@ class RouteViewModel @Inject constructor(
         Log.d("RouteViewModel", "time: $time")
         viewModelScope.launch {
             recordingRouteId = repository.checkRouteIsRecording(time).routeId
-            _isTracking.value = (recordingRouteId != -1)
+            Log.d("RemoteRouteDataSource", "recordingRouteId = $recordingRouteId")
+            _isTracking.value = (recordingRouteId != null)
         }
     }
 
@@ -116,12 +121,12 @@ class RouteViewModel @Inject constructor(
         return tagNameList
     }
 
-    fun getIsTracking(isTracking: Boolean) {
-        _isTracking.value = isTracking
+    fun getIsLiveTracking(isLiveTracking: Boolean) {
+        _isLiveTracking.value = isLiveTracking
     }
 
-    fun setIsTracking(context: Context) {
+    fun setIsLiveTracking(context: Context) {
         var sharedPreferencesHelper = SharedPreferencesHelper(context.getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
-        _isTracking.value = !sharedPreferencesHelper.getRouteTracking()
+        _isLiveTracking.value = !sharedPreferencesHelper.getRouteTracking()
     }
 }

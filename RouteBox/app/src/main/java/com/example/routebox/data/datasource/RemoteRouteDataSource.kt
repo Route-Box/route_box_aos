@@ -153,7 +153,7 @@ class RemoteRouteDataSource @Inject constructor(
     suspend fun checkRouteIsRecording(
         checkRouteIsRecording: String
     ): RouteId {
-        var routeId = RouteId(-1)
+        var routeId = RouteId(null)
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.checkRouteIsRecording(checkRouteIsRecording)
