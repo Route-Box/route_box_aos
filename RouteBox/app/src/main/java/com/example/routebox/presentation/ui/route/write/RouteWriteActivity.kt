@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -17,6 +18,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.routebox.R
 import com.example.routebox.databinding.ActivityRouteWriteBinding
@@ -41,13 +44,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * TODO: 카카오맵 트래킹 추가
- * TODO: 활동 마커 띄우기
  * TODO: 처음에 좌표 못 받아와서 위치 안 뜨는 오류 수정
+ * TODO: 점 잇기
  */
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPreferences.OnSharedPreferenceChangeListener {
+class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener { // , PopupDialogInterface
 
     private lateinit var binding: ActivityRouteWriteBinding
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
@@ -55,11 +58,7 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
     private val viewModel: RouteViewModel by viewModels()
     private val editViewModel: RouteEditViewModel by viewModels()
     private val writeViewModel: RouteWriteViewModel by viewModels()
-    private lateinit var bottomSheetDialog: BottomSheetActivityBinding
-    private val activityAdapter = ActivityRVAdapter(true)
     private var routeId: Int = -1
-    private var deleteId: Int = -1
-    private var deleteActivityIndex: Int = -1
 
     override fun onResume() {
         super.onResume()
@@ -82,7 +81,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
         checkGPSPermission()
         initObserve()
         setTabLayout()
-        setInit()
         initClickListener()
 
         routeId = Integer.parseInt(intent.getStringExtra("routeId"))
@@ -131,14 +129,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
         )
     }
 
-    private fun setInit() {
-        bottomSheetDialog = binding.routeWriteActivityBottomSheet
-        bottomSheetDialog.apply {
-            this.viewModel = this@RouteWriteActivity.editViewModel
-            this.lifecycleOwner = this@RouteWriteActivity
-        }
-    }
-
     private fun initClickListener() {
         // 안드로이드 기본 뒤로가기 버튼 클릭
         onBackPressedDispatcher.addCallback(this) {
@@ -151,16 +141,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
 
         binding.closeIv.setOnClickListener {
             finish()
-        }
-
-        // 활동이 없을 때 나타나는 활동 추가 버튼
-        binding.addCv.setOnClickListener {
-            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
-        }
-
-        // 활동이 1개 이상일 때 나타나는 활동 추가 버튼
-        bottomSheetDialog.activityAddBtn.setOnClickListener {
-            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
         }
     }
 
@@ -185,7 +165,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
         viewModel.route.observe(this) {
             if (viewModel.route.value?.routeActivities?.size != 0) {
                 editViewModel.setRoute(viewModel.route.value!!)
-                activityAdapter.addAllActivities(viewModel.route.value?.routeActivities!!)
             }
         }
 
@@ -209,51 +188,6 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
                 }
             }
         }
-
-        editViewModel.deleteActivityId.observe(this) {
-            if (editViewModel.deleteActivityId.value == deleteId && deleteId != -1) {
-                activityAdapter.removeItem(deleteActivityIndex)
-                deleteId = -1
-                editViewModel.setDeleteActivityId(-1)
-            }
-        }
-
-        editViewModel.route.observe(this) { route ->
-            if (route.routeActivities.isNotEmpty()) {
-                setActivityAdapter()
-            }
-        }
-    }
-
-    private fun setActivityAdapter() {
-        bottomSheetDialog.activityRv.apply {
-            this.adapter = activityAdapter
-            this.layoutManager = LinearLayoutManager(this@RouteWriteActivity, LinearLayoutManager.VERTICAL, false)
-        }
-        bottomSheetDialog.activityRv.itemAnimator = null
-        activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
-            override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                startActivity(Intent(this@RouteWriteActivity, RouteActivityActivity::class.java).putExtra("routeId", routeId))
-            }
-            override fun onDeleteButtonClick(position: Int) {
-                deleteId = activityAdapter.returnActivityId(position)
-                deleteActivityIndex = position
-                // 활동 삭제 팝업 띄우기
-                showPopupDialog()
-            }
-        })
-        activityAdapter.addAllActivities(editViewModel.route.value?.routeActivities as MutableList<ActivityResult>)
-    }
-
-    private fun showPopupDialog() {
-        val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
-        dialog.isCancelable = false // 배경 클릭 막기
-        dialog.show(supportFragmentManager, "PopupDialog")
-    }
-
-    override fun onClickPositiveButton(id: Int) {
-        Toast.makeText(this, "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
-        editViewModel.deleteActivity(deleteId)
     }
 
     override fun onSharedPreferenceChanged(spf: SharedPreferences?, key: String?) {
