@@ -1,9 +1,12 @@
 package com.example.routebox.presentation.utils
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.example.routebox.R
@@ -28,11 +31,20 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:backgroundTintBasedOnOrder")
-    fun setBackgroundTintBasedOnOrder(textView: TextView, activityOrder: Int) {
-        val categoryColorArr = textView.context.resources.getIntArray(R.array.categoryColorArr) // 카테고리 색상 리스트
-        val tintColor = categoryColorArr[activityOrder % categoryColorArr.size]
-        textView.background.setTint(tintColor)
+    @BindingAdapter("app:backgroundTintBasedOnCategory")
+    fun setBackgroundTintBasedOnCategory(textView: TextView, category: String) {
+        var numberColor = when (category) {
+            "숙소" -> R.color.accommodation
+            "관광지" -> R.color.tourist_attraction
+            "음식점" -> R.color.restaurant
+            "카페" -> R.color.cafe
+            "SNS 스팟" -> R.color.sns_spot
+            "문화 공간" -> R.color.cultural_space
+            "화장실" -> R.color.toilet
+            "주차장" -> R.color.parking_lot
+            else -> R.color.etc
+        }
+        textView.background.setTint(ContextCompat.getColor(textView.rootView.context, numberColor))
     }
 
     @JvmStatic

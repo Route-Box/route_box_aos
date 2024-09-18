@@ -111,8 +111,8 @@ class GPSBackgroundService(): Service() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             if (locationResult.lastLocation != null) {
-                val latitude = locationResult.lastLocation!!.latitude + Random.nextDouble()
-                val longitude = locationResult.lastLocation!!.longitude + Random.nextDouble()
+                val latitude = locationResult.lastLocation!!.latitude // + Random.nextDouble()
+                val longitude = locationResult.lastLocation!!.longitude // + Random.nextDouble()
                 
                 // 백그라운드에서 저장된 점인지 아닌지 구분
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
@@ -125,9 +125,8 @@ class GPSBackgroundService(): Service() {
                     } else {
                         sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
                     }
-                } else {
-                    sharedPreferencesHelper.setLocationCoordinate(arrayListOf(latitude, longitude))
                 }
+                sharedPreferencesHelper.setLocationCoordinate(arrayListOf(latitude, longitude))
             }
         }
     }

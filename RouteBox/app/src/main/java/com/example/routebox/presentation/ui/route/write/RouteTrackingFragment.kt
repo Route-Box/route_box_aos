@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.routebox.R
 import com.example.routebox.databinding.FragmentRouteTrackingBinding
 import com.example.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
@@ -21,6 +22,10 @@ import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteTrackingFragment: Fragment() {
@@ -70,7 +75,11 @@ class RouteTrackingFragment: Fragment() {
 
                 if (viewModel.route.value?.routeActivities != null) {
                     for (i in 0 until viewModel.route.value?.routeActivities!!.size) {
-                        addMarker(viewModel.route.value?.routeActivities!![i].longitude, viewModel.route.value?.routeActivities!![i].latitude)
+                        addMarker(
+                            viewModel.route.value?.routeActivities!![i].latitude.toDouble(),
+                            viewModel.route.value?.routeActivities!![i].longitude.toDouble(),
+                            R.drawable.ic_marker
+                        )
                     }
                 }
 
@@ -84,10 +93,6 @@ class RouteTrackingFragment: Fragment() {
         })
     }
 
-    private fun addMarker(latitude: String, longitude: String) {
-        // Marker 표시 추가
-    }
-
     private fun initClickListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack()
@@ -99,6 +104,8 @@ class RouteTrackingFragment: Fragment() {
             if (writeViewModel.currentCoordinate.value != null) {
                 val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
+
+                addMarker(writeViewModel.currentCoordinate.value!!.latitude, writeViewModel.currentCoordinate.value!!.longitude, R.drawable.ic_gps_marker)
             }
         }
     }
@@ -123,5 +130,14 @@ class RouteTrackingFragment: Fragment() {
         super.onPause()
         binding.trackingMap.pause()
         sharedPreferencesHelper.setIsBackground(true)
+    }
+
+    // 마커 띄우기
+    private fun addMarker(latitude: Double, longitude: Double, markerImg: Int) {
+        var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
+        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
+        val layer = kakaoMap.labelManager!!.layer
+        val label = layer!!.addLabel(options)
+        label.show()
     }
 }

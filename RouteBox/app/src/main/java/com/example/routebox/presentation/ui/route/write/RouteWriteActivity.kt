@@ -32,6 +32,7 @@ import com.example.routebox.presentation.utils.CommonPopupDialog
 import com.example.routebox.presentation.utils.PopupDialogInterface
 import com.example.routebox.presentation.utils.SharedPreferencesHelper
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
+import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.TRACKING_BACKGROUND
 import com.example.routebox.presentation.utils.SharedPreferencesHelper.Companion.TRACKING_COORDINATE
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -39,8 +40,9 @@ import com.kakao.vectormap.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * TODO: 앱 꺼졌을 때 Dot 동시에 보내기 API 추가
+ * TODO: 카카오맵 트래킹 추가
  * TODO: 활동 마커 띄우기
+ * TODO: 처음에 좌표 못 받아와서 위치 안 뜨는 오류 수정
  */
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -153,12 +155,12 @@ class RouteWriteActivity: AppCompatActivity(), PopupDialogInterface, SharedPrefe
 
         // 활동이 없을 때 나타나는 활동 추가 버튼
         binding.addCv.setOnClickListener {
-            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()))
+            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
         }
 
         // 활동이 1개 이상일 때 나타나는 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()))
+            startActivity(Intent(this, RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
         }
     }
 

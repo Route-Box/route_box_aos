@@ -196,7 +196,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             }
             override fun onPictureItemClick(position: Int) {
                 imgRVAdapter.removeItem(position)
-                viewModel.activity.value?.activityImages!!.removeAt(position)
+                viewModel.activity.value?.activityImages!!.removeAt(position - 1)
             }
         })
     }

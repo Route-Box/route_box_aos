@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route.write
 
+import android.graphics.Bitmap.CompressFormat
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import java.io.FileOutputStream
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -83,6 +85,9 @@ class RouteConvenienceFragment: Fragment() {
                 val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
 
+
+
+                // 현재 위치 마커 띄우기
                 var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.ic_gps_marker)))
                 val options = LabelOptions.from(LatLng.from(writeViewModel.currentCoordinate.value!!.latitude,
                     writeViewModel.currentCoordinate.value!!.longitude

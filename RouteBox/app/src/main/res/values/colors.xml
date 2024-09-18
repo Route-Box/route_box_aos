@@ -31,16 +31,14 @@
     <color name="main_gradient_bottom">#FF47C4B6</color> <!-- 그라데이션 하단 색 -->
 
     <!-- 편의기능, 카테고리 관련 색상 -->
-    <array name="categoryColorArr">
-        <item name="accommodation">#FFF18C94</item> <!-- 숙소 -->
-        <item name="tourist_attraction">#FF75D27E</item> <!-- 관광지 -->
-        <item name="restaurant">#FFFFD966</item> <!-- 음식점 -->
-        <item name="cafe">#FFFF864D</item> <!-- 카페 -->
-        <item name="sns_spot">#FF76C6FF</item> <!-- SNS 스팟 -->
-        <item name="cultural_space">#FF674100</item> <!-- 문화 공관 -->
-        <item name="toilet">#FF8591DB</item> <!-- 화장실 -->
-        <item name="parking_lot">#FFA63537</item> <!-- 주차장 -->
-        <item name="etc">#FF828282</item> <!-- 기타 -->
-    </array>
+    <color name="accommodation">#FFF18C94</color> <!-- 숙소 -->
+    <color name="tourist_attraction">#FF75D27E</color> <!-- 관광지 -->
+    <color name="restaurant">#FFFFD966</color> <!-- 음식점 -->
+    <color name="cafe">#FFFF864D</color> <!-- 카페 -->
+    <color name="sns_spot">#FF76C6FF</color> <!-- SNS 스팟 -->
+    <color name="cultural_space">#FF674100</color> <!-- 문화 공간 -->
+    <color name="toilet">#FF8591DB</color> <!-- 화장실 -->
+    <color name="parking_lot">#FFA63537</color> <!-- 주차장 -->
+    <color name="etc">#FF828282</color> <!-- 기타 -->
 
 </resources>
