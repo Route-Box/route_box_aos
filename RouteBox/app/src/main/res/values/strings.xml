@@ -187,6 +187,14 @@
     <string name="do_route_edit">루트 수정하기</string>
     <string name="do_activity_edit">활동 수정하기</string>
 
+    <!-- 카테고리 -->
+    <string name="category_stay_default_ic">숙소 🏠</string>
+    <string name="category_tour_default_ic">관광지 📍</string>
+    <string name="category_food_default_ic">음식점 🍽️</string>
+    <string name="category_cafe_default_ic">카페 ☕️</string>
+    <string name="category_culture_default_ic">문화공간 📖</string>
+    <string name="category_parking_default_ic">주차장 🚗</string>
+
     <!-- 팝업 다이얼로그 -->
     <string name="popup_positive_default">네</string>
     <string name="popup_negative_default">아니오</string>

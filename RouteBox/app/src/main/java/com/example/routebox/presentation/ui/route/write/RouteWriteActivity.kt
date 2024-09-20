@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -46,6 +47,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * TODO: 카카오맵 트래킹 추가
  * TODO: 처음에 좌표 못 받아와서 위치 안 뜨는 오류 수정
  * TODO: 점 잇기
+ * TODO: 뒤로가기 오류 수정
  */
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -149,7 +149,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤 최하단 확인
                 if (!binding.placeRv.canScrollVertically(1)) {
-                    if (!viewModel.isEndPage.value!!) {
+                    if (!viewModel.isKeywordEndPage.value!!) {
                         viewModel.setPlaceSearchPage(viewModel.placeSearchPage.value!! + 1)
                         viewModel.pagingPlace()
                     }

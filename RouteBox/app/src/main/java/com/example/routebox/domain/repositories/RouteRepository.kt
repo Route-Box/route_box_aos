@@ -6,6 +6,7 @@ import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
+import com.example.routebox.domain.model.CategoryGroupCode
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
@@ -24,6 +25,15 @@ import com.example.routebox.domain.model.RouteWriteTime
 import java.io.File
 
 interface RouteRepository {
+    /** 편의 기능 카테고리 검색 */
+    suspend fun searchKakaoCategory(
+        categoryGroupCode: CategoryGroupCode,
+        y: String,
+        x: String,
+        page: Int,
+        radius: Int
+    ): KakaoSearchResult
+
     /** 활동 추가하기 장소 검색 */
     suspend fun searchKakaoPlace(
         query: String,

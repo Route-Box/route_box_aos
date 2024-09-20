@@ -104,7 +104,6 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun setTagAdapter() {
-        Log.d("ROUTE-TEST", "viewModel.tagList.value = ${viewModel.tagList.value!!}")
         tagAdapter = RouteTagRVAdapter(viewModel.tagList.value!!)
         binding.routeDetailTagRv.apply {
             adapter = tagAdapter

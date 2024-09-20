@@ -17,6 +17,7 @@ import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
+import com.example.routebox.domain.model.CategoryGroupCode
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
@@ -52,6 +53,34 @@ class RemoteRouteDataSource @Inject constructor(
     private val routeApiService: RouteApiService,
     private val kakaoApiService: KakaoApiService
 ) {
+    suspend fun searchKakaoCategory(
+        categoryGroupCode: CategoryGroupCode,
+        y: String,
+        x: String,
+        page: Int,
+        radius: Int
+    ): KakaoSearchResult {
+        var kakaoSearchResult = KakaoSearchResult(
+            meta = PlaceMeta(
+                0, 0, true,
+                RegionInfo(listOf(), "", "")
+            ),
+            documents = listOf()
+        )
+        withContext(Dispatchers.IO) {
+            runCatching {
+                kakaoApiService.searchKakaoCategory("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", categoryGroupCode, y, x, page, radius)
+            }.onSuccess {
+                kakaoSearchResult = it
+                Log.d("RemoteRouteDataSource", "searchKakaoCategory Success\nmeta = ${it.meta}\ndocuments = ${it.documents}")
+            }.onFailure { e ->
+                Log.d("RemoteRouteDataSource", "searchKakaoCategory Fail\ne = $e")
+            }
+        }
+
+        return kakaoSearchResult
+    }
+
     suspend fun searchKakaoPlace(
         query: String,
         page: Int

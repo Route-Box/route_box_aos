@@ -9,6 +9,7 @@ import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
+import com.example.routebox.domain.model.CategoryGroupCode
 import com.example.routebox.domain.model.Insight
 import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
@@ -29,6 +30,10 @@ import javax.inject.Inject
 class RouteRepositoryImpl @Inject constructor(
     private val remoteRouteDataSource: RemoteRouteDataSource
 ) : RouteRepository {
+    override suspend fun searchKakaoCategory(categoryGroupCode: CategoryGroupCode, y: String, x: String, page: Int, radius: Int): KakaoSearchResult {
+        return remoteRouteDataSource.searchKakaoCategory(categoryGroupCode, y, x, page, radius)
+    }
+
     override suspend fun searchKakaoPlace(query: String, page: Int): KakaoSearchResult {
         return remoteRouteDataSource.searchKakaoPlace(query, page)
     }

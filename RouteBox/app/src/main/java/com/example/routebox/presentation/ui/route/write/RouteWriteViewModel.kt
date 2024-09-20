@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityResult
+import com.example.routebox.domain.model.CategoryGroupCode
 import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
@@ -49,8 +50,8 @@ class RouteWriteViewModel @Inject constructor(
     val placeSearchPage: LiveData<Int> = _placeSearchPage
 
     // 장소 검색 API 결과가 마지막 페이지인지 확인 후 페이징 마무리
-    private val _isEndPage = MutableLiveData<Boolean>()
-    val isEndPage: LiveData<Boolean> = _isEndPage
+    private val _isKeywordEndPage = MutableLiveData<Boolean>()
+    val isKeywordEndPage: LiveData<Boolean> = _isKeywordEndPage
 
     private val _date = MutableLiveData<LocalDate>(TODAY)
     val date: LiveData<LocalDate> = _date
@@ -76,6 +77,23 @@ class RouteWriteViewModel @Inject constructor(
     private val _preCoordinate = MutableLiveData<LatLng>()
     val preCoordinate: LiveData<LatLng> = _preCoordinate
 
+    // 편의기능
+    private val _placeCategoryResult = MutableLiveData<ArrayList<SearchActivityResult>>()
+    val placeCategoryResult: LiveData<ArrayList<SearchActivityResult>> = _placeCategoryResult
+
+    private val _placeCategory = MutableLiveData<CategoryGroupCode>()
+    val placeCategory: LiveData<CategoryGroupCode> = _placeCategory
+
+    private val _placeCategoryPage = MutableLiveData<Int>()
+    val placeCategoryPage: LiveData<Int> = _placeCategoryPage
+
+    private val _isCategoryEndPage = MutableLiveData<Boolean>()
+    val isCategoryEndPage: LiveData<Boolean> = _isCategoryEndPage
+
+    private val _cameraPosition = MutableLiveData<LatLng>()
+    val cameraPosition: LiveData<LatLng> = _cameraPosition
+
+
     init {
         _activity.value = Activity("", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
@@ -83,6 +101,9 @@ class RouteWriteViewModel @Inject constructor(
         )
         _categoryETC.value = false
         _activityResult.value = ActivityResult()
+        _isCategoryEndPage.value = false
+        _placeCategoryPage.value = 1
+        _placeCategoryResult.value = arrayListOf()
     }
 
     fun setRouteId(routeId: Int) {
@@ -145,6 +166,18 @@ class RouteWriteViewModel @Inject constructor(
         _categoryETC.value = category
     }
 
+    fun setKakaoCategory(category: CategoryGroupCode) {
+        _placeCategory.value = category
+        _placeCategoryPage.value = 1
+        _placeCategoryResult.value = arrayListOf()
+
+        searchCategory()
+    }
+
+    fun setCameraPosition(position: LatLng) {
+        _cameraPosition.value = position
+    }
+
     fun resetActivity() {
         _activity.value = Activity("", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
@@ -153,22 +186,24 @@ class RouteWriteViewModel @Inject constructor(
         checkBtnEnabled()
     }
 
+    // 카카오 키워드로 장소 검색
     fun searchPlace() {
         viewModelScope.launch {
             _placeSearchPage.value = 1
 
             val response = repository.searchKakaoPlace(_placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
             _placeSearchResult.value = response.documents as ArrayList
-            _isEndPage.value = response.meta.is_end
+            _isKeywordEndPage.value = response.meta.is_end
             _placeSearchMode.value = true
         }
     }
 
+    // 장소 검색 페이징 처리
     fun pagingPlace() {
         viewModelScope.launch {
             val response = repository.searchKakaoPlace(_placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
             _placeSearchResult.value = response.documents as ArrayList
-            _isEndPage.value = response.meta.is_end
+            _isKeywordEndPage.value = response.meta.is_end
         }
     }
 
@@ -182,6 +217,7 @@ class RouteWriteViewModel @Inject constructor(
                 && _activity.value?.endTime != "" && _activity.value?.category != ""
     }
 
+    // 활동 추가
     fun addActivity(context: Context) {
         viewModelScope.launch {
             _activityResult.value = repository.createActivity(
@@ -201,6 +237,7 @@ class RouteWriteViewModel @Inject constructor(
         }
     }
 
+    // 지도 점 추가
     fun addDot(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             if (routeId.value != null && _currentCoordinate.value != null) {
@@ -217,4 +254,33 @@ class RouteWriteViewModel @Inject constructor(
             }
         }
     }
+
+    // 편의 기능 카테고리 검색
+    private fun searchCategory() {
+        viewModelScope.launch {
+            while (true) {
+                if (cameraPosition.value != null && placeCategory.value != null) {
+                    val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, SearchKakaoCategoryRadius)
+                    _placeCategoryResult.value!!.addAll(response.documents as ArrayList)
+                    _isCategoryEndPage.value = response.meta.is_end
+                    _placeCategoryPage.value = _placeCategoryPage.value!! + 1
+
+                    if (_isCategoryEndPage.value == true) break
+                }
+            }
+        }
+    }
+
+    // 장소 검색 페이징 처리
+//    fun pagingSearchCategory() {
+//        viewModelScope.launch {
+//            val response = repository.searchKakaoCategory(
+//                _placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString()
+//            )
+//            _placeCategoryResult.value = response.documents as ArrayList
+//            _isCategoryEndPage.value = response.meta.is_end
+//        }
+//    }
 }
+
+const val SearchKakaoCategoryRadius = 5000
