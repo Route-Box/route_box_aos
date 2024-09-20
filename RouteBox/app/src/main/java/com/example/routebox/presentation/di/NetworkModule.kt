@@ -1,7 +1,9 @@
 package com.example.routebox.presentation.di
 
+import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.auth.RefreshApiService
 import com.example.routebox.presentation.config.Constants.BASE_URL
+import com.example.routebox.presentation.config.Constants.TOUR_BASE_URL
 import com.example.routebox.presentation.config.interceptor.BaseInterceptor
 import com.example.routebox.presentation.config.interceptor.TokenRefreshInterceptor
 import dagger.Module
@@ -33,6 +35,14 @@ object NetworkModule {
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class RefreshRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class KakaoRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class TourRetrofit
 
     @Provides
     @Singleton
@@ -144,9 +154,19 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @KakaoRetrofit
     fun provideKakaoRetrofit(): Retrofit =
         Retrofit.Builder()
-            .baseUrl("https://dapi.kakao.com/v2/local/")
+            .baseUrl(BuildConfig.KAKAO_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @Provides
+    @Singleton
+    @TourRetrofit
+    fun provideTourRetrofit(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(TOUR_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 }

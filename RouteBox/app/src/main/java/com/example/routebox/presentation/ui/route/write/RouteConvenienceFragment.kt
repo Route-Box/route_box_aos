@@ -140,7 +140,10 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                     categoryDotImg = R.drawable.ic_marker_stay
 
                 }
-//                R.id.category_tour -> TODO
+                R.id.category_tour -> {
+                    writeViewModel.setTourCategory()
+                    categoryDotImg = R.drawable.ic_marker_tour
+                }
                 R.id.category_food -> {
                     writeViewModel.setKakaoCategory(CategoryGroupCode.FD6)
                     categoryDotImg = R.drawable.ic_marker_food

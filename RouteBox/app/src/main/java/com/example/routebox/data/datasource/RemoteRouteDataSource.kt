@@ -13,6 +13,7 @@ import androidx.core.net.toUri
 import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
+import com.example.routebox.data.remote.TourApiService
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult

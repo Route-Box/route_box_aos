@@ -14,6 +14,7 @@ import com.example.routebox.domain.model.CategoryGroupCode
 import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
+import com.example.routebox.domain.repositories.TourRepository
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import com.example.routebox.presentation.utils.DateConverter
 import com.example.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
@@ -29,7 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteWriteViewModel @Inject constructor(
-    private val repository: RouteRepository
+    private val repository: RouteRepository,
+    private val tourRepository: TourRepository
 ): ViewModel() {
     private val _routeId = MutableLiveData<Int>()
     val routeId: LiveData<Int> = _routeId
@@ -174,6 +176,10 @@ class RouteWriteViewModel @Inject constructor(
         searchCategory()
     }
 
+    fun setTourCategory() {
+        getTourList()
+    }
+
     fun setCameraPosition(position: LatLng) {
         _cameraPosition.value = position
     }
@@ -260,7 +266,7 @@ class RouteWriteViewModel @Inject constructor(
         viewModelScope.launch {
             while (true) {
                 if (cameraPosition.value != null && placeCategory.value != null) {
-                    val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, SearchKakaoCategoryRadius)
+                    val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, MapCameraRadius)
                     _placeCategoryResult.value!!.addAll(response.documents as ArrayList)
                     _isCategoryEndPage.value = response.meta.is_end
                     _placeCategoryPage.value = _placeCategoryPage.value!! + 1
@@ -281,6 +287,13 @@ class RouteWriteViewModel @Inject constructor(
 //            _isCategoryEndPage.value = response.meta.is_end
 //        }
 //    }
+
+    private fun getTourList() {
+        viewModelScope.launch {
+            val response = tourRepository.getTourList(mapX = cameraPosition.value!!.latitude.toString(), mapY = cameraPosition.value!!.longitude.toString())
+            Log.d("ROUTE-TEST", "response = $response")
+        }
+    }
 }
 
-const val SearchKakaoCategoryRadius = 5000
+const val MapCameraRadius = 5000

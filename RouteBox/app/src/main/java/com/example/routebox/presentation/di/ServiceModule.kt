@@ -3,6 +3,7 @@ package com.example.routebox.presentation.di
 import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.auth.AnonymousApiService
 import com.example.routebox.data.remote.RouteApiService
+import com.example.routebox.data.remote.TourApiService
 import com.example.routebox.data.remote.UserApiService
 import com.example.routebox.data.remote.auth.RefreshApiService
 import dagger.Module
@@ -42,6 +43,12 @@ object ServiceModule {
     /** 카카오 **/
     @Provides
     @Singleton
-    fun provideKakaoService(retrofit: Retrofit): KakaoApiService =
+    fun provideKakaoService(@NetworkModule.KakaoRetrofit retrofit: Retrofit): KakaoApiService =
         retrofit.create(KakaoApiService::class.java)
+
+    /** 한국 관광 공사 **/
+    @Provides
+    @Singleton
+    fun provideTourService(@NetworkModule.TourRetrofit retrofit: Retrofit): TourApiService =
+        retrofit.create(TourApiService::class.java)
 }

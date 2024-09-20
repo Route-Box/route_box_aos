@@ -236,5 +236,50 @@ enum class CategoryGroupCode {
     PK6
 }
 
+data class TourApiResult(
+    val response: TourApiResponse
+)
+
+data class TourApiResponse(
+    val header: TourApiHeader,
+    val body: TourApiBody
+)
+
+data class TourApiHeader(
+    val resultCode: String,
+    val resultMsg: String
+)
+
+data class TourApiBody(
+    val items: ArrayList<TourApiItem>,
+    val numOfRows: Int,
+    val pageNo: Int,
+    val totalCount: Int
+)
+
+data class TourApiItem(
+    val contentid: String,
+    val addr2: String,
+    val firstimage2: String,
+    val cpyrhtDivCd: String,
+    val addr1: String,
+    val contenttypeid: String,
+    val createdtime: String,
+    val dist: String,
+    val firstimage: String,
+    val areacode: String,
+    val booktour: String,
+    val mapx: String,
+    val mapy: String,
+    val mlevel: String,
+    val modifiedtime: String,
+    val sigungucode: String,
+    val tel: String,
+    val title: String,
+    val cat1: String,
+    val cat2: String,
+    val cat3: String,
+)
+
 const val pictureImgType = 0
 const val pictureAddType = 1

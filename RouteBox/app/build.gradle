@@ -25,8 +25,11 @@ android {
 
         buildConfigField "String", "BASE_URL", properties['base_url']
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
-        buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
         manifestPlaceholders = [KAKAO_API_KEY : kakaoApiKey]
+        buildConfigField "String", "KAKAO_BASE_URL", properties['kakao_base_url']
+        buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
+        buildConfigField "String", "TOUR_URL", properties['tour_base_url']
+        buildConfigField "String", "TOUR_SERVICE_KEY", properties['tour_service_key']
     }
 
     buildTypes {
