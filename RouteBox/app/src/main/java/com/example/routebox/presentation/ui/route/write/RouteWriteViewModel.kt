@@ -1,5 +1,6 @@
 package com.example.routebox.presentation.ui.route.write
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -8,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.routebox.BuildConfig
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.CategoryGroupCode
@@ -16,9 +16,9 @@ import com.example.routebox.domain.model.ConvenienceCategoryResult
 import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
-import com.example.routebox.domain.repositories.TourRepository
+import com.example.routebox.domain.repositories.OpenApiRepository
+import com.example.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.example.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
-import com.example.routebox.presentation.utils.DateConverter
 import com.example.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
 import com.example.routebox.presentation.utils.DateConverter.getAPIFormattedDate
 import com.kakao.vectormap.LatLng
@@ -33,7 +33,7 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteWriteViewModel @Inject constructor(
     private val repository: RouteRepository,
-    private val tourRepository: TourRepository
+    private val openApiRepository: OpenApiRepository
 ): ViewModel() {
     private val _routeId = MutableLiveData<Int>()
     val routeId: LiveData<Int> = _routeId
@@ -302,13 +302,26 @@ class RouteWriteViewModel @Inject constructor(
 //    private fun getTourList() {
 //        viewModelScope.launch {
 //            val response = tourRepository.getTourList(
-//                "AND", "Route Box", BuildConfig.TOUR_SERVICE_KEY,
+//                "AND", "Route Box", BuildConfig.OPEN_API_SERVICE_KEY,
 //                mapX = cameraPosition.value!!.longitude.toString(), mapY = cameraPosition.value!!.latitude.toString(),
 //                MapCameraRadius.toString(), "12", "json"
 //            )
 //            Log.d("ROUTE-TEST", "response = $response")
 //        }
 //    }
+
+    @SuppressLint("DefaultLocale")
+    fun getWeatherList() {
+        viewModelScope.launch {
+            val response = openApiRepository.getWeatherList(
+                OPEN_API_BASE_URL, 1, 50, "JSON",
+                "20240922", "0500",
+                55,
+                127
+            )
+//            Log.d("RemoteTourDataSource", "response = $response")
+        }
+    }
 }
 
 const val MapCameraRadius = 2500

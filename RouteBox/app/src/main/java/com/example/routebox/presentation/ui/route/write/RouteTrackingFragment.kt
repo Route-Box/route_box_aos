@@ -67,7 +67,6 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         initSharedPreferences()
         addBackgroundDots()
         initMapSetting()
-        initObserve()
         setInit()
         initClickListener()
 

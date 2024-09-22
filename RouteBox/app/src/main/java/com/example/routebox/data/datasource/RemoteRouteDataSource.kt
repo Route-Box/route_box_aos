@@ -3,18 +3,14 @@ package com.example.routebox.data.datasource
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
-import com.example.routebox.data.remote.TourApiService
-import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
@@ -24,9 +20,6 @@ import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.PlaceMeta
 import com.example.routebox.domain.model.RegionInfo
-import com.example.routebox.domain.model.ReportId
-import com.example.routebox.domain.model.ReportRoute
-import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
@@ -38,7 +31,6 @@ import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
 import com.example.routebox.presentation.utils.ImageConverter
-import com.example.routebox.presentation.utils.ImageTranslator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

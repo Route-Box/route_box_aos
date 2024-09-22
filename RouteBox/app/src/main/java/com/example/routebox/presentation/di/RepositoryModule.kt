@@ -3,19 +3,19 @@ package com.example.routebox.presentation.di
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.routebox.data.datasource.RemoteAuthDataSource
+import com.example.routebox.data.datasource.RemoteOpenApiDataSource
 import com.example.routebox.data.datasource.RemoteReportDataSource
 import com.example.routebox.data.datasource.RemoteRouteDataSource
-import com.example.routebox.data.datasource.RemoteTourDataSource
 import com.example.routebox.data.datasource.RemoteUserDataSource
 import com.example.routebox.data.repositoriyImpl.AuthRepositoryImpl
 import com.example.routebox.data.repositoriyImpl.ReportRepositoryImpl
 import com.example.routebox.data.repositoriyImpl.RouteRepositoryImpl
-import com.example.routebox.data.repositoriyImpl.TourRepositoryImpl
+import com.example.routebox.data.repositoriyImpl.OpenApiRepositoryImpl
 import com.example.routebox.data.repositoriyImpl.UserRepositoryImpl
 import com.example.routebox.domain.repositories.AuthRepository
+import com.example.routebox.domain.repositories.OpenApiRepository
 import com.example.routebox.domain.repositories.ReportRepository
 import com.example.routebox.domain.repositories.RouteRepository
-import com.example.routebox.domain.repositories.TourRepository
 import com.example.routebox.domain.repositories.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -50,9 +50,9 @@ object RepositoryModule {
         remoteReportDataSource: RemoteReportDataSource
     ): ReportRepository = ReportRepositoryImpl(remoteReportDataSource)
 
-    /** 관광 공사 */
+    /** Open API */
     @Provides
-    fun provideTourRepository(
-        remoteTourDataSource: RemoteTourDataSource
-    ): TourRepository = TourRepositoryImpl(remoteTourDataSource)
+    fun provideOpenApiRepository(
+        remoteOpenApiDataSource: RemoteOpenApiDataSource
+    ): OpenApiRepository = OpenApiRepositoryImpl(remoteOpenApiDataSource)
 }

@@ -292,5 +292,49 @@ data class ConvenienceCategoryResult(
     val longitude: String
 )
 
+data class WeatherApiResult(
+    val response: WeatherApiResponse
+)
+
+data class WeatherApiResponse(
+    val header: WeatherApiHeader,
+    val body: WeatherApiBody
+)
+
+data class WeatherApiHeader(
+    val resultCode: String,
+    val resultMsg: String
+)
+
+data class WeatherApiBody(
+    val dataType: String,
+    val items: WeatherApiItems
+)
+
+data class WeatherApiItems(
+    val item: List<WeatherApiItem>
+)
+
+data class WeatherApiItem(
+    val baseData: String,
+    val baseTime: String,
+    val category: String,
+    val fcstDate : String,
+    val fcstTime : String,
+    val fcstValue : String,
+    val nx : Int,
+    val ny : Int
+)
+
+data class WeatherData(
+    val tmp: String,
+    val sky: String,
+    val pty: String,
+    val fcstDate: String,
+    val fcstTime: String,
+    val latitude: String,
+    val longitude: String
+)
+
 const val pictureImgType = 0
 const val pictureAddType = 1

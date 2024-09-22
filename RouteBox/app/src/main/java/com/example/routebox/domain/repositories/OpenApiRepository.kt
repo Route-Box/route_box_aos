@@ -1,20 +1,32 @@
 package com.example.routebox.domain.repositories
 
 import com.example.routebox.domain.model.TourApiResult
-import com.example.routebox.presentation.config.Constants.TOUR_SERVICE_KEY
+import com.example.routebox.domain.model.WeatherApiResult
+import com.example.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.example.routebox.presentation.ui.route.write.MapCameraRadius
 
-interface TourRepository {
+interface OpenApiRepository {
     /** 편의기능 관광지 */
     // 카카오
     suspend fun getTourList(
         mobileOs: String = "AND",
         mobileApp: String = "Route Box",
-        serviceKey: String = TOUR_SERVICE_KEY,
+        serviceKey: String = OPEN_API_SERVICE_KEY,
         mapX: String,
         mapY: String,
         radius: String = MapCameraRadius.toString(),
         contentTypeId: String = "12",
         _type: String = "json"
     ): TourApiResult
+
+    suspend fun getWeatherList(
+        ServiceKey: String,
+        pageNo : Int,
+        numOfRows : Int,
+        dataType : String,
+        base_date : String,
+        base_time : String,
+        nx : Int,
+        ny : Int
+    ): Result<WeatherApiResult>
 }

@@ -27,8 +27,8 @@ class ApplicationClass : Application() {
     lateinit var kakaoRetrofit: Retrofit
 
     @Inject
-    @NetworkModule.TourRetrofit
-    lateinit var tourRetrofit: Retrofit
+    @NetworkModule.OpenApiRetrofit
+    lateinit var openApiRetrofit: Retrofit
 
     init {
         instance = this

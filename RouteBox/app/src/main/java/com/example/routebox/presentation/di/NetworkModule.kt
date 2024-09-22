@@ -1,12 +1,12 @@
 package com.example.routebox.presentation.di
 
-import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.auth.RefreshApiService
 import com.example.routebox.presentation.config.Constants.BASE_URL
 import com.example.routebox.presentation.config.Constants.KAKAO_BASE_URL
-import com.example.routebox.presentation.config.Constants.TOUR_BASE_URL
+import com.example.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.example.routebox.presentation.config.interceptor.BaseInterceptor
 import com.example.routebox.presentation.config.interceptor.TokenRefreshInterceptor
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +43,7 @@ object NetworkModule {
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
-    annotation class TourRetrofit
+    annotation class OpenApiRetrofit
 
     @Provides
     @Singleton
@@ -162,12 +162,13 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    var gson = GsonBuilder().setLenient().create()
     @Provides
     @Singleton
-    @TourRetrofit
-    fun provideTourRetrofit(): Retrofit =
+    @OpenApiRetrofit
+    fun provideOpenApiRetrofit(): Retrofit =
         Retrofit.Builder()
-            .baseUrl(TOUR_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(OPEN_API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 }

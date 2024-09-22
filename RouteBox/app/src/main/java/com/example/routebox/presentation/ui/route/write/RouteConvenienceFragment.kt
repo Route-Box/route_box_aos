@@ -21,8 +21,9 @@ import com.example.routebox.databinding.FragmentRouteConvenienceBinding
 import com.example.routebox.domain.model.CategoryGroupCode
 import com.example.routebox.domain.model.ConvenienceCategoryResult
 import com.example.routebox.domain.model.TourApiItem
-import com.example.routebox.presentation.config.Constants.TOUR_BASE_URL
-import com.example.routebox.presentation.config.Constants.TOUR_SERVICE_KEY
+import com.example.routebox.domain.model.WeatherData
+import com.example.routebox.presentation.config.Constants.OPEN_API_BASE_URL
+import com.example.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.example.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
 import com.google.gson.JsonParser
 import com.kakao.vectormap.KakaoMap
@@ -67,6 +68,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         initClickListener()
         initRadioButton()
         setAdapter()
+        initObserve()
+
+        // writeViewModel.getWeatherList()
 
         return binding.root
     }
@@ -91,6 +95,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 kakaoMap.moveCamera(cameraUpdate)
 
                 initObserve()
+                callWeatherApi()
             }
 
             override fun getZoomLevel(): Int {
@@ -134,6 +139,8 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
             }
         }
+
+//        writeViewModel.getWeatherList()
     }
 
     private fun setInit() {
@@ -206,7 +213,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
     inner class NetworkThread: Thread() {
         override fun run() {
-            val site = "${TOUR_BASE_URL}locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${writeViewModel.cameraPosition.value?.longitude}&mapY=${writeViewModel.cameraPosition.value?.latitude}&radius=${MapCameraRadius}&contentTypeId=12&serviceKey=${TOUR_SERVICE_KEY}"
+            val site = "${OPEN_API_BASE_URL}B551011/KorService1/locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${writeViewModel.cameraPosition.value?.longitude}&mapY=${writeViewModel.cameraPosition.value?.latitude}&radius=${MapCameraRadius}&contentTypeId=12&serviceKey=${OPEN_API_SERVICE_KEY}"
             val conn = URL(site).openConnection()
             // 데이터가 들어오는 통로 역할
             val input = conn.getInputStream()
@@ -241,6 +248,62 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             }
             placeRVAdapter.resetAllItems(result)
             binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
+        }
+    }
+
+    private fun callWeatherApi() {
+        val thread = WeatherThread()
+        thread.start()
+        thread.join()
+    }
+
+    // TODO: RecyclerView 연결
+    // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
+    inner class WeatherThread: Thread() {
+        override fun run() {
+            var numOfRows = 289 // 24시간 동안의 결과만 받으면 되기 때문에 해당 개수로 지정
+            // TODO: 어제 날짜을 base date로 가져오고, 현재 시간에 맞춰 24시간 기준 가져오기 수정
+            val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${OPEN_API_SERVICE_KEY}&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=20240922&base_time=0500&nx=55&ny=127"
+            val conn = URL(site).openConnection()
+            // 데이터가 들어오는 통로 역할
+            val input = conn.getInputStream()
+            val br = BufferedReader(InputStreamReader(input))
+
+            // Json 문서는 문자열로 데이터를 모두 읽어온 후, Json에 관련된 객체를 만들어서 데이터를 가져옴
+            var str: String? = null
+            // 버퍼는 일시적으로 데이터를 저장하는 메모리!
+            val buf = StringBuffer()
+
+            // 들어오는 값이 없을 때까지 받아오는 과정
+            do {
+                str = br.readLine()
+                if (str != null) buf.append(str)
+            } while (str != null)
+
+            // 하나로 되어있는 결과를 JSON 객체 형태로 가져와 데이터 파싱
+            val root = JSONObject(buf.toString())
+            val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
+            val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
+
+            // TODO: 좌표는 처음 입력했을 때 기준으로 사용
+            // TODO: 비동기 처리 필요
+            var result = arrayListOf<WeatherData>()
+            for (i in 0 until 24) {
+                var tempResult = arrayListOf<String>()
+                for (j in i * 12 until (i + 1) * 12) {
+                    var category = item.getJSONObject(j).getString("category")
+                    if (category == "TMP" || category == "SKY" || category == "PTY") {
+                        tempResult.add(item.getJSONObject(j).getString("fcstValue"))
+                    }
+                }
+                result.add(WeatherData(
+                    tempResult[0], tempResult[1], tempResult[2], "latitude", "longitude",
+                    item.getJSONObject(i * 12).getString("fcstDate"),
+                    item.getJSONObject(i * 12).getString("fcstTime"))
+                )
+            }
+
+            Log.d("ROUTE-TEST", "result = $result")
         }
     }
 
