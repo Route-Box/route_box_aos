@@ -8,15 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.routebox.R
 import com.example.routebox.databinding.FragmentHomeBinding
+import com.example.routebox.domain.model.MessageType
+import com.example.routebox.domain.model.NativeTokenRequestMessage
+import com.example.routebox.domain.model.TokenPayload
+import com.example.routebox.domain.model.WebViewPage
+import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import com.example.routebox.presentation.config.Constants.ENDPOINT_HOME
 import com.example.routebox.presentation.config.Constants.WEB_BASE_URL
 import com.example.routebox.presentation.utils.JavaScriptBridge
+import com.example.routebox.presentation.utils.NativeMessageCallback
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), NativeMessageCallback {
     private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
@@ -33,21 +46,23 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebViewSetting() {
-        var webSetting = binding.homeWebView.settings
-        // WebView의 페이지에 JavaScript가 사용된 경우, 아래 코드 추가!
-        webSetting.javaScriptEnabled = true
-        // 컨텐츠의 크기가 WebView 보다 클 경우, 스크린에 맞게 자동 조정
-        webSetting.loadWithOverviewMode = true
+        binding.homeWebView.settings.apply {
+            // WebView의 페이지에 JavaScript가 사용된 경우, 아래 코드 추가!
+            javaScriptEnabled = true
+            // 컨텐츠의 크기가 WebView 보다 클 경우, 스크린에 맞게 자동 조정
+            loadWithOverviewMode = true
+        }
 
-        // WebView 리다이렉트할 때 브라우저가 열리는 것을 방지!
         binding.homeWebView.apply {
-            webViewClient = WebViewClient()
-            webChromeClient = WebChromeClient()
-            addJavascriptInterface(object : JavaScriptBridge() {
-                fun sendMessageToNative(datas: HashMap<String, @JvmSuppressWildcards Any>) {
-                    Log.d("HomeFragment", "webData type: ${datas["type"]}, payload: ${datas["payload"]}")
+            addJavascriptInterface(object : JavaScriptBridge(this@HomeFragment) {}, JavaScriptBridge.INTF)
+            this.webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    // 웹뷰가 완전히 로드된 후에 토큰 전송
+                    sendTokenToWebView(this@apply)
                 }
-            }, JavaScriptBridge.INTF)
+            }
+            webChromeClient = WebChromeClient()
             loadUrl("$WEB_BASE_URL$ENDPOINT_HOME")
         }
 
@@ -68,5 +83,45 @@ class HomeFragment : Fragment() {
             }
             false
         })
+    }
+
+    // 네이티브 앱에서 웹뷰로 TOKEN 메시지 보내기
+    private fun sendTokenToWebView(webView: WebView) {
+        val nativeMessage = NativeTokenRequestMessage(
+            type = MessageType.TOKEN.text,
+            payload = TokenPayload(getSavedAccessToken())
+        )
+
+        val messageJson = Gson().toJson(nativeMessage)
+        Log.d("MyFragment", "messageJson: $messageJson")
+
+        // 웹뷰가 로드된 후에 JavaScript 함수를 호출
+        webView.evaluateJavascript("javascript:Android.sendMessageToWebView($messageJson)", null)
+    }
+
+    // 앱 내 저장된 토큰 정보 가져오기
+    private fun getSavedAccessToken(): String = runBlocking {
+        dsManager.getAccessToken().first().orEmpty()
+    }
+
+    // JavaScriptBridge에서 전달받은 데이터를 기반으로 화면 이동 처리
+    override fun onMessageReceived(type: MessageType, page: WebViewPage, id: String) {
+        when (page) {
+            WebViewPage.MY_ROUTE -> { // 내 루트 탭으로 이동
+                selectBottomNavTab(R.id.myRouteFragment)
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMyRouteFragment())
+            }
+            WebViewPage.SEARCH -> { // 탐색 탭으로 이동
+                selectBottomNavTab(R.id.seekFragment)
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSeekFragment())
+            }
+            else -> Log.d("MyFragment", "Unknown page: $page")
+        }
+    }
+
+    private fun selectBottomNavTab(tabId: Int) {
+        // 바텀네비 아이템 선택 처리
+        val bottomNavView = requireActivity().findViewById<BottomNavigationView>(R.id.main_bottom_nav)
+        bottomNavView.selectedItemId = tabId
     }
 }
