@@ -67,7 +67,6 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
         binding.pictureRv.itemAnimator = null
         albumRVAdapter.setPictureClickListener(object: PictureAlbumRVAdapter.MyItemClickListener {
             override fun onPictureItemClick(position: Int, data: ActivityPictureAlbum) {
-                Log.d("ROUTE-TEST", "data = ${data}")
                 var selectedStatus = data.selectedNumber != null
                 var selectedNumber: Int? = null
                 

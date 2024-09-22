@@ -12,9 +12,19 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.routebox.BuildConfig
 import com.example.routebox.R
+import com.example.routebox.databinding.BottomSheetActivityBinding
+import com.example.routebox.databinding.BottomSheetConveniencePlaceBinding
 import com.example.routebox.databinding.FragmentRouteConvenienceBinding
 import com.example.routebox.domain.model.CategoryGroupCode
+import com.example.routebox.domain.model.ConvenienceCategoryResult
+import com.example.routebox.domain.model.TourApiItem
+import com.example.routebox.presentation.config.Constants.TOUR_BASE_URL
+import com.example.routebox.presentation.config.Constants.TOUR_SERVICE_KEY
+import com.example.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
+import com.google.gson.JsonParser
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -25,11 +35,11 @@ import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import okio.`-DeprecatedOkio`
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
-/**
- * TODO: 이전 카테고리 마커 삭제
- * TODO: 사진 RecyclerView
- */
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener {
 
@@ -37,6 +47,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private lateinit var kakaoMap: KakaoMap
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
     private var categoryDotImg: Int = -1
+    private lateinit var bottomSheetDialog: BottomSheetConveniencePlaceBinding
+    private var placeList = arrayListOf<ConvenienceCategoryResult>()
+    private val placeRVAdapter = ConveniencePlaceRVAdapter(placeList)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +58,11 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     ): View? {
         binding = FragmentRouteConvenienceBinding.inflate(inflater, container, false)
 
+        binding.apply {
+            viewModel = this@RouteConvenienceFragment.writeViewModel
+        }
+
+        setInit()
         initMapSetting()
         initClickListener()
         initRadioButton()
@@ -107,11 +125,25 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         writeViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
             if (writeViewModel.isCategoryEndPage.value == true) {
                 for (i in 0 until writeViewModel.placeCategoryResult.value!!.size) {
-                    addMarker(writeViewModel.placeCategoryResult.value!![i].y.toDouble(), writeViewModel.placeCategoryResult.value!![i].x.toDouble(), categoryDotImg)
+                    addMarker(writeViewModel.placeCategoryResult.value!![i].latitude.toDouble(), writeViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
                 }
+            }
+
+            if (writeViewModel.placeCategoryResult.value != null && writeViewModel.placeCategoryResult.value!!.size != 0) {
+                placeRVAdapter.resetAllItems(writeViewModel.placeCategoryResult.value!!)
+                binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
             }
         }
     }
+
+    private fun setInit() {
+        bottomSheetDialog = binding.routeConvenienceBottomSheet
+        bottomSheetDialog.apply {
+            this.viewModel = this@RouteConvenienceFragment.writeViewModel
+            this.lifecycleOwner = this@RouteConvenienceFragment
+        }
+    }
+
     // 마커 띄우기
     private fun addMarker(latitude: Double, longitude: Double, markerImg: Int) {
         var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
@@ -133,16 +165,17 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
         binding.categoryRadiogroup.setOnCheckedChangeListener { _, buttonId ->
             writeViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
+            kakaoMap.labelManager?.removeAllLabelLayer()
 
             when (buttonId) {
                 R.id.category_stay -> {
                     writeViewModel.setKakaoCategory(CategoryGroupCode.AD5)
                     categoryDotImg = R.drawable.ic_marker_stay
-
                 }
                 R.id.category_tour -> {
-                    writeViewModel.setTourCategory()
+//                    writeViewModel.setTourCategory()
                     categoryDotImg = R.drawable.ic_marker_tour
+                    callTourApi()
                 }
                 R.id.category_food -> {
                     writeViewModel.setKakaoCategory(CategoryGroupCode.FD6)
@@ -164,23 +197,59 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         }
     }
 
-    private fun removeMarkers() {
+    private fun callTourApi() {
+        val thread = NetworkThread()
+        thread.start()
+        thread.join()
+    }
+
+    // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
+    inner class NetworkThread: Thread() {
+        override fun run() {
+            val site = "${TOUR_BASE_URL}locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${writeViewModel.cameraPosition.value?.longitude}&mapY=${writeViewModel.cameraPosition.value?.latitude}&radius=${MapCameraRadius}&contentTypeId=12&serviceKey=${TOUR_SERVICE_KEY}"
+            val conn = URL(site).openConnection()
+            // 데이터가 들어오는 통로 역할
+            val input = conn.getInputStream()
+            val br = BufferedReader(InputStreamReader(input))
+
+            // Json 문서는 문자열로 데이터를 모두 읽어온 후, Json에 관련된 객체를 만들어서 데이터를 가져옴
+            var str: String? = null
+            // 버퍼는 일시적으로 데이터를 저장하는 메모리!
+            val buf = StringBuffer()
+
+            // 들어오는 값이 없을 때까지 받아오는 과정
+            do {
+                str = br.readLine()
+                if (str != null) buf.append(str)
+            } while (str != null)
+
+            // 하나로 되어있는 결과를 JSON 객체 형태로 가져와 데이터 파싱
+            val root = JSONObject(buf.toString())
+            val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
+            val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
+
+            var result = arrayListOf<ConvenienceCategoryResult>()
+            for (i in 0 until item.length()) {
+                var longitude = item.getJSONObject(i).getString("mapx")
+                var latitude = item.getJSONObject(i).getString("mapy")
+                addMarker(latitude.toDouble(), longitude.toDouble(), R.drawable.ic_marker_tour)
+                result.add(ConvenienceCategoryResult(
+                    item.getJSONObject(i).getString("title"),
+                    item.getJSONObject(i).getString("firstimage"),
+                    latitude, longitude
+                ))
+            }
+            placeRVAdapter.resetAllItems(result)
+            binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
+        }
     }
 
     private fun setAdapter() {
-        // TODO: 장소 검색 결과 리사이클러뷰 추가
-//        binding.placeRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                // 스크롤 최하단 확인
-//                if (!binding.placeRv.canScrollVertically(1)) {
-//                    if (!viewModel.isKeywordEndPage.value!!) {
-//                        viewModel.setPlaceSearchPage(viewModel.placeSearchPage.value!! + 1)
-//                        viewModel.pagingPlace()
-//                    }
-//                }
-//            }
-//        })
+        bottomSheetDialog.placeRv.apply {
+            this.adapter = placeRVAdapter
+            this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+        }
+        bottomSheetDialog.placeRv.itemAnimator = null
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
@@ -196,5 +265,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     override fun onPause() {
         super.onPause()
         binding.convenienceMap.pause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        writeViewModel.setPlaceCategoryResult()
+        placeRVAdapter.removeAllItems()
+        binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
     }
 }

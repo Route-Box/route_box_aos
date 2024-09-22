@@ -22,6 +22,14 @@ class ApplicationClass : Application() {
     @NetworkModule.AnonymousRetrofit
     lateinit var anonymousRetrofit: Retrofit
 
+    @Inject
+    @NetworkModule.KakaoRetrofit
+    lateinit var kakaoRetrofit: Retrofit
+
+    @Inject
+    @NetworkModule.TourRetrofit
+    lateinit var tourRetrofit: Retrofit
+
     init {
         instance = this
     }

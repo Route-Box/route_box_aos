@@ -23,6 +23,7 @@
     <!-- 기타 색상 -->
     <color name="route_private_dim">#99000000</color> <!-- 비공개인 루트 dim 배경 (투명도 60) -->
     <color name="icon_stroke_color">#FF96979B</color> <!-- 일부 아이콘 색상에 사용 -->
+    <color name="route_convenience_category_result">#FF168C82</color>
 
     <!-- 메인 관련 색상 -->
     <color name="main">#FF21C8B6</color>

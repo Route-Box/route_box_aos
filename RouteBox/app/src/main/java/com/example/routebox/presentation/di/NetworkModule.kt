@@ -3,6 +3,7 @@ package com.example.routebox.presentation.di
 import com.example.routebox.BuildConfig
 import com.example.routebox.data.remote.auth.RefreshApiService
 import com.example.routebox.presentation.config.Constants.BASE_URL
+import com.example.routebox.presentation.config.Constants.KAKAO_BASE_URL
 import com.example.routebox.presentation.config.Constants.TOUR_BASE_URL
 import com.example.routebox.presentation.config.interceptor.BaseInterceptor
 import com.example.routebox.presentation.config.interceptor.TokenRefreshInterceptor
@@ -157,7 +158,7 @@ object NetworkModule {
     @KakaoRetrofit
     fun provideKakaoRetrofit(): Retrofit =
         Retrofit.Builder()
-            .baseUrl(BuildConfig.KAKAO_BASE_URL)
+            .baseUrl(KAKAO_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

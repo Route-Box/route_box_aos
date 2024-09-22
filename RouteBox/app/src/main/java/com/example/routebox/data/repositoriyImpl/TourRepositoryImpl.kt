@@ -15,8 +15,9 @@ class TourRepositoryImpl @Inject constructor(
         mapX: String,
         mapY: String,
         radius: String,
-        contentTypeId: String
+        contentTypeId: String,
+        _type: String
     ): TourApiResult {
-        return remoteTourDataSource.getTourList(mapX, mapY)
+        return remoteTourDataSource.getTourList(mobileOs, mobileApp, serviceKey, mapX, mapY, radius, contentTypeId, _type)
     }
 }

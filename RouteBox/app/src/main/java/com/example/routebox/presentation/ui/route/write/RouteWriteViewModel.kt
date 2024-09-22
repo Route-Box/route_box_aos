@@ -8,9 +8,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.routebox.BuildConfig
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.CategoryGroupCode
+import com.example.routebox.domain.model.ConvenienceCategoryResult
 import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.SearchActivityResult
 import com.example.routebox.domain.repositories.RouteRepository
@@ -80,8 +82,8 @@ class RouteWriteViewModel @Inject constructor(
     val preCoordinate: LiveData<LatLng> = _preCoordinate
 
     // 편의기능
-    private val _placeCategoryResult = MutableLiveData<ArrayList<SearchActivityResult>>()
-    val placeCategoryResult: LiveData<ArrayList<SearchActivityResult>> = _placeCategoryResult
+    private val _placeCategoryResult = MutableLiveData<ArrayList<ConvenienceCategoryResult>>()
+    val placeCategoryResult: LiveData<ArrayList<ConvenienceCategoryResult>> = _placeCategoryResult
 
     private val _placeCategory = MutableLiveData<CategoryGroupCode>()
     val placeCategory: LiveData<CategoryGroupCode> = _placeCategory
@@ -172,16 +174,21 @@ class RouteWriteViewModel @Inject constructor(
         _placeCategory.value = category
         _placeCategoryPage.value = 1
         _placeCategoryResult.value = arrayListOf()
+        _isCategoryEndPage.value = false
 
         searchCategory()
     }
 
-    fun setTourCategory() {
-        getTourList()
-    }
+//    fun setTourCategory() {
+//        getTourList()
+//    }
 
     fun setCameraPosition(position: LatLng) {
         _cameraPosition.value = position
+    }
+
+    fun setPlaceCategoryResult() {
+        _placeCategoryResult.value = arrayListOf()
     }
 
     fun resetActivity() {
@@ -267,7 +274,10 @@ class RouteWriteViewModel @Inject constructor(
             while (true) {
                 if (cameraPosition.value != null && placeCategory.value != null) {
                     val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, MapCameraRadius)
-                    _placeCategoryResult.value!!.addAll(response.documents as ArrayList)
+                    var result = response.documents.map {
+                        ConvenienceCategoryResult(it.place_name, null, it.y, it.x)
+                    }
+                    _placeCategoryResult.value!!.addAll(result)
                     _isCategoryEndPage.value = response.meta.is_end
                     _placeCategoryPage.value = _placeCategoryPage.value!! + 1
 
@@ -288,12 +298,17 @@ class RouteWriteViewModel @Inject constructor(
 //        }
 //    }
 
-    private fun getTourList() {
-        viewModelScope.launch {
-            val response = tourRepository.getTourList(mapX = cameraPosition.value!!.latitude.toString(), mapY = cameraPosition.value!!.longitude.toString())
-            Log.d("ROUTE-TEST", "response = $response")
-        }
-    }
+    // TODO: 나중에 아래 방식으로 수정
+//    private fun getTourList() {
+//        viewModelScope.launch {
+//            val response = tourRepository.getTourList(
+//                "AND", "Route Box", BuildConfig.TOUR_SERVICE_KEY,
+//                mapX = cameraPosition.value!!.longitude.toString(), mapY = cameraPosition.value!!.latitude.toString(),
+//                MapCameraRadius.toString(), "12", "json"
+//            )
+//            Log.d("ROUTE-TEST", "response = $response")
+//        }
+//    }
 }
 
-const val MapCameraRadius = 5000
+const val MapCameraRadius = 2500

@@ -1,5 +1,7 @@
 package com.example.routebox.presentation.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.routebox.data.datasource.RemoteAuthDataSource
 import com.example.routebox.data.datasource.RemoteReportDataSource
 import com.example.routebox.data.datasource.RemoteRouteDataSource
@@ -36,6 +38,7 @@ object RepositoryModule {
     ): UserRepository = UserRepositoryImpl(remoteUserDataSource)
 
     /** 루트 */
+    @RequiresApi(Build.VERSION_CODES.O)
     @Provides
     fun provideRouteRepository(
         remoteRouteDataSource: RemoteRouteDataSource,

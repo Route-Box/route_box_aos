@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.routebox.data.remote.TourApiService
 import com.example.routebox.domain.model.TourApiBody
 import com.example.routebox.domain.model.TourApiHeader
+import com.example.routebox.domain.model.TourApiItems
 import com.example.routebox.domain.model.TourApiResponse
 import com.example.routebox.domain.model.TourApiResult
 import kotlinx.coroutines.Dispatchers
@@ -15,21 +16,27 @@ class RemoteTourDataSource @Inject constructor(
 ) {
     // 편의기능 관광지 정보 가져오기
     suspend fun getTourList(
+        mobileOs: String,
+        mobileApp: String,
+        serviceKey: String,
         mapX: String,
-        mapY: String
+        mapY: String,
+        radius: String,
+        contentTypeId: String,
+        _type: String
     ): TourApiResult {
         var response = TourApiResult(
             response = TourApiResponse(
                 header = TourApiHeader("", ""),
-                body = TourApiBody(arrayListOf(), -1, -1, -1)
+                body = TourApiBody(TourApiItems(mutableListOf()), -1, -1, -1)
             )
         )
         withContext(Dispatchers.IO) {
             runCatching {
-                tourApiService.getTourList(mapX = mapX, mapY = mapY)
+                tourApiService.getTourList(mobileOs, mobileApp, serviceKey, mapX, mapY, radius, contentTypeId, _type)
             }.onSuccess {
-                Log.d("RemoteTourDataSource", "getTourList Success $it")
                 response = it
+                Log.d("RemoteTourDataSource", "getTourList Success $it")
             }.onFailure {
                 Log.d("RemoteTourDataSource", "getTourList Fail $it")
             }

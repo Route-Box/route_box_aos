@@ -14,6 +14,7 @@ interface TourRepository {
         mapX: String,
         mapY: String,
         radius: String = MapCameraRadius.toString(),
-        contentTypeId: String = "12"
+        contentTypeId: String = "12",
+        _type: String = "json"
     ): TourApiResult
 }

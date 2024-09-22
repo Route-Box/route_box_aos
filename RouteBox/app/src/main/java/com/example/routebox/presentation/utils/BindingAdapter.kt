@@ -14,12 +14,19 @@ import com.example.routebox.R
 object BindingAdapter {
     @JvmStatic
     @BindingAdapter("app:imageUrl", "app:placeHolder")
-    fun setImage (imageView : ImageView, url : String?, placeHolder: Drawable){
-        Glide.with(imageView.context)
-            .load(url)
-            .placeholder(placeHolder)
-            .centerCrop()
-            .into(imageView)
+    fun setImage (imageView : ImageView, url : String?, placeHolder: Drawable?){
+        if (placeHolder != null) {
+            Glide.with(imageView.context)
+                .load(url)
+                .centerCrop()
+                .into(imageView)
+        } else {
+            Glide.with(imageView.context)
+                .load(url)
+                .placeholder(placeHolder)
+                .centerCrop()
+                .into(imageView)
+        }
     }
 
     @JvmStatic
