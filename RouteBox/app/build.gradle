@@ -23,13 +23,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        // TODO: 나중에 배포 서버 주소로 바꾸기
         buildConfigField "String", "BASE_URL", properties['base_url']
-        buildConfigField "String", "WEB_BASE_URL", properties['web_base_url']
+        // TODO: 나중에 배포 웹 링크로 바꾸기
+        buildConfigField "String", "WEB_BASE_URL", properties['dev_web_base_url']
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
         manifestPlaceholders = [KAKAO_API_KEY : kakaoApiKey]
-        buildConfigField "String", "KAKAO_BASE_URL", properties['kakao_base_url']
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
-        buildConfigField "String", "OPEN_API_BASE_URL", properties['open_api_base_url']
         buildConfigField "String", "OPEN_API_SERVICE_KEY", properties['open_api_service_key']
         buildConfigField "String", "APPLICATOIN_ID", properties['APPLICATION_ID']
     }

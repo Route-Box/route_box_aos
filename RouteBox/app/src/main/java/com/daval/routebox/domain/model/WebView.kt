@@ -1,4 +1,4 @@
-package com.example.routebox.domain.model
+package com.daval.routebox.domain.model
 
 enum class MessageType(val text: String) {
     TOKEN("TOKEN"),

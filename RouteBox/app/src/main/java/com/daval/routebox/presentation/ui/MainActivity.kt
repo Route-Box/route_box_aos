@@ -1,19 +1,14 @@
-package com.example.routebox.presentation.ui
+package com.daval.routebox.presentation.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityMainBinding
-import com.example.routebox.R
-import com.example.routebox.databinding.ActivityMainBinding
-import com.example.routebox.presentation.ui.route.RouteFragment
-import com.example.routebox.presentation.ui.seek.SeekFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

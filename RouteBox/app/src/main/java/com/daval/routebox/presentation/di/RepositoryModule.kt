@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.data.datasource.RemoteAuthDataSource
 import com.daval.routebox.data.datasource.RemoteOpenApiDataSource
-import com.daval.routebox.data.datasource.RemoteReportDataSource
 import com.daval.routebox.data.datasource.RemoteRouteDataSource
 import com.daval.routebox.data.datasource.RemoteUserDataSource
 import com.daval.routebox.data.repositoriyImpl.AuthRepositoryImpl
@@ -17,6 +16,7 @@ import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.domain.repositories.ReportRepository
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.UserRepository
+import com.davl.routebox.data.datasource.RemoteReportDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

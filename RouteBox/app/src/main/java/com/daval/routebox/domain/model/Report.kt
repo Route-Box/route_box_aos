@@ -2,7 +2,7 @@ package com.daval.routebox.domain.model
 
 import android.content.Context
 import androidx.core.content.ContextCompat.getString
-import com.example.routebox.R
+import com.daval.routebox.R
 
 data class ReportId(
     var reportId: Int

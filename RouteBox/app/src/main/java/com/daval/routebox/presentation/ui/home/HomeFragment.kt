@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.home
+package com.daval.routebox.presentation.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -17,23 +17,22 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.routebox.R
-import com.example.routebox.databinding.FragmentHomeBinding
-import com.example.routebox.domain.model.MessageType
-import com.example.routebox.domain.model.NativeTokenRequestMessage
-import com.example.routebox.domain.model.TokenPayload
-import com.example.routebox.domain.model.WebViewPage
-import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
-import com.example.routebox.presentation.config.Constants.ENDPOINT_HOME
-import com.example.routebox.presentation.config.Constants.WEB_BASE_URL
-import com.example.routebox.presentation.ui.route.RouteDetailActivity
-import com.example.routebox.presentation.utils.WebViewBridge
-import com.example.routebox.presentation.utils.NativeMessageCallback
+import com.daval.routebox.R
+import com.daval.routebox.databinding.FragmentHomeBinding
+import com.daval.routebox.domain.model.MessageType
+import com.daval.routebox.domain.model.NativeTokenRequestMessage
+import com.daval.routebox.domain.model.TokenPayload
+import com.daval.routebox.domain.model.WebViewPage
+import com.daval.routebox.presentation.config.ApplicationClass.Companion.dsManager
+import com.daval.routebox.presentation.config.Constants.ENDPOINT_HOME
+import com.daval.routebox.presentation.config.Constants.WEB_BASE_URL
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity
+import com.daval.routebox.presentation.utils.WebViewBridge
+import com.daval.routebox.presentation.utils.NativeMessageCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import com.daval.routebox.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment(), NativeMessageCallback {
     private lateinit var binding: FragmentHomeBinding

@@ -1,9 +1,9 @@
-package com.example.routebox.presentation.utils
+package com.daval.routebox.presentation.utils
 
 import android.util.Log
 import android.webkit.JavascriptInterface
-import com.example.routebox.domain.model.MessageType
-import com.example.routebox.domain.model.WebViewPage
+import com.daval.routebox.domain.model.MessageType
+import com.daval.routebox.domain.model.WebViewPage
 import org.json.JSONException
 import org.json.JSONObject
 

@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui
+package com.daval.routebox.presentation.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRoutePreviewDetailBinding
+import com.daval.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
-import com.example.routebox.R
-import com.example.routebox.databinding.ActivityRoutePreviewDetailBinding
-import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
-import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 
 class RoutePreviewDetailActivity: AppCompatActivity() {
 

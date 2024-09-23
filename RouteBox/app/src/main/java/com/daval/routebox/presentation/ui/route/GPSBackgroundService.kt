@@ -59,8 +59,8 @@ class GPSBackgroundService(): Service() {
 
         val locationRequest = LocationRequest.create()
         locationRequest.apply {
-            interval = 5000 // 앱에서 선호하는 위치 업데이트 수신 간격
-            fastestInterval = 5000 // 앱이 위치를 업데이트 할 수 있는 가장 빠른 간격
+            interval = 60000 // 앱에서 선호하는 위치 업데이트 수신 간격
+            fastestInterval = 60000 // 앱이 위치를 업데이트 할 수 있는 가장 빠른 간격
         }
 
         // 내부는 Network Provider가 정확도가 높고, 외부는 GPS Provider가 정확도가 더 높음!
@@ -110,8 +110,8 @@ class GPSBackgroundService(): Service() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             if (locationResult.lastLocation != null) {
-                val latitude = locationResult.lastLocation!!.latitude + Random.nextDouble()
-                val longitude = locationResult.lastLocation!!.longitude + Random.nextDouble()
+                val latitude = locationResult.lastLocation!!.latitude // + Random.nextDouble()
+                val longitude = locationResult.lastLocation!!.longitude // + Random.nextDouble()
                 
                 // 백그라운드에서 저장된 점인지 아닌지 구분
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))

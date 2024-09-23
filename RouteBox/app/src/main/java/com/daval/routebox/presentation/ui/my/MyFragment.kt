@@ -1,7 +1,10 @@
-package com.example.routebox.presentation.ui.my
+package com.daval.routebox.presentation.ui.my
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -10,24 +13,21 @@ import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.routebox.databinding.FragmentMyBinding
-import com.example.routebox.domain.model.MessageType
-import com.example.routebox.domain.model.NativeTokenRequestMessage
-import com.example.routebox.domain.model.TokenPayload
-import com.example.routebox.domain.model.WebViewPage
-import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
-import com.example.routebox.presentation.config.Constants.ENDPOINT_MY
-import com.example.routebox.presentation.config.Constants.WEB_BASE_URL
-import com.example.routebox.presentation.utils.WebViewBridge
-import com.example.routebox.presentation.utils.NativeMessageCallback
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import com.daval.routebox.databinding.FragmentMyBinding
+import com.daval.routebox.domain.model.MessageType
+import com.daval.routebox.domain.model.NativeTokenRequestMessage
+import com.daval.routebox.domain.model.TokenPayload
+import com.daval.routebox.domain.model.WebViewPage
+import com.daval.routebox.presentation.config.ApplicationClass.Companion.dsManager
+import com.daval.routebox.presentation.config.Constants.ENDPOINT_MY
+import com.daval.routebox.presentation.config.Constants.WEB_BASE_URL
+import com.daval.routebox.presentation.utils.NativeMessageCallback
+import com.daval.routebox.presentation.utils.WebViewBridge
 
 class MyFragment : Fragment(), NativeMessageCallback {
-
-class MyFragment : Fragment() {
     private lateinit var binding: FragmentMyBinding
 
     override fun onCreateView(
