@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -35,6 +36,7 @@ import com.example.routebox.presentation.utils.picker.TimeChangedListener
 import com.example.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.google.android.flexbox.FlexboxLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -49,7 +51,9 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private var placeList: ArrayList<SearchActivityResult> = arrayListOf()
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
-    private var imgList = arrayListOf<Uri?>(null)
+    private var imgList: ArrayList<String?> = arrayListOf(null)
+
+    private var routeId: Int = -1
 
     private val viewModel: RouteWriteViewModel by viewModels()
     private val albumViewModel: RoutePictureAlbumViewModel by viewModels()
@@ -83,29 +87,30 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             lifecycleOwner = this@RouteActivityActivity
         }
 
+        routeId = Integer.parseInt(intent.getStringExtra("routeId"))
+        viewModel.setRouteId(routeId)
+
         setAdapter()
         initClickListener()
         initEditTextListener()
+        initObserve()
 
         // 선택한 사진을 받기 위한 launcher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if (result.resultCode == RESULT_OK) {
                 for (i in 0 until result.data?.getStringArrayListExtra("album")!!.size) {
-                    imgRVAdapter.addItem(Uri.parse(result.data?.getStringArrayListExtra("album")!![i]))
+                    imgRVAdapter.addItem(result.data?.getStringArrayListExtra("album")!![i])
+                    // viewModel.activity.value?.activityImages?.add(File(result.data?.getStringArrayListExtra("album")!![i]))
+                    viewModel.activity.value?.activityImages?.add(File(result.data?.getStringArrayListExtra("album")!![i]))
                 }
             }
         }
+    }
 
-//        if (viewModel.activity.value?.activityImages != null) {
-//            val arrayList = viewModel.activity.value?.activityImages!!.toCollection(ArrayList<String>())
-//            imgRVAdapter.addAllItems(arrayList)
-//        }
-//
-//        if (albumViewModel.sendPictureList.value != null) {
-//            imgRVAdapter.addAllItems(albumViewModel.sendPictureList.value!!)
-//            viewModel.activity.value?.activityImages = albumViewModel.sendPictureList.value!!.toTypedArray()
-//            albumViewModel.resetSendPictureList()
-//        }
+    private fun initObserve() {
+        viewModel.activityResult.observe(this@RouteActivityActivity) {
+            if (viewModel.activityResult.value?.activityId != -1) finish()
+        }
     }
 
     private fun setAdapter() {
@@ -116,9 +121,11 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             override fun onItemClick(place: SearchActivityResult) {
                 binding.searchEt.setText(place.place_name)
                 viewModel.activity.value?.locationName = place.place_name
+                viewModel.activity.value?.address = place.address_name
+                viewModel.activity.value?.longitude = place.x
+                viewModel.activity.value?.latitude = place.y
                 viewModel.setPlaceSearchResult(arrayListOf())
                 viewModel.setPlaceSearchMode(false)
-                viewModel.activity.value?.address = place.address_name
 
                 viewModel.checkBtnEnabled()
             }
@@ -179,8 +186,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 if (ContextCompat.checkSelfPermission(this@RouteActivityActivity, checkVersion()) == PackageManager.PERMISSION_GRANTED) {
                     val intent = Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java)
                     resultLauncher.launch(intent)
-//                    findNavController().navigate(R.id.action_routeActivityFragment_to_routePictureAlbumFragment)
-//                    startActivity(Intent(this@RouteActivityActivity, RoutePictureAlbumActivity::class.java))
                 } else {
                     galleryPermissionLauncher.launch(checkVersion())
                 }
@@ -193,7 +198,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     private fun initClickListener() {
         binding.closeIv.setOnClickListener {
-            viewModel.resetActivityResult()
+            viewModel.resetActivity()
             finish()
         }
 
@@ -215,7 +220,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
 
         binding.nextBtn.setOnClickListener {
-            finish()
+            viewModel.addActivity(this)
         }
     }
 

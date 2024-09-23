@@ -85,7 +85,7 @@ class RouteFragment : Fragment(), PopupDialogInterface {
             //TODO: routeId 전달
 
             // 기록중인 루트 보기 화면으로 이동
-            startActivity(Intent(requireActivity(), RouteWriteActivity::class.java))
+            startActivity(Intent(requireActivity(), RouteWriteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId.toString()))
         }
     }
 

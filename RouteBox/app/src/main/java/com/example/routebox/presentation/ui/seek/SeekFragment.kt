@@ -1,30 +1,42 @@
 package com.example.routebox.presentation.ui.seek
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.routebox.R
 import com.example.routebox.databinding.FragmentSeekBinding
-import com.example.routebox.domain.model.FilterOption
-import com.example.routebox.domain.model.RoutePreview
+import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.example.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 import com.example.routebox.presentation.ui.seek.wallet.WalletActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.apply
+import kotlin.getValue
 
+@RequiresApi(Build.VERSION_CODES.O)
+@AndroidEntryPoint
 class SeekFragment : Fragment() {
 
     private lateinit var binding: FragmentSeekBinding
+    private val viewModel : SeekViewModel by viewModels()
     private lateinit var routeAdapter: SeekHomeRouteRVAdapter
-    private var routeList = arrayListOf<RoutePreview>()
-
-    private var checkInitial: Boolean = true
+    private var isEnd: Boolean = false
+    private var isBottom: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,57 +45,28 @@ class SeekFragment : Fragment() {
     ): View {
         binding = FragmentSeekBinding.inflate(inflater, container, false)
 
-        // 더미데이터
-        routeList.add(
-            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
-            arrayListOf(
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-            ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
-                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
-        )
-        routeList.add(
-            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
-                arrayListOf(
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
-                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
-        )
-        routeList.add(
-            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
-                arrayListOf(
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
-                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
-        )
-        routeList.add(
-            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
-                arrayListOf(
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
-                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
-        )
-        routeList.add(
-            RoutePreview(-1, -1, "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "닉네임닉네임", "강릉", "강릉 여행",
-                arrayListOf(
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg",
-                    "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg", "https://blog.kakaocdn.net/dn/YyLsE/btqEtFpJtdS/yAW5hkfVkg9YnYrNCzTKDk/img.jpg"
-                ), false, 20, 12, arrayListOf(FilterOption.MANY_TWO.optionName, FilterOption.TRANSPORTATION_PUBLIC_TRANSPORTATION.optionName,
-                    FilterOption.WITH_CHILD.optionName, FilterOption.STYLE_ETC.optionName, FilterOption.MANY_FOUR.optionName, FilterOption.STYLE_HEALING.optionName),  FilterOption.WITH_CHILD.optionName, FilterOption.TRANSPORTATION_TAXI_CAR.optionName, 3, "3", "2024-08-27")
-        )
+        binding.apply {
+            viewModel = this@SeekFragment.viewModel
+            lifecycleOwner = this@SeekFragment
+        }
+
+        isEnd = false
+        isBottom = false
 
         setAdapter()
         initClickListener()
         initScrollLoading()
+        initScrollListener()
+        initObserve()
+
+        viewModel.refresh()
+        viewModel.getRouteList()
 
         return binding.root
     }
 
     private fun setAdapter() {
-        routeAdapter = SeekHomeRouteRVAdapter(routeList)
+        routeAdapter = SeekHomeRouteRVAdapter()
         binding.seekHomeRv.adapter = routeAdapter
         binding.seekHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         routeAdapter.setRouteCommentClickListener(object: SeekHomeRouteRVAdapter.MyItemClickListener {
@@ -93,10 +76,12 @@ class SeekFragment : Fragment() {
                 intent.putExtra("routeId", 0)
                 startActivity(intent)
             }
-            override fun moreItemClick(view: View, position: Int) {
-                reportMenuShow(view!!)
+            override fun moreItemClick(view: View, routeId: Int) {
+                viewModel.selectedRouteId = routeId
+                reportMenuShow(view)
             }
         })
+        binding.seekHomeRv.itemAnimator = null
     }
 
     private fun initClickListener() {
@@ -115,7 +100,10 @@ class SeekFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    Toast.makeText(activity, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    // 신고하기 화면으로 이동
+                    startActivity(Intent(requireActivity(), ReportFeedActivity::class.java)
+                        .putExtra("routeId", viewModel.selectedRouteId)
+                    )
                     true
                 }
                 else -> { false }
@@ -124,46 +112,45 @@ class SeekFragment : Fragment() {
         popupMenu.show()
     }
 
+    private fun initObserve() {
+        viewModel.routeList.observe(viewLifecycleOwner) {
+            if (viewModel.page.value == 0 && viewModel.routeList.value?.size != 0) {
+                routeAdapter.addItems(viewModel.routeList.value!!)
+                viewModel.setPage(viewModel.page.value!! + 1)
+
+                // 만약 새로고침으로 인해 값이 변경되었다면, 새로고침을 안 보이게 처리
+                if (binding.swipeLayout.isRefreshing) binding.swipeLayout.isRefreshing = false
+            } else {
+                if (isBottom) {
+                    routeAdapter.addItems(viewModel.routeList.value!!)
+                    isBottom = false
+                    viewModel.setPage(viewModel.page.value!! + 1)
+                }
+            }
+        }
+    }
+
+    private fun initScrollListener() {
+        binding.nestedSv.setOnScrollChangeListener(object: View.OnScrollChangeListener {
+            override fun onScrollChange(p0: View?, p1: Int, p2: Int, p3: Int, p4: Int) {
+                if (!binding.nestedSv.canScrollVertically(1)) {
+                    if (!isEnd) {
+                        viewModel.getRouteList()
+                    }
+                    if (viewModel.routeList.value!!.size < 3) isEnd = true
+
+                    isBottom = true
+                }
+            }
+        })
+    }
+
     private fun initScrollLoading() {
-//        binding.seekHomeRv.setOnTouchListener(object: OnSwipeTouchListener(binding.root.context) {
-//            @SuppressLint("ClickableViewAccessibility")
-//            override fun onSwipeBottom() {
-//                super.onSwipeBottom()
-//                if (binding.seekHomeRv.canScrollVertically(1)) {
-//                    Log.d("SWIPE-TEST","아래로")
-//                    if (checkInitial) {
-//                        checkInitial = !checkInitial
-//                    } else {
-//                        if (!routeAdapter.checkLoading()) routeAdapter.addLoading()
-//                    }
-//                } else {
-//                    if (routeAdapter.checkLoading()) routeAdapter.deleteLoading()
-//                }
-//            }
-//        })
-//        binding.seekHomeRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//
-//                // RecyclerView가 최상단에 도달했을 때
-//                if (binding.seekHomeRv.canScrollVertically(1)) {
-//                    if (checkInitial) {
-//                        checkInitial = !checkInitial
-//                    } else {
-//                        if (!routeAdapter.checkLoading())
-//                            routeAdapter.addLoading()
-//                    }
-//                } else {
-//                    if (routeAdapter.checkLoading()) {
-//                        routeAdapter.deleteLoading()
-//                    }
-//                }
-//            }
-//        })
-//
-//        // TODO: 로딩을 멈추기 위해 임시로 넣어둔 부분! 나중에 API와 연결 필요
-//        binding.routeTitle.setOnClickListener {
-//            routeAdapter.deleteLoading()
-//        }
+        binding.swipeLayout.setOnRefreshListener(OnRefreshListener {
+            // 새로고침으로 인한 기존의 루트 삭제 및 초기화
+            viewModel.refresh()
+            routeAdapter.resetItems()
+            viewModel.getRouteList()
+        })
     }
 }

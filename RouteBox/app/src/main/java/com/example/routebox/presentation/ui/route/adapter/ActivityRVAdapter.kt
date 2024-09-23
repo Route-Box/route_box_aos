@@ -27,12 +27,20 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
     fun addAllActivities(activityList: MutableList<ActivityResult>) {
         this.activityList = activityList
-        notifyDataSetChanged()
+        this.notifyDataSetChanged()
     }
 
     fun addActivities(activity: ActivityResult) {
         activityList.add(activity)
         notifyDataSetChanged()
+    }
+
+    fun returnAllItems(): MutableList<ActivityResult> {
+        return activityList
+    }
+
+    fun returnActivityId(position: Int): Int {
+        return activityList[position].activityId
     }
 
     interface MyItemClickListener {
@@ -53,7 +61,7 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         holder.apply {
             // 수정 버튼 클릭
             binding.itemActivityEditIv.setOnClickListener {
-                mItemClickListener.onEditButtonClick(position, activityList[position])
+//                mItemClickListener.onEditButtonClick(position, activityList[position])
             }
             // 삭제 버튼 클릭
             binding.itemActivityDeleteIv.setOnClickListener {

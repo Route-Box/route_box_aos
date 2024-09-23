@@ -1,14 +1,17 @@
 package com.example.routebox.presentation.ui.seek.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.routebox.databinding.ItemRouteImageBinding
 
 class RouteImageVPAdapter(
-    private val imageList: ArrayList<String>
+    private val imageList: ArrayList<String>,
+    private val nickname: String
 ): RecyclerView.Adapter<RouteImageVPAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -27,13 +30,17 @@ class RouteImageVPAdapter(
 
     inner class ViewHolder(val binding: ItemRouteImageBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: String, position: Int) {
-            Glide.with(binding.root.context).load(data).into(binding.routeImage)
+            Glide.with(binding.root.context).load(data).centerCrop().into(binding.routeImage)
 
             if (position == imageList.size - 1) {
                 binding.lockCl.visibility = View.VISIBLE
-            } else binding.lockCl.visibility = View.GONE
+                binding.lockCl.setBackgroundColor(Color.parseColor("#99000000"))
+            } else {
+                binding.lockCl.visibility = View.GONE
+                binding.lockCl.setBackgroundColor(Color.parseColor("#99000000"))
+            }
 
-//            binding.routeImage.setImageURI(Uri.parse(data))
+            binding.nickname = nickname
         }
     }
 }

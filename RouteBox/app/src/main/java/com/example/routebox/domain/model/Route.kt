@@ -1,7 +1,17 @@
 package com.example.routebox.domain.model
 
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.bumptech.glide.load.model.StringLoader
+import java.io.File
+import java.io.Serializable
+import java.time.LocalDate
 import java.time.LocalDateTime
+
+data class RoutePreviewResult(
+    var result: ArrayList<RoutePreview> = arrayListOf()
+)
 
 // 루트 미리보기
 data class RoutePreview(
@@ -11,7 +21,7 @@ data class RoutePreview(
     var nickname: String = "",
     var routeName: String = "",
     var routeDescription: String = "",
-    var routeImageUrls: ArrayList<String> = arrayListOf(),
+    var routeImageUrls: ArrayList<String>? = arrayListOf(),
     var isPurchased: Boolean = false,
     var purchaseCount: Int = -1,
     var commentCount: Int = -1,
@@ -24,7 +34,8 @@ data class RoutePreview(
 )
 
 // 루트 구매 후 상세보기
-data class RouteDetail(
+@RequiresApi(Build.VERSION_CODES.O)
+data class RouteDetail (
     var routeId: Int = -1,
     var userId: Int = -1,
     var profileImageUrl: String = "",
@@ -127,30 +138,30 @@ data class RouteUpdateResult(
 
 // 활동 추가
 data class Activity(
-    var locationName: String,
-    var address: String,
-    var latitude: String,
-    var longitude: String,
-    var visitDate: String,
-    var startTime: String,
-    var endTime: String,
-    var category: String, // 음식점, 관광명소 등
-    var description: String?,
-    var activityImages: Array<String>?,
+    var locationName: String = "",
+    var address: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
+    var visitDate: String = "",
+    var startTime: String = "",
+    var endTime: String = "",
+    var category: String = "", // 음식점, 관광명소 등
+    var description: String? = null,
+    var activityImages: ArrayList<File?> = arrayListOf(),
 )
 
 data class ActivityResult(
-    var activityId: Int,
-    var locationName: String,
-    var address: String,
-    var latitude: String,
-    var longitude: String,
-    var visitDate: String,
-    var startTime: String,
-    var endTime: String,
-    var category: String,
-    var description: String,
-    var activityImages: ArrayList<ActivityImage>
+    var activityId: Int = -1,
+    var locationName: String = "",
+    var address: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
+    var visitDate: String = "",
+    var startTime: String = "",
+    var endTime: String = "",
+    var category: String = "",
+    var description: String = "",
+    var activityImages: ArrayList<ActivityImage> = arrayListOf()
 )
 
 data class ActivityImage(

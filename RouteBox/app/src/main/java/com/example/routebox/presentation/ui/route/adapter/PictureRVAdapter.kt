@@ -10,7 +10,7 @@ import com.example.routebox.domain.model.pictureImgType
 import com.example.routebox.domain.model.pictureAddType
 
 class PictureRVAdapter(
-    private var imgList: ArrayList<Uri?>
+    private var imgList: ArrayList<String?>
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private lateinit var mItemClickListener: MyItemClickListener
@@ -68,12 +68,12 @@ class PictureRVAdapter(
     }
 
     inner class PictureViewHolder(val binding: ItemActivityPictureBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(img: Uri) {
-            binding.img = img
+        fun bind(img: String) {
+            binding.img = Uri.parse(img)
         }
     }
 
-    fun addItem(img: Uri) {
+    fun addItem(img: String) {
         imgList.add(img)
         this.notifyDataSetChanged()
     }
@@ -81,7 +81,7 @@ class PictureRVAdapter(
     fun addAllItems(imgList: ArrayList<String>) {
         this.imgList = arrayListOf(null)
         for (i in 0 until imgList.size) {
-            this.imgList.add(Uri.parse(imgList[i]))
+            this.imgList.add(imgList[i])
         }
         this.notifyDataSetChanged()
     }
@@ -89,5 +89,9 @@ class PictureRVAdapter(
     fun removeItem(position: Int) {
         imgList.removeAt(position)
         this.notifyDataSetChanged()
+    }
+
+    fun returnAllItems(): ArrayList<String?> {
+        return imgList
     }
 }

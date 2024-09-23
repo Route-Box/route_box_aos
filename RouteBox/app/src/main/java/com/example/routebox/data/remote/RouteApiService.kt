@@ -1,10 +1,12 @@
 package com.example.routebox.data.remote
 
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
 import com.example.routebox.domain.model.ActivityResult
 import com.example.routebox.domain.model.ActivityUpdateRequest
 import com.example.routebox.domain.model.Insight
+import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRouteResponse
 import com.example.routebox.domain.model.ReportId
@@ -18,32 +20,27 @@ import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RouteApiService {
-    // 루트 카카오 장소 검색
-    @GET("https://dapi.kakao.com/v2/local/search/keyword")
-    suspend fun searchKakaoPlace(
-        @Header("Authorization") authorization: String,
-        @Query("query") query: String,
-        @Query("page") page: Int
-    ): KakaoSearchResult
-
-    @GET("/api/v1/routes")
+    @GET("routes")
     suspend fun getSearchRouteList(
         @Query("page") page: Int,
         @Query("size") size: Int
-    ): ArrayList<RoutePreview>
+    ): RoutePreviewResult
 
-    @GET("/api/v1/routes/{routeId}")
+    @GET("routes/{routeId}")
     suspend fun getRouteDetailPreview(
         @Path("routeId") routeId: Int
     ): RoutePreview
@@ -64,7 +61,7 @@ interface RouteApiService {
         @Query("userLocalTime") userLocalTime: String
     ): RouteId
 
-    @POST("/api/v1/routes/{routeId}/point")
+    @POST("routes/{routeId}/point")
     suspend fun addRouteDot(
         @Path("routeId") routeId: Int
     ): RoutePointRequest
@@ -82,10 +79,20 @@ interface RouteApiService {
         @Body timeBody: RouteWriteTime
     ): RouteId
 
-    @POST("/api/v1/routes/{routeId}/activity")
+    @POST("routes/{routeId}/activity")
+    @Multipart
     suspend fun createActivity(
         @Path("routeId") routeId: Int,
-        @Body activity: Activity
+        @Part("locationName") locationName: RequestBody,
+        @Part("address") address: RequestBody,
+        @Part("latitude") latitude: RequestBody?,
+        @Part("longitude") longitude: RequestBody?,
+        @Part("visitDate") visitDate: RequestBody,
+        @Part("startTime") startTime: RequestBody,
+        @Part("endTime") endTime: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part("description") description: RequestBody?,
+        @Part activityImages: List<MultipartBody.Part?>
     ): ActivityResult
 
     // 루트 수정
@@ -95,7 +102,7 @@ interface RouteApiService {
         @Body routeUpdateRequest: RouteUpdateRequest
     ): RouteUpdateResult
 
-    @PUT("/api/v1/routes/{routeId}/activity/{activityId}")
+    @PUT("routes/{routeId}/activity/{activityId}")
     suspend fun updateActivity(
         @Path("routeId") routeId: Int,
         @Path("activityId") activityId: Int,
@@ -108,7 +115,7 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RouteId
 
-    @DELETE("/api/v1/routes/{routeId}/activity/{activityId}")
+    @DELETE("routes/{routeId}/activity/{activityId}")
     suspend fun deleteActivity(
         @Path("routeId") routeId: Int,
         @Path("activityId") activityId: Int
@@ -117,4 +124,14 @@ interface RouteApiService {
     // 인사이트 조회
     @GET("routes/insight")
     suspend fun getInsight(): Insight
+
+    @POST("reports/user")
+    suspend fun reportUser(
+        @Body reportUserBody: ReportUser
+    ): ReportId
+
+    @POST("reports/route")
+    suspend fun reportRoute(
+        @Body reportRouteBody: ReportRoute
+    ): ReportId
 }

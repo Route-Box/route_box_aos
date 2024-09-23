@@ -1,7 +1,17 @@
 package com.example.routebox.data.datasource
 
+import android.annotation.SuppressLint
+import android.content.ContentUris
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import com.example.routebox.BuildConfig
+import com.example.routebox.data.remote.KakaoApiService
 import com.example.routebox.data.remote.RouteApiService
 import com.example.routebox.domain.model.Activity
 import com.example.routebox.domain.model.ActivityId
@@ -12,20 +22,33 @@ import com.example.routebox.domain.model.KakaoSearchResult
 import com.example.routebox.domain.model.MyRoute
 import com.example.routebox.domain.model.PlaceMeta
 import com.example.routebox.domain.model.RegionInfo
+import com.example.routebox.domain.model.ReportId
+import com.example.routebox.domain.model.ReportRoute
+import com.example.routebox.domain.model.ReportUser
 import com.example.routebox.domain.model.RouteDetail
 import com.example.routebox.domain.model.RouteId
 import com.example.routebox.domain.model.RoutePointRequest
 import com.example.routebox.domain.model.RoutePreview
+import com.example.routebox.domain.model.RoutePreviewResult
 import com.example.routebox.domain.model.RoutePublicRequest
 import com.example.routebox.domain.model.RouteUpdateRequest
 import com.example.routebox.domain.model.RouteUpdateResult
 import com.example.routebox.domain.model.RouteWriteTime
+import com.example.routebox.presentation.utils.ImageTranslator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RemoteRouteDataSource @Inject constructor(
-    private val routeApiService: RouteApiService
+    private val routeApiService: RouteApiService,
+    private val kakaoApiService: KakaoApiService
 ) {
     suspend fun searchKakaoPlace(
         query: String,
@@ -40,10 +63,10 @@ class RemoteRouteDataSource @Inject constructor(
         )
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.searchKakaoPlace("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", query, page)
+                kakaoApiService.searchKakaoPlace("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", query, page)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "searchKakaoPlace Success\nmeta = ${it.meta}\ndocuments = ${it.documents}")
                 kakaoSearchResult = it
+                Log.d("RemoteRouteDataSource", "searchKakaoPlace Success\nmeta = ${it.meta}\ndocuments = ${it.documents}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "searchKakaoPlace Fail\ne = $e")
             }
@@ -54,14 +77,14 @@ class RemoteRouteDataSource @Inject constructor(
     suspend fun getSearchRouteList(
         page: Int,
         size: Int
-    ): ArrayList<RoutePreview> {
-        var routePreviewList = arrayListOf<RoutePreview>()
+    ): RoutePreviewResult {
+        var routePreviewList = RoutePreviewResult()
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.getSearchRouteList(page, size)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getSearchRouteList Success\nroutePreviewList = ${routePreviewList}")
                 routePreviewList = it
+                Log.d("RemoteRouteDataSource", "getSearchRouteList Success\nroutePreviewList = ${routePreviewList}\npage = $page size = $size")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getSearchRouteList Fail\ne = $e")
             }
@@ -78,8 +101,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getRouteDetailPreview(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getRouteDetailPreview Success\nroutePreview = ${routePreview}")
                 routePreview = it
+                Log.d("RemoteRouteDataSource", "getRouteDetailPreview Success\nroutePreview = ${routePreview}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getRouteDetailPreview Fail\ne = $e")
             }
@@ -151,8 +174,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.addRouteDot(routeId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")
                 routeDot = it
+                Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "addRouteDot Fail\ne = $e")
             }
@@ -200,18 +223,66 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun createActivity(
+        context: Context,
         routeId: Int,
-        activity: Activity
+        locationName: String,
+        address: String,
+        latitude: String?,
+        longitude: String?,
+        visitDate: String,
+        startTime: String,
+        endTime: String,
+        category: String,
+        description: String?,
+        activityImages: ArrayList<File?>
     ): ActivityResult {
         var activityResult = ActivityResult(
             -1, "", "", "", "", "", "", "", "", "", arrayListOf()
         )
+
+//        // 이미지 파일들을 MultipartBody.Part 형태로 변환
+//        var activityImagesPart = mutableListOf<MultipartBody.Part>()
+//        for (i in 0 until activityImages.size) {
+//            var placeFile = ImageTranslator.optimizeBitmap(context, activityImages[i]!!.toUri())
+//                ?.let { File(it) }
+//            var placeMultipartFile = placeFile?.let {
+//                MultipartBody.Part.createFormData("activityImages", placeFile.name, it.asRequestBody("image/*".toMediaTypeOrNull()))
+//            }
+//            if (placeMultipartFile != null) {
+//                activityImagesPart.add(placeMultipartFile)
+//            }
+//        }
+
+        // 이미지 파일들을 MultipartBody.Part 형태로 변환
+        val activityImagesPart = mutableListOf<MultipartBody.Part>()
+        for (file in activityImages) {
+            // 파일 존재 여부 확인
+            if (file != null && file.exists()) {
+                // File 객체를 그대로 사용하여 파일에 접근
+                val optimizedFilePath = ImageTranslator.optimizeBitmap(context, getUriFromPath(file.toString(), context))
+                val optimizedFile = optimizedFilePath?.let { File(it) }
+
+                optimizedFile?.let {
+                    // MultipartBody.Part 생성
+                    val requestFile = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    val multipartBody =
+                        MultipartBody.Part.createFormData("activityImages", it.name, requestFile)
+                    activityImagesPart.add(multipartBody)
+                }
+            } else {
+                Log.e("RemoteRouteDataSource", "File does not exist: ${file?.absolutePath}")
+            }
+        }
+
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.createActivity(routeId, activity)
+                routeApiService.createActivity(
+                    routeId, createPartFromString(locationName)!!, createPartFromString(address)!!, createPartFromString(latitude)!!, createPartFromString(longitude)!!,
+                        createPartFromString(visitDate)!!, createPartFromString(startTime)!!, createPartFromString(endTime)!!, createPartFromString(category)!!, createPartFromString(description), activityImagesPart
+                )
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "createActivity Success\nactivityResult = ${activityResult}")
                 activityResult = it
+                Log.d("RemoteRouteDataSource", "createActivity Success\nactivityResult = ${activityResult}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "createActivity Fail\ne = $e")
             }
@@ -219,6 +290,21 @@ class RemoteRouteDataSource @Inject constructor(
 
         return activityResult
     }
+
+    @SuppressLint("Range")
+    fun getUriFromPath(filePath: String, context: Context): Uri {
+        val cursor = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null, "_data = '$filePath'", null, null
+        )
+        cursor!!.moveToNext()
+        val id = cursor!!.getInt(cursor!!.getColumnIndex("_id"))
+        val uri =
+            ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toLong())
+
+        return uri
+    }
+
 
     suspend fun updateRoute(
         routeId: Int,
@@ -253,8 +339,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.updateActivity(routeId, activityId, activityUpdateRequest)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "updateActivity Success\nactivityUpdateResult = ${activityUpdateResult}")
                 activityUpdateResult = it
+                Log.d("RemoteRouteDataSource", "updateActivity Success\nactivityUpdateResult = ${activityUpdateResult}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "updateActivity Fail\ne = $e")
             }
@@ -290,8 +376,8 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.deleteActivity(routeId, activityId)
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "deleteActivity Success\nrouteId = ${deleteActivityId}")
                 deleteActivityId = it
+                Log.d("RemoteRouteDataSource", "deleteActivity Success\nrouteId = ${deleteActivityId}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "deleteActivity Fail\ne = $e")
             }
@@ -306,13 +392,23 @@ class RemoteRouteDataSource @Inject constructor(
             runCatching {
                 routeApiService.getInsight()
             }.onSuccess {
-                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = $it")
                 insight = it
+                Log.d("RemoteRouteDataSource", "getInsight Success\ninsight = ${insight}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "getInsight Fail\ne = $e")
             }
         }
 
         return insight
+    }
+
+    private fun createPartFromString(value: String?): RequestBody? {
+        return value?.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    // 이미지 파일을 MultipartBody.Part로 변환하는 함수
+    fun createMultipartBodyPart(file: File, partName: String): MultipartBody.Part {
+        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
     }
 }

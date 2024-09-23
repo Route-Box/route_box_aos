@@ -132,7 +132,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         }
 
         viewModel.tagList.observe(this) { tagList ->
-            if (!tagList.isNullOrEmpty()) { // 태그 정보가 있다면
+            if (tagList.size != 0) { // 태그 정보가 있다면
                 setTagAdapter()
             }
         }

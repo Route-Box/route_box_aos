@@ -22,6 +22,12 @@ import kotlin.properties.Delegates
 class RouteEditViewModel @Inject constructor(
     private val repository: RouteRepository
 ) : ViewModel() {
+    private val _routeId = MutableLiveData<Int>()
+    val routeId: LiveData<Int> = _routeId
+
+    private val _deleteActivityId = MutableLiveData<Int>()
+    val deleteActivityId = _deleteActivityId
+
     private val _route = MutableLiveData<RouteDetail>()
     val route: LiveData<RouteDetail> = _route
 
@@ -47,7 +53,13 @@ class RouteEditViewModel @Inject constructor(
     val isEditSuccess: LiveData<Boolean> = _isEditSuccess
 
     init {
+        _routeId.value = -1
+        _deleteActivityId.value = -1
         _route.value = RouteDetail()
+    }
+
+    fun setRouteId(routeId: Int) {
+        this._routeId.value = routeId
     }
 
     /** 루트 수정 */
@@ -67,6 +79,17 @@ class RouteEditViewModel @Inject constructor(
             ).routeId != -1
             Log.d("RouteEditViewModel", "EditRouteRequest: $routeUpdateRequest")
         }
+    }
+
+    /* 활동 삭제 */
+    fun deleteActivity(activityId: Int) {
+        viewModelScope.launch {
+            _deleteActivityId.value = repository.deleteActivity(_routeId.value!!, activityId).activityId
+        }
+    }
+
+    fun setDeleteActivityId(activityId: Int) {
+        _deleteActivityId.value = activityId
     }
 
     fun setStepId(stepId: Int) {
