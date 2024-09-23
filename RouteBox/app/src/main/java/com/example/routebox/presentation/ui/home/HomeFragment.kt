@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
@@ -46,16 +47,15 @@ class HomeFragment : Fragment(), NativeMessageCallback {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebViewSetting() {
-        binding.homeWebView.settings.apply {
-            // WebView의 페이지에 JavaScript가 사용된 경우, 아래 코드 추가!
-            javaScriptEnabled = true
-            // 컨텐츠의 크기가 WebView 보다 클 경우, 스크린에 맞게 자동 조정
-            loadWithOverviewMode = true
-        }
 
         binding.homeWebView.apply {
+            // 세팅
+            settings.javaScriptEnabled = true // JavaScript를 사용한 웹뷰를 로드한다면 활성화 필요
+            settings.loadWithOverviewMode = true // 컨텐츠의 크기가 WebView 보다 클 경우, 스크린에 맞게 자동 조정
+            settings.domStorageEnabled = true // 웹뷰에서 LocalStorage를 사용해야 하는 경우 활성화 필요
+
             addJavascriptInterface(object : JavaScriptBridge(this@HomeFragment) {}, JavaScriptBridge.INTF)
-            this.webViewClient = object : WebViewClient() {
+            webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     // 웹뷰가 완전히 로드된 후에 토큰 전송
@@ -64,25 +64,25 @@ class HomeFragment : Fragment(), NativeMessageCallback {
             }
             webChromeClient = WebChromeClient()
             loadUrl("$WEB_BASE_URL$ENDPOINT_HOME")
-        }
 
-        // WebView 뒤로가기 설정
-        binding.homeWebView.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
-            if (event.action != KeyEvent.ACTION_DOWN) return@OnKeyListener true
-            // 뒤로가기 버튼을 눌렀을 때, WebView에서 뒤로가기가 된다면 뒤로가고 아니라면 종료
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                if (binding.homeWebView.canGoBack()) {
-                    binding.homeWebView.goBack()
-                } else {
-                    requireActivity().onBackPressedDispatcher.addCallback(object :
-                        OnBackPressedCallback(true) {
-                        override fun handleOnBackPressed() {}
-                    })
+            // WebView 뒤로가기 설정
+            setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
+                if (event.action != KeyEvent.ACTION_DOWN) return@OnKeyListener true
+                // 뒤로가기 버튼을 눌렀을 때, WebView에서 뒤로가기가 된다면 뒤로가고 아니라면 종료
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (this.canGoBack()) {
+                        this.goBack()
+                    } else {
+                        requireActivity().onBackPressedDispatcher.addCallback(object :
+                            OnBackPressedCallback(true) {
+                            override fun handleOnBackPressed() {}
+                        })
+                    }
+                    return@OnKeyListener true
                 }
-                return@OnKeyListener true
-            }
-            false
-        })
+                false
+            })
+        }
     }
 
     // 네이티브 앱에서 웹뷰로 TOKEN 메시지 보내기
