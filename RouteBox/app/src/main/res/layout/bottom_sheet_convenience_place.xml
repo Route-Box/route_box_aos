@@ -8,7 +8,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.route.write.RouteWriteViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

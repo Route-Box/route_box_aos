@@ -6,10 +6,10 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.route.RouteViewModel" />
+            type="com.daval.routebox.presentation.ui.route.RouteViewModel" />
         <variable
             name="editViewModel"
-            type="com.example.routebox.presentation.ui.route.edit.RouteEditViewModel" />
+            type="com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

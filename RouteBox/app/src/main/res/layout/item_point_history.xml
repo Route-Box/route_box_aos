@@ -6,7 +6,7 @@
     <data>
         <variable
             name="history"
-            type="com.example.routebox.domain.model.History" />
+            type="com.daval.routebox.domain.model.History" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

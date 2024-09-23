@@ -5,10 +5,10 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.example.routebox.presentation.utils.DateConverter"/>
+        <import type="com.daval.routebox.presentation.utils.DateConverter"/>
         <variable
             name="route"
-            type="com.example.routebox.domain.model.RouteDetail" />
+            type="com.daval.routebox.domain.model.RouteDetail" />
     </data>
 
     <LinearLayout

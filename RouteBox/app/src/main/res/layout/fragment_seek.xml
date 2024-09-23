@@ -10,7 +10,7 @@
             type="java.lang.Integer" />
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.seek.SeekViewModel" />
+            type="com.daval.routebox.presentation.ui.seek.SeekViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

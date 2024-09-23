@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/signup1NicknameFragment"
-        android:name="com.example.routebox.presentation.ui.auth.Signup1NicknameFragment"
+        android:name="com.daval.routebox.presentation.ui.auth.Signup1NicknameFragment"
         android:label="Signup1NicknameFragment" >
         <action
             android:id="@+id/action_signup1NicknameFragment_to_signup2BirthFragment"
@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/signup2BirthFragment"
-        android:name="com.example.routebox.presentation.ui.auth.Signup2BirthFragment"
+        android:name="com.daval.routebox.presentation.ui.auth.Signup2BirthFragment"
         android:label="Signup2BirthFragment" >
         <action
             android:id="@+id/action_signup2BirthFragment_to_signup3GenderFragment"
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/signup3GenderFragment"
-        android:name="com.example.routebox.presentation.ui.auth.Signup3GenderFragment"
+        android:name="com.daval.routebox.presentation.ui.auth.Signup3GenderFragment"
         android:label="Signup3GenderFragment" >
         <action
             android:id="@+id/action_signup3GenderFragment_to_signup4TermsFragment"
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/signup4TermsFragment"
-        android:name="com.example.routebox.presentation.ui.auth.Signup4TermsFragment"
+        android:name="com.daval.routebox.presentation.ui.auth.Signup4TermsFragment"
         android:label="Signup4TermsFragment" >
         <action
             android:id="@+id/action_signup4TermsFragment_to_signup3GenderFragment"

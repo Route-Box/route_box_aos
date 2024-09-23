@@ -11,14 +11,14 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 def kakaoApiKey = properties.getProperty('kakao_api_key_no_quotes')
 
 android {
-    namespace 'com.example.routebox'
+    namespace 'com.daval.routebox'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.routebox"
+        applicationId "com.daval.routebox"
         minSdk 24
         targetSdk 34
-        versionCode 1
+        versionCode 3
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -30,6 +30,7 @@ android {
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
         buildConfigField "String", "OPEN_API_BASE_URL", properties['open_api_base_url']
         buildConfigField "String", "OPEN_API_SERVICE_KEY", properties['open_api_service_key']
+        buildConfigField "String", "APPLICATOIN_ID", properties['APPLICATION_ID']
     }
 
     buildTypes {

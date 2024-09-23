@@ -7,7 +7,7 @@
     <data>
         <variable
             name="point"
-            type="com.example.routebox.domain.model.OwnPoint" />
+            type="com.daval.routebox.domain.model.OwnPoint" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

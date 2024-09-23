@@ -8,10 +8,10 @@
         <import type="android.view.View" />
         <variable
             name="picture"
-            type="com.example.routebox.domain.model.ActivityPictureAlbum" />
+            type="com.daval.routebox.domain.model.ActivityPictureAlbum" />
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.route.write.RoutePictureAlbumViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.RoutePictureAlbumViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
