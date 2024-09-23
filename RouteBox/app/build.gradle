@@ -24,6 +24,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "BASE_URL", properties['base_url']
+        buildConfigField "String", "WEB_BASE_URL", properties['web_base_url']
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
         manifestPlaceholders = [KAKAO_API_KEY : kakaoApiKey]
