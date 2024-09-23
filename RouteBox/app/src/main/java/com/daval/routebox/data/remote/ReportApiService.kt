@@ -3,7 +3,7 @@ package com.daval.routebox.data.remote
 import com.daval.routebox.domain.model.ReportId
 import com.daval.routebox.domain.model.ReportRoute
 import com.daval.routebox.domain.model.ReportUser
-import com.example.routebox.domain.model.RouteReportId
+import com.daval.routebox.domain.model.RouteReportId
 import retrofit2.http.Body
 import retrofit2.http.POST
 

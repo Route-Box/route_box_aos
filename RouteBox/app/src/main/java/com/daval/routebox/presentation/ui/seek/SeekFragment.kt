@@ -17,15 +17,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentSeekBinding
 import com.daval.routebox.domain.model.RoutePreview
+import com.daval.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.daval.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.ui.seek.wallet.WalletActivity
-import com.example.routebox.R
-import com.example.routebox.databinding.FragmentSeekBinding
-import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
-import com.example.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
-import com.example.routebox.presentation.ui.seek.comment.CommentActivity
-import com.example.routebox.presentation.ui.seek.wallet.WalletActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.Boolean
 import kotlin.Int
@@ -77,7 +72,7 @@ class SeekFragment : Fragment() {
             override fun commentItemClick(position: Int, data: RoutePreview) {
                 startActivity(Intent(context, CommentActivity::class.java).putExtra("routeId", data.routeId))
             }
-            override fun moreItemClick(view: View, position: Int) {
+            override fun moreItemClick(view: View, routeId: Int) {
                 viewModel.selectedRouteId = routeId
                 reportMenuShow(view)
             }

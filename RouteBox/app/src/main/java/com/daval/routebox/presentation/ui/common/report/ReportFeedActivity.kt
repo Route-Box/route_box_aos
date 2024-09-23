@@ -1,12 +1,12 @@
-package com.example.routebox.presentation.ui.common.report
+package com.daval.routebox.presentation.ui.common.report
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.example.routebox.R
-import com.example.routebox.databinding.ActivityReportFeedBinding
+import com.daval.routebox.R
+import com.daval.routebox.databinding.ActivityReportFeedBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

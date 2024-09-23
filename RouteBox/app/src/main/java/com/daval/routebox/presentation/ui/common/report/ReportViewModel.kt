@@ -1,4 +1,4 @@
-package com.example.routebox.presentation.ui.common.report
+package com.daval.routebox.presentation.ui.common.report
 
 import android.content.Context
 import android.util.Log
@@ -8,10 +8,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.routebox.R
-import com.example.routebox.domain.model.ReportRoute
-import com.example.routebox.domain.model.RouteReportReason
-import com.example.routebox.domain.repositories.ReportRepository
+import com.daval.routebox.R
+import com.daval.routebox.domain.model.ReportRoute
+import com.daval.routebox.domain.model.RouteReportReason
+import com.daval.routebox.domain.repositories.ReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
