@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.example.routebox.presentation.ui.common.report.ReportViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/report_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:paddingHorizontal="26dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/close_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/report"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/body_b_l" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="22dp"
+            app:layout_constraintTop_toBottomOf="@id/report_top_bar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/report_title"
+                    app:layout_constraintTop_toBottomOf="@id/report_top_bar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/body_b_m"/>
+
+                <CheckBox
+                    android:id="@+id/report_reason_not_trip_checkbox"
+                    android:layout_marginTop="18dp"
+                    android:onClick="@{viewModel::updateIsCheckedReportReason}"
+                    android:text="@string/report_reason_not_trip"
+                    style="@style/common_checkbox"/>
+
+                <CheckBox
+                    android:id="@+id/report_reason_advertising_checkbox"
+                    android:layout_marginTop="11dp"
+                    android:onClick="@{viewModel::updateIsCheckedReportReason}"
+                    android:text="@string/report_reason_advertising"
+                    style="@style/common_checkbox"/>
+
+                <CheckBox
+                    android:id="@+id/report_reason_lascivious_checkbox"
+                    android:layout_marginTop="11dp"
+                    android:onClick="@{viewModel::updateIsCheckedReportReason}"
+                    android:text="@string/report_reason_lascivious"
+                    style="@style/common_checkbox"/>
+
+                <CheckBox
+                    android:id="@+id/report_reason_unauthorized_use_checkbox"
+                    android:layout_marginTop="11dp"
+                    android:onClick="@{viewModel::updateIsCheckedReportReason}"
+                    android:text="@string/report_reason_unauthorized_use"
+                    style="@style/common_checkbox"/>
+
+                <CheckBox
+                    android:id="@+id/report_reason_personal_information_checkbox"
+                    android:layout_marginTop="11dp"
+                    android:onClick="@{viewModel::updateIsCheckedReportReason}"
+                    android:text="@string/report_reason_personal_information"
+                    style="@style/common_checkbox"/>
+
+                <CheckBox
+                    android:id="@+id/report_reason_etc_checkbox"
+                    android:layout_marginTop="11dp"
+                    android:onClick="@{viewModel::updateIsCheckedReportReason}"
+                    android:text="@string/report_reason_etc"
+                    style="@style/common_checkbox"/>
+
+                <EditText
+                    android:id="@+id/report_reason_etc_content_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="114dp"
+                    android:layout_marginTop="20dp"
+                    android:padding="15dp"
+                    android:gravity="start"
+                    android:visibility="@{viewModel.isEtcBtnChecked() ? View.VISIBLE : View.GONE}"
+                    android:text="@={viewModel.etcReasonDirectInput}"
+                    android:hint="@string/edittext_hint"
+                    android:textColor="@color/gray1"
+                    android:background="@drawable/radius_16_outline_gray"
+                    style="@style/body_r_s"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/gray3"
+                    android:text="@string/report_notice"
+                    style="@style/body_r_xs"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="28dp"
+            android:paddingHorizontal="20dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/report_feed_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="18dp"
+                android:text="@string/report"
+                android:enabled="@{viewModel.isReportBtnEnable()}"
+                style="@style/default_large_button"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

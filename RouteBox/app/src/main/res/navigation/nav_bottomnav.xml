@@ -11,6 +11,12 @@
         android:name="com.daval.routebox.presentation.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_myRouteFragment"
+            app:destination="@id/myRouteFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_seekFragment"
+            app:destination="@id/seekFragment"/>
     </fragment>
 
     <!-- Seek -->
@@ -35,7 +41,7 @@
 
     <!-- Route -->
     <fragment
-        android:id="@+id/routeFragment"
+        android:id="@+id/myRouteFragment"
         android:name="com.daval.routebox.presentation.ui.route.RouteFragment"
         android:label="RouteFragment"
         tools:layout="@layout/fragment_route">

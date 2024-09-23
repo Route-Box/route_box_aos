@@ -1,4 +1,4 @@
-package com.daval.routebox.presentation.ui
+package com.example.routebox.presentation.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,10 @@ import androidx.databinding.DataBindingUtil
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRoutePreviewDetailBinding
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
+import com.example.routebox.R
+import com.example.routebox.databinding.ActivityRoutePreviewDetailBinding
+import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
+import com.example.routebox.presentation.ui.seek.comment.CommentActivity
 
 class RoutePreviewDetailActivity: AppCompatActivity() {
 
@@ -45,8 +49,11 @@ class RoutePreviewDetailActivity: AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    // TODO: 임시
-                    Toast.makeText(this, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 신고하기 화면으로 이동
+                    //TODO: 루트 id 넘기기
+                    startActivity(Intent(this, ReportFeedActivity::class.java)
+                        .putExtra("routeId", 0)
+                    )
                     true
                 }
                 else -> { false }

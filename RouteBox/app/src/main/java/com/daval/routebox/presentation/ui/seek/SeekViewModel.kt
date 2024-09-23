@@ -17,6 +17,8 @@ class SeekViewModel @Inject constructor(
     private val _routeList = MutableLiveData<ArrayList<RoutePreview>>()
     val routeList: LiveData<ArrayList<RoutePreview>> = _routeList
 
+    var selectedRouteId = 0
+
     private val _page = MutableLiveData<Int>()
     val page: LiveData<Int> = _page
 

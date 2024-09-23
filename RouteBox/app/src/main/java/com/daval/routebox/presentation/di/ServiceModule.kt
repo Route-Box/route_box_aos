@@ -40,6 +40,12 @@ object ServiceModule {
     fun provideRouteService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : RouteApiService =
         retrofit.create(RouteApiService::class.java)
 
+    /** 신고 */
+    @Provides
+    @Singleton
+    fun provideReportService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : ReportApiService =
+        retrofit.create(ReportApiService::class.java)
+
     /** 카카오 **/
     @Provides
     @Singleton

@@ -1,4 +1,4 @@
-package com.daval.routebox.data.datasource
+package com.example.routebox.data.datasource
 
 import android.util.Log
 import com.daval.routebox.data.remote.ReportApiService
@@ -32,8 +32,8 @@ class RemoteReportDataSource @Inject constructor(
 
     suspend fun reportRoute(
         reportRouteBody: ReportRoute
-    ): ReportId {
-        var reportId = ReportId(-1)
+    ): RouteReportId {
+        var reportId = RouteReportId(-1)
         withContext(Dispatchers.IO) {
             runCatching {
                 reportApiService.reportRoute(reportRouteBody)

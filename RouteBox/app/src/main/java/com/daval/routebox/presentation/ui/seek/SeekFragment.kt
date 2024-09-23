@@ -20,6 +20,12 @@ import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.ui.seek.wallet.WalletActivity
+import com.example.routebox.R
+import com.example.routebox.databinding.FragmentSeekBinding
+import com.example.routebox.presentation.ui.common.report.ReportFeedActivity
+import com.example.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
+import com.example.routebox.presentation.ui.seek.comment.CommentActivity
+import com.example.routebox.presentation.ui.seek.wallet.WalletActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.Boolean
 import kotlin.Int
@@ -72,6 +78,7 @@ class SeekFragment : Fragment() {
                 startActivity(Intent(context, CommentActivity::class.java).putExtra("routeId", data.routeId))
             }
             override fun moreItemClick(view: View, position: Int) {
+                viewModel.selectedRouteId = routeId
                 reportMenuShow(view)
             }
         })
@@ -97,8 +104,10 @@ class SeekFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_report -> {
-                    // TODO: 신고하기 연결하기
-                    Toast.makeText(activity, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 신고하기 화면으로 이동
+                    startActivity(Intent(requireActivity(), ReportFeedActivity::class.java)
+                        .putExtra("routeId", viewModel.selectedRouteId)
+                    )
                     true
                 }
                 else -> { false }

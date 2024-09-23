@@ -44,7 +44,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_route_detail)
 
         binding.apply {
-            binding.route = RouteDetail()
+            route = RouteDetail()
             lifecycleOwner = this@RouteDetailActivity
         }
 
