@@ -1,6 +1,7 @@
 package com.example.routebox.presentation.ui.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -23,6 +24,7 @@ import com.example.routebox.domain.model.WebViewPage
 import com.example.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import com.example.routebox.presentation.config.Constants.ENDPOINT_HOME
 import com.example.routebox.presentation.config.Constants.WEB_BASE_URL
+import com.example.routebox.presentation.ui.route.RouteDetailActivity
 import com.example.routebox.presentation.utils.JavaScriptBridge
 import com.example.routebox.presentation.utils.NativeMessageCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -114,6 +116,9 @@ class HomeFragment : Fragment(), NativeMessageCallback {
             WebViewPage.SEARCH -> { // 탐색 탭으로 이동
                 selectBottomNavTab(R.id.seekFragment)
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSeekFragment())
+            }
+            WebViewPage.ROUTE -> { // 루트 조회 화면으로 이동
+                startActivity(Intent(requireActivity(), RouteDetailActivity::class.java).putExtra("routeId", id.toInt()))
             }
             else -> Log.d("MyFragment", "Unknown page: $page")
         }
