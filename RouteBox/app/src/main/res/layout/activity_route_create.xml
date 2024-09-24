@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.example.routebox.presentation.utils.DateConverter"/>
+        <import type="com.daval.routebox.presentation.utils.DateConverter"/>
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.route.write.RouteCreateViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.RouteCreateViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

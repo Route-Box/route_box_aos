@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="placeInfo"
+            type="com.daval.routebox.domain.model.ConvenienceCategoryResult" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="22dp">
+
+        <TextView
+            android:id="@+id/place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{placeInfo.placeName}"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/route_convenience_category_result"
+            style="@style/body_b_l" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/place_cv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:layout_constraintDimensionRatio="1:0.477"
+            app:layout_constraintTop_toBottomOf="@id/place_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray6"
+                app:imageUrl="@{placeInfo.placeImg}"
+                app:placeHolder="@{null}"
+                app:layout_constraintTop_toTopOf="@id/place_cv"
+                app:layout_constraintBottom_toBottomOf="@id/place_cv"
+                app:layout_constraintStart_toStartOf="@id/place_cv"
+                app:layout_constraintEnd_toEndOf="@id/place_cv" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/no_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_convenience_no_image"
+            android:visibility="@{placeInfo.placeImg.length == 0 || placeInfo.placeImg == null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toTopOf="@id/place_cv"
+            app:layout_constraintBottom_toBottomOf="@id/place_cv"
+            app:layout_constraintStart_toStartOf="@id/place_cv"
+            app:layout_constraintEnd_toEndOf="@id/place_cv" />
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray5"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@id/place_cv"
+            app:layout_constraintStart_toStartOf="parent" />
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -11,25 +11,27 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 def kakaoApiKey = properties.getProperty('kakao_api_key_no_quotes')
 
 android {
-    namespace 'com.example.routebox'
+    namespace 'com.daval.routebox'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.routebox"
+        applicationId "com.daval.routebox"
         minSdk 24
         targetSdk 34
-        versionCode 1
+        versionCode 3
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        // TODO: 나중에 배포 서버 주소로 바꾸기
         buildConfigField "String", "BASE_URL", properties['base_url']
+        // TODO: 나중에 배포 웹 링크로 바꾸기
+        buildConfigField "String", "WEB_BASE_URL", properties['dev_web_base_url']
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
         manifestPlaceholders = [KAKAO_API_KEY : kakaoApiKey]
-        buildConfigField "String", "KAKAO_BASE_URL", properties['kakao_base_url']
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
-        buildConfigField "String", "TOUR_URL", properties['tour_base_url']
-        buildConfigField "String", "TOUR_SERVICE_KEY", properties['tour_service_key']
+        buildConfigField "String", "OPEN_API_SERVICE_KEY", properties['open_api_service_key']
+        buildConfigField "String", "APPLICATOIN_ID", properties['APPLICATION_ID']
     }
 
     buildTypes {

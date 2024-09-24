@@ -103,4 +103,18 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="common_checkbox" parent="body_r_s">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingVertical">2dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawableStart">@drawable/selector_checkbox</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@null</item>
+        <item name="fontFamily">@font/pretendard_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gray1</item>
+    </style>
+
 </resources>

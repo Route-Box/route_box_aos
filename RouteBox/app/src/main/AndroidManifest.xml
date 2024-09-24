@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".presentation.config.ApplicationClass"
+        android:name="com.daval.routebox.presentation.config.ApplicationClass"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -82,6 +82,7 @@
         <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.route.edit.RouteCompleteTagActivity"/>
+        <activity android:name=".presentation.ui.common.report.ReportFeedActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />

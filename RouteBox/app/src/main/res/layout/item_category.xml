@@ -6,7 +6,7 @@
     <data>
         <variable
             name="category"
-            type="com.example.routebox.domain.model.Category" />
+            type="com.daval.routebox.domain.model.Category" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

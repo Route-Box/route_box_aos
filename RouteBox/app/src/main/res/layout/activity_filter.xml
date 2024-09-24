@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.seek.search.FilterViewModel" />
+            type="com.daval.routebox.presentation.ui.seek.search.FilterViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

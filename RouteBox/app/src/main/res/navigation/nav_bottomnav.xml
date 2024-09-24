@@ -8,15 +8,21 @@
     <!-- Home -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.routebox.presentation.ui.home.HomeFragment"
+        android:name="com.daval.routebox.presentation.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_myRouteFragment"
+            app:destination="@id/myRouteFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_seekFragment"
+            app:destination="@id/seekFragment"/>
     </fragment>
 
     <!-- Seek -->
     <fragment
         android:id="@+id/seekFragment"
-        android:name="com.example.routebox.presentation.ui.seek.SeekFragment"
+        android:name="com.daval.routebox.presentation.ui.seek.SeekFragment"
         android:label="SeekFragment"
         tools:layout="@layout/fragment_seek">
         <action
@@ -28,15 +34,15 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.routebox.presentation.ui.seek.search.SearchFragment"
+        android:name="com.daval.routebox.presentation.ui.seek.search.SearchFragment"
         android:label="SearchFragment"
         tools:layout="@layout/fragment_search">
     </fragment>
 
     <!-- Route -->
     <fragment
-        android:id="@+id/routeFragment"
-        android:name="com.example.routebox.presentation.ui.route.RouteFragment"
+        android:id="@+id/myRouteFragment"
+        android:name="com.daval.routebox.presentation.ui.route.RouteFragment"
         android:label="RouteFragment"
         tools:layout="@layout/fragment_route">
         <action
@@ -46,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/routeInsightFragment"
-        android:name="com.example.routebox.presentation.ui.route.RouteInsightFragment"
+        android:name="com.daval.routebox.presentation.ui.route.RouteInsightFragment"
         android:label="RouteInsightFragment"
         tools:layout="@layout/fragment_route_insight">
     </fragment>
@@ -54,7 +60,7 @@
     <!-- My -->
     <fragment
         android:id="@+id/myFragment"
-        android:name="com.example.routebox.presentation.ui.my.MyFragment"
+        android:name="com.daval.routebox.presentation.ui.my.MyFragment"
         android:label="MyFragment"
         tools:layout="@layout/fragment_my">
     </fragment>

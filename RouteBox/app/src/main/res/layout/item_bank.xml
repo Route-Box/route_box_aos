@@ -6,7 +6,7 @@
     <data>
         <variable
             name="bank"
-            type="com.example.routebox.domain.model.Bank" />
+            type="com.daval.routebox.domain.model.Bank" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

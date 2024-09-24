@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="activityImage"
-            type="com.example.routebox.domain.model.ActivityImage"/>
+            type="com.daval.routebox.domain.model.ActivityImage"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

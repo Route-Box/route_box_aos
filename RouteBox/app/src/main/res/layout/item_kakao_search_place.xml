@@ -6,7 +6,7 @@
     <data>
         <variable
             name="place"
-            type="com.example.routebox.domain.model.SearchActivityResult" />
+            type="com.daval.routebox.domain.model.SearchActivityResult" />
     </data>
 
         <com.google.android.material.card.MaterialCardView
