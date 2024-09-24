@@ -6,8 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.routebox.R
+import com.example.routebox.domain.repositories.SeekRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SearchViewModel: ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val repository: SeekRepository
+): ViewModel() {
     private val _routeSearchKeyWord = MutableLiveData<String>("") // 타이틀 입력용
     val routeSearchKeyWord: LiveData<String> = _routeSearchKeyWord
 
