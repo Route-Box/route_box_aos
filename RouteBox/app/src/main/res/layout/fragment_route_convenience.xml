@@ -2,19 +2,149 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.kakao.vectormap.MapView
-            android:id="@+id/convenience_map"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="match_parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.kakao.vectormap.MapView
+                android:id="@+id/convenience_map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:scrollbars="none"
+                android:layout_marginTop="16dp">
+
+                <LinearLayout
+                    android:id="@+id/category_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/category_radiogroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatRadioButton
+                            android:id="@+id/category_stay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginStart="22dp"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="16dp"
+                            android:background="@drawable/selector_convenience_category"
+                            android:textColor="@drawable/selector_convenience_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:text="@string/category_stay_default_ic"
+                            style="@style/body_r_s" />
+
+                        <androidx.appcompat.widget.AppCompatRadioButton
+                            android:id="@+id/category_tour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="16dp"
+                            android:background="@drawable/selector_convenience_category"
+                            android:textColor="@drawable/selector_convenience_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:text="@string/category_tour_default_ic"
+                            style="@style/body_r_s" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/category_food"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="16dp"
+                            android:background="@drawable/selector_convenience_category"
+                            android:textColor="@drawable/selector_convenience_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:text="@string/category_food_default_ic"
+                            style="@style/body_r_s" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/category_cafe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="16dp"
+                            android:background="@drawable/selector_convenience_category"
+                            android:textColor="@drawable/selector_convenience_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:text="@string/category_cafe_default_ic"
+                            style="@style/body_r_s" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/category_culture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="16dp"
+                            android:background="@drawable/selector_convenience_category"
+                            android:textColor="@drawable/selector_convenience_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:text="@string/category_culture_default_ic"
+                            style="@style/body_r_s" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/category_parking"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="16dp"
+                            android:layout_marginEnd="22dp"
+                            android:background="@drawable/selector_convenience_category"
+                            android:textColor="@drawable/selector_convenience_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:text="@string/category_parking_default_ic"
+                            style="@style/body_r_s" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/route_convenience_bottom_sheet"
+            layout="@layout/bottom_sheet_convenience_place"
+            android:visibility="@{viewModel.placeCategoryResult.size() == 0 ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

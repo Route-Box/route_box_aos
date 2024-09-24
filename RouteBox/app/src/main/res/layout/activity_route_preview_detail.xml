@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="preview"
-            type="com.example.routebox.domain.model.RoutePreview" />
+            type="com.daval.routebox.domain.model.RoutePreview" />
     </data>
 
     <ScrollView

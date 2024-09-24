@@ -5,12 +5,12 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.example.routebox.presentation.utils.DateConverter"/>
-        <import type="com.example.routebox.domain.model.Category" />
-        <import type="com.example.routebox.domain.model.Activity" />
+        <import type="com.daval.routebox.presentation.utils.DateConverter"/>
+        <import type="com.daval.routebox.domain.model.Category" />
+        <import type="com.daval.routebox.domain.model.Activity" />
         <variable
             name="viewModel"
-            type="com.example.routebox.presentation.ui.route.write.RouteWriteViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -8,7 +8,7 @@
     <!-- 루트 수정 -->
     <fragment
         android:id="@+id/routeEditFragment"
-        android:name="com.example.routebox.presentation.ui.route.edit.RouteEditFragment"
+        android:name="com.daval.routebox.presentation.ui.route.edit.RouteEditFragment"
         android:label="RouteEditFragment"
         tools:layout="@layout/fragment_route_edit">
         <action
@@ -19,7 +19,7 @@
     <!-- 활동 수정 -->
     <fragment
         android:id="@+id/routeEditActivityFragment"
-        android:name="com.example.routebox.presentation.ui.route.edit.RouteEditActivityFragment"
+        android:name="com.daval.routebox.presentation.ui.route.edit.RouteEditActivityFragment"
         android:label="RouteEditActivityFragment"
         tools:layout="@layout/fragment_route_edit_activity">
     </fragment>

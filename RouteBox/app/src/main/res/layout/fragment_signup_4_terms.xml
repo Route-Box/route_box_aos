@@ -49,7 +49,7 @@
                 android:id="@+id/term_1_check"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_term_check_x"
+                android:src="@drawable/ic_check_term_x"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/term_1_tv"
                 app:layout_constraintBottom_toBottomOf="@id/term_1_tv" />
@@ -78,7 +78,7 @@
                 android:id="@+id/term_2_check"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_term_check_x"
+                android:src="@drawable/ic_check_term_x"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/term_2_tv"
                 app:layout_constraintBottom_toBottomOf="@id/term_2_tv" />
