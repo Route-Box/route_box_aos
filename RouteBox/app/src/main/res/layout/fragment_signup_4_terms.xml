@@ -26,24 +26,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" >
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/term_1_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/signup_term_1"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:drawablePadding="4dp"
                 style="@style/body_r_s"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/term_1_arrow"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_marginStart="4dp"
-                app:layout_constraintStart_toEndOf="@id/term_1_tv"
-                app:layout_constraintTop_toTopOf="@id/term_1_tv"
-                app:layout_constraintBottom_toBottomOf="@id/term_1_tv" />
 
             <ImageView
                 android:id="@+id/term_1_check"
@@ -54,25 +46,17 @@
                 app:layout_constraintTop_toTopOf="@id/term_1_tv"
                 app:layout_constraintBottom_toBottomOf="@id/term_1_tv" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/term_2_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/signup_term_2"
                 android:layout_marginTop="20dp"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:drawablePadding="4dp"
                 style="@style/body_r_s"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/term_1_tv" />
-
-            <ImageView
-                android:id="@+id/term_2_arrow"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_marginStart="4dp"
-                app:layout_constraintStart_toEndOf="@id/term_2_tv"
-                app:layout_constraintTop_toTopOf="@id/term_2_tv"
-                app:layout_constraintBottom_toBottomOf="@id/term_2_tv" />
 
             <ImageView
                 android:id="@+id/term_2_check"

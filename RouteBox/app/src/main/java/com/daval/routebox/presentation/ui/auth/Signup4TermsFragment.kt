@@ -1,6 +1,8 @@
 package com.daval.routebox.presentation.ui.auth
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentSignup4TermsBinding
+import com.daval.routebox.presentation.config.Constants
 
 class Signup4TermsFragment : Fragment() {
 
@@ -34,9 +37,13 @@ class Signup4TermsFragment : Fragment() {
     }
 
     private fun initClickListener() {
-        // TODO: 약관 관련 페이지 나올 경우, View로 만드는 것인지, WebView로 노션 연결하는지 확인 후 작업!
-        binding.term1Arrow.setOnClickListener { }
-        binding.term2Arrow.setOnClickListener { }
+        // 약관 링크 연결
+        binding.term1Tv.setOnClickListener { // 이용 약관
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.TERM_URL)))
+        }
+        binding.term2Tv.setOnClickListener { // 개인 정보 수집
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.POLICY_URL)))
+        }
 
         binding.term1Check.setOnClickListener {
             if (term1) {
