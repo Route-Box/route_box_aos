@@ -11,5 +11,9 @@ object Constants {
 
     // 웹 endPoint
     const val ENDPOINT_HOME = "/" // 홈
-    const val ENDPOINT_MY = "/my-page"
+    const val ENDPOINT_MY = "/my-page" // 마이페이지
+
+    // 약관 관련
+    const val TERM_URL = "https://trapezoidal-success-ff6.notion.site/10845c063330803d8e96e6d58739a77b" // 필수 이용 약관
+    const val POLICY_URL = "https://trapezoidal-success-ff6.notion.site/10845c063330800488e9e377850fe8e0" // 개인정보 수집 이용 동의
 }
