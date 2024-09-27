@@ -60,6 +60,7 @@
         <activity android:name=".presentation.ui.auth.LoginActivity" />
         <activity android:name=".presentation.ui.MainActivity"
             android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".presentation.ui.auth.PermissionActivity"/>
         <activity android:name=".presentation.ui.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.ui.seek.wallet.WalletActivity" />
