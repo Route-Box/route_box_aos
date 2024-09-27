@@ -176,6 +176,14 @@
     <string name="gps_deny">위치 권한이 거부되었습니다.\n원활한 서비스 이용을 위해 위치 권한을 허용해주세요</string>
     <string name="gps_always_grant">원활한 서비스 이용을 위해 위치 권한 항상 허용을 선택해주세요</string>
     <string name="check_gps_internet_permission">인터넷 연결 혹은 GPS 권한을 확인해주세요</string>
+    <!-- 편의 기능 -->
+    <string name="weather_temperature">체감온도</string>
+    <string name="weather_dust">미세</string>
+    <string name="weather_micro_dust">초미세</string>
+    <string name="weather_time">시간대별</string>
+    <string name="weather_time_hour">%s시</string>
+    <string name="tomorrow">내일</string>
+    <string name="weather_update_date">%s %s 업데이트\n제공: 기상청</string>
     <!-- 루트 수정 -->
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>

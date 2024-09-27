@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.ui.route.write
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +15,7 @@ import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.SearchActivityResult
+import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
@@ -96,6 +98,12 @@ class RouteWriteViewModel @Inject constructor(
     private val _cameraPosition = MutableLiveData<LatLng>()
     val cameraPosition: LiveData<LatLng> = _cameraPosition
 
+    private val _weatherRegion = MutableLiveData<String>()
+    val weatherRegion: LiveData<String> = _weatherRegion
+
+    private val _weatherMainData = MutableLiveData<WeatherData>()
+    val weatherMainData: LiveData<WeatherData> = _weatherMainData
+
 
     init {
         _activity.value = Activity("", "", "", "",
@@ -107,6 +115,7 @@ class RouteWriteViewModel @Inject constructor(
         _isCategoryEndPage.value = false
         _placeCategoryPage.value = 1
         _placeCategoryResult.value = arrayListOf()
+        _currentCoordinate.value = LatLng.from(null)
     }
 
     fun setRouteId(routeId: Int) {
@@ -135,6 +144,10 @@ class RouteWriteViewModel @Inject constructor(
 
     fun setPlaceSearchKeyword(query: String) {
         _placeSearchKeyword.value = query
+    }
+
+    fun setWeatherMainData(weatherData: WeatherData) {
+        _weatherMainData.value = weatherData
     }
 
     fun updateDate(date: LocalDate) {
@@ -319,6 +332,15 @@ class RouteWriteViewModel @Inject constructor(
                 127
             )
 //            Log.d("RemoteTourDataSource", "response = $response")
+        }
+    }
+
+    fun getRegionCode(latitude: String, longitude: String) {
+        viewModelScope.launch {
+            val response = repository.getKakaoRegionCode(
+                latitude, longitude
+            )
+            _weatherRegion.value = "${response.documents[0].region_1depth_name} ${response.documents[0].region_2depth_name} ${response.documents[0].region_3depth_name}"
         }
     }
 }
