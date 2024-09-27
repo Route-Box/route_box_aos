@@ -37,14 +37,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <CheckBox
                 android:id="@+id/term_1_check"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check_term_x"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/term_1_tv"
-                app:layout_constraintBottom_toBottomOf="@id/term_1_tv" />
+                app:layout_constraintBottom_toBottomOf="@id/term_1_tv"
+                style="@style/common_checkbox"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/term_2_tv"
@@ -58,14 +58,56 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/term_1_tv" />
 
-            <ImageView
+            <CheckBox
                 android:id="@+id/term_2_check"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check_term_x"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/term_2_tv"
-                app:layout_constraintBottom_toBottomOf="@id/term_2_tv" />
+                app:layout_constraintBottom_toBottomOf="@id/term_2_tv"
+                style="@style/common_checkbox"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/term_3_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_term_optional_1"
+                android:layout_marginTop="20dp"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:drawablePadding="4dp"
+                style="@style/body_r_s"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/term_2_tv" />
+
+            <CheckBox
+                android:id="@+id/term_3_check"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/term_3_tv"
+                app:layout_constraintBottom_toBottomOf="@id/term_3_tv"
+                style="@style/common_checkbox"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/term_4_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_term_optional_2"
+                android:layout_marginTop="20dp"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:drawablePadding="4dp"
+                style="@style/body_r_s"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/term_3_tv" />
+
+            <CheckBox
+                android:id="@+id/term_4_check"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/term_4_tv"
+                app:layout_constraintBottom_toBottomOf="@id/term_4_tv"
+                style="@style/common_checkbox"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

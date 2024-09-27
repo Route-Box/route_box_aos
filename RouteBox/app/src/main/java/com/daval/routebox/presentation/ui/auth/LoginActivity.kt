@@ -69,7 +69,7 @@ class LoginActivity: AppCompatActivity() {
         viewModel.loginResponse.observe(this) {
             if (it == null) return@observe
 
-            if (it.isNew) {
+            if (it.isNew) { // 새로운 유저
                 // 권한 확인 화면으로 이동
                 startActivity(Intent(this, PermissionActivity::class.java))
                 finish()
