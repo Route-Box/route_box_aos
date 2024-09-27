@@ -17,5 +17,5 @@ object Constants {
     const val STANDARD_TERM_URL = "https://trapezoidal-success-ff6.notion.site/10845c063330803d8e96e6d58739a77b" // 필수 이용 약관
     const val POLICY_TERM_URL = "https://trapezoidal-success-ff6.notion.site/10845c063330800488e9e377850fe8e0" // 개인정보 수집 이용 동의
     const val LOCATION_TERM_URL = "https://trapezoidal-success-ff6.notion.site/f9b6a0a31d8b4334900137aa9cb023f3" // 위치 기반 서비스 이용 약관
-    const val ALERT_TERM_URL = "" // 알림 약관 동의
+    const val ALERT_TERM_URL = "https://trapezoidal-success-ff6.notion.site/10e45c0633308051a8e2f742f563ad13" // 알림 약관 동의
 }

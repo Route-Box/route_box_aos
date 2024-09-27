@@ -32,16 +32,19 @@
 
         <LinearLayout
             android:id="@+id/permission_ll"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
+            android:layout_marginEnd="22dp"
             android:orientation="vertical"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toBottomOf="@id/permission_title_ll"
-            app:layout_constraintStart_toStartOf="@id/permission_title_ll">
+            app:layout_constraintStart_toStartOf="@id/permission_title_ll"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <!-- 위치 정보 -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 
                 <ImageView
@@ -79,7 +82,7 @@
 
             <!-- 위치 기록 -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp">
 
@@ -92,12 +95,13 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:orientation="vertical"
                     app:layout_constraintStart_toEndOf="@id/permission_location_record_iv"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <TextView
                         android:layout_width="wrap_content"

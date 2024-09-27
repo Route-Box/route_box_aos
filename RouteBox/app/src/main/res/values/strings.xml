@@ -37,8 +37,8 @@
     <string name="permission_description">권한을 허용하지 않아도 서비스를 이용할 수 있어요</string>
     <string name="permission_location_info_title">위치 정보</string>
     <string name="permission_location_info_purpose">근처 편의시설 안내</string>
-    <string name="permission_location_record">위치 기록</string>
-    <string name="permission_location_record_purpose">루트 작성시 위치를 기록하여 루트 생성</string>
+    <string name="permission_location_record">실시간 위치 정보</string>
+    <string name="permission_location_record_purpose">루트 기록 시 이동 경로를 실시간으로 트래킹하기 위해\n백그라운드에서 위치 정보 사용</string>
     <string name="permission_alert">알림</string>
     <string name="permission_alert_purpose">기록과 혜택 및 이벤트 안내</string>
 
