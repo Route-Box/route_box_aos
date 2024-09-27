@@ -30,6 +30,16 @@
     <string name="signup_term_2">(필수)개인정보수집이용동의</string>
     <string name="signup_complete_btn">루트박스 시작하기</string>
 
+    <!-- 권한 허용 -->
+    <string name="permission_title">편리한 루트박스의 이용을 위해\n아래 접근 권한의 허용이 필요합니다</string>
+    <string name="permission_description">권한을 허용하지 않아도 서비스를 이용할 수 있어요</string>
+    <string name="permission_location_info_title">위치 정보</string>
+    <string name="permission_location_info_purpose">근처 편의시설 안내</string>
+    <string name="permission_location_record">위치 기록</string>
+    <string name="permission_location_record_purpose">루트 작성시 위치를 기록하여 루트 생성</string>
+    <string name="permission_alert">알림</string>
+    <string name="permission_alert_purpose">기록과 혜택 및 이벤트 안내</string>
+
     <!-- 홈 -->
     <!-- 루트 미리보기 -->
     <string name="route_style_preview">여행 루트 스타일 맛보기</string>
@@ -184,6 +194,7 @@
     <!-- 공통 -->
     <string name="next_btn">다음</string>
     <string name="done_btn">완료</string>
+    <string name="confirm_btn">확인</string>
     <string name="report">신고하기</string>
     <string name="edit">수정하기</string>
     <string name="delete">삭제하기</string>

@@ -2,7 +2,6 @@ package com.daval.routebox.presentation.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -71,8 +70,9 @@ class LoginActivity: AppCompatActivity() {
             if (it == null) return@observe
 
             if (it.isNew) {
-                // 회원가입 화면으로 이동
-                startActivity(Intent(this, SignupActivity::class.java))
+                // 권한 확인 화면으로 이동
+                startActivity(Intent(this, PermissionActivity::class.java))
+                finish()
                 return@observe
             }
             if (it.accessToken.token.isNotEmpty()) {
