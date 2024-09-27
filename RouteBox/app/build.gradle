@@ -114,6 +114,6 @@ dependencies {
     // SharedPreferences Listener
     implementation 'androidx.preference:preference:1.2.1'
 
-    // Alert Permission
+    // Permission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 }

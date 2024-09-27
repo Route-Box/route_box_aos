@@ -2,12 +2,11 @@ package com.daval.routebox.presentation.ui.auth
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityPermissionBinding
@@ -27,6 +26,7 @@ class PermissionActivity: AppCompatActivity() {
         initClickListener()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onStart() {
         super.onStart()
 
@@ -41,46 +41,20 @@ class PermissionActivity: AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun checkPermissions() {
-        val permissionsToRequest =mutableListOf<String>()
-
-        // 체크해야 하는 권한 목록 확인
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-
-        if (permissionsToRequest.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                this,
-                permissionsToRequest.toTypedArray(),
-                PERMISSION_REQUEST_CODE
-            )
-        } else {
-            return
-        }
-
-        checkAlertPermission()
-    }
-
-    private fun checkAlertPermission() {
         TedPermission.create()
-            .setPermissions("android.permission.POST_NOTIFICATIONS")
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
-                    Log.i("AlertPermission", "permission granted")
+                    Log.i("TedPermission", "permission granted")
                 }
 
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Log.i("AlertPermission", "permission denied ..")
+                    Log.i("TedPermission", "permission denied ..")
                 }
             })
+            .setDeniedMessage("권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]") // 권한이 없을 경우 띄울 문구
+            .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.POST_NOTIFICATIONS) // 체크할 권한 확인
             .check()
-    }
-
-    companion object {
-        const val PERMISSION_REQUEST_CODE= 1001
     }
 }
