@@ -101,6 +101,9 @@ class RouteWriteViewModel @Inject constructor(
     private val _weatherRegion = MutableLiveData<String>()
     val weatherRegion: LiveData<String> = _weatherRegion
 
+    private val _weatherDepth3Region = MutableLiveData<String>()
+    val weatherDepth3Region: LiveData<String> = _weatherDepth3Region
+
     private val _weatherMainData = MutableLiveData<WeatherData>()
     val weatherMainData: LiveData<WeatherData> = _weatherMainData
 
@@ -341,6 +344,7 @@ class RouteWriteViewModel @Inject constructor(
                 latitude, longitude
             )
             _weatherRegion.value = "${response.documents[0].region_1depth_name} ${response.documents[0].region_2depth_name} ${response.documents[0].region_3depth_name}"
+            _weatherDepth3Region.value = response.documents[0].region_3depth_name
         }
     }
 }

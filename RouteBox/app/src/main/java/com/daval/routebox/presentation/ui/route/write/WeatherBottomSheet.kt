@@ -39,7 +39,6 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
     private lateinit var date: String
     private lateinit var time: String
     private lateinit var viewDate: String
-    private lateinit var mainWeather: WeatherData
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
@@ -62,6 +61,7 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
 
         binding.apply {
             viewModel = this@WeatherBottomSheet.writeViewModel
+            lifecycleOwner = this@WeatherBottomSheet
             date = this@WeatherBottomSheet.viewDate
             time = this@WeatherBottomSheet.time
         }
@@ -82,15 +82,13 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
         val thread = WeatherThread()
         thread.start()
         thread.join()
-
-        writeViewModel.setWeatherMainData(mainWeather)
     }
 
     // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
     inner class WeatherThread: Thread() {
         override fun run() {
             // 현재 시각에 따라 넘겨야 하는 데이터들 개수
-            var skipRows = if (time.substring(0, 2).toInt() < 5) (time.substring(0, 2).toInt() + 24 - 5) else time.toInt() - 5
+            var skipRows = if (time.substring(0, 2).toInt() < 5) (time.substring(0, 2).toInt() + 24 - 5 + 1) else time.substring(0, 2).toInt() - 5 + 1
             var numOfRows = WeatherTypeNumber * (WeatherRequestTime + skipRows)// 24시간 동안의 결과만 받으면 되기 때문에 해당 개수로 지정
             var xy = WeatherCoordinatorConverter.changeCoordinate(latitude.toDouble(), longitude.toDouble())
             val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=$OPEN_API_SERVICE_KEY&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=${date}&base_time=0500&nx=${xy.first}&ny=${xy.second}"
@@ -134,11 +132,12 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
                     weatherType = returnWeatherType("PTY", tempResult[2].toInt())
                 }
 
-                if (i == 0) mainWeather = WeatherData(
-                    tempResult[0], tempResult[1], tempResult[2],
-                    item.getJSONObject((i + skipRows) * 12).getString("fcstDate"),
-                    item.getJSONObject((i + skipRows) * 12).getString("fcstTime").toString().substring(0, 2), weatherType
-                ) else result.add(WeatherData(
+//                if (i == 0) mainWeather = WeatherData(
+//                    tempResult[0], tempResult[1], tempResult[2],
+//                    item.getJSONObject((i + skipRows) * 12).getString("fcstDate"),
+//                    item.getJSONObject((i + skipRows) * 12).getString("fcstTime").toString().substring(0, 2), weatherType
+//                ) else
+                result.add(WeatherData(
                     tempResult[0], tempResult[1], tempResult[2],
                     item.getJSONObject((i + skipRows) * 12).getString("fcstDate"),
                     item.getJSONObject((i + skipRows) * 12).getString("fcstTime").toString().substring(0, 2), weatherType
@@ -166,4 +165,4 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
 // 날씨 API에서 한 시간 기준으로 받아오는 데이터 결과의 개수 ex) 온도, 시간, 위치, ...
 const val WeatherTypeNumber = 12
 // 화면에 나타내기 위해 데이터를 받아야 하는 시간
-const val WeatherRequestTime = 8
+const val WeatherRequestTime = 7

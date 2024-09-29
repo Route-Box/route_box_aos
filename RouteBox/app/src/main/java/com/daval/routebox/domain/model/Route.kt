@@ -328,8 +328,8 @@ data class WeatherData(
     val tmp: String,
     val sky: String,
     val pty: String,
-    val fcstDate: String,
-    val fcstTime: String,
+    val fcstDate: String?,
+    val fcstTime: String?,
     val weatherType: WeatherType
 )
 

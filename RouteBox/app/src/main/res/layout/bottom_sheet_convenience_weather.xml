@@ -62,7 +62,7 @@
             android:layout_height="74dp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="22dp"
-            android:src="@{viewModel.weatherMainData.weatherType.weatherImg}"
+            app:imageSrc="@{viewModel.weatherMainData.weatherType.weatherImg}"
             app:layout_constraintTop_toBottomOf="@id/region_tv"
             app:layout_constraintStart_toStartOf="parent" />
 
