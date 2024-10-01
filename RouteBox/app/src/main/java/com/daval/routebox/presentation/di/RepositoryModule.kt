@@ -5,16 +5,19 @@ import androidx.annotation.RequiresApi
 import com.daval.routebox.data.datasource.RemoteAuthDataSource
 import com.daval.routebox.data.datasource.RemoteOpenApiDataSource
 import com.daval.routebox.data.datasource.RemoteRouteDataSource
+import com.daval.routebox.data.datasource.RemoteSeekDataSource
 import com.daval.routebox.data.datasource.RemoteUserDataSource
 import com.daval.routebox.data.repositoriyImpl.AuthRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.ReportRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.RouteRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.OpenApiRepositoryImpl
+import com.daval.routebox.data.repositoriyImpl.SeekRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.UserRepositoryImpl
 import com.daval.routebox.domain.repositories.AuthRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.domain.repositories.ReportRepository
 import com.daval.routebox.domain.repositories.RouteRepository
+import com.daval.routebox.domain.repositories.SeekRepository
 import com.daval.routebox.domain.repositories.UserRepository
 import com.davl.routebox.data.datasource.RemoteReportDataSource
 import dagger.Module
@@ -43,6 +46,12 @@ object RepositoryModule {
     fun provideRouteRepository(
         remoteRouteDataSource: RemoteRouteDataSource,
     ): RouteRepository = RouteRepositoryImpl(remoteRouteDataSource)
+
+    /** 탐색 */
+    @Provides
+    fun provideSeekRepository(
+        remoteSeekDataSource: RemoteSeekDataSource
+    ): SeekRepository = SeekRepositoryImpl(remoteSeekDataSource)
 
     /** 신고 */
     @Provides

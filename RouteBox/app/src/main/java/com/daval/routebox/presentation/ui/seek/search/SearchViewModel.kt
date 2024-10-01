@@ -5,9 +5,18 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.routebox.R
+import androidx.lifecycle.viewModelScope
+import com.daval.routebox.R
+import com.daval.routebox.domain.model.SearchRoute
+import com.daval.routebox.domain.repositories.SeekRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel: ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    val repository: SeekRepository
+): ViewModel() {
     private val _routeSearchKeyWord = MutableLiveData<String>("") // 타이틀 입력용
     val routeSearchKeyWord: LiveData<String> = _routeSearchKeyWord
 
@@ -15,6 +24,9 @@ class SearchViewModel: ViewModel() {
 
     private val _resentSearchWordSet = MutableLiveData<MutableSet<String>?>(linkedSetOf())
     val resentSearchWordSet: LiveData<MutableSet<String>?> = _resentSearchWordSet
+
+    private val _searchResultRoutes = MutableLiveData<List<SearchRoute>>()
+    val searchResultRoutes: LiveData<List<SearchRoute>> = _searchResultRoutes
 
     private val _selectedOrderOptionMenuId = MutableLiveData<Int>(0) // 선택된 검색 결과 정렬 메뉴 id
     val selectedOrderMenuId: LiveData<Int> = _selectedOrderOptionMenuId
@@ -24,7 +36,12 @@ class SearchViewModel: ViewModel() {
         Log.d("SearchViewModel", "검색어: ${searchWord.value}")
         // 검색 결과 수정
         _routeSearchKeyWord.value = searchWord.value
-        //TODO: 서버에서 받아온 루트 검색 결과로 업데이트
+        viewModelScope.launch {
+            _searchResultRoutes.value = repository.searchRoute(
+                searchWord = searchWord.value!!,
+                sortBy =  OrderOptionType.ORDER_RECENT.serverEnum
+            )
+        }
 
         // 최근 검색어에 해당 검색어 저장
         updateRecentSearchWord(searchWord.value!!, SearchType.ADD)
@@ -94,11 +111,11 @@ enum class SearchType {
 }
 
 // 정렬 기준 타입
-enum class OrderOptionType(val id: Int, val title: Int) {
-    ORDER_RECENT(0, R.string.search_order_menu_recent), // 최신 순
-    ORDER_OLD(1, R.string.search_order_menu_old), // 오래된 순
-    ORDER_POPULARITY(2, R.string.search_order_menu_popularity), // 인기 순
-    ORDER_COMMENT(3, R.string.search_order_menu_many_comment); // 댓글 많은 순
+enum class OrderOptionType(val id: Int, val serverEnum: String, val stringResource: Int) {
+    ORDER_RECENT(0, "NEWEST", R.string.search_order_menu_recent), // 최신 순
+    ORDER_OLD(1, "OLDEST", R.string.search_order_menu_old), // 오래된 순
+    ORDER_POPULARITY(2, "POPULAR", R.string.search_order_menu_popularity), // 인기 순
+    ORDER_COMMENT(3, "COMMENTS", R.string.search_order_menu_many_comment); // 댓글 많은 순
 
     companion object {
         @JvmStatic

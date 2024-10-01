@@ -17,6 +17,7 @@ class SeekRepositoryImpl @Inject constructor(
         routeStyle: ArrayList<String>?,
         transportation: ArrayList<String>?
     ): List<SearchRoute> {
-        return  remoteSeekDataSource.searchRoute(searchWord, sortBy, withWhom, numberOfPeople, numberOfDays, routeStyle, transportation)
+        return remoteSeekDataSource.searchRoute(searchWord, sortBy, withWhom, numberOfPeople, numberOfDays, routeStyle, transportation)
+            .routes
     }
 }

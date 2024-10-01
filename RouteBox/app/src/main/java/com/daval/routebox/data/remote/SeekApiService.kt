@@ -1,6 +1,6 @@
 package com.daval.routebox.data.remote
 
-import com.daval.routebox.domain.model.SearchRoute
+import com.daval.routebox.domain.model.SearchRouteResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -17,5 +17,5 @@ interface SeekApiService {
         @Query("numberOfDays") numberOfDays: ArrayList<String>?,
         @Query("style") routeStyle: ArrayList<String>?,
         @Query("transportation") transportation: ArrayList<String>?
-    ): List<SearchRoute>
+    ): SearchRouteResponse
 }

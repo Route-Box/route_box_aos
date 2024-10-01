@@ -19,6 +19,10 @@ data class OwnPoint(
     var point: Int
 )
 
+data class SearchRouteResponse(
+    val routes: List<SearchRoute>
+)
+
 data class SearchRoute(
     var routeId: Int,
     var userId: Int,

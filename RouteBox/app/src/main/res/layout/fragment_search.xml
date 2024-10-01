@@ -74,6 +74,7 @@
                 android:background="@color/transparent"
                 android:text="@={viewModel.searchWord}"
                 android:hint="@string/search_hint"
+                android:imeOptions="actionSearch"
                 android:textColorHint="@color/gray4"
                 style="@style/body_r_m"/>
             
@@ -195,7 +196,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:text="@{OrderOptionType.findOrderOptionById(viewModel.selectedOrderMenuId).title}"
+                    android:text="@{OrderOptionType.findOrderOptionById(viewModel.selectedOrderMenuId).stringResource}"
                     android:drawablePadding="4dp"
                     android:drawableEnd="@drawable/ic_arrow_down"
                     style="@style/body_r_s"/>

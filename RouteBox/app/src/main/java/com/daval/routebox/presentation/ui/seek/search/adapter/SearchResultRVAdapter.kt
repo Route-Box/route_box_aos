@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.databinding.ItemSearchResultBinding
+import com.daval.routebox.domain.model.SearchRoute
 
 class SearchResultRVAdapter: RecyclerView.Adapter<SearchResultRVAdapter.ViewHolder>(){
 
-    private var routeList = ArrayList<String>()
+    private var routeList = ArrayList<SearchRoute>()
     private lateinit var mItemClickListener: MyItemClickListener
 
     fun setRouteClickListener(itemClickListener: MyItemClickListener) {
@@ -16,7 +17,7 @@ class SearchResultRVAdapter: RecyclerView.Adapter<SearchResultRVAdapter.ViewHold
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addRoute(routeList: ArrayList<String>) {
+    fun addRoute(routeList: ArrayList<SearchRoute>) {
         this.routeList = routeList
         notifyDataSetChanged()
     }
@@ -45,9 +46,8 @@ class SearchResultRVAdapter: RecyclerView.Adapter<SearchResultRVAdapter.ViewHold
     override fun getItemCount(): Int = routeList.size
 
     inner class ViewHolder(val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
-        //TODO: 실제 Route 데이터로 변경
-        fun bind(route: String) {
-
+        fun bind(route: SearchRoute) {
+            binding.route = route
         }
     }
 }

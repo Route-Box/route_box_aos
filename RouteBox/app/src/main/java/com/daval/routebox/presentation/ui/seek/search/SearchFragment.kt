@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentSearchBinding
+import com.daval.routebox.domain.model.SearchRoute
 import com.daval.routebox.presentation.ui.RoutePreviewDetailActivity
 import com.daval.routebox.presentation.ui.seek.search.adapter.RecentSearchWordRVAdapter
 import com.daval.routebox.presentation.ui.seek.search.adapter.SearchResultRVAdapter
@@ -22,7 +23,9 @@ import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.A
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
 
@@ -115,7 +118,6 @@ class SearchFragment: Fragment() {
             adapter = searchResultAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        searchResultAdapter.addRoute(arrayListOf("1", "2", "3", "4", "5")) //TODO: 서버의 루트 데이터로 변경
         searchResultAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int) {
                 val intent = Intent(activity, RoutePreviewDetailActivity::class.java)
@@ -125,6 +127,11 @@ class SearchFragment: Fragment() {
     }
 
     private fun initObserve() {
+        // 검색 결과 관측
+        viewModel.searchResultRoutes.observe(viewLifecycleOwner) { searchList ->
+            searchResultAdapter.addRoute(searchList as ArrayList<SearchRoute>)
+        }
+
         // 최근 검색어 관측
         viewModel.resentSearchWordSet.observe(viewLifecycleOwner) { set ->
             Log.d("SearchDetailFrag", "최근 검색어: $set")
