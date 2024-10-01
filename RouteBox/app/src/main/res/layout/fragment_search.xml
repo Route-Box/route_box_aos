@@ -111,7 +111,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 style="@style/body_b_m"/>
 
-            <!-- 최근 검색어가 있을 때 -->
+            <!-- 최근 검색어가 없을 때 -->
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/search_searchword_empty_tv"
                 android:layout_width="wrap_content"
@@ -128,16 +128,15 @@
                 app:layout_constraintVertical_bias="0.35"
                 style="@style/body_r_s"/>
 
-            <!-- 최근 검색어가 없을 때 -->
+            <!-- 최근 검색어가 있을 때 -->
             <LinearLayout
                 android:id="@+id/search_recent_searchword_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 android:visibility="@{viewModel.resentSearchWordSet.size() == 0 ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/search_recent_searchword_title_tv">
+                app:layout_constraintTop_toTopOf="@id/search_recent_searchword_title_tv">
 
                 <TextView
                     android:id="@+id/search_clear_all_recent_searchword_tv"
