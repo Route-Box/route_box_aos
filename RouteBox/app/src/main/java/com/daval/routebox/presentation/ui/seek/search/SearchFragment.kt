@@ -7,7 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -54,8 +58,25 @@ class SearchFragment: Fragment() {
     }
 
     private fun initClickListeners() {
+        // 뒤로가기
         binding.searchBackIv.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        // 키보드 검색 버튼
+        binding.searchEt.setOnEditorActionListener { it, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) { // 검색 버튼 클릭
+                searchRoute() // 루트 검색 진행
+                it.clearFocus() // EditText 포커스 해제
+                true
+            } else {
+                false
+            }
+        }
+
+        // 검색 아이콘
+        binding.searchSearchIv.setOnClickListener {
+            searchRoute() // 루트 검색 진행
         }
 
         // 정렬 기준
@@ -126,6 +147,11 @@ class SearchFragment: Fragment() {
         })
     }
 
+    private fun searchRoute() {
+        viewModel.inputRouteSearchWord() // 루트 검색 진행
+        hideKeyboard() // 키보드 내리기
+    }
+
     private fun initObserve() {
         // 검색 결과 관측
         viewModel.searchResultRoutes.observe(viewLifecycleOwner) { searchList ->
@@ -169,5 +195,10 @@ class SearchFragment: Fragment() {
             }
         }
         popupMenu.show()
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEt.windowToken, 0)
     }
 }

@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor(
     val selectedOrderMenuId: LiveData<Int> = _selectedOrderOptionMenuId
 
     // 루트 검색
-    fun inputRouteSearchWord(view: View) {
+    fun inputRouteSearchWord() {
         Log.d("SearchViewModel", "검색어: ${searchWord.value}")
         // 검색 결과 수정
         _routeSearchKeyWord.value = searchWord.value
