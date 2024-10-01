@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -95,12 +96,14 @@ class SearchFragment: Fragment() {
         }
     }
 
+    // 저장소로부터 최근 검색어 불러오기
     private fun initRecentSearchWords() {
         val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
         Log.d("SearchDetailFrag", "최근 검색어 가져오기: ${sharedPreferencesHelper.getRecentSearchWords()}")
         viewModel.setRecentSearchWordSet(sharedPreferencesHelper.getRecentSearchWords())
     }
 
+    // 저장소에 변경된 최근 검색어 저장하기
     private fun saveRecentSearchWords() {
         // sharedPreferences에 최근 검색어 저장
         val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
@@ -119,7 +122,9 @@ class SearchFragment: Fragment() {
         searchWordAdapter.setRecentSearchWordClickListener(object : RecentSearchWordRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int, word: String) {
                 // 검색어로 다시 검색
-                viewModel.setCurrentSearchWord(word)
+                viewModel.setCurrentSearchWord(word) // 검색 제목 설정
+                searchRoute() // 검색 API 호출
+
                 // 해당 검색어를 가장 최근 검색어로 이동
                 viewModel.updateRecentSearchWord(word, SearchType.REBROWSING)
             }
@@ -147,6 +152,10 @@ class SearchFragment: Fragment() {
     }
 
     private fun searchRoute() {
+        if (viewModel.searchWord.value.isNullOrBlank()) { // 검색 결과가 없을 경우 리턴
+            Toast.makeText(requireActivity(), "검색어를 입력해 주세요", Toast.LENGTH_SHORT).show()
+            return
+        }
         viewModel.inputRouteSearchWord() // 루트 검색 진행
         hideKeyboard() // 키보드 내리기
     }
@@ -159,7 +168,7 @@ class SearchFragment: Fragment() {
 
         // 최근 검색어 관측
         viewModel.resentSearchWordSet.observe(viewLifecycleOwner) { set ->
-            Log.d("SearchDetailFrag", "최근 검색어: $set")
+            Log.d("SearchDetailFrag", "최근 검색어 관측: $set")
             if (!set.isNullOrEmpty()) {
                 setSearchWordAdapter()
                 // 어댑터에 최근 검색어 추가
