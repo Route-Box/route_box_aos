@@ -9,9 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.PopupMenu
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -19,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentSearchBinding
 import com.daval.routebox.domain.model.SearchRoute
-import com.daval.routebox.presentation.ui.RoutePreviewDetailActivity
+import com.daval.routebox.presentation.ui.common.routePreview.RoutePreviewDetailActivity
 import com.daval.routebox.presentation.ui.seek.search.adapter.RecentSearchWordRVAdapter
 import com.daval.routebox.presentation.ui.seek.search.adapter.SearchResultRVAdapter
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
@@ -141,8 +139,9 @@ class SearchFragment: Fragment() {
         }
         searchResultAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int) {
-                val intent = Intent(activity, RoutePreviewDetailActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(activity, RoutePreviewDetailActivity::class.java)
+                    .putExtra("routeId", viewModel.searchResultRoutes.value!![position].routeId)
+                )
             }
         })
     }
