@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -57,6 +58,11 @@ class SearchFragment: Fragment() {
     }
 
     private fun initClickListeners() {
+        // 안드로이드 기본 뒤로가기
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack()
+        }
+
         // 뒤로가기
         binding.searchBackIv.setOnClickListener {
             findNavController().popBackStack()
