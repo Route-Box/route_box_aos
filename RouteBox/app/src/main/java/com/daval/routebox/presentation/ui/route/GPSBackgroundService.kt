@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -59,8 +60,8 @@ class GPSBackgroundService(): Service() {
 
         val locationRequest = LocationRequest.create()
         locationRequest.apply {
-            interval = 60000 // 앱에서 선호하는 위치 업데이트 수신 간격
-            fastestInterval = 60000 // 앱이 위치를 업데이트 할 수 있는 가장 빠른 간격
+            interval = 5000 // 앱에서 선호하는 위치 업데이트 수신 간격
+            fastestInterval = 5000 // 앱이 위치를 업데이트 할 수 있는 가장 빠른 간격
         }
 
         // 내부는 Network Provider가 정확도가 높고, 외부는 GPS Provider가 정확도가 더 높음!
@@ -112,19 +113,23 @@ class GPSBackgroundService(): Service() {
             if (locationResult.lastLocation != null) {
                 val latitude = locationResult.lastLocation!!.latitude // + Random.nextDouble()
                 val longitude = locationResult.lastLocation!!.longitude // + Random.nextDouble()
-                
+
                 // 백그라운드에서 저장된 점인지 아닌지 구분
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-                if (sharedPreferencesHelper.getIsBackground()) {
+                // 만약 점을 기록하고 있다면, 점들을 바로바로 서버로 전송
+                if (sharedPreferencesHelper.getRouteTracking()) {
                     // 백그라운드에서 작동되고 있다면, list 형태로 점들을 저장
-                    if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
-                        var dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
-                        dotsList?.add(LatLng.from(latitude, longitude))
-                        sharedPreferencesHelper.setBackgroundCoordinate(dotsList!!)
-                    } else {
-                        sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
+                    if (sharedPreferencesHelper.getIsBackground()) {
+                        if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
+                            var dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
+                            dotsList?.add(LatLng.from(latitude, longitude))
+                            sharedPreferencesHelper.setBackgroundCoordinate(dotsList!!)
+                        } else {
+                            sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
+                        }
                     }
                 }
+                // 점의 기록 여부와 상관없이 지도에 현재 위치를 띄우기 위해 아래 코드 추가
                 sharedPreferencesHelper.setLocationCoordinate(arrayListOf(latitude, longitude))
             }
         }

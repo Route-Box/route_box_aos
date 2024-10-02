@@ -3,7 +3,7 @@ package com.daval.routebox.domain.model
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.daval.routebox.presentation.ui.route.write.WeatherType
+import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import java.time.LocalDateTime
 
 data class RoutePreviewResult(

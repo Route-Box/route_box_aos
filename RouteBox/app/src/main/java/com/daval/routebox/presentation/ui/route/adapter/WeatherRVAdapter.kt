@@ -27,7 +27,6 @@ class WeatherRVAdapter(
 
     inner class ViewHolder(val binding: ItemWeatherBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(weather: WeatherData) {
-            Log.d("ROUTE-TEST", "weather = $weather")
             binding.weather = weather
         }
     }

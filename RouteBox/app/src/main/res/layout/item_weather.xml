@@ -42,9 +42,11 @@
 
         <ImageView
             android:id="@+id/weather_iv"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            android:padding="2dp"
+            app:layout_constraintDimensionRatio="1:1"
             app:imageSrc="@{weather.weatherType.weatherImg}"
             app:layout_constraintTop_toBottomOf="@id/tomorrow_cv"
             app:layout_constraintStart_toStartOf="@id/tomorrow_cv"

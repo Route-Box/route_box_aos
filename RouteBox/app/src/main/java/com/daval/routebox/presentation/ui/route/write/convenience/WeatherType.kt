@@ -1,4 +1,4 @@
-package com.daval.routebox.presentation.ui.route.write
+package com.daval.routebox.presentation.ui.route.write.convenience
 
 import com.daval.routebox.R
 

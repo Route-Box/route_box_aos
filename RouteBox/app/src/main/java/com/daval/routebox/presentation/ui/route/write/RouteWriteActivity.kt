@@ -164,18 +164,18 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
             firstObserve = false
 
             if (viewModel.isLiveTracking.value == true) {
-                Intent(applicationContext, GPSBackgroundService::class.java).apply {
-                    action = GPSBackgroundService.SERVICE_START
-                    startService(this)
-                    sharedPreferencesHelper.registerPreferences(this@RouteWriteActivity)
-                }
+                gpsStart()
             } else {
-                Intent(applicationContext, GPSBackgroundService::class.java).apply {
-                    action = GPSBackgroundService.SERVICE_STOP
-                    startService(this)
-                    sharedPreferencesHelper.unregisterPreferences(this@RouteWriteActivity)
-                }
+                gpsStop()
+                addCurrentCoordinate()
             }
+        }
+    }
+
+    // 현재 위치 나타내기 위한 코드
+    private fun addCurrentCoordinate() {
+        if (viewModel.isLiveTracking.value == false) {
+            gpsStart()
         }
     }
 
@@ -187,8 +187,32 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
 
             if (latitude != null && longitude != null) {
                 writeViewModel.setCurrentCoordinate(LatLng.from(latitude, longitude))
-                writeViewModel.addDot(latitude, longitude)
             }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // 만약 기록하기 상태가 아니라면 종료될 때 GPSService 정지
+        if (viewModel.isLiveTracking.value == false) {
+            gpsStop()
+        }
+    }
+
+    private fun gpsStart() {
+        Intent(applicationContext, GPSBackgroundService::class.java).apply {
+            action = GPSBackgroundService.SERVICE_START
+            startService(this)
+            sharedPreferencesHelper.registerPreferences(this@RouteWriteActivity)
+        }
+    }
+
+    private fun gpsStop() {
+        Intent(applicationContext, GPSBackgroundService::class.java).apply {
+            action = GPSBackgroundService.SERVICE_STOP
+            startService(this)
+            stopService(this)
+            sharedPreferencesHelper.unregisterPreferences(this@RouteWriteActivity)
         }
     }
 }

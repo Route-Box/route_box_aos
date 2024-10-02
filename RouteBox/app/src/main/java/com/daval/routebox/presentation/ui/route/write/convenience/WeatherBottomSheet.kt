@@ -1,4 +1,4 @@
-package com.daval.routebox.presentation.ui.route.write
+package com.daval.routebox.presentation.ui.route.write.convenience
 
 import android.app.Dialog
 import android.os.Build
@@ -15,6 +15,7 @@ import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.daval.routebox.presentation.ui.route.adapter.WeatherRVAdapter
+import com.daval.routebox.presentation.ui.route.write.RouteConvenienceViewModel
 import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -31,7 +32,7 @@ import java.time.format.DateTimeFormatter
 class WeatherBottomSheet: BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetConvenienceWeatherBinding
-    private val writeViewModel: RouteWriteViewModel by activityViewModels()
+    private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
     private lateinit var weatherRVAdapter: WeatherRVAdapter
     private var weatherList = arrayListOf<WeatherData>()
     private lateinit var latitude: String
@@ -60,7 +61,7 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
         viewDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
 
         binding.apply {
-            viewModel = this@WeatherBottomSheet.writeViewModel
+            viewModel = this@WeatherBottomSheet.convenienceViewModel
             lifecycleOwner = this@WeatherBottomSheet
             date = this@WeatherBottomSheet.viewDate
             time = this@WeatherBottomSheet.time
@@ -73,7 +74,7 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
         setAdapter()
         callWeatherApi()
         initObserve()
-        writeViewModel.getRegionCode(latitude, longitude)
+        convenienceViewModel.getRegionCode(latitude, longitude)
 
         return binding.root
     }
@@ -132,11 +133,6 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
                     weatherType = returnWeatherType("PTY", tempResult[2].toInt())
                 }
 
-//                if (i == 0) mainWeather = WeatherData(
-//                    tempResult[0], tempResult[1], tempResult[2],
-//                    item.getJSONObject((i + skipRows) * 12).getString("fcstDate"),
-//                    item.getJSONObject((i + skipRows) * 12).getString("fcstTime").toString().substring(0, 2), weatherType
-//                ) else
                 result.add(WeatherData(
                     tempResult[0], tempResult[1], tempResult[2],
                     item.getJSONObject((i + skipRows) * 12).getString("fcstDate"),
@@ -144,7 +140,6 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
                 ))
             }
 
-            Log.d("ROUTE-TEST", "result = $result")
             weatherRVAdapter.addAllItems(result)
         }
     }
@@ -156,8 +151,8 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun initObserve() {
-        writeViewModel.weatherRegion.observe(viewLifecycleOwner) {
-            binding.regionTv.text = writeViewModel.weatherRegion.value
+        convenienceViewModel.weatherRegion.observe(viewLifecycleOwner) {
+            binding.regionTv.text = convenienceViewModel.weatherRegion.value
         }
     }
 }

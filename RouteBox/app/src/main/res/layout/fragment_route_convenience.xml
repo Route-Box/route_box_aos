@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
+        <variable
+            name="convenienceViewModel"
+            type="com.daval.routebox.presentation.ui.route.write.RouteConvenienceViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -159,7 +162,7 @@
                         android:id="@+id/weather_iv"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        app:imageSrc="@{viewModel.weatherMainData.weatherType.weatherImg}"
+                        app:imageSrc="@{convenienceViewModel.weatherMainData.weatherType.weatherImg}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
@@ -168,7 +171,7 @@
                         android:id="@+id/weather_region_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.weatherDepth3Region}"
+                        android:text="@{convenienceViewModel.weatherDepth3Region}"
                         android:layout_marginStart="12dp"
                         app:layout_constraintStart_toEndOf="@id/weather_iv"
                         app:layout_constraintTop_toTopOf="parent"
@@ -179,7 +182,7 @@
                         android:id="@+id/weather_tmp_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.weatherMainData.tmp}"
+                        android:text="@{convenienceViewModel.weatherMainData.tmp}"
                         android:layout_marginStart="5dp"
                         app:layout_constraintStart_toEndOf="@id/weather_region_tv"
                         app:layout_constraintTop_toTopOf="parent"
@@ -200,7 +203,7 @@
                         android:id="@+id/weather_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.weatherMainData.weatherType.weatherName}"
+                        android:text="@{convenienceViewModel.weatherMainData.weatherType.weatherName}"
                         android:textColor="@color/weather_name_text"
                         android:layout_marginStart="8dp"
                         app:layout_constraintStart_toEndOf="@id/weather_tmp"
@@ -217,7 +220,7 @@
         <include
             android:id="@+id/route_convenience_bottom_sheet"
             layout="@layout/bottom_sheet_convenience_place"
-            android:visibility="@{viewModel.placeCategoryResult.size() == 0 ? View.GONE : View.VISIBLE}"
+            android:visibility="@{convenienceViewModel.placeCategoryResult.size() == 0 ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

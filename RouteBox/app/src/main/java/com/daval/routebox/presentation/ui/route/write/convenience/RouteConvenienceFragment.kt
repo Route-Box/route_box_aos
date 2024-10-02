@@ -1,5 +1,8 @@
-package com.daval.routebox.presentation.ui.route.write
+package com.daval.routebox.presentation.ui.route.write.convenience
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,7 +27,11 @@ import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.daval.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
+import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
+import com.daval.routebox.presentation.ui.route.write.RouteConvenienceViewModel
+import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
+import com.google.android.gms.location.LocationServices
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -46,6 +54,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private lateinit var binding: FragmentRouteConvenienceBinding
     private lateinit var kakaoMap: KakaoMap
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
+    private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
     private var categoryDotImg: Int = -1
     private lateinit var bottomSheetConvenienceDialog: BottomSheetConveniencePlaceBinding
     private var placeList = arrayListOf<ConvenienceCategoryResult>()
@@ -61,6 +70,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
         binding.apply {
             viewModel = this@RouteConvenienceFragment.writeViewModel
+            convenienceViewModel = this@RouteConvenienceFragment.convenienceViewModel
             lifecycleOwner = this@RouteConvenienceFragment
         }
 
@@ -69,7 +79,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         initClickListener()
         initRadioButton()
         setAdapter()
-        initObserve()
 
         return binding.root
     }
@@ -97,6 +106,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
                 initObserve()
                 callWeatherApi()
+//                addCurrentLocationMarker()
             }
 
             override fun getZoomLevel(): Int {
@@ -139,21 +149,17 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             }
         }
 
-        writeViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
-            if (writeViewModel.isCategoryEndPage.value == true) {
-                for (i in 0 until writeViewModel.placeCategoryResult.value!!.size) {
-                    addMarker(writeViewModel.placeCategoryResult.value!![i].latitude.toDouble(), writeViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
+        convenienceViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
+            if (convenienceViewModel.isCategoryEndPage.value == true) {
+                for (i in 0 until convenienceViewModel.placeCategoryResult.value!!.size) {
+                    addMarker(convenienceViewModel.placeCategoryResult.value!![i].latitude.toDouble(), convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
                 }
             }
 
-            if (writeViewModel.placeCategoryResult.value != null && writeViewModel.placeCategoryResult.value!!.size != 0) {
-                placeRVAdapter.resetAllItems(writeViewModel.placeCategoryResult.value!!)
+            if (convenienceViewModel.placeCategoryResult.value != null && convenienceViewModel.placeCategoryResult.value!!.size != 0) {
+                placeRVAdapter.resetAllItems(convenienceViewModel.placeCategoryResult.value!!)
                 binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
             }
-        }
-
-        writeViewModel.weatherMainData.observe(viewLifecycleOwner) {
-
         }
     }
 
@@ -174,7 +180,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         label.show()
     }
 
-    // TODO: 누른 카테고리 장소 띄워주기
     private fun initRadioButton() {
         // 선택한 라디오 버튼 글씨 Bold 처리하기 위한 ChangedListener 부분
         binding.categoryStay.setOnCheckedChangeListener(this)
@@ -185,33 +190,33 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         binding.categoryParking.setOnCheckedChangeListener(this)
 
         binding.categoryRadiogroup.setOnCheckedChangeListener { _, buttonId ->
-            writeViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
+            convenienceViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
             kakaoMap.labelManager?.removeAllLabelLayer()
 
             when (buttonId) {
                 R.id.category_stay -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.AD5)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.AD5)
                     categoryDotImg = R.drawable.ic_marker_stay
                 }
                 R.id.category_tour -> {
-//                    writeViewModel.setTourCategory()
+//                    convenienceViewModel.setTourCategory()
                     categoryDotImg = R.drawable.ic_marker_tour
                     callTourApi()
                 }
                 R.id.category_food -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.FD6)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.FD6)
                     categoryDotImg = R.drawable.ic_marker_food
                 }
                 R.id.category_cafe -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.CE7)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CE7)
                     categoryDotImg = R.drawable.ic_marker_cafe
                 }
                 R.id.category_culture -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.CT1)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CT1)
                     categoryDotImg = R.drawable.ic_marker_culture
                 }
                 R.id.category_parking -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.PK6)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.PK6)
                     categoryDotImg = R.drawable.ic_marker_parking
                 }
             }
@@ -227,7 +232,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
     inner class NetworkThread: Thread() {
         override fun run() {
-            val site = "${OPEN_API_BASE_URL}B551011/KorService1/locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${writeViewModel.cameraPosition.value?.longitude}&mapY=${writeViewModel.cameraPosition.value?.latitude}&radius=${MapCameraRadius}&contentTypeId=12&serviceKey=${OPEN_API_SERVICE_KEY}"
+            val site = "${OPEN_API_BASE_URL}B551011/KorService1/locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${convenienceViewModel.cameraPosition.value?.longitude}&mapY=${convenienceViewModel.cameraPosition.value?.latitude}&radius=$MapCameraRadius&contentTypeId=12&serviceKey=${OPEN_API_SERVICE_KEY}"
             val conn = URL(site).openConnection()
             // 데이터가 들어오는 통로 역할
             val input = conn.getInputStream()
@@ -282,8 +287,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         thread.start()
         thread.join()
 
-        writeViewModel.setWeatherMainData(mainWeather)
-        Log.d("ROUTE-TEST", "mainWeather = $mainWeather")
+        convenienceViewModel.setWeatherMainData(mainWeather)
     }
 
     // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
@@ -356,7 +360,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
     override fun onStop() {
         super.onStop()
-        writeViewModel.setPlaceCategoryResult()
+        convenienceViewModel.setPlaceCategoryResult()
         placeRVAdapter.removeAllItems()
         binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
     }

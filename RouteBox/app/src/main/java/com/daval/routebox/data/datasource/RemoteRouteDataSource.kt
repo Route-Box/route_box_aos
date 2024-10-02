@@ -224,7 +224,7 @@ class RemoteRouteDataSource @Inject constructor(
                 routeApiService.addRouteDot(routeId, routePointRequest)
             }.onSuccess {
                 routeDot = it
-                Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")
+                Log.d("ROUTE-TEST", "addRouteDot Success\nrouteDot = ${routeDot}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "addRouteDot Fail\ne = $e")
             }
