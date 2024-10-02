@@ -2,6 +2,7 @@ package com.daval.routebox.presentation.ui.common.routePreview
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.viewModels
@@ -21,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class RoutePreviewDetailActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityRoutePreviewDetailBinding
+    private lateinit var tagAdapter: RouteTagRVAdapter
 
     private val viewModel: RoutePreviewViewModel by viewModels()
 
@@ -64,22 +66,22 @@ class RoutePreviewDetailActivity: AppCompatActivity() {
         }
     }
 
-    private fun setVPAdapter() {
-        // 루트 이미지
-        if (!viewModel.getImageUrlList().isNullOrEmpty()) {
-            val imageVPAdapter = RouteImageVPAdapter(viewModel.getImageUrlList()!!, viewModel.routePreviewDetail.value!!.nickname)
-            binding.imageVp.adapter = imageVPAdapter
-            binding.imageVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-            binding.imageCi.setViewPager(binding.imageVp)
+    private fun setImageAdapter() {
+        if (viewModel.getImageUrlList().isNullOrEmpty()) return
+        val imageVPAdapter = RouteImageVPAdapter(viewModel.getImageUrlList()!!, viewModel.routePreviewDetail.value!!.nickname)
+        binding.imageVp.apply {
+            adapter = imageVPAdapter
+            orientation = ViewPager2.ORIENTATION_HORIZONTAL
         }
+        binding.imageCi.setViewPager(binding.imageVp)
+    }
 
-        // 루트 태그
-        if (viewModel.getTagList().isNotEmpty()) {
-            val tagRVAdapter = RouteTagRVAdapter(viewModel.getTagList())
-            binding.routePreviewTagRv.apply {
-                adapter = tagRVAdapter
-                layoutManager = FlexboxLayoutManager(binding.root.context)
-            }
+    private fun setTagAdapter() {
+        if (viewModel.tagList.value.isNullOrEmpty()) return
+        tagAdapter = RouteTagRVAdapter(viewModel.tagList.value!!)
+        binding.routePreviewTagRv.apply {
+            adapter = tagAdapter
+            layoutManager = FlexboxLayoutManager(context)
         }
     }
 
@@ -106,8 +108,13 @@ class RoutePreviewDetailActivity: AppCompatActivity() {
             binding.preview = routeData
             binding.multipleImages = (viewModel.getImageUrlList()!!.size > 1)
             if (routeData.routeId > 0) {
-                setVPAdapter()
+                setImageAdapter()
+                setTagAdapter()
             }
+        }
+
+        viewModel.tagList.observe(this) { tagList ->
+            setTagAdapter()
         }
     }
 }
