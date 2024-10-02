@@ -27,8 +27,8 @@ class SearchViewModel @Inject constructor(
     private val _searchResultRoutes = MutableLiveData<List<SearchRoute>>()
     val searchResultRoutes: LiveData<List<SearchRoute>> = _searchResultRoutes
 
-    private val _selectedOrderOptionMenuId = MutableLiveData<Int>(0) // 선택된 검색 결과 정렬 메뉴 id
-    val selectedOrderMenuId: LiveData<Int> = _selectedOrderOptionMenuId
+    private val _selectedOrderOption = MutableLiveData<OrderOptionType>(OrderOptionType.ORDER_RECENT) // 선택된 검색 결과 정렬 옵션
+    val selectedOrderOption: LiveData<OrderOptionType> = _selectedOrderOption
 
     // 루트 검색
     fun inputRouteSearchWord() {
@@ -39,7 +39,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _searchResultRoutes.value = repository.searchRoute(
                 searchWord = searchWord.value!!,
-                sortBy =  OrderOptionType.ORDER_RECENT.serverEnum
+                sortBy = _selectedOrderOption.value!!.serverEnum
             )
         }
 
@@ -93,8 +93,8 @@ class SearchViewModel @Inject constructor(
     }
 
     // 선택한 정렬 옵션 값 업데이트
-    fun updateSelectedOrderOptionMenuId(id: Int) {
-        _selectedOrderOptionMenuId.value = id
+    fun updateSelectedOrderOptionMenuId(type: OrderOptionType) {
+        _selectedOrderOption.value = type
     }
 
     companion object {
@@ -110,16 +110,9 @@ enum class SearchType {
 }
 
 // 정렬 기준 타입
-enum class OrderOptionType(val id: Int, val serverEnum: String, val stringResource: Int) {
-    ORDER_RECENT(0, "NEWEST", R.string.search_order_menu_recent), // 최신 순
-    ORDER_OLD(1, "OLDEST", R.string.search_order_menu_old), // 오래된 순
-    ORDER_POPULARITY(2, "POPULAR", R.string.search_order_menu_popularity), // 인기 순
-    ORDER_COMMENT(3, "COMMENTS", R.string.search_order_menu_many_comment); // 댓글 많은 순
-
-    companion object {
-        @JvmStatic
-        fun findOrderOptionById(id: Int): OrderOptionType { //
-            return entries.find { it.id == id } ?: ORDER_RECENT // 못 찾으면 기본 옵션으로
-        }
-    }
+enum class OrderOptionType(val serverEnum: String, val stringResourceId: Int) {
+    ORDER_RECENT("NEWEST", R.string.search_order_menu_recent), // 최신 순
+    ORDER_OLD("OLDEST", R.string.search_order_menu_old), // 오래된 순
+    ORDER_POPULARITY("POPULAR", R.string.search_order_menu_popularity), // 인기 순
+    ORDER_COMMENT("COMMENTS", R.string.search_order_menu_many_comment); // 댓글 많은 순
 }

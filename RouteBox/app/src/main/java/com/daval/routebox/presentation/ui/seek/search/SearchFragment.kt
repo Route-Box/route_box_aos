@@ -190,19 +190,23 @@ class SearchFragment: Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_order_recent -> { // 최신 순
-                    viewModel.updateSelectedOrderOptionMenuId(0)
+                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_RECENT)
+                    searchRoute()
                     true
                 }
                 R.id.menu_order_old -> { // 오래된 순
-                    viewModel.updateSelectedOrderOptionMenuId(1)
+                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_OLD)
+                    searchRoute()
                     true
                 }
                 R.id.menu_order_popularity -> { // 인기 순
-                    viewModel.updateSelectedOrderOptionMenuId(2)
+                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_POPULARITY)
+                    searchRoute()
                     true
                 }
                 R.id.menu_order_many_comment -> { // 댓글 많은 순
-                    viewModel.updateSelectedOrderOptionMenuId(3)
+                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_COMMENT)
+                    searchRoute()
                     true
                 }
                 else -> { false }
