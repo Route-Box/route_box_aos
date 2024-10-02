@@ -59,6 +59,34 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
             return entries.filter { it.optionName in names }
         }
 
+        // 적용한 옵션들을 필터 유형에 맞게 변환 - 필터 데이터 서버 전송을 위함
+        fun getOptionNamesByTypeAndNames(names: List<String>, type: FilterType): List<Any>? {
+            // type에 해당하는 FilterOption들 중에서 names에 속하는 옵션들을 반환
+            val filteredOptions = entries
+                .filter { it.filterType == type && it.optionName in names }
+
+            // 필터링 결과가 없으면 null 반환
+            if (filteredOptions.isEmpty()) return null
+
+            return if (type == FilterType.HOW_MANY) {
+                // HOW_MANY일 경우 인원수(Int)로 변환하여 반환
+                filteredOptions.mapNotNull { getPersonCountIfHowMany(it) }
+            } else {
+                // 다른 타입의 경우 optionName(String)으로 반환
+                filteredOptions.map { it.optionName }
+            }
+        }
+
+        // type이 '몇 명과'라면 예외적으로 정수 인원수 반환
+        private fun getPersonCountIfHowMany(option: FilterOption): Int? {
+            return if (option.filterType == FilterType.HOW_MANY) {
+                // optionName에서 첫 번째 문자가 숫자인 경우 변환
+                option.optionName.firstOrNull()?.digitToIntOrNull()
+            } else {
+                null
+            }
+        }
+
         // 필터 유형 순서에 따라 정렬된 필터 옵션 리스트 반환
         fun getOptionsSortedByFilterType(): List<List<FilterOption>> {
             return FilterType.entries.sortedBy { it.order }.map { type ->

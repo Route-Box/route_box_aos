@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek.search
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -37,6 +39,19 @@ class SearchFragment: Fragment() {
     private lateinit var searchResultAdapter: SearchResultRVAdapter
 
     private val viewModel: SearchViewModel by viewModels()
+
+    private val getResultText = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val returnTag = result.data?.getStringArrayListExtra(TAG_KEY)
+            Log.e("SearchFrag", "return tagList: $returnTag")
+            if (returnTag == null) return@registerForActivityResult
+            viewModel.updateSelectedTagList(returnTag.toList())
+            // 필터링 적용하고 돌아오면 다시 검색 진행
+            searchRoute()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,8 +106,22 @@ class SearchFragment: Fragment() {
 
         // 필터 버튼 클릭
         binding.searchFilterIv.setOnClickListener {
-            //필터 화면으로 이동
-            startActivity(Intent(requireActivity(), FilterActivity::class.java))
+            // 필터 화면으로 이동
+            val intent = Intent(requireActivity(), FilterActivity::class.java)
+            intent.apply {
+                putExtra("searchResultNum", viewModel.searchResultRoutes.value!!.size) // 검색 결과 개수
+                putExtra("searchWord", viewModel.searchWord.value) // 입력한 검색어
+                viewModel.selectedFilterTagList.value?.let { tagList ->
+                    val tagArrayList = if (tagList is ArrayList) {
+                        tagList
+                    } else {
+                        ArrayList(tagList) // List를 ArrayList로 변환
+                    }
+                    Log.e("SearchFrag", "send tagList: ${viewModel.selectedFilterTagList.value}")
+                    putExtra("tagList", tagArrayList) // 적용된 필터 (태그 리스트)
+                }
+            }
+            getResultText.launch(intent) // 돌아오면서 선택한 태그 리스트 받기
         }
 
         // 최근 검색어 모두 지우기
@@ -150,6 +179,7 @@ class SearchFragment: Fragment() {
         }
         searchResultAdapter.setRouteClickListener(object: SearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int) {
+                // 루트 상세보기 화면으로 이동
                 startActivity(Intent(activity, RoutePreviewDetailActivity::class.java)
                     .putExtra("routeId", viewModel.searchResultRoutes.value!![position].routeId)
                 )
@@ -190,22 +220,22 @@ class SearchFragment: Fragment() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_order_recent -> { // 최신 순
-                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_RECENT)
+                    viewModel.updateSelectedOrderOption(OrderOptionType.ORDER_RECENT)
                     searchRoute()
                     true
                 }
                 R.id.menu_order_old -> { // 오래된 순
-                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_OLD)
+                    viewModel.updateSelectedOrderOption(OrderOptionType.ORDER_OLD)
                     searchRoute()
                     true
                 }
                 R.id.menu_order_popularity -> { // 인기 순
-                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_POPULARITY)
+                    viewModel.updateSelectedOrderOption(OrderOptionType.ORDER_POPULARITY)
                     searchRoute()
                     true
                 }
                 R.id.menu_order_many_comment -> { // 댓글 많은 순
-                    viewModel.updateSelectedOrderOptionMenuId(OrderOptionType.ORDER_COMMENT)
+                    viewModel.updateSelectedOrderOption(OrderOptionType.ORDER_COMMENT)
                     searchRoute()
                     true
                 }
@@ -219,4 +249,6 @@ class SearchFragment: Fragment() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEt.windowToken, 0)
     }
+
+    companion object { const val TAG_KEY = "tag_key" }
 }

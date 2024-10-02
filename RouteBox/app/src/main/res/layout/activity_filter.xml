@@ -111,7 +111,8 @@
                 android:background="@drawable/radius_40"
                 android:backgroundTint="@color/main"
                 android:textColor="@color/white"
-                android:text="@string/filter_look_route"
+                android:text="@{@string/filter_look_route(viewModel.searchResultNum)}"
+                tools:text="@string/filter_look_route"
                 style="@style/body_b_m"/>
 
         </LinearLayout>

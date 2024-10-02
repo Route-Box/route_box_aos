@@ -11,11 +11,11 @@ class SeekRepositoryImpl @Inject constructor(
     override suspend fun searchRoute(
         searchWord: String?,
         sortBy: String,
-        withWhom: ArrayList<String>?,
-        numberOfPeople: Int?,
-        numberOfDays: ArrayList<String>?,
-        routeStyle: ArrayList<String>?,
-        transportation: ArrayList<String>?
+        withWhom: List<String>?,
+        numberOfPeople: List<Int>?,
+        numberOfDays: List<String>?,
+        routeStyle: List<String>?,
+        transportation: List<String>?
     ): List<SearchRoute> {
         return remoteSeekDataSource.searchRoute(searchWord, sortBy, withWhom, numberOfPeople, numberOfDays, routeStyle, transportation)
             .routes

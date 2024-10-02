@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daval.routebox.R
+import com.daval.routebox.domain.model.FilterOption
+import com.daval.routebox.domain.model.FilterType
 import com.daval.routebox.domain.model.SearchRoute
 import com.daval.routebox.domain.repositories.SeekRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,10 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     val repository: SeekRepository
 ): ViewModel() {
+
+    private val _searchResultRoutes = MutableLiveData<List<SearchRoute>>() // 검색 결과 조회
+    val searchResultRoutes: LiveData<List<SearchRoute>> = _searchResultRoutes
+
     private val _routeSearchKeyWord = MutableLiveData<String>("") // 타이틀 입력용
     val routeSearchKeyWord: LiveData<String> = _routeSearchKeyWord
 
@@ -24,11 +30,11 @@ class SearchViewModel @Inject constructor(
     private val _resentSearchWordSet = MutableLiveData<MutableSet<String>?>(linkedSetOf()) // 최근 검색어
     val resentSearchWordSet: LiveData<MutableSet<String>?> = _resentSearchWordSet
 
-    private val _searchResultRoutes = MutableLiveData<List<SearchRoute>>()
-    val searchResultRoutes: LiveData<List<SearchRoute>> = _searchResultRoutes
-
     private val _selectedOrderOption = MutableLiveData<OrderOptionType>(OrderOptionType.ORDER_RECENT) // 선택된 검색 결과 정렬 옵션
     val selectedOrderOption: LiveData<OrderOptionType> = _selectedOrderOption
+
+    private val _selectedFilterTagList = MutableLiveData<List<String>>(emptyList()) // 선택한 검색 태그 (optionsName)
+    val selectedFilterTagList: LiveData<List<String>> = _selectedFilterTagList
 
     // 루트 검색
     fun inputRouteSearchWord() {
@@ -39,7 +45,12 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _searchResultRoutes.value = repository.searchRoute(
                 searchWord = searchWord.value!!,
-                sortBy = _selectedOrderOption.value!!.serverEnum
+                sortBy = _selectedOrderOption.value!!.serverEnum,
+                withWhom = convertAnyToStringList(FilterType.WITH_WHOM),
+                numberOfPeople = convertAnyToIntList(),
+                numberOfDays = convertAnyToStringList(FilterType.HOW_LONG),
+                routeStyle = convertAnyToStringList(FilterType.ROUTE_STYLE),
+                transportation = convertAnyToStringList(FilterType.MEANS_OF_TRANSPORTATION)
             )
         }
 
@@ -93,8 +104,25 @@ class SearchViewModel @Inject constructor(
     }
 
     // 선택한 정렬 옵션 값 업데이트
-    fun updateSelectedOrderOptionMenuId(type: OrderOptionType) {
+    fun updateSelectedOrderOption(type: OrderOptionType) {
         _selectedOrderOption.value = type
+    }
+
+    // 선택한 태그 리스트 업데이트
+    fun updateSelectedTagList(tagList: List<String>) {
+        _selectedFilterTagList.value = tagList
+    }
+
+    // type에 해당하는 List<Any>?를 List<String>?으로 변환
+    private fun convertAnyToStringList(type: FilterType): List<String>? {
+        return FilterOption.getOptionNamesByTypeAndNames(_selectedFilterTagList.value!!, type)
+            ?.mapNotNull { it as? String }
+    }
+
+    // type에 해당하는 List<Any>?를 List<Int>?으로 변환 ('몇 명과' 옵션의 경우 정수 리스트로 전달)
+    private fun convertAnyToIntList(): List<Int>? {
+        return FilterOption.getOptionNamesByTypeAndNames(_selectedFilterTagList.value!!, FilterType.HOW_MANY)
+            ?.mapNotNull { it as? Int }
     }
 
     companion object {

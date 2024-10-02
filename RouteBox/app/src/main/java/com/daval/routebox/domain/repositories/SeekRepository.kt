@@ -7,10 +7,10 @@ interface SeekRepository {
     suspend fun searchRoute(
         searchWord: String?,
         sortBy: String,
-        withWhom: ArrayList<String>? = null,
-        numberOfPeople: Int? = null,
-        numberOfDays: ArrayList<String>? = null,
-        routeStyle: ArrayList<String>? = null,
-        transportation: ArrayList<String>? = null
+        withWhom: List<String>? = null,
+        numberOfPeople: List<Int>? = null,
+        numberOfDays: List<String>? = null,
+        routeStyle: List<String>? = null,
+        transportation: List<String>? = null
     ): List<SearchRoute>
 }

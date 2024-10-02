@@ -13,11 +13,11 @@ class RemoteSeekDataSource @Inject constructor(
     suspend fun searchRoute(
         searchWord: String?,
         sortBy: String,
-        withWhom: ArrayList<String>?,
-        numberOfPeople: Int?,
-        numberOfDays: ArrayList<String>?,
-        routeStyle: ArrayList<String>?,
-        transportation: ArrayList<String>?
+        withWhom: List<String>?,
+        numberOfPeople: List<Int>?,
+        numberOfDays: List<String>?,
+        routeStyle: List<String>?,
+        transportation: List<String>?
     ): SearchRouteResponse {
         var searchResult = SearchRouteResponse(emptyList())
         withContext(Dispatchers.IO) {

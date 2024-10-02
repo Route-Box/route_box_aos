@@ -12,10 +12,10 @@ interface SeekApiService {
         @Query("size") size: Int = 10,
         @Query("query") searchWord: String?,
         @Query("sortBy") sortBy: String,
-        @Query("withWhom") withWhom: ArrayList<String>?,
-        @Query("numberOfPeople") numberOfPeople: Int?,
-        @Query("numberOfDays") numberOfDays: ArrayList<String>?,
-        @Query("style") routeStyle: ArrayList<String>?,
-        @Query("transportation") transportation: ArrayList<String>?
+        @Query("whoWith") withWhom: List<String>?,
+        @Query("numberOfPeople") numberOfPeople: List<Int>?,
+        @Query("numberOfDays") numberOfDays: List<String>?,
+        @Query("style") routeStyle: List<String>?,
+        @Query("transportation") transportation: List<String>?
     ): SearchRouteResponse
 }
