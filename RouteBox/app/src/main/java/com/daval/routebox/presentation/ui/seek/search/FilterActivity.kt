@@ -46,11 +46,11 @@ class FilterActivity : AppCompatActivity(), FilterOptionClickListener {
         viewModel.initSearchResultNum(intent.getIntExtra("searchResultNum", 0)) // 받아온 검색 결과 개수
         // 받아온 태그 리스트
         intent.getStringArrayListExtra("tagList").let { tagList ->
-            Log.e("FilterActivity", "get tagList: $tagList")
             if (tagList.isNullOrEmpty()) return
             viewModel.initSelectedFilterTagList(tagList)
         }
     }
+
     private fun initClickListeners() {
         // 뒤로가기 버튼
         binding.filterBackIv.setOnClickListener {
@@ -110,7 +110,6 @@ class FilterActivity : AppCompatActivity(), FilterOptionClickListener {
     override fun onOptionItemClick(option: FilterOption, isSelected: Boolean) {
         viewModel.updateSelectedOption(option, isSelected)
         viewModel.selectedFilterTagList = viewModel.getSelectedOptionNames()
-        Log.d("FilterActivity", "select tagList: ${viewModel.selectedFilterTagList}")
         viewModel.inquirySearchResultNum() // 필터 옵션을 선택할 때마다 조회 결과 개수 업데이트
     }
 }

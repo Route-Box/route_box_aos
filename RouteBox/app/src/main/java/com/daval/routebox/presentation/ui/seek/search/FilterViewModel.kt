@@ -59,11 +59,7 @@ class FilterViewModel @Inject constructor(
         selectedFilterTagList = tagList
 
         // selectedFilterTagList의 값들로 FilterOption을 찾고, FilterType에 따라 그룹화
-        val optionMap = selectedFilterTagList
-            .mapNotNull { optionName -> FilterOption.findOptionsByNames(listOf(optionName)).firstOrNull() }
-            .groupBy { it.filterType }
-            .mapValues { entry -> entry.value.toSet() } // Set<FilterOption>으로 변환
-
+        val optionMap = FilterOption.groupingTagListWithFilterType(selectedFilterTagList)
         // _selectedOptionMap을 업데이트
         _selectedOptionMap.value = optionMap
 

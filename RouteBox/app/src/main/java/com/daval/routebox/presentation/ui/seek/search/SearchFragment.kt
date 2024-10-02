@@ -44,12 +44,10 @@ class SearchFragment: Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) {result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val returnTag = result.data?.getStringArrayListExtra(TAG_KEY)
-            Log.e("SearchFrag", "return tagList: $returnTag")
-            if (returnTag == null) return@registerForActivityResult
-            viewModel.updateSelectedTagList(returnTag.toList())
-            // 필터링 적용하고 돌아오면 다시 검색 진행
-            searchRoute()
+            // 필터를 적용한 후 돌아온 경우
+            val returnTag = result.data?.getStringArrayListExtra(TAG_KEY) ?: return@registerForActivityResult
+            viewModel.updateSelectedTagList(returnTag) // 수정된 태그 목록 저장
+            searchRoute() // 필터 적용해서 다시 검색 진행
         }
     }
 
@@ -111,17 +109,17 @@ class SearchFragment: Fragment() {
             intent.apply {
                 putExtra("searchResultNum", viewModel.searchResultRoutes.value!!.size) // 검색 결과 개수
                 putExtra("searchWord", viewModel.searchWord.value) // 입력한 검색어
+                // 적용된 필터 (태그 목록)
                 viewModel.selectedFilterTagList.value?.let { tagList ->
                     val tagArrayList = if (tagList is ArrayList) {
                         tagList
                     } else {
                         ArrayList(tagList) // List를 ArrayList로 변환
                     }
-                    Log.e("SearchFrag", "send tagList: ${viewModel.selectedFilterTagList.value}")
-                    putExtra("tagList", tagArrayList) // 적용된 필터 (태그 리스트)
+                    putExtra("tagList", tagArrayList)
                 }
             }
-            getResultText.launch(intent) // 돌아오면서 선택한 태그 리스트 받기
+            getResultText.launch(intent) // 필터 화면에서 돌아오면서 적용된 태그 목록  받기
         }
 
         // 최근 검색어 모두 지우기

@@ -59,6 +59,14 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
             return entries.filter { it.optionName in names }
         }
 
+        // 리스트를 FilterType 별로 그룹핑
+        fun groupingTagListWithFilterType(tagList: List<String>): Map<FilterType, Set<FilterOption>> {
+            return tagList
+                .mapNotNull { optionName -> FilterOption.findOptionsByNames(listOf(optionName)).firstOrNull() }
+                .groupBy { it.filterType }
+                .mapValues { entry -> entry.value.toSet() } // Set<FilterOption>으로 변환
+        }
+
         // 적용한 옵션들을 필터 유형에 맞게 변환 - 필터 데이터 서버 전송을 위함
         fun getOptionNamesByTypeAndNames(names: List<String>, type: FilterType): List<Any>? {
             // type에 해당하는 FilterOption들 중에서 names에 속하는 옵션들을 반환

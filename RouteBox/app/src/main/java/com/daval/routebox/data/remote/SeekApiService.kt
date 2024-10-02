@@ -10,12 +10,12 @@ interface SeekApiService {
     suspend fun searchRoute(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 10,
-        @Query("query") searchWord: String?,
-        @Query("sortBy") sortBy: String,
-        @Query("whoWith") withWhom: List<String>?,
-        @Query("numberOfPeople") numberOfPeople: List<Int>?,
-        @Query("numberOfDays") numberOfDays: List<String>?,
-        @Query("style") routeStyle: List<String>?,
-        @Query("transportation") transportation: List<String>?
+        @Query("query") searchWord: String?, // 검색어
+        @Query("sortBy") sortBy: String, // 정렬
+        @Query("whoWith") withWhom: List<String>?, // 누구와
+        @Query("numberOfPeople") numberOfPeople: List<Int>?, // 몇 명과
+        @Query("numberOfDays") numberOfDays: List<String>?, // 며칠 동안
+        @Query("style") routeStyle: List<String>?, // 루트 스타일
+        @Query("transportation") transportation: List<String>? // 이동 수단
     ): SearchRouteResponse
 }
