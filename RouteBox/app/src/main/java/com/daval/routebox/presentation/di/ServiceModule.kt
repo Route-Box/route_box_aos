@@ -5,6 +5,7 @@ import com.daval.routebox.data.remote.OpenApiService
 import com.daval.routebox.data.remote.ReportApiService
 import com.daval.routebox.data.remote.auth.AnonymousApiService
 import com.daval.routebox.data.remote.RouteApiService
+import com.daval.routebox.data.remote.SeekApiService
 import com.daval.routebox.data.remote.UserApiService
 import com.daval.routebox.data.remote.auth.RefreshApiService
 import dagger.Module
@@ -46,6 +47,12 @@ object ServiceModule {
     @Singleton
     fun provideReportService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : ReportApiService =
         retrofit.create(ReportApiService::class.java)
+
+    /** 탐색 */
+    @Provides
+    @Singleton
+    fun provideSeekService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : SeekApiService =
+        retrofit.create(SeekApiService::class.java)
 
     /** 카카오 **/
     @Provides

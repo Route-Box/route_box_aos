@@ -143,8 +143,7 @@ class RemoteRouteDataSource @Inject constructor(
     suspend fun getRouteDetailPreview(
         routeId: Int
     ): RoutePreview {
-        var routePreview = RoutePreview(-1, -1, "", "", "", "",
-            arrayListOf(), false, -1, -1, arrayListOf(), "", "", -1, "", "")
+        var routePreview = RoutePreview()
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.getRouteDetailPreview(routeId)
