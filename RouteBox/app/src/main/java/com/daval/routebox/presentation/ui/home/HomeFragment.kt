@@ -26,6 +26,7 @@ import com.daval.routebox.domain.model.WebViewPage
 import com.daval.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import com.daval.routebox.presentation.config.Constants.ENDPOINT_HOME
 import com.daval.routebox.presentation.config.Constants.WEB_BASE_URL
+import com.daval.routebox.presentation.ui.common.routePreview.RoutePreviewDetailActivity
 import com.daval.routebox.presentation.ui.route.RouteDetailActivity
 import com.daval.routebox.presentation.utils.WebViewBridge
 import com.daval.routebox.presentation.utils.NativeMessageCallback
@@ -131,7 +132,7 @@ class HomeFragment : Fragment(), NativeMessageCallback {
                 startActivity(
                     Intent(
                         requireActivity(),
-                        RouteDetailActivity::class.java
+                        RoutePreviewDetailActivity::class.java
                     ).putExtra("routeId", id.toInt())
                 )
             }

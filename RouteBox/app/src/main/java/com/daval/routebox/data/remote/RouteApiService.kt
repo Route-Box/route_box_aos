@@ -38,6 +38,7 @@ interface RouteApiService {
         @Query("size") size: Int
     ): RoutePreviewResult
 
+    // 루트 단건 조회
     @GET("routes/{routeId}")
     suspend fun getRouteDetailPreview(
         @Path("routeId") routeId: Int
@@ -123,14 +124,4 @@ interface RouteApiService {
     // 인사이트 조회
     @GET("routes/insight")
     suspend fun getInsight(): Insight
-
-    @POST("reports/user")
-    suspend fun reportUser(
-        @Body reportUserBody: ReportUser
-    ): ReportId
-
-    @POST("reports/route")
-    suspend fun reportRoute(
-        @Body reportRouteBody: ReportRoute
-    ): ReportId
 }

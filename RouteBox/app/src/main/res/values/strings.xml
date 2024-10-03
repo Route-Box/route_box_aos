@@ -109,7 +109,7 @@
     <string name="filter_question4_route_style">원하는 루트 스타일을 알려주세요.</string>
     <string name="filter_question5_means_of_transportation">이동 수단을 알려주세요.</string>
     <string name="filter_clear">초기화</string>
-    <string name="filter_look_route">N개 루트 보기</string>
+    <string name="filter_look_route">%d개 루트 보기</string>
     <!-- 구매하기 -->
     <string name="purchase_default_popup_content">해당 여행 루트 조회를 위해서는\n구매가 필요합니다.\n구매하시겠습니까?</string>
     <string name="purchase_point_lack_popup_content">포인트가 부족합니다.</string>
