@@ -8,7 +8,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.daval.routebox.presentation.ui.route.write.RouteConvenienceViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.convenience.RouteConvenienceViewModel" />
         <variable
             name="writeViewModel"
             type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />

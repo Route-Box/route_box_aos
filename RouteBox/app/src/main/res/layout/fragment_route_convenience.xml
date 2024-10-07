@@ -9,7 +9,7 @@
             type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
         <variable
             name="convenienceViewModel"
-            type="com.daval.routebox.presentation.ui.route.write.RouteConvenienceViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.convenience.RouteConvenienceViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
