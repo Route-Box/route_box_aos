@@ -27,6 +27,7 @@ import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
+import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -82,7 +83,7 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
         latitude = writeViewModel.currentCoordinate.value?.latitude.toString()
         longitude = writeViewModel.currentCoordinate.value?.longitude.toString()
         var xy = WeatherCoordinatorConverter.changeCoordinate(latitude.toDouble(), longitude.toDouble())
-        val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=$OPEN_API_SERVICE_KEY&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=${getDateAndTime().first}&base_time=${getDateAndTime().second}00&nx=${xy.first}&ny=${xy.second}"
+        val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=$OPEN_API_SERVICE_KEY&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=${getDateAndTime().first}&base_time=${getDateAndTime().second}&nx=${xy.first}&ny=${xy.second}"
 
         val thread = PublicApiThread(site)
         thread.start()
@@ -130,12 +131,22 @@ class WeatherBottomSheet: BottomSheetDialogFragment() {
 
     private fun getDateAndTime(): Pair<String, String> {
         // 시간이 자정일 경우, 날짜는 하루 앞으로, 시간은 23시로 직접 설정!
-        var time = LocalTime.now().toString().substring(0, 2)
+        var time = LocalTime.now().toString()
+        var hour = time.substring(0, 2)
+        var minute = time.substring(3, 5)
         var date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt()
-        if (time == "00") {
-            time = "23"
+        if (hour == "00") {
+            time = "2330"
             date -= 1
-        } else time = (time.toInt()).toString()
+        } else {
+            // 매시간 예보가 30분에 발표! -> So, 30분을 기준으로 나눠줌
+            if (minute.toInt() >= 30) {
+                hour = DecimalFormat("00").format((hour.toInt())).toString()
+            } else {
+                hour = DecimalFormat("00").format((hour.toInt() - 1)).toString()
+            }
+            time = hour + "30"
+        }
 
         return Pair(date.toString(), time)
     }
