@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteActivityBinding
+import com.daval.routebox.domain.model.ActivityImage
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.SearchActivityResult
@@ -98,6 +99,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 for (i in 0 until imgList?.size!!) {
                     imgRVAdapter.addItem(imgList[i])
                     viewModel.activity.value?.activityImages?.add(imgList[i])
+                    viewModel.imageList.add(ActivityImage(-1, imgList[i])) // 새로 추가한 이미지
                 }
             }
         }
@@ -117,8 +119,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             viewModel.checkBtnEnabled()
         }
 
-        viewModel.activityResult.observe(this@RouteActivityActivity) {
-            if (viewModel.activityResult.value?.activityId != -1) finish()
+        viewModel.isRequestSuccess.observe(this) {
+            if (it == true) finish()
         }
     }
 
@@ -195,7 +197,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     private fun setImageAdapter() {
-        imgList.addAll(viewModel.activity.value!!.activityImages.map { it } as ArrayList<String>)
+        imgList.addAll(viewModel.imageList.map { it.url })
         imgRVAdapter = PictureRVAdapter(imgList)
         binding.pictureRv.adapter = imgRVAdapter
         binding.pictureRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -213,6 +215,10 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             override fun onPictureDeleteIconClick(position: Int) {
                 imgRVAdapter.removeItem(position)
                 viewModel.activity.value?.activityImages!!.removeAt(position - 1)
+                val activityImage = viewModel.imageList[position - 1]
+                if (activityImage.id > 0) { // 업로드가 이미 되어있는 사진
+                    viewModel.deletedImageIds.add(activityImage.id)
+                }
             }
         })
     }
@@ -239,8 +245,13 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             viewModel.resetCategory()
         }
 
-        binding.nextBtn.setOnClickListener {
-            viewModel.addActivity(this)
+        // 완료 버튼
+        binding.doneBtn.setOnClickListener {
+            if (viewModel.isEditMode.value!!) { // 수정 모드
+                viewModel.editActivity(this)
+            } else { // 생성 모드
+                viewModel.addActivity(this)
+            }
         }
 
         // 키보드 검색 버튼
@@ -256,7 +267,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     fun searchPlace(view: View) {
         viewModel.searchPlace() // 장소 검색 진행
-        hideKeyboard()
+        hideKeyboard() // 키보드 내리기
         view.clearFocus() // EditText 포커스 해제
     }
 

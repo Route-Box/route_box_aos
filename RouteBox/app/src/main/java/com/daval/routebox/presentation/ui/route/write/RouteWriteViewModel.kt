@@ -2,12 +2,14 @@ package com.daval.routebox.presentation.ui.route.write
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.Activity
+import com.daval.routebox.domain.model.ActivityImage
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.RoutePointRequest
@@ -39,6 +41,8 @@ class RouteWriteViewModel @Inject constructor(
     val activity: LiveData<Activity> = _activity
 
     val placeSearchKeyword = MutableLiveData<String>("")
+    var imageList = ArrayList<ActivityImage>(arrayListOf())
+    var deletedImageIds = ArrayList<Int>(arrayListOf())
 
     private val _placeSearchMode = MutableLiveData<Boolean>()
     val placeSearchMode: LiveData<Boolean> = _placeSearchMode
@@ -71,8 +75,8 @@ class RouteWriteViewModel @Inject constructor(
     private val _btnEnabled = MutableLiveData<Boolean>()
     val btnEnabled: LiveData<Boolean> = _btnEnabled
 
-    private val _activityResult = MutableLiveData<ActivityResult>()
-    val activityResult: LiveData<ActivityResult> = _activityResult
+    private val _isRequestSuccess = MutableLiveData<Boolean>()
+    val isRequestSuccess: LiveData<Boolean> = _isRequestSuccess
 
     private val _currentCoordinate = MutableLiveData<LatLng>()
     val currentCoordinate: LiveData<LatLng> = _currentCoordinate
@@ -83,14 +87,14 @@ class RouteWriteViewModel @Inject constructor(
     init {
         _activity.value = Activity()
         _categoryETC.value = false
-        _activityResult.value = ActivityResult()
         _currentCoordinate.value = LatLng.from(null)
     }
 
     fun initActivityInEditMode(activity: ActivityResult) {
         _activityId = activity.activityId.toLong()
         _activity.value = activity.convertToActivity()
-        placeSearchKeyword.value = activity.locationName
+        placeSearchKeyword.value = activity.locationName // 장소
+        imageList = activity.activityImages // 이미지
         // 시간 초기화
         _date.value = DateConverter.convertDateStringToLocalDate(activity.visitDate)
         _startTimePair.value = DateConverter.convertTimeStringToIntPair(activity.startTime)
@@ -192,8 +196,9 @@ class RouteWriteViewModel @Inject constructor(
 
     // 활동 추가
     fun addActivity(context: Context) {
+        Log.d("RouteWriteVM", "addedImages: ${_activity.value?.activityImages}")
         viewModelScope.launch {
-            _activityResult.value = repository.createActivity(
+            _isRequestSuccess.value = repository.createActivity(
                 context,
                 _routeId.value!!,
                 _activity.value?.locationName!!,
@@ -206,6 +211,22 @@ class RouteWriteViewModel @Inject constructor(
                 _activity.value?.category!!,
                 _activity.value?.description,
                 _activity.value?.activityImages!!
+            )
+        }
+    }
+
+    // 활동 수정
+    fun editActivity(context: Context) {
+        val addedImages = imageList.filter{ it.id == -1 }.map { it.url } // 새로 추가한 이미지
+        Log.d("RouteWriteVM", "addedImages: $addedImages")
+        viewModelScope.launch {
+            _isRequestSuccess.value = repository.updateActivity(
+                context,
+                _routeId.value!!,
+                _activityId.toInt(),
+                _activity.value!!,
+                addedImages,
+                deletedImageIds
             )
         }
     }

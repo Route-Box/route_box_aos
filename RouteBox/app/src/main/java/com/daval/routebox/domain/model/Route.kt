@@ -181,21 +181,6 @@ data class ActivityId(
     var activityId: Int
 )
 
-// 활동 수정
-data class ActivityUpdateRequest(
-    var locationName: String,
-    var address: String,
-    var latitude: String?,
-    var longitude: String?,
-    var visitDate: String,
-    var startTime: String,
-    var endTime: String,
-    var category: String,
-    var description: String?,
-    var addedActivityImages: ArrayList<String>?,
-    var deletedActivityImageIds: ArrayList<String>?
-)
-
 // 카카오 장소 검색
 data class KakaoSearchResult(
     val meta: PlaceMeta, // 장소 메타데이터

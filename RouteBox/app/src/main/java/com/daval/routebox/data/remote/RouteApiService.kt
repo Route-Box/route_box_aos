@@ -3,12 +3,8 @@ package com.daval.routebox.data.remote
 import com.daval.routebox.domain.model.RoutePreviewResult
 import com.daval.routebox.domain.model.ActivityId
 import com.daval.routebox.domain.model.ActivityResult
-import com.daval.routebox.domain.model.ActivityUpdateRequest
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.MyRouteResponse
-import com.daval.routebox.domain.model.ReportId
-import com.daval.routebox.domain.model.ReportRoute
-import com.daval.routebox.domain.model.ReportUser
 import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.domain.model.RouteId
 import com.daval.routebox.domain.model.RoutePointRequest
@@ -79,6 +75,7 @@ interface RouteApiService {
         @Body timeBody: RouteWriteTime
     ): RouteId
 
+    // 활동 생성
     @POST("routes/{routeId}/activity")
     @Multipart
     suspend fun createActivity(
@@ -102,11 +99,23 @@ interface RouteApiService {
         @Body routeUpdateRequest: RouteUpdateRequest
     ): RouteUpdateResult
 
+    // 활동 수정
+    @Multipart
     @PUT("routes/{routeId}/activity/{activityId}")
     suspend fun updateActivity(
         @Path("routeId") routeId: Int,
         @Path("activityId") activityId: Int,
-        @Body activityUpdateRequest: ActivityUpdateRequest
+        @Part("locationName") locationName: RequestBody,
+        @Part("address") address: RequestBody,
+        @Part("latitude") latitude: RequestBody?,
+        @Part("longitude") longitude: RequestBody?,
+        @Part("visitDate") visitDate: RequestBody,
+        @Part("startTime") startTime: RequestBody,
+        @Part("endTime") endTime: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part("description") description: RequestBody?,
+        @Part("deletedActivityImageIds") deletedActivityImageIds: RequestBody?,
+        @Part addedActivityImages: List<MultipartBody.Part?>
     ): ActivityResult
 
     // 루트 삭제
@@ -115,6 +124,7 @@ interface RouteApiService {
         @Path("routeId") routeId: Int
     ): RouteId
 
+    // 활동 삭제
     @DELETE("routes/{routeId}/activity/{activityId}")
     suspend fun deleteActivity(
         @Path("routeId") routeId: Int,

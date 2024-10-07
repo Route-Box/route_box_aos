@@ -4,10 +4,9 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.data.datasource.RemoteRouteDataSource
+import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.RoutePreviewResult
 import com.daval.routebox.domain.model.ActivityId
-import com.daval.routebox.domain.model.ActivityResult
-import com.daval.routebox.domain.model.ActivityUpdateRequest
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.KakaoSearchResult
@@ -85,12 +84,12 @@ class RouteRepositoryImpl @Inject constructor(
         category: String,
         description: String?,
         activityImages: List<String>?
-    ): ActivityResult {
+    ): Boolean {
         return remoteRouteDataSource.createActivity(
             context,
             routeId, locationName, address, latitude, longitude,
             visitDate, startTime, endTime, category, description, activityImages
-        )
+        ).activityId > 0
     }
 
     override suspend fun updateRoute(
@@ -101,11 +100,14 @@ class RouteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateActivity(
+        context: Context,
         routeId: Int,
         activityId: Int,
-        activityUpdateRequest: ActivityUpdateRequest
-    ): ActivityResult {
-        return remoteRouteDataSource.updateActivity(routeId, activityId, activityUpdateRequest)
+        activityRequest: Activity,
+        addedImageList: List<String>?,
+        deletedActivityImageIds: List<Int>?
+    ): Boolean {
+        return remoteRouteDataSource.updateActivity(context, routeId, activityId, activityRequest, addedImageList, deletedActivityImageIds).activityId > 0
     }
 
     override suspend fun deleteRoute(routeId: Int): RouteId {

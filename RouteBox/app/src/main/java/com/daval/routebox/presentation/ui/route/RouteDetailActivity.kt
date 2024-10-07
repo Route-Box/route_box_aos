@@ -162,6 +162,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                     intent.apply {
                         putExtra("route", Gson().toJson(viewModel.route.value))
                         putExtra("isEditMode", true)
+                        putExtra("routeId", viewModel.route.value?.routeId)
                     }
                     startActivity(intent)
                     true

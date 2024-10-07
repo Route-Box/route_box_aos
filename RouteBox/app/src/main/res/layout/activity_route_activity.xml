@@ -429,10 +429,10 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/next_btn"
+                    android:id="@+id/done_btn"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="@string/next_btn"
+                    android:text="@string/done_btn"
                     android:layout_marginTop="40dp"
                     android:layout_marginBottom="28dp"
                     android:enabled="@{viewModel.btnEnabled}"
