@@ -1,5 +1,6 @@
-package com.daval.routebox.presentation.ui.route.write
+package com.daval.routebox.presentation.ui.route.write.convenience
 
+import android.app.Service.MODE_PRIVATE
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -7,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -22,6 +25,11 @@ import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.daval.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
+import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
+import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
+import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -30,10 +38,14 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener {
@@ -41,10 +53,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private lateinit var binding: FragmentRouteConvenienceBinding
     private lateinit var kakaoMap: KakaoMap
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
+    private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
     private var categoryDotImg: Int = -1
-    private lateinit var bottomSheetDialog: BottomSheetConveniencePlaceBinding
+    private lateinit var bottomSheetConvenienceDialog: BottomSheetConveniencePlaceBinding
     private var placeList = arrayListOf<ConvenienceCategoryResult>()
     private val placeRVAdapter = ConveniencePlaceRVAdapter(placeList)
+    private lateinit var mainWeather: WeatherData
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +69,8 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
         binding.apply {
             viewModel = this@RouteConvenienceFragment.writeViewModel
+            convenienceViewModel = this@RouteConvenienceFragment.convenienceViewModel
+            lifecycleOwner = this@RouteConvenienceFragment
         }
 
         setInit()
@@ -62,9 +78,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         initClickListener()
         initRadioButton()
         setAdapter()
-        initObserve()
-
-        // writeViewModel.getWeatherList()
 
         return binding.root
     }
@@ -85,11 +98,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteConvenienceFragment.kakaoMap = kakaoMap
 
-                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
-                kakaoMap.moveCamera(cameraUpdate)
+                if (writeViewModel.currentCoordinate.value != null) {
+                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
+                    kakaoMap.moveCamera(cameraUpdate)
+                }
 
                 initObserve()
-                callWeatherApi()
             }
 
             override fun getZoomLevel(): Int {
@@ -101,6 +115,17 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private fun initClickListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack()
+        }
+        binding.weatherCv.setOnClickListener {
+            val weatherBottomSheet = WeatherBottomSheet()
+            val bundle = Bundle()
+            bundle.putString("latitude", writeViewModel.currentCoordinate.value?.latitude.toString())
+            bundle.putString("longitude", writeViewModel.currentCoordinate.value?.longitude.toString())
+            weatherBottomSheet.arguments = bundle
+            weatherBottomSheet.run {
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
+            }
+            weatherBottomSheet.show(requireActivity().supportFragmentManager, weatherBottomSheet.tag)
         }
     }
 
@@ -118,28 +143,34 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 val layer = kakaoMap.labelManager!!.layer
                 val label = layer!!.addLabel(options)
                 label.show()
+                
+                // 지역 이름 받아오기
+                convenienceViewModel.getRegionCode(writeViewModel.currentCoordinate.value?.latitude.toString(), writeViewModel.currentCoordinate.value?.longitude.toString())
+                // 현재 위치 날씨 받아오기
+                callWeatherApi()
+            } else {
+                var sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+                writeViewModel.setCurrentCoordinate(LatLng.from(sharedPreferencesHelper.getLocationCoordinate()[0]!!, sharedPreferencesHelper.getLocationCoordinate()[1]!!))
             }
         }
 
-        writeViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
-            if (writeViewModel.isCategoryEndPage.value == true) {
-                for (i in 0 until writeViewModel.placeCategoryResult.value!!.size) {
-                    addMarker(writeViewModel.placeCategoryResult.value!![i].latitude.toDouble(), writeViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
+        convenienceViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
+            if (convenienceViewModel.isCategoryEndPage.value == true) {
+                for (i in 0 until convenienceViewModel.placeCategoryResult.value!!.size) {
+                    addMarker(convenienceViewModel.placeCategoryResult.value!![i].latitude.toDouble(), convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
                 }
             }
 
-            if (writeViewModel.placeCategoryResult.value != null && writeViewModel.placeCategoryResult.value!!.size != 0) {
-                placeRVAdapter.resetAllItems(writeViewModel.placeCategoryResult.value!!)
+            if (convenienceViewModel.placeCategoryResult.value != null && convenienceViewModel.placeCategoryResult.value!!.size != 0) {
+                placeRVAdapter.resetAllItems(convenienceViewModel.placeCategoryResult.value!!)
                 binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
             }
         }
-
-//        writeViewModel.getWeatherList()
     }
 
     private fun setInit() {
-        bottomSheetDialog = binding.routeConvenienceBottomSheet
-        bottomSheetDialog.apply {
+        bottomSheetConvenienceDialog = binding.routeConvenienceBottomSheet
+        bottomSheetConvenienceDialog.apply {
             this.viewModel = this@RouteConvenienceFragment.writeViewModel
             this.lifecycleOwner = this@RouteConvenienceFragment
         }
@@ -154,7 +185,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         label.show()
     }
 
-    // TODO: 누른 카테고리 장소 띄워주기
     private fun initRadioButton() {
         // 선택한 라디오 버튼 글씨 Bold 처리하기 위한 ChangedListener 부분
         binding.categoryStay.setOnCheckedChangeListener(this)
@@ -165,33 +195,33 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         binding.categoryParking.setOnCheckedChangeListener(this)
 
         binding.categoryRadiogroup.setOnCheckedChangeListener { _, buttonId ->
-            writeViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
+            convenienceViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
             kakaoMap.labelManager?.removeAllLabelLayer()
 
             when (buttonId) {
                 R.id.category_stay -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.AD5)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.AD5)
                     categoryDotImg = R.drawable.ic_marker_stay
                 }
                 R.id.category_tour -> {
-//                    writeViewModel.setTourCategory()
+//                    convenienceViewModel.setTourCategory()
                     categoryDotImg = R.drawable.ic_marker_tour
                     callTourApi()
                 }
                 R.id.category_food -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.FD6)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.FD6)
                     categoryDotImg = R.drawable.ic_marker_food
                 }
                 R.id.category_cafe -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.CE7)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CE7)
                     categoryDotImg = R.drawable.ic_marker_cafe
                 }
                 R.id.category_culture -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.CT1)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CT1)
                     categoryDotImg = R.drawable.ic_marker_culture
                 }
                 R.id.category_parking -> {
-                    writeViewModel.setKakaoCategory(CategoryGroupCode.PK6)
+                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.PK6)
                     categoryDotImg = R.drawable.ic_marker_parking
                 }
             }
@@ -207,7 +237,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
     inner class NetworkThread: Thread() {
         override fun run() {
-            val site = "${OPEN_API_BASE_URL}B551011/KorService1/locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${writeViewModel.cameraPosition.value?.longitude}&mapY=${writeViewModel.cameraPosition.value?.latitude}&radius=${MapCameraRadius}&contentTypeId=12&serviceKey=${OPEN_API_SERVICE_KEY}"
+            val site = "${OPEN_API_BASE_URL}B551011/KorService1/locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${convenienceViewModel.cameraPosition.value?.longitude}&mapY=${convenienceViewModel.cameraPosition.value?.latitude}&radius=$MapCameraRadius&contentTypeId=12&serviceKey=${OPEN_API_SERVICE_KEY}"
             val conn = URL(site).openConnection()
             // 데이터가 들어오는 통로 역할
             val input = conn.getInputStream()
@@ -245,72 +275,58 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         }
     }
 
-    private fun callWeatherApi() {
-        val thread = WeatherThread()
-        thread.start()
-        thread.join()
-    }
-
-    // TODO: RecyclerView 연결
-    // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
-    inner class WeatherThread: Thread() {
-        override fun run() {
-            var numOfRows = 289 // 24시간 동안의 결과만 받으면 되기 때문에 해당 개수로 지정
-            // TODO: 어제 날짜을 base date로 가져오고, 현재 시간에 맞춰 24시간 기준 가져오기 수정
-            val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${OPEN_API_SERVICE_KEY}&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=20240922&base_time=0500&nx=55&ny=127"
-            val conn = URL(site).openConnection()
-            // 데이터가 들어오는 통로 역할
-            val input = conn.getInputStream()
-            val br = BufferedReader(InputStreamReader(input))
-
-            // Json 문서는 문자열로 데이터를 모두 읽어온 후, Json에 관련된 객체를 만들어서 데이터를 가져옴
-            var str: String? = null
-            // 버퍼는 일시적으로 데이터를 저장하는 메모리!
-            val buf = StringBuffer()
-
-            // 들어오는 값이 없을 때까지 받아오는 과정
-            do {
-                str = br.readLine()
-                if (str != null) buf.append(str)
-            } while (str != null)
-
-            // 하나로 되어있는 결과를 JSON 객체 형태로 가져와 데이터 파싱
-            val root = JSONObject(buf.toString())
-            val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
-            val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-
-            // TODO: 좌표는 처음 입력했을 때 기준으로 사용
-            // TODO: 비동기 처리 필요
-            var result = arrayListOf<WeatherData>()
-            for (i in 0 until 24) {
-                var tempResult = arrayListOf<String>()
-                for (j in i * 12 until (i + 1) * 12) {
-                    var category = item.getJSONObject(j).getString("category")
-                    if (category == "TMP" || category == "SKY" || category == "PTY") {
-                        tempResult.add(item.getJSONObject(j).getString("fcstValue"))
-                    }
-                }
-                result.add(WeatherData(
-                    tempResult[0], tempResult[1], tempResult[2], "latitude", "longitude",
-                    item.getJSONObject(i * 12).getString("fcstDate"),
-                    item.getJSONObject(i * 12).getString("fcstTime"))
-                )
-            }
-
-            Log.d("ROUTE-TEST", "result = $result")
-        }
-    }
-
     private fun setAdapter() {
-        bottomSheetDialog.placeRv.apply {
+        bottomSheetConvenienceDialog.placeRv.apply {
             this.adapter = placeRVAdapter
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
-        bottomSheetDialog.placeRv.itemAnimator = null
+        bottomSheetConvenienceDialog.placeRv.itemAnimator = null
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         buttonView.typeface = if (isChecked) resources.getFont(R.font.pretendard_bold) else resources.getFont(R.font.pretendard_regular)
+    }
+
+    private fun callWeatherApi() {
+        // 현재 시각에 따라 넘겨야 하는 데이터들 개수
+        var dateAndTime = getDateAndTime()
+        var latitude = writeViewModel.currentCoordinate.value?.latitude
+        var longitude = writeViewModel.currentCoordinate.value?.longitude
+        var xy = WeatherCoordinatorConverter.changeCoordinate(latitude!!.toDouble(), longitude!!.toDouble())
+        val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=$OPEN_API_SERVICE_KEY&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=${dateAndTime.first}&base_time=${dateAndTime.second}00&nx=${xy.first}&ny=${xy.second}"
+
+        // Thread를 통해 Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
+        val thread = PublicApiThread(site)
+        thread.start()
+        thread.join()
+
+        var weatherResult = thread.returnResult()
+        if (weatherResult == null) {
+            Toast.makeText(activity, "다시 시도해주세요", Toast.LENGTH_SHORT).show()
+        } else {
+            getMainWeather(weatherResult)
+        }
+
+        convenienceViewModel.setWeatherMainData(mainWeather)
+    }
+
+    private fun getMainWeather(returnResult: JSONArray) {
+        var weatherType: WeatherType? = null
+        var mainPTY = returnResult.getJSONObject(PTY).getString("fcstValue")
+        var mainSKY = returnResult.getJSONObject(SKY).getString("fcstValue")
+        var mainT1H = returnResult.getJSONObject(T1H).getString("fcstValue")
+        var mainDate = returnResult.getJSONObject(T1H).getString("fcstDate")
+        var mainTime = returnResult.getJSONObject(T1H).getString("fcstTime")
+        if (mainPTY == "0") { // PTY(강수)가 없음이면 SKY(하늘 상태) 사용
+            weatherType = returnWeatherType("SKY", mainSKY.toInt())
+        } else {
+            weatherType = returnWeatherType("PTY", mainPTY.toInt())
+        }
+
+        mainWeather = WeatherData(
+            mainT1H, mainSKY, mainPTY,
+            mainDate, mainTime, weatherType
+        )
     }
 
     // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
@@ -326,8 +342,20 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
     override fun onStop() {
         super.onStop()
-        writeViewModel.setPlaceCategoryResult()
+        convenienceViewModel.setPlaceCategoryResult()
         placeRVAdapter.removeAllItems()
         binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
+    }
+
+    private fun getDateAndTime(): Pair<String, String> {
+        // 시간이 자정일 경우, 날짜는 하루 앞으로, 시간은 23시로 직접 설정!
+        var time = LocalTime.now().toString().substring(0, 2)
+        var date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt()
+        if (time == "00") {
+            time = "23"
+            date -= 1
+        } else time = (time.toInt() - 1).toString()
+
+        return Pair(date.toString(), time)
     }
 }

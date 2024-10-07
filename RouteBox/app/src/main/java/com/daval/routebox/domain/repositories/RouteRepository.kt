@@ -17,6 +17,7 @@ import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.model.RoutePublicRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.model.RouteUpdateResult
+import com.daval.routebox.domain.model.WeatherRegionResponse
 
 interface RouteRepository {
     /** 편의 기능 카테고리 검색 */
@@ -33,6 +34,12 @@ interface RouteRepository {
         query: String,
         page: Int
     ): KakaoSearchResult
+
+    /** 날씨 행정구역 조회 */
+    suspend fun getKakaoRegionCode(
+        latitude: String,
+        longitude: String
+    ): WeatherRegionResponse
 
     /** 루트 탐색 */
     suspend fun getSearchRouteList(

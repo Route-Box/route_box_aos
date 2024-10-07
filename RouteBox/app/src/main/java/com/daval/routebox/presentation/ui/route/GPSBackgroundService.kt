@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -48,7 +49,6 @@ class GPSBackgroundService(): Service() {
 
     @SuppressLint("ForegroundServiceType")
     private fun serviceStart() {
-        var notificationBuilder = setNotification()
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         // GPS 및 네트워크 권한 확인
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -67,11 +67,16 @@ class GPSBackgroundService(): Service() {
         // 이 둘 사이에서 더욱 정확한 위치를 알아내기 위해 사용하는 것이 FusedLocationProvider!
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
 
-        // SDK 34 이상일 경우, Service의 Type 명시!
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(1, notificationBuilder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
-        } else {
-            startForeground(1, notificationBuilder.build())
+        // 코스를 기록하고 있는 상태라면 알림 띄워주기
+        var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+        if (sharedPreferencesHelper.getRouteTracking()) {
+            var notificationBuilder = setNotification()
+            // SDK 34 이상일 경우, Service의 Type 명시!
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(1, notificationBuilder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+            } else {
+                startForeground(1, notificationBuilder.build())
+            }
         }
     }
 
@@ -112,19 +117,23 @@ class GPSBackgroundService(): Service() {
             if (locationResult.lastLocation != null) {
                 val latitude = locationResult.lastLocation!!.latitude // + Random.nextDouble()
                 val longitude = locationResult.lastLocation!!.longitude // + Random.nextDouble()
-                
+
                 // 백그라운드에서 저장된 점인지 아닌지 구분
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-                if (sharedPreferencesHelper.getIsBackground()) {
+                // 만약 점을 기록하고 있다면, 점들을 바로바로 서버로 전송
+                if (sharedPreferencesHelper.getRouteTracking()) {
                     // 백그라운드에서 작동되고 있다면, list 형태로 점들을 저장
-                    if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
-                        var dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
-                        dotsList?.add(LatLng.from(latitude, longitude))
-                        sharedPreferencesHelper.setBackgroundCoordinate(dotsList!!)
-                    } else {
-                        sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
+                    if (sharedPreferencesHelper.getIsBackground()) {
+                        if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
+                            var dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
+                            dotsList?.add(LatLng.from(latitude, longitude))
+                            sharedPreferencesHelper.setBackgroundCoordinate(dotsList!!)
+                        } else {
+                            sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
+                        }
                     }
                 }
+                // 점의 기록 여부와 상관없이 지도에 현재 위치를 띄우기 위해 아래 코드 추가
                 sharedPreferencesHelper.setLocationCoordinate(arrayListOf(latitude, longitude))
             }
         }

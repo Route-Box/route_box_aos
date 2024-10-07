@@ -24,12 +24,14 @@
     <color name="route_private_dim">#99000000</color> <!-- 비공개인 루트 dim 배경 (투명도 60) -->
     <color name="icon_stroke_color">#FF96979B</color> <!-- 일부 아이콘 색상에 사용 -->
     <color name="route_convenience_category_result">#FF168C82</color>
+    <color name="weather_name_text">#FFABABAB</color> <!-- 편의기능 첫 화면 날씨 글씨에 사용 -->
 
     <!-- 메인 관련 색상 -->
     <color name="main">#FF21C8B6</color>
     <color name="app_name_color">#FF0E9187</color> <!-- 로그인 화면 글자 색 -->
     <color name="main_gradient_top">#FF75D27E</color> <!-- 그라데이션 상단 색 -->
     <color name="main_gradient_bottom">#FF47C4B6</color> <!-- 그라데이션 하단 색 -->
+    <color name="weather_text_color">#FF0CA094</color>
 
     <!-- 편의기능, 카테고리 관련 색상 -->
     <color name="accommodation">#FFF18C94</color> <!-- 숙소 -->

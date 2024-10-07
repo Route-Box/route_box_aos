@@ -3,6 +3,7 @@ package com.daval.routebox.domain.model
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import java.time.LocalDateTime
 
 data class RoutePreviewResult(
@@ -288,6 +289,7 @@ data class ConvenienceCategoryResult(
     val longitude: String
 )
 
+// 편의기능 날씨 정보
 data class WeatherApiResult(
     val response: WeatherApiResponse
 )
@@ -326,10 +328,34 @@ data class WeatherData(
     val tmp: String,
     val sky: String,
     val pty: String,
-    val fcstDate: String,
-    val fcstTime: String,
-    val latitude: String,
-    val longitude: String
+    val fcstDate: String?,
+    val fcstTime: String?,
+    val weatherType: WeatherType
+)
+
+data class WeatherRegionResponse(
+    val meta: WeatherRegionMeta,
+    val documents: List<WeatherRegionResult>
+)
+
+data class WeatherRegionMeta(
+    val total_count: Int
+)
+
+data class WeatherRegionDocuments(
+    val list: List<WeatherRegionResult>
+)
+
+data class WeatherRegionResult(
+    val region_type: String,
+    val address_name: String,
+    val region_1depth_name: String,
+    val region_2depth_name: String,
+    val region_3depth_name: String,
+    val region_4depth_name: String,
+    val code: String,
+    val x: Double,
+    val y: Double
 )
 
 const val pictureImgType = 0

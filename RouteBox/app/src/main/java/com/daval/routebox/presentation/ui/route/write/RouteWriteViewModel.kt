@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.ui.route.write
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +15,7 @@ import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.SearchActivityResult
+import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
@@ -80,23 +82,6 @@ class RouteWriteViewModel @Inject constructor(
     private val _preCoordinate = MutableLiveData<LatLng>()
     val preCoordinate: LiveData<LatLng> = _preCoordinate
 
-    // 편의기능
-    private val _placeCategoryResult = MutableLiveData<ArrayList<ConvenienceCategoryResult>>()
-    val placeCategoryResult: LiveData<ArrayList<ConvenienceCategoryResult>> = _placeCategoryResult
-
-    private val _placeCategory = MutableLiveData<CategoryGroupCode>()
-    val placeCategory: LiveData<CategoryGroupCode> = _placeCategory
-
-    private val _placeCategoryPage = MutableLiveData<Int>()
-    val placeCategoryPage: LiveData<Int> = _placeCategoryPage
-
-    private val _isCategoryEndPage = MutableLiveData<Boolean>()
-    val isCategoryEndPage: LiveData<Boolean> = _isCategoryEndPage
-
-    private val _cameraPosition = MutableLiveData<LatLng>()
-    val cameraPosition: LiveData<LatLng> = _cameraPosition
-
-
     init {
         _activity.value = Activity("", "", "", "",
             TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
@@ -104,9 +89,7 @@ class RouteWriteViewModel @Inject constructor(
         )
         _categoryETC.value = false
         _activityResult.value = ActivityResult()
-        _isCategoryEndPage.value = false
-        _placeCategoryPage.value = 1
-        _placeCategoryResult.value = arrayListOf()
+        _currentCoordinate.value = LatLng.from(null)
     }
 
     fun setRouteId(routeId: Int) {
@@ -167,27 +150,6 @@ class RouteWriteViewModel @Inject constructor(
 
     fun setCategoryETC(category: Boolean) {
         _categoryETC.value = category
-    }
-
-    fun setKakaoCategory(category: CategoryGroupCode) {
-        _placeCategory.value = category
-        _placeCategoryPage.value = 1
-        _placeCategoryResult.value = arrayListOf()
-        _isCategoryEndPage.value = false
-
-        searchCategory()
-    }
-
-//    fun setTourCategory() {
-//        getTourList()
-//    }
-
-    fun setCameraPosition(position: LatLng) {
-        _cameraPosition.value = position
-    }
-
-    fun setPlaceCategoryResult() {
-        _placeCategoryResult.value = arrayListOf()
     }
 
     fun resetActivity() {
@@ -264,61 +226,6 @@ class RouteWriteViewModel @Inject constructor(
 
                 setPreCoordinate(_currentCoordinate.value!!)
             }
-        }
-    }
-
-    // 편의 기능 카테고리 검색
-    private fun searchCategory() {
-        viewModelScope.launch {
-            while (true) {
-                if (cameraPosition.value != null && placeCategory.value != null) {
-                    val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, MapCameraRadius)
-                    var result = response.documents.map {
-                        ConvenienceCategoryResult(it.place_name, null, it.y, it.x)
-                    }
-                    _placeCategoryResult.value!!.addAll(result)
-                    _isCategoryEndPage.value = response.meta.is_end
-                    _placeCategoryPage.value = _placeCategoryPage.value!! + 1
-
-                    if (_isCategoryEndPage.value == true) break
-                }
-            }
-        }
-    }
-
-    // 장소 검색 페이징 처리
-//    fun pagingSearchCategory() {
-//        viewModelScope.launch {
-//            val response = repository.searchKakaoCategory(
-//                _placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString()
-//            )
-//            _placeCategoryResult.value = response.documents as ArrayList
-//            _isCategoryEndPage.value = response.meta.is_end
-//        }
-//    }
-
-    // TODO: 나중에 아래 방식으로 수정
-//    private fun getTourList() {
-//        viewModelScope.launch {
-//            val response = tourRepository.getTourList(
-//                "AND", "Route Box", BuildConfig.OPEN_API_SERVICE_KEY,
-//                mapX = cameraPosition.value!!.longitude.toString(), mapY = cameraPosition.value!!.latitude.toString(),
-//                MapCameraRadius.toString(), "12", "json"
-//            )
-//            Log.d("ROUTE-TEST", "response = $response")
-//        }
-//    }
-
-    @SuppressLint("DefaultLocale")
-    fun getWeatherList() {
-        viewModelScope.launch {
-            val response = openApiRepository.getWeatherList(
-                OPEN_API_BASE_URL, 1, 50, "JSON",
-                "20240922", "0500",
-                55,
-                127
-            )
-//            Log.d("RemoteTourDataSource", "response = $response")
         }
     }
 }
