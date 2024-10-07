@@ -143,7 +143,6 @@ class RouteConvenienceViewModel @Inject constructor(
                 55,
                 127
             )
-//            Log.d("RemoteTourDataSource", "response = $response")
         }
     }
 

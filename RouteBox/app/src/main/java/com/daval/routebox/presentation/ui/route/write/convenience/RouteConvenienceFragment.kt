@@ -1,8 +1,6 @@
 package com.daval.routebox.presentation.ui.route.write.convenience
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.location.Location
+import android.app.Service.MODE_PRIVATE
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,9 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -30,8 +29,9 @@ import com.daval.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapte
 import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
 import com.daval.routebox.presentation.ui.route.write.RouteConvenienceViewModel
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
-import com.google.android.gms.location.LocationServices
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -40,6 +40,7 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -105,8 +106,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 }
 
                 initObserve()
-                callWeatherApi()
-//                addCurrentLocationMarker()
             }
 
             override fun getZoomLevel(): Int {
@@ -146,6 +145,14 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 val layer = kakaoMap.labelManager!!.layer
                 val label = layer!!.addLabel(options)
                 label.show()
+                
+                // 지역 이름 받아오기
+                convenienceViewModel.getRegionCode(writeViewModel.currentCoordinate.value?.latitude.toString(), writeViewModel.currentCoordinate.value?.longitude.toString())
+                // 현재 위치 날씨 받아오기
+                callWeatherApi()
+            } else {
+                var sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+                writeViewModel.setCurrentCoordinate(LatLng.from(sharedPreferencesHelper.getLocationCoordinate()[0]!!, sharedPreferencesHelper.getLocationCoordinate()[1]!!))
             }
         }
 
@@ -283,68 +290,45 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
     private fun callWeatherApi() {
-        val thread = WeatherThread()
+        // 현재 시각에 따라 넘겨야 하는 데이터들 개수
+        var dateAndTime = getDateAndTime()
+        var latitude = writeViewModel.currentCoordinate.value?.latitude
+        var longitude = writeViewModel.currentCoordinate.value?.longitude
+        var xy = WeatherCoordinatorConverter.changeCoordinate(latitude!!.toDouble(), longitude!!.toDouble())
+        val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=$OPEN_API_SERVICE_KEY&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=${dateAndTime.first}&base_time=${dateAndTime.second}00&nx=${xy.first}&ny=${xy.second}"
+
+        // Thread를 통해 Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
+        val thread = PublicApiThread(site)
         thread.start()
         thread.join()
+
+        var weatherResult = thread.returnResult()
+        if (weatherResult == null) {
+            Toast.makeText(activity, "다시 시도해주세요", Toast.LENGTH_SHORT).show()
+        } else {
+            getMainWeather(weatherResult)
+        }
 
         convenienceViewModel.setWeatherMainData(mainWeather)
     }
 
-    // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
-    inner class WeatherThread: Thread() {
-        override fun run() {
-            // 현재 시각에 따라 넘겨야 하는 데이터들 개수
-            var date = (LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt() - 1).toString()
-            var time = LocalTime.now().toString().substring(0, 5)
-            // TODO: 테스터용 지우기
-            var latitude = "34"
-            var longitude = "127"
-            var skipRows = if (time.substring(0, 2).toInt() < 5) (time.substring(0, 2).toInt() + 24 - 5) else time.substring(0, 2).toInt() - 5
-            var numOfRows = WeatherTypeNumber * (WeatherRequestTime + skipRows)// 24시간 동안의 결과만 받으면 되기 때문에 해당 개수로 지정
-            var xy = WeatherCoordinatorConverter.changeCoordinate(latitude.toDouble(), longitude.toDouble())
-            val site = "${OPEN_API_BASE_URL}1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=$OPEN_API_SERVICE_KEY&pageNo=1&numOfRows=${numOfRows}&dataType=JSON&base_date=${date}&base_time=0500&nx=${xy.first}&ny=${xy.second}"
-            val conn = URL(site).openConnection()
-            // 데이터가 들어오는 통로 역할
-            val input = conn.getInputStream()
-            val br = BufferedReader(InputStreamReader(input))
-
-            // Json 문서는 문자열로 데이터를 모두 읽어온 후, Json에 관련된 객체를 만들어서 데이터를 가져옴
-            var str: String? = null
-            // 버퍼는 일시적으로 데이터를 저장하는 메모리!
-            val buf = StringBuffer()
-
-            // 들어오는 값이 없을 때까지 받아오는 과정
-            do {
-                str = br.readLine()
-                if (str != null) buf.append(str)
-            } while (str != null)
-
-            // 하나로 되어있는 결과를 JSON 객체 형태로 가져와 데이터 파싱
-            val root = JSONObject(buf.toString())
-            val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
-            val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-
-            // TODO: 좌표는 처음 입력했을 때 기준으로 사용
-            // TODO: 비동기 처리 필요
-            var tempResult = arrayListOf<String>()
-            for (i in (skipRows * 12) until (skipRows + 1) * 12) {
-                var category = item.getJSONObject(i).getString("category")
-                if (category == "TMP" || category == "SKY" || category == "PTY") {
-                    tempResult.add(item.getJSONObject(i).getString("fcstValue"))
-                }
-            }
-
-            var weatherType: WeatherType? = null
-            if (tempResult[2] == "0") { // PTY(강수)가 없음이면 SKY(하늘 상태) 사용
-                weatherType = returnWeatherType("SKY", tempResult[1].toInt())
-            } else {
-                weatherType = returnWeatherType("PTY", tempResult[2].toInt())
-            }
-
-            mainWeather = WeatherData(
-                tempResult[0], tempResult[1], tempResult[2], null, null, weatherType
-            )
+    private fun getMainWeather(returnResult: JSONArray) {
+        var weatherType: WeatherType? = null
+        var mainPTY = returnResult.getJSONObject(PTY).getString("fcstValue")
+        var mainSKY = returnResult.getJSONObject(SKY).getString("fcstValue")
+        var mainT1H = returnResult.getJSONObject(T1H).getString("fcstValue")
+        var mainDate = returnResult.getJSONObject(T1H).getString("fcstDate")
+        var mainTime = returnResult.getJSONObject(T1H).getString("fcstTime")
+        if (mainPTY == "0") { // PTY(강수)가 없음이면 SKY(하늘 상태) 사용
+            weatherType = returnWeatherType("SKY", mainSKY.toInt())
+        } else {
+            weatherType = returnWeatherType("PTY", mainPTY.toInt())
         }
+
+        mainWeather = WeatherData(
+            mainT1H, mainSKY, mainPTY,
+            mainDate, mainTime, weatherType
+        )
     }
 
     // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
@@ -363,5 +347,17 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         convenienceViewModel.setPlaceCategoryResult()
         placeRVAdapter.removeAllItems()
         binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
+    }
+
+    private fun getDateAndTime(): Pair<String, String> {
+        // 시간이 자정일 경우, 날짜는 하루 앞으로, 시간은 23시로 직접 설정!
+        var time = LocalTime.now().toString().substring(0, 2)
+        var date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt()
+        if (time == "00") {
+            time = "23"
+            date -= 1
+        } else time = (time.toInt() - 1).toString()
+
+        return Pair(date.toString(), time)
     }
 }

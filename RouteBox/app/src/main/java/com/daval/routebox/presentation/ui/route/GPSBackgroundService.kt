@@ -49,7 +49,6 @@ class GPSBackgroundService(): Service() {
 
     @SuppressLint("ForegroundServiceType")
     private fun serviceStart() {
-        var notificationBuilder = setNotification()
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         // GPS 및 네트워크 권한 확인
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -60,19 +59,24 @@ class GPSBackgroundService(): Service() {
 
         val locationRequest = LocationRequest.create()
         locationRequest.apply {
-            interval = 5000 // 앱에서 선호하는 위치 업데이트 수신 간격
-            fastestInterval = 5000 // 앱이 위치를 업데이트 할 수 있는 가장 빠른 간격
+            interval = 60000 // 앱에서 선호하는 위치 업데이트 수신 간격
+            fastestInterval = 60000 // 앱이 위치를 업데이트 할 수 있는 가장 빠른 간격
         }
 
         // 내부는 Network Provider가 정확도가 높고, 외부는 GPS Provider가 정확도가 더 높음!
         // 이 둘 사이에서 더욱 정확한 위치를 알아내기 위해 사용하는 것이 FusedLocationProvider!
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
 
-        // SDK 34 이상일 경우, Service의 Type 명시!
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(1, notificationBuilder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
-        } else {
-            startForeground(1, notificationBuilder.build())
+        // 코스를 기록하고 있는 상태라면 알림 띄워주기
+        var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+        if (sharedPreferencesHelper.getRouteTracking()) {
+            var notificationBuilder = setNotification()
+            // SDK 34 이상일 경우, Service의 Type 명시!
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(1, notificationBuilder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+            } else {
+                startForeground(1, notificationBuilder.build())
+            }
         }
     }
 
