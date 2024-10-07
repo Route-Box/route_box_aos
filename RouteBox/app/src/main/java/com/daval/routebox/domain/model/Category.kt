@@ -17,5 +17,9 @@ enum class Category(val categoryName: String, val categoryIcon: Int) {
         fun getAllCategories(): List<Category> {
             return entries
         }
+
+        fun getCategoryByName(name: String): Category {
+            return entries.find { it.categoryName == name } ?: ETC
+        }
     }
 }

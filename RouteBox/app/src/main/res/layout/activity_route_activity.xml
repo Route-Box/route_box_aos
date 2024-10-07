@@ -306,6 +306,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:hint="@string/category_content"
+                        android:text="@={viewModel.activity.category}"
                         android:textColorHint="@color/gray5"
                         android:background="@null"
                         android:textSize="18sp"

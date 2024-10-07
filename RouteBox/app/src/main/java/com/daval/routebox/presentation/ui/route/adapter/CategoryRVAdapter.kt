@@ -71,6 +71,7 @@ class CategoryRVAdapter: RecyclerView.Adapter<CategoryRVAdapter.ViewHolder>(){
     }
 
     fun setSelectedName(category: String) {
+        selectedIndex = categoryList.lastIndex // ETC 카테고리 id 미리 세팅 (categoryList에서 찾아지지 않을 경우 방지)
         for (i in categoryList.indices) {
             if (categoryList[i].categoryName == category) {
                 selectedIndex = i

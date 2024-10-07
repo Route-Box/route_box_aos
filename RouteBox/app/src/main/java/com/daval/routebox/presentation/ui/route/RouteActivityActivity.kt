@@ -6,13 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -91,7 +88,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         initData()
         setAdapter()
         initClickListener()
-        initEditTextListener()
         initObserve()
 
         // 선택한 사진을 받기 위한 launcher
@@ -112,7 +108,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         val isEditMode = intent.getBooleanExtra("isEdit", false)
         viewModel.setIsEditMode(isEditMode)
         if (isEditMode) { // 넘겨받은 활동 데이터 세팅
-            viewModel.initActivity(intent.getSerializableExtra("activity") as ActivityResult)
+            viewModel.initActivityInEditMode(intent.getSerializableExtra("activity") as ActivityResult)
         }
     }
 
@@ -181,11 +177,10 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         binding.categoryRv.itemAnimator = null
         categoryRVAdapter.setCategoryClickListener(object: CategoryRVAdapter.MyItemClickListener {
             override fun onItemClick(position: Int, isSelected: Boolean) { // 카테고리 선택
+                viewModel.resetCategory()
                 if (categoryRVAdapter.getItem(position) == Category.ETC) {
                     viewModel.setCategoryETC(true)
-                    viewModel.activity.value?.category = binding.categoryEt.text.toString()
                 } else {
-                    binding.categoryEt.setText("")
                     viewModel.setCategoryETC(false)
                     viewModel.activity.value?.category = categoryRVAdapter.getItem(position).categoryName
                 }
@@ -194,7 +189,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 viewModel.checkBtnEnabled()
             }
         })
-        if (viewModel.activity.value?.category != "") { // 카테고리 아이템 선택
+        if (!viewModel.activity.value?.category.isNullOrEmpty()) { // 카테고리 아이템 선택
             categoryRVAdapter.setSelectedName(viewModel.activity.value?.category!!)
         }
     }
@@ -241,8 +236,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
 
         binding.categoryEraseIv.setOnClickListener { // 카테고리 EditText 비우기
-            viewModel.activity.value?.category = ""
-            binding.categoryEt.setText("")
+            viewModel.resetCategory()
         }
 
         binding.nextBtn.setOnClickListener {
@@ -258,17 +252,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 false
             }
         }
-    }
-
-    private fun initEditTextListener() {
-        binding.categoryEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.activity.value?.category = binding.categoryEt.text.toString()
-                viewModel.checkBtnEnabled()
-            }
-            override fun afterTextChanged(p0: Editable?) { }
-        })
     }
 
     fun searchPlace(view: View) {

@@ -1,6 +1,5 @@
 package com.daval.routebox.presentation.ui.route.write
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,20 +9,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.ActivityResult
-import com.daval.routebox.domain.model.CategoryGroupCode
-import com.daval.routebox.domain.model.ConvenienceCategoryResult
+import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
-import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
+import com.daval.routebox.presentation.utils.DateConverter
 import com.daval.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
-import com.daval.routebox.presentation.utils.DateConverter.getAPIFormattedDate
 import com.kakao.vectormap.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -91,7 +87,7 @@ class RouteWriteViewModel @Inject constructor(
         _currentCoordinate.value = LatLng.from(null)
     }
 
-    fun initActivity(activity: ActivityResult) {
+    fun initActivityInEditMode(activity: ActivityResult) {
         _activityId = activity.activityId.toLong()
         _activity.value = activity.convertToActivity()
         placeSearchKeyword.value = activity.locationName
@@ -99,6 +95,9 @@ class RouteWriteViewModel @Inject constructor(
         _date.value = DateConverter.convertDateStringToLocalDate(activity.visitDate)
         _startTimePair.value = DateConverter.convertTimeStringToIntPair(activity.startTime)
         _endTimePair.value = DateConverter.convertTimeStringToIntPair(activity.endTime)
+        if (Category.getCategoryByName(activity.category) == Category.ETC) { // 기타 카테고리의 경우
+            _categoryETC.value = true
+        }
     }
 
     fun setIsEditMode(bool: Boolean) {
@@ -138,11 +137,11 @@ class RouteWriteViewModel @Inject constructor(
 
     fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
         if (isStartTime) {
-            _activity.value?.startTime = changeTimeToString(timePair)
+            _activity.value?.startTime = DateConverter.getAPIFormattedTime(timePair)
             _startTimePair.value = timePair
         }
         else {
-            _activity.value?.endTime = changeTimeToString(timePair)
+            _activity.value?.endTime = DateConverter.getAPIFormattedTime(timePair)
             _endTimePair.value = timePair
         }
 
@@ -180,7 +179,9 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     fun resetCategory() {
-        _activity.value?.category = ""
+        _activity.value = _activity.value?.copy(
+            category = ""
+        )
     }
 
     fun checkBtnEnabled() {
