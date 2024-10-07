@@ -11,5 +11,11 @@ enum class Category(val categoryName: String, val categoryIcon: Int) {
     CULTURE("문화 공간", R.drawable.ic_category_culture),
     TOILET("화장실", R.drawable.ic_category_toilet),
     PARKING("주차장", R.drawable.ic_category_parking),
-    ETC("기타", R.drawable.ic_more_horizontal)
+    ETC("기타", R.drawable.ic_more_horizontal);
+
+    companion object {
+        fun getAllCategories(): List<Category> {
+            return entries
+        }
+    }
 }
