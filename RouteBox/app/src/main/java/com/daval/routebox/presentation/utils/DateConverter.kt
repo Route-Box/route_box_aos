@@ -33,6 +33,10 @@ object DateConverter {
         return date.format(DateTimeFormatter.ofPattern(DATE_API_PATTERN))
     }
 
+    fun getAPIFormattedTime(timePair: Pair<Int, Int>): String {
+        return "${format(MINUTE_FORMAT, timePair.first)}${TIME_DELIMINATOR}${format(MINUTE_FORMAT, timePair.second)}"
+    }
+
     // 로컬에서 선택한 시간을 서버 전송 형태로 벼경
     fun convertDateAndTimeToUTCString(date: LocalDate, timePair: Pair<Int, Int>): String {
         return convertKSTToUTC(getAPIFormattedDateAndTime(date, timePair))

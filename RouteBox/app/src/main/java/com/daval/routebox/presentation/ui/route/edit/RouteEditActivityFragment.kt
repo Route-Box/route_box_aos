@@ -89,7 +89,6 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private fun initClickListeners() {
         // 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-            Log.d("RouteEditActivityFragment", "routeId: ${viewModel.routeId.value}")
             startActivity(Intent(activity, RouteActivityActivity::class.java)
                 .putExtra("routeId", viewModel.routeId.value)
             )

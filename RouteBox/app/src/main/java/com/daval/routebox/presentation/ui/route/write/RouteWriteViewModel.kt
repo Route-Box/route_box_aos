@@ -21,11 +21,9 @@ import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import com.daval.routebox.presentation.utils.DateConverter
 import com.daval.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
-import com.daval.routebox.presentation.utils.DateConverter.getAPIFormattedDate
 import com.kakao.vectormap.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -39,7 +37,7 @@ class RouteWriteViewModel @Inject constructor(
     private val _routeId = MutableLiveData<Int>()
     val routeId: LiveData<Int> = _routeId
 
-    var _activityId: Long = 0
+    private var _activityId: Long = 0
 
     private val _activity = MutableLiveData<Activity>()
     val activity: LiveData<Activity> = _activity
@@ -153,18 +151,19 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     fun updateDate(date: LocalDate) {
-        _activity.value?.visitDate = getAPIFormattedDate(date)
+        _date.value = date
+        _activity.value?.visitDate = DateConverter.getAPIFormattedDate(date)
 
         checkBtnEnabled()
     }
 
     fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
         if (isStartTime) {
-            _activity.value?.startTime = DateConverter.getFormattedTime(timePair)
+            _activity.value?.startTime = DateConverter.getAPIFormattedTime(timePair)
             _startTimePair.value = timePair
         }
         else {
-            _activity.value?.endTime =  DateConverter.getFormattedTime(timePair)
+            _activity.value?.endTime =  DateConverter.getAPIFormattedTime(timePair)
             _endTimePair.value = timePair
         }
 
@@ -197,10 +196,7 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     fun resetActivity() {
-        _activity.value = Activity("", "", "", "",
-            TODAY.toString(), DateConverter.getFormattedTime(_startTimePair.value), DateConverter.getFormattedTime(_endTimePair.value),
-            "", "", arrayListOf()
-        )
+        _activity.value = Activity()
         checkBtnEnabled()
     }
 
@@ -237,6 +233,7 @@ class RouteWriteViewModel @Inject constructor(
 
     // 활동 추가
     fun addActivity(context: Context) {
+        Log.d("RouteWriteVM", "route: ${_activity.value}")
         viewModelScope.launch {
             _activityResult.value = repository.createActivity(
                 context,

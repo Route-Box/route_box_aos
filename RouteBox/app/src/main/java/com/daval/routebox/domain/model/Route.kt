@@ -3,7 +3,9 @@ package com.daval.routebox.domain.model
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.daval.routebox.presentation.utils.DateConverter
 import java.io.Serializable
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class RoutePreviewResult(
@@ -139,7 +141,7 @@ data class Activity(
     var address: String = "",
     var latitude: String = "",
     var longitude: String = "",
-    var visitDate: String = "",
+    var visitDate: String = DateConverter.getAPIFormattedDate(LocalDate.now()),
     var startTime: String = "",
     var endTime: String = "",
     var category: String = "", // 음식점, 관광명소 등
