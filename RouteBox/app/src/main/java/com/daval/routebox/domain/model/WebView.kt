@@ -17,7 +17,9 @@ enum class WebViewPage(val viewName: String) {
     MY_ROUTE("MY_ROUTE"),
     SEARCH("SEARCH"),
     ROUTE("ROUTE"),
-    COUPON("COUPON");
+    COUPON("COUPON"),
+    LOGOUT("LOGOUT"),
+    WITHDRAW("WITHDRAW");
 
     companion object {
         fun findPage(pageString: String): WebViewPage {

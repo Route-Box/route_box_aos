@@ -10,6 +10,7 @@ import org.json.JSONObject
 interface NativeMessageCallback {
     fun onReactComponentLoaded(boolean: Boolean) // 페이지 로드가 완료됐을 때
     fun onMessageReceived(type: MessageType, page: WebViewPage, id: String) // 웹에서 메시지를 받았을 때
+    fun onMyPageMessageReceive(page: WebViewPage) // 마이페이지
 }
 
 abstract class WebViewBridge(private val callback: NativeMessageCallback) {
@@ -26,19 +27,24 @@ abstract class WebViewBridge(private val callback: NativeMessageCallback) {
             // type 필드 값 가져오기
             val type = jsonObject.getString("type")
 
-            // payload 객체 가져오기
-            val payload = jsonObject.getJSONObject("payload")
+            // payload 객체가 존재하는지 체크
+            if (jsonObject.has("payload")) {
+                // payload가 있을 경우 처리
+                val payload = jsonObject.getJSONObject("payload")
+                val page = payload.getString("page")
+                val id = if (payload.has("id")) payload.getString("id") else "No ID"
 
-            // 페이지 식별자와 선택적 ID 가져오기
-            val page = payload.getString("page")
-            val id = if (payload.has("id")) payload.getString("id") else "No ID"
+                // 메시지를 구성하여 로그로 표시
+                val msg = "Type: $type, Page: $page, ID: $id"
+                Log.d("WebViewBridge", "msg: $msg")
 
-            // 메시지를 구성하여 Toast로 표시
-            val msg = "Type: $type, Page: $page, ID: $id"
-            Log.d("WebViewBridge", "msg: $msg")
-
-            // 콜백 호출하여 데이터를 전달
-            callback.onMessageReceived(MessageType.findMessageType(type), WebViewPage.findPage(page), id)
+                // 콜백 호출하여 데이터를 전달
+                callback.onMessageReceived(MessageType.findMessageType(type), WebViewPage.findPage(page), id)
+            } else {
+                // payload가 없을 경우 (e.g., LOGOUT, WITHDRAW 같은 메시지)
+                Log.d("WebViewBridge", "No payload for type: $type")
+                callback.onMyPageMessageReceive(WebViewPage.findPage(type)) // 마이페이지 처리
+            }
         } catch (e: JSONException) {
             e.printStackTrace()
         }
