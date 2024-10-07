@@ -3,6 +3,7 @@ package com.daval.routebox.domain.model
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class RoutePreviewResult(
@@ -143,7 +144,7 @@ data class Activity(
     var endTime: String = "",
     var category: String = "", // 음식점, 관광명소 등
     var description: String? = null,
-    var activityImages: MutableList<String> = mutableListOf(),
+    var activityImages: ArrayList<String> = arrayListOf(),
 )
 
 data class ActivityResult(
@@ -158,12 +159,20 @@ data class ActivityResult(
     var category: String = "",
     var description: String = "",
     var activityImages: ArrayList<ActivityImage> = arrayListOf()
-)
+): Serializable {
+    fun convertToActivity(): Activity {
+        return Activity(
+            locationName, address, latitude, longitude,
+            visitDate, startTime, endTime,
+            category, description, activityImages.map { it.url } as ArrayList<String>
+        )
+    }
+}
 
 data class ActivityImage(
     var id: Int,
     var url: String
-)
+): Serializable
 
 data class ActivityId(
     var activityId: Int

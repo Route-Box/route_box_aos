@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_activity"
+                android:text="@{viewModel.isEditMode() ? @string/do_activity_edit : @string/add_activity}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:background="@color/transparent"
-                        android:text="@{viewModel.placeSearchKeyword}"
+                        android:text="@={viewModel.placeSearchKeyword}"
                         android:hint="@string/location_search"
                         android:textColorHint="@color/gray4"
                         style="@style/body_r_m"/>
@@ -157,26 +157,15 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                        <ImageView
-                            android:id="@+id/empty_iv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/img_empty"
-                            android:layout_marginBottom="14dp"
-                            android:visibility="@{viewModel.placeSearchResult.size == 0 ? View.VISIBLE : View.GONE}"
-                            app:layout_constraintVertical_chainStyle="packed"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/empty_tv"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/empty_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:drawableTop="@drawable/img_empty"
+                            android:drawablePadding="14dp"
                             android:text="@string/route_place_search"
                             android:visibility="@{viewModel.placeSearchResult.size == 0 ? View.VISIBLE : View.GONE}"
-                            app:layout_constraintTop_toBottomOf="@id/empty_iv"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent" />
@@ -276,7 +265,8 @@
                     app:layout_constraintTop_toBottomOf="@id/category_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    tools:listitem="@layout/item_category" />
+                    tools:listitem="@layout/item_category"
+                    tools:itemCount="5"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/category_etc"
@@ -402,7 +392,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="80dp"
                             android:hint="@string/route_place_content_title"
-                            android:text="@{String.valueOf(viewModel.activity.description)}"
+                            android:text="@={viewModel.activity.description}"
                             android:background="@color/transparent"
                             android:gravity="top"
                             android:maxLength="40"

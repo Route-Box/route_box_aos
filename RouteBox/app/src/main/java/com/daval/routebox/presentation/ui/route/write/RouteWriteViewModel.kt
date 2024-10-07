@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.ui.route.write
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,6 +19,7 @@ import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
+import com.daval.routebox.presentation.utils.DateConverter
 import com.daval.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
 import com.daval.routebox.presentation.utils.DateConverter.getAPIFormattedDate
 import com.kakao.vectormap.LatLng
@@ -37,11 +39,12 @@ class RouteWriteViewModel @Inject constructor(
     private val _routeId = MutableLiveData<Int>()
     val routeId: LiveData<Int> = _routeId
 
+    var _activityId: Long = 0
+
     private val _activity = MutableLiveData<Activity>()
     val activity: LiveData<Activity> = _activity
 
-    private val _placeSearchKeyword = MutableLiveData<String>()
-    val placeSearchKeyword: LiveData<String> = _placeSearchKeyword
+    val placeSearchKeyword = MutableLiveData<String>("")
 
     private val _placeSearchMode = MutableLiveData<Boolean>()
     val placeSearchMode: LiveData<Boolean> = _placeSearchMode
@@ -51,6 +54,9 @@ class RouteWriteViewModel @Inject constructor(
 
     private val _placeSearchPage = MutableLiveData<Int>()
     val placeSearchPage: LiveData<Int> = _placeSearchPage
+
+    private val _isEditMode = MutableLiveData<Boolean>(false)
+    val isEditMode: LiveData<Boolean> = _isEditMode
 
     // 장소 검색 API 결과가 마지막 페이지인지 확인 후 페이징 마무리
     private val _isKeywordEndPage = MutableLiveData<Boolean>()
@@ -98,10 +104,7 @@ class RouteWriteViewModel @Inject constructor(
 
 
     init {
-        _activity.value = Activity("", "", "", "",
-            TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
-            "", "", arrayListOf()
-        )
+        _activity.value = Activity()
         _categoryETC.value = false
         _activityResult.value = ActivityResult()
         _isCategoryEndPage.value = false
@@ -109,7 +112,23 @@ class RouteWriteViewModel @Inject constructor(
         _placeCategoryResult.value = arrayListOf()
     }
 
+    fun initActivity(activity: ActivityResult) {
+        _activityId = activity.activityId.toLong()
+        _activity.value = activity.convertToActivity()
+        Log.d("RouteWriteViewModel", "activity: $activity")
+        placeSearchKeyword.value = activity.locationName
+        // 시간 초기화
+        _date.value = DateConverter.convertDateStringToLocalDate(activity.visitDate)
+        _startTimePair.value = DateConverter.convertTimeStringToIntPair(activity.startTime)
+        _endTimePair.value = DateConverter.convertTimeStringToIntPair(activity.endTime)
+    }
+
+    fun setIsEditMode(bool: Boolean) {
+        _isEditMode.value = bool
+    }
+
     fun setRouteId(routeId: Int) {
+        Log.d("RouteWriteViewModel", "routeId: $routeId")
         this._routeId.value = routeId
     }
 
@@ -133,10 +152,6 @@ class RouteWriteViewModel @Inject constructor(
         _placeSearchMode.value = mode
     }
 
-    fun setPlaceSearchKeyword(query: String) {
-        _placeSearchKeyword.value = query
-    }
-
     fun updateDate(date: LocalDate) {
         _activity.value?.visitDate = getAPIFormattedDate(date)
 
@@ -145,24 +160,15 @@ class RouteWriteViewModel @Inject constructor(
 
     fun updateTime(isStartTime: Boolean, timePair: Pair<Int, Int>) {
         if (isStartTime) {
-            _activity.value?.startTime = changeTimeToString(timePair)
+            _activity.value?.startTime = DateConverter.getFormattedTime(timePair)
             _startTimePair.value = timePair
         }
         else {
-            _activity.value?.endTime = changeTimeToString(timePair)
+            _activity.value?.endTime =  DateConverter.getFormattedTime(timePair)
             _endTimePair.value = timePair
         }
 
         checkBtnEnabled()
-    }
-
-    fun changeTimeToString(time: Pair<Int, Int>?): String {
-        if (time != null) {
-            val df = DecimalFormat("00")
-            return "${df.format(time.first)}:${df.format(time.second)}"
-        }
-
-        return ""
     }
 
     fun setCategoryETC(category: Boolean) {
@@ -192,7 +198,7 @@ class RouteWriteViewModel @Inject constructor(
 
     fun resetActivity() {
         _activity.value = Activity("", "", "", "",
-            TODAY.toString(), changeTimeToString(_startTimePair.value), changeTimeToString(_endTimePair.value),
+            TODAY.toString(), DateConverter.getFormattedTime(_startTimePair.value), DateConverter.getFormattedTime(_endTimePair.value),
             "", "", arrayListOf()
         )
         checkBtnEnabled()
@@ -203,7 +209,7 @@ class RouteWriteViewModel @Inject constructor(
         viewModelScope.launch {
             _placeSearchPage.value = 1
 
-            val response = repository.searchKakaoPlace(_placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
+            val response = repository.searchKakaoPlace(placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
             _placeSearchResult.value = response.documents as ArrayList
             _isKeywordEndPage.value = response.meta.is_end
             _placeSearchMode.value = true
@@ -213,7 +219,7 @@ class RouteWriteViewModel @Inject constructor(
     // 장소 검색 페이징 처리
     fun pagingPlace() {
         viewModelScope.launch {
-            val response = repository.searchKakaoPlace(_placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
+            val response = repository.searchKakaoPlace(placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
             _placeSearchResult.value = response.documents as ArrayList
             _isKeywordEndPage.value = response.meta.is_end
         }
@@ -225,8 +231,8 @@ class RouteWriteViewModel @Inject constructor(
 
     fun checkBtnEnabled() {
         _btnEnabled.value = _activity.value?.locationName != ""
-                && _activity.value?.visitDate != "" && _activity.value?.startTime != ""
-                && _activity.value?.endTime != "" && _activity.value?.category != ""
+                && _date.value != null && _startTimePair.value != null
+                && _endTimePair.value != null && _activity.value?.category != ""
     }
 
     // 활동 추가

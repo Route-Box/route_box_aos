@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteActivityBinding
+import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.presentation.ui.route.adapter.CategoryRVAdapter
@@ -48,8 +49,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
     private var imgList: ArrayList<String?> = arrayListOf(null)
-
-    private var routeId: Int = -1
 
     private val viewModel: RouteWriteViewModel by viewModels()
 
@@ -83,9 +82,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             lifecycleOwner = this@RouteActivityActivity
         }
 
-        routeId = intent.getIntExtra("routeId", -1)
-        viewModel.setRouteId(routeId)
-
+        initData()
         setAdapter()
         initClickListener()
         initEditTextListener()
@@ -94,7 +91,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         // 선택한 사진을 받기 위한 launcher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if (result.resultCode == RESULT_OK) {
-                var imgList = result.data?.getStringArrayListExtra("album")
+                val imgList = result.data?.getStringArrayListExtra("album")
 
                 for (i in 0 until imgList?.size!!) {
                     imgRVAdapter.addItem(imgList[i])
@@ -104,13 +101,32 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
     }
 
+    private fun initData() {
+        viewModel.setRouteId(intent.getIntExtra("routeId", -1))
+        val isEditMode = intent.getBooleanExtra("isEdit", false)
+        viewModel.setIsEditMode(isEditMode)
+        if (isEditMode) { // 넘겨받은 활동 데이터 세팅
+            viewModel.initActivity(intent.getSerializableExtra("activity") as ActivityResult)
+        }
+    }
+
     private fun initObserve() {
+        viewModel.activity.observe(this) {
+            viewModel.checkBtnEnabled()
+        }
+
         viewModel.activityResult.observe(this@RouteActivityActivity) {
             if (viewModel.activityResult.value?.activityId != -1) finish()
         }
     }
 
     private fun setAdapter() {
+        setPlaceAdapter()
+        setCategoryAdapter()
+        setImageAdapter()
+    }
+
+    private fun setPlaceAdapter() {
         placeRVAdapter = KakaoPlaceRVAdapter(placeList)
         binding.placeRv.adapter = placeRVAdapter
         binding.placeRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -149,13 +165,15 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 }
             }
         })
+    }
 
+    private fun setCategoryAdapter() {
         categoryRVAdapter = CategoryRVAdapter()
         binding.categoryRv.adapter = categoryRVAdapter
         binding.categoryRv.layoutManager = FlexboxLayoutManager(this)
         binding.categoryRv.itemAnimator = null
         categoryRVAdapter.setCategoryClickListener(object: CategoryRVAdapter.MyItemClickListener {
-            override fun onItemClick(position: Int, isSelected: Boolean) {
+            override fun onItemClick(position: Int, isSelected: Boolean) { // 카테고리 선택
                 if (categoryRVAdapter.getItem(position) == Category.ETC) {
                     viewModel.setCategoryETC(true)
                     viewModel.activity.value?.category = binding.categoryEt.text.toString()
@@ -169,10 +187,13 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 viewModel.checkBtnEnabled()
             }
         })
-        if (viewModel.activity.value?.category != "") {
+        if (viewModel.activity.value?.category != "") { // 카테고리 아이템 선택
             categoryRVAdapter.setSelectedName(viewModel.activity.value?.category!!)
         }
+    }
 
+    private fun setImageAdapter() {
+        imgList.addAll(viewModel.activity.value!!.activityImages.map { it } as ArrayList<String>)
         imgRVAdapter = PictureRVAdapter(imgList)
         binding.pictureRv.adapter = imgRVAdapter
         binding.pictureRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -187,7 +208,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                     galleryPermissionLauncher.launch(checkVersion())
                 }
             }
-            override fun onPictureItemClick(position: Int) {
+            override fun onPictureDeleteIconClick(position: Int) {
                 imgRVAdapter.removeItem(position)
                 viewModel.activity.value?.activityImages!!.removeAt(position - 1)
             }
@@ -201,7 +222,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
 
         binding.dateContent.setOnClickListener {
-            showCalendarBottomSheet(true, viewModel.date.value!!)
+            showCalendarBottomSheet(viewModel.date.value!!)
         }
 
         binding.startTimeTv.setOnClickListener {
@@ -212,7 +233,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             showTimePickerBottomSheet(false, viewModel.endTimePair.value)
         }
 
-        binding.categoryEraseIv.setOnClickListener {
+        binding.categoryEraseIv.setOnClickListener { // 카테고리 EditText 비우기
             viewModel.activity.value?.category = ""
             binding.categoryEt.setText("")
         }
@@ -223,15 +244,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     private fun initEditTextListener() {
-        binding.searchEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.activity.value?.locationName = ""
-                viewModel.setPlaceSearchKeyword(binding.searchEt.text.toString())
-                viewModel.checkBtnEnabled()
-            }
-            override fun afterTextChanged(p0: Editable?) { }
-        })
         binding.categoryEt.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -240,19 +252,10 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             }
             override fun afterTextChanged(p0: Editable?) { }
         })
-        binding.locationContentEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.activity.value?.description = binding.locationContentEt.text.toString()
-                binding.locationContentLength.text = binding.locationContentEt.text.length.toString()
-                viewModel.checkBtnEnabled()
-            }
-            override fun afterTextChanged(p0: Editable?) { }
-        })
     }
 
-    private fun showCalendarBottomSheet(isStartDate: Boolean, date: LocalDate) {
-        val calendarBottomSheet = CalendarBottomSheet(this, isStartDate, date)
+    private fun showCalendarBottomSheet(date: LocalDate) {
+        val calendarBottomSheet = CalendarBottomSheet(this, true, date)
         calendarBottomSheet.run {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
         }

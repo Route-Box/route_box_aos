@@ -21,7 +21,7 @@ class PictureRVAdapter(
 
     interface MyItemClickListener {
         fun onPlusItemClick(position: Int)
-        fun onPictureItemClick(position: Int)
+        fun onPictureDeleteIconClick(position: Int)
     }
 
     // 뷰의 타입을 정해주는 부분
@@ -56,7 +56,7 @@ class PictureRVAdapter(
             (holder as PictureViewHolder).bind(imgList[position]!!)
             holder.setIsRecyclable(false)
             holder.binding.deleteIv.setOnClickListener {
-                mItemClickListener.onPictureItemClick(position)
+                mItemClickListener.onPictureDeleteIconClick(position)
             }
         }
     }
@@ -88,7 +88,7 @@ class PictureRVAdapter(
 
     fun removeItem(position: Int) {
         imgList.removeAt(position)
-        this.notifyDataSetChanged()
+        this.notifyItemRemoved(position)
     }
 
     fun returnAllItems(): ArrayList<String?> {

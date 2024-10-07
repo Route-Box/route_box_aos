@@ -79,7 +79,7 @@ class RouteRepositoryImpl @Inject constructor(
         endTime: String,
         category: String,
         description: String?,
-        activityImages: MutableList<String>
+        activityImages: List<String>
     ): ActivityResult {
         return remoteRouteDataSource.createActivity(
             context,

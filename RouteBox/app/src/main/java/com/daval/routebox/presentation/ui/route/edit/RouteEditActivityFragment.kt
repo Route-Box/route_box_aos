@@ -89,16 +89,23 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private fun initClickListeners() {
         // 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-            startActivity(Intent(activity, RouteActivityActivity::class.java))
+            Log.d("RouteEditActivityFragment", "routeId: ${viewModel.routeId.value}")
+            startActivity(Intent(activity, RouteActivityActivity::class.java)
+                .putExtra("routeId", viewModel.routeId.value)
+            )
         }
 
         // 활동 아이템 클릭
         activityAdapter.setActivityClickListener(object : ActivityRVAdapter.MyItemClickListener {
-            override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", viewModel.routeId.value))
+            override fun onEditButtonClick(position: Int, data: ActivityResult) { // 활동 수정
+                startActivity(Intent(activity, RouteActivityActivity::class.java).apply {
+                    putExtra("routeId", viewModel.routeId.value)
+                    putExtra("activity", viewModel.route.value!!.routeActivities[position])
+                    putExtra("isEdit", true)
+                })
             }
 
-            override fun onDeleteButtonClick(position: Int) {
+            override fun onDeleteButtonClick(position: Int) { // 활동 삭제
                 deleteId = activityAdapter.returnActivityId(position)
                 deleteActivityIndex = position
                 // 활동 삭제 팝업 띄우기

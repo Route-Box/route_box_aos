@@ -81,7 +81,7 @@ class RouteEditViewModel @Inject constructor(
         }
     }
 
-    /* 활동 삭제 */
+    /** 활동 삭제 */
     fun deleteActivity(activityId: Int) {
         viewModelScope.launch {
             _deleteActivityId.value = repository.deleteActivity(_routeId.value!!, activityId).activityId

@@ -258,14 +258,12 @@ class RemoteRouteDataSource @Inject constructor(
         endTime: String,
         category: String,
         description: String?,
-        activityImages: MutableList<String>
+        activityImages: List<String>
     ): ActivityResult {
-        var activityResult = ActivityResult(
-            -1, "", "", "", "", "", "", "", "", "", arrayListOf()
-        )
+        var activityResult = ActivityResult()
 
         // 이미지 문자열을 MultipartBody.Part 형태로 변환
-        val activityImagesPart = ImageConverter.getMultipartImgList(context, activityImages)
+        val activityImagesPart = ImageConverter.getMultipartImgList(context, activityImages.toMutableList())
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.createActivity(
