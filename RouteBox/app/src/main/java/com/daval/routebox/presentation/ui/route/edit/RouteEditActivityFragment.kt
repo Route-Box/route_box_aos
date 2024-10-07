@@ -51,10 +51,16 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
 
         initMapSetting()
         setInit()
+        setActivityAdapter()
         initClickListeners()
         initObserve()
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.tryGetMyRouteDetail() // 루트 상세조회 API 호출
     }
 
     private fun initMapSetting() {
@@ -118,13 +124,12 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
     private fun initObserve() {
         viewModel.route.observe(viewLifecycleOwner) { route ->
             if (route.routeActivities.isNotEmpty()) {
-                setActivityAdapter()
+                activityAdapter.addAllActivities(route.routeActivities as MutableList<ActivityResult>)
             }
         }
     }
@@ -138,5 +143,6 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     override fun onClickPositiveButton(id: Int) {
         Toast.makeText(requireContext(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
         viewModel.deleteActivity(deleteId)
+        activityAdapter.removeItem(deleteActivityIndex)
     }
 }

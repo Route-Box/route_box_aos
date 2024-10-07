@@ -62,6 +62,13 @@ class RouteEditViewModel @Inject constructor(
         this._routeId.value = routeId
     }
 
+    /** 내 루트 상세조회 */
+    fun tryGetMyRouteDetail() {
+        viewModelScope.launch {
+            _route.value = repository.getRouteDetail(_routeId.value!!)
+        }
+    }
+
     /** 루트 수정 */
     fun tryEditRoute() {
         viewModelScope.launch {
