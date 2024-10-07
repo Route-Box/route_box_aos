@@ -28,7 +28,9 @@
                 android:id="@+id/item_search_result_post_cover_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/img_empty" />
+                app:imageUrl="@{route.routeImageUrl}"
+                app:placeHolder="@{@drawable/ic_thumbnail_default}"
+                tools:src="@drawable/ic_thumbnail_default"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
