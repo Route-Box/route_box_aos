@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -89,6 +91,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         initData()
         setAdapter()
         initClickListener()
+        initEditTextListener()
         initObserve()
 
         // 선택한 사진을 받기 위한 launcher
@@ -122,6 +125,16 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         viewModel.isRequestSuccess.observe(this) {
             if (it == true) finish()
         }
+    }
+
+    private fun initEditTextListener() {
+        binding.categoryEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.checkBtnEnabled()
+            }
+            override fun afterTextChanged(p0: Editable?) { }
+        })
     }
 
     private fun setAdapter() {
