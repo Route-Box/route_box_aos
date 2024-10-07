@@ -1,6 +1,7 @@
 package com.daval.routebox.presentation.ui.my
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,10 +10,10 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -24,8 +25,10 @@ import com.daval.routebox.domain.model.WebViewPage
 import com.daval.routebox.presentation.config.ApplicationClass.Companion.dsManager
 import com.daval.routebox.presentation.config.Constants.ENDPOINT_MY
 import com.daval.routebox.presentation.config.Constants.WEB_BASE_URL
+import com.daval.routebox.presentation.ui.auth.LoginActivity
 import com.daval.routebox.presentation.utils.NativeMessageCallback
 import com.daval.routebox.presentation.utils.WebViewBridge
+import kotlinx.coroutines.launch
 
 class MyFragment : Fragment(), NativeMessageCallback {
     private lateinit var binding: FragmentMyBinding
@@ -90,9 +93,7 @@ class MyFragment : Fragment(), NativeMessageCallback {
             payload = TokenPayload(getSavedAccessToken())
         )
 
-        val messageJson = Gson().toJson(nativeMessage)
-        Log.d("MyWebView", "messageJson: $messageJson")
-        return messageJson
+        return Gson().toJson(nativeMessage)
     }
 
     // 앱 내 저장된 토큰 정보 가져오기
@@ -105,6 +106,36 @@ class MyFragment : Fragment(), NativeMessageCallback {
     }
 
     override fun onMessageReceived(type: MessageType, page: WebViewPage, id: String) {
-        //TODO: 콜백 처리 작업 진행
+        //
+    }
+
+    override fun onMyPageMessageReceive(page: WebViewPage) {
+        when (page) {
+            WebViewPage.LOGOUT -> { // 로그아웃
+                Log.d("MyFragment", "Logout")
+                lifecycleScope.launch {
+                    deleteToken()
+                    moveToLoginActivity()
+                }
+            }
+            WebViewPage.WITHDRAW -> { // 회원탈퇴
+                lifecycleScope.launch {
+                    Log.d("MyFragment", "Withdraw")
+                    deleteToken()
+                    moveToLoginActivity()
+                }
+            }
+            else -> Log.d("MyFragment", "Unknown page: $page")
+        }
+    }
+
+    private fun moveToLoginActivity() {
+        requireActivity().startActivity(Intent(requireActivity(), LoginActivity::class.java))
+        requireActivity().finish()
+    }
+
+    // 앱 내에 저장된 토큰 정보 삭제
+    private suspend fun deleteToken() {
+        dsManager.clearTokens()
     }
 }

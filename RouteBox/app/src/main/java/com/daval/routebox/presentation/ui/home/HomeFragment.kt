@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
@@ -101,9 +102,7 @@ class HomeFragment : Fragment(), NativeMessageCallback {
             payload = TokenPayload(getSavedAccessToken())
         )
 
-        val messageJson = Gson().toJson(nativeMessage)
-        Log.d("HomeWebView", "messageJson: $messageJson")
-        return messageJson
+        return Gson().toJson(nativeMessage)
     }
 
     // 앱 내 저장된 토큰 정보 가져오기
@@ -137,8 +136,12 @@ class HomeFragment : Fragment(), NativeMessageCallback {
                 )
             }
 
-            else -> Log.d("MyFragment", "Unknown page: $page")
+            else -> Log.d("HomeFragment", "Unknown page: $page")
         }
+    }
+
+    override fun onMyPageMessageReceive(page: WebViewPage) {
+        //
     }
 
     private fun selectBottomNavTab(tabId: Int) {
