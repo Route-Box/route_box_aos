@@ -2,6 +2,7 @@ package com.daval.routebox.data.remote
 
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.KakaoSearchResult
+import com.daval.routebox.domain.model.WeatherRegionResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -25,4 +26,11 @@ interface KakaoApiService {
         @Query("page") page: Int,
         @Query("radius") radius: Int
     ): KakaoSearchResult
+
+    @GET("geo/coord2regioncode")
+    suspend fun getKakaoRegionCode(
+        @Header("Authorization") authorization: String,
+        @Query("x") longitude: String,
+        @Query("y") latitude: String
+    ): WeatherRegionResponse
 }

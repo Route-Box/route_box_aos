@@ -1,6 +1,8 @@
 package com.daval.routebox.presentation.ui.route
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
@@ -24,7 +28,6 @@ import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.utils.CommonPopupDialog
 import com.daval.routebox.presentation.utils.PopupDialogInterface
-import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,18 +51,6 @@ class RouteFragment : Fragment(), PopupDialogInterface {
             viewModel = this@RouteFragment.viewModel
             lifecycleOwner = this@RouteFragment
         }
-
-        // 더미데이터
-//        WeatherCoordinatorConverter.changeCoordinate(0, 126.970955555555, 37.5732694444444) // 60, 127
-//        WeatherCoordinatorConverter.changeCoordinate(1, 60.0, 127.0) // 126.970955555555, 37.5732694444444
-//        WeatherCoordinatorConverter.changeCoordinate(0, 129.212866666666, 35.8322972222222) // 100, 90
-//        WeatherCoordinatorConverter.changeCoordinate(1, 100.0, 90.0) // 129.212866666666, 35.8322972222222
-//        WeatherCoordinatorConverter.changeCoordinate(0, 128.821419444444, 35.9101777777777) // 93, 91
-//        WeatherCoordinatorConverter.changeCoordinate(1, 93.0, 91.0) // 128.821419444444, 35.9101777777777
-//        WeatherCoordinatorConverter.changeCoordinate(0, 128.917155555555, 36.9322416666666) // 94, 114
-//        WeatherCoordinatorConverter.changeCoordinate(1, 94.0, 114.0) // 128.917155555555, 36.9322416666666
-//        WeatherCoordinatorConverter.changeCoordinate(0, 126.515686111111, 33.5063472222222) // 52, 38
-//        WeatherCoordinatorConverter.changeCoordinate(1, 52.0, 38.0) // 126.515686111111, 33.5063472222222
 
         setAdapter()
         initClickListeners()

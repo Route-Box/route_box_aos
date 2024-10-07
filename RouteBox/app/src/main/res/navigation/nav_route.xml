@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/routeConvenienceFragment"
-        android:name="com.daval.routebox.presentation.ui.route.write.RouteConvenienceFragment"
+        android:name="com.daval.routebox.presentation.ui.route.write.convenience.RouteConvenienceFragment"
         android:label="RouteConvenienceFragment"
         tools:layout="@layout/fragment_route_convenience" >
         <action

@@ -29,10 +29,16 @@ object BindingAdapter {
 
     @JvmStatic
     @BindingAdapter("app:imageUri")
-    fun setUriImage (imageView: ImageView, uri: Uri?) {
+    fun setUriImage(imageView: ImageView, uri: Uri?) {
         Glide.with(imageView.context)
             .load(uri)
             .into(imageView)
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:imageSrc")
+    fun setSrcImage(imageView: ImageView, resource: Int) {
+        imageView.setImageResource(resource)
     }
 
     @JvmStatic

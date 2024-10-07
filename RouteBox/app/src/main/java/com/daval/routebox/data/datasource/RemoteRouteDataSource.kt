@@ -30,6 +30,9 @@ import com.daval.routebox.domain.model.RoutePublicRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.model.RouteUpdateResult
 import com.daval.routebox.domain.model.RouteWriteTime
+import com.daval.routebox.domain.model.WeatherRegionDocuments
+import com.daval.routebox.domain.model.WeatherRegionMeta
+import com.daval.routebox.domain.model.WeatherRegionResponse
 import com.daval.routebox.presentation.utils.ImageConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -96,6 +99,27 @@ class RemoteRouteDataSource @Inject constructor(
             }
         }
         return kakaoSearchResult
+    }
+
+    suspend fun getKakaoRegionCode(
+        latitude: String,
+        longitude: String
+    ): WeatherRegionResponse {
+        var regionResponse = WeatherRegionResponse(
+            WeatherRegionMeta(-1),
+            mutableListOf()
+        )
+        withContext(Dispatchers.IO) {
+            runCatching {
+                kakaoApiService.getKakaoRegionCode("KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}", longitude, latitude)
+            }.onSuccess {
+                regionResponse = it
+                Log.d("RemoteRouteDataSource", "getKakaoRegionCode Success\nregionResponse = ${regionResponse}")
+            }.onFailure { e ->
+                Log.d("RemoteRouteDataSource", "getKakaoRegionCode Fail\ne = $e")
+            }
+        }
+        return regionResponse
     }
 
     suspend fun getSearchRouteList(
@@ -199,7 +223,7 @@ class RemoteRouteDataSource @Inject constructor(
                 routeApiService.addRouteDot(routeId, routePointRequest)
             }.onSuccess {
                 routeDot = it
-                Log.d("RemoteRouteDataSource", "addRouteDot Success\nrouteDot = ${routeDot}")
+                Log.d("ROUTE-TEST", "addRouteDot Success\nrouteDot = ${routeDot}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "addRouteDot Fail\ne = $e")
             }

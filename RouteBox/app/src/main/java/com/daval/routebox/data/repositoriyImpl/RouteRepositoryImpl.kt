@@ -20,6 +20,7 @@ import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.model.RoutePublicRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.model.RouteUpdateResult
+import com.daval.routebox.domain.model.WeatherRegionResponse
 import com.daval.routebox.domain.repositories.RouteRepository
 import javax.inject.Inject
 
@@ -33,6 +34,10 @@ class RouteRepositoryImpl @Inject constructor(
 
     override suspend fun searchKakaoPlace(query: String, page: Int): KakaoSearchResult {
         return remoteRouteDataSource.searchKakaoPlace(query, page)
+    }
+
+    override suspend fun getKakaoRegionCode(latitude: String, longitude: String): WeatherRegionResponse {
+        return remoteRouteDataSource.getKakaoRegionCode(latitude, longitude)
     }
 
     override suspend fun getSearchRouteList(page: Int, size: Int): RoutePreviewResult {
