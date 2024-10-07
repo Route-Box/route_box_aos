@@ -9,6 +9,9 @@
         <import type="com.daval.routebox.domain.model.Category" />
         <import type="com.daval.routebox.domain.model.Activity" />
         <variable
+            name="method"
+            type="com.daval.routebox.presentation.ui.route.RouteActivityActivity" />
+        <variable
             name="viewModel"
             type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
     </data>
@@ -112,6 +115,7 @@
                         android:background="@color/transparent"
                         android:text="@={viewModel.placeSearchKeyword}"
                         android:hint="@string/location_search"
+                        android:imeOptions="actionSearch"
                         android:textColorHint="@color/gray4"
                         style="@style/body_r_m"/>
 
@@ -120,7 +124,7 @@
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:padding="5dp"
-                        android:onClick="@{() -> viewModel.searchPlace()}"
+                        android:onClick="@{method::searchPlace}"
                         android:clickable="@{viewModel.placeSearchKeyword.length() == 0 ? false : true}"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_search"/>

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.view.View
+import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -113,7 +115,6 @@ class RouteWriteViewModel @Inject constructor(
     fun initActivity(activity: ActivityResult) {
         _activityId = activity.activityId.toLong()
         _activity.value = activity.convertToActivity()
-        Log.d("RouteWriteViewModel", "activity: $activity")
         placeSearchKeyword.value = activity.locationName
         // 시간 초기화
         _date.value = DateConverter.convertDateStringToLocalDate(activity.visitDate)
@@ -126,7 +127,6 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     fun setRouteId(routeId: Int) {
-        Log.d("RouteWriteViewModel", "routeId: $routeId")
         this._routeId.value = routeId
     }
 

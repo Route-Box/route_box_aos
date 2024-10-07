@@ -1,6 +1,7 @@
 package com.daval.routebox.presentation.ui.route
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -8,6 +9,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -80,6 +85,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         binding.apply {
             viewModel = this@RouteActivityActivity.viewModel
             lifecycleOwner = this@RouteActivityActivity
+            method = this@RouteActivityActivity
         }
 
         initData()
@@ -133,14 +139,15 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         placeRVAdapter.setPlaceClickListener(object: KakaoPlaceRVAdapter.MyItemClickListener {
             override fun onItemClick(place: SearchActivityResult) {
                 binding.searchEt.setText(place.place_name)
-                viewModel.activity.value?.locationName = place.place_name
-                viewModel.activity.value?.address = place.address_name
-                viewModel.activity.value?.longitude = place.x
-                viewModel.activity.value?.latitude = place.y
+                viewModel.activity.value?.apply {
+                    locationName = place.place_name
+                    address = place.address_name
+                    longitude = place.x
+                    latitude = place.y
+                }
                 viewModel.setPlaceSearchResult(arrayListOf())
                 viewModel.setPlaceSearchMode(false)
-
-                viewModel.checkBtnEnabled()
+                binding.searchEt.clearFocus()
             }
         })
         // 페이징 처리를 통해 새로운 장소 15개를 얻으면 placeRVAdapter에 해당 내용을 전송 -> 뷰 업데이트
@@ -241,6 +248,16 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         binding.nextBtn.setOnClickListener {
             viewModel.addActivity(this)
         }
+
+        // 키보드 검색 버튼
+        binding.searchEt.setOnEditorActionListener { it, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) { // 검색 버튼 클릭
+                searchPlace(it) // 장소 검색
+                true
+            } else {
+                false
+            }
+        }
     }
 
     private fun initEditTextListener() {
@@ -252,6 +269,17 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             }
             override fun afterTextChanged(p0: Editable?) { }
         })
+    }
+
+    fun searchPlace(view: View) {
+        viewModel.searchPlace() // 장소 검색 진행
+        hideKeyboard()
+        view.clearFocus() // EditText 포커스 해제
+    }
+
+    private fun hideKeyboard() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEt.windowToken, 0)
     }
 
     private fun showCalendarBottomSheet(date: LocalDate) {
