@@ -1,10 +1,9 @@
 package com.daval.routebox.domain.repositories
 
 import android.content.Context
+import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.RoutePreviewResult
 import com.daval.routebox.domain.model.ActivityId
-import com.daval.routebox.domain.model.ActivityResult
-import com.daval.routebox.domain.model.ActivityUpdateRequest
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.KakaoSearchResult
@@ -96,8 +95,8 @@ interface RouteRepository {
         endTime: String,
         category: String,
         description: String?,
-        activityImages: MutableList<String>
-    ): ActivityResult
+        activityImages: List<String>?
+    ): Boolean
 
     /** 루트 수정 */
     suspend fun updateRoute(
@@ -107,10 +106,13 @@ interface RouteRepository {
 
     /** 루트 활동 수정 */
     suspend fun updateActivity(
+        context: Context,
         routeId: Int,
         activityId: Int,
-        activityUpdateRequest: ActivityUpdateRequest
-    ): ActivityResult
+        activityRequest: Activity,
+        addedImageList: List<String>?,
+        deletedActivityImageIds: List<Int>?
+    ): Boolean
 
     /** 루트 삭제 */
     suspend fun deleteRoute(

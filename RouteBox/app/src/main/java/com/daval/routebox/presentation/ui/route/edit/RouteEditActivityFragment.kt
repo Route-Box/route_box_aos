@@ -51,10 +51,16 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
 
         initMapSetting()
         setInit()
+        setActivityAdapter()
         initClickListeners()
         initObserve()
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.tryGetMyRouteDetail() // 루트 상세조회 API 호출
     }
 
     private fun initMapSetting() {
@@ -89,16 +95,22 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     private fun initClickListeners() {
         // 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-            startActivity(Intent(activity, RouteActivityActivity::class.java))
+            startActivity(Intent(activity, RouteActivityActivity::class.java)
+                .putExtra("routeId", viewModel.routeId.value)
+            )
         }
 
         // 활동 아이템 클릭
         activityAdapter.setActivityClickListener(object : ActivityRVAdapter.MyItemClickListener {
-            override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", viewModel.routeId.value))
+            override fun onEditButtonClick(position: Int, data: ActivityResult) { // 활동 수정
+                startActivity(Intent(activity, RouteActivityActivity::class.java).apply {
+                    putExtra("routeId", viewModel.routeId.value)
+                    putExtra("activity", viewModel.route.value!!.routeActivities[position])
+                    putExtra("isEdit", true)
+                })
             }
 
-            override fun onDeleteButtonClick(position: Int) {
+            override fun onDeleteButtonClick(position: Int) { // 활동 삭제
                 deleteId = activityAdapter.returnActivityId(position)
                 deleteActivityIndex = position
                 // 활동 삭제 팝업 띄우기
@@ -112,13 +124,12 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
             this.adapter = activityAdapter
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
-        activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
     private fun initObserve() {
         viewModel.route.observe(viewLifecycleOwner) { route ->
             if (route.routeActivities.isNotEmpty()) {
-                setActivityAdapter()
+                activityAdapter.addAllActivities(route.routeActivities as MutableList<ActivityResult>)
             }
         }
     }
@@ -132,5 +143,6 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
     override fun onClickPositiveButton(id: Int) {
         Toast.makeText(requireContext(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
         viewModel.deleteActivity(deleteId)
+        activityAdapter.removeItem(deleteActivityIndex)
     }
 }

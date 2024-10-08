@@ -11,9 +11,9 @@ import androidx.annotation.RequiresApi
 import com.daval.routebox.BuildConfig
 import com.daval.routebox.data.remote.KakaoApiService
 import com.daval.routebox.data.remote.RouteApiService
+import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.ActivityId
 import com.daval.routebox.domain.model.ActivityResult
-import com.daval.routebox.domain.model.ActivityUpdateRequest
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.KakaoSearchResult
@@ -282,14 +282,12 @@ class RemoteRouteDataSource @Inject constructor(
         endTime: String,
         category: String,
         description: String?,
-        activityImages: MutableList<String>
+        activityImages: List<String>?
     ): ActivityResult {
-        var activityResult = ActivityResult(
-            -1, "", "", "", "", "", "", "", "", "", arrayListOf()
-        )
+        var activityResult = ActivityResult()
 
         // 이미지 문자열을 MultipartBody.Part 형태로 변환
-        val activityImagesPart = ImageConverter.getMultipartImgList(context, activityImages)
+        val activityImagesPart = ImageConverter.getMultipartImgList(context, activityImages!!.toMutableList())
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.createActivity(
@@ -344,16 +342,25 @@ class RemoteRouteDataSource @Inject constructor(
     }
 
     suspend fun updateActivity(
+        context: Context,
         routeId: Int,
         activityId: Int,
-        activityUpdateRequest: ActivityUpdateRequest
+        request: Activity,
+        addedImageList: List<String>?,
+        deletedActivityImageIds: List<Int>?
     ): ActivityResult {
-        var activityUpdateResult = ActivityResult(
-            -1, "", "", "", "", "", "", "", "", "", arrayListOf()
-        )
+        var activityUpdateResult = ActivityResult()
+        // 이미지 문자열을 MultipartBody.Part 형태로 변환
+        val activityImagesPart = ImageConverter.getMultipartImgList(context, addedImageList!!.toMutableList())
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.updateActivity(routeId, activityId, activityUpdateRequest)
+                routeApiService.updateActivity(
+                    routeId, activityId,
+                    createPartFromString(request.locationName)!!, createPartFromString(request.address)!!, createPartFromString(request.latitude), createPartFromString(request.longitude),
+                    createPartFromString(request.visitDate)!!, createPartFromString(request.startTime)!!, createPartFromString(request.endTime)!!,
+                    createPartFromString(request.category)!!, createPartFromString(request.description),
+                    createRequestBodyFromList(deletedActivityImageIds), activityImagesPart
+                )
             }.onSuccess {
                 activityUpdateResult = it
                 Log.d("RemoteRouteDataSource", "updateActivity Success\nactivityUpdateResult = ${activityUpdateResult}")
@@ -420,6 +427,14 @@ class RemoteRouteDataSource @Inject constructor(
 
     private fun createPartFromString(value: String?): RequestBody? {
         return value?.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    private fun createRequestBodyFromList(imageIds: List<Int>?): RequestBody? {
+        // List<Int>를 쉼표로 구분된 문자열로 변환
+        val imageIdsString = imageIds?.joinToString(separator = ",")
+
+        // 문자열을 RequestBody로 변환
+        return imageIdsString?.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     // 이미지 파일을 MultipartBody.Part로 변환하는 함수

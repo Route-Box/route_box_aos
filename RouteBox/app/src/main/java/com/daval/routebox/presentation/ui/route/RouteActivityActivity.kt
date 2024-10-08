@@ -1,6 +1,7 @@
 package com.daval.routebox.presentation.ui.route
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -8,6 +9,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -20,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteActivityBinding
+import com.daval.routebox.domain.model.ActivityImage
+import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.presentation.ui.route.adapter.CategoryRVAdapter
@@ -48,8 +54,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
     private var imgList: ArrayList<String?> = arrayListOf(null)
-
-    private var routeId: Int = -1
 
     private val viewModel: RouteWriteViewModel by viewModels()
 
@@ -81,11 +85,10 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         binding.apply {
             viewModel = this@RouteActivityActivity.viewModel
             lifecycleOwner = this@RouteActivityActivity
+            method = this@RouteActivityActivity
         }
 
-        routeId = intent.getIntExtra("routeId", -1)
-        viewModel.setRouteId(routeId)
-
+        initData()
         setAdapter()
         initClickListener()
         initEditTextListener()
@@ -94,37 +97,68 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         // 선택한 사진을 받기 위한 launcher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if (result.resultCode == RESULT_OK) {
-                var imgList = result.data?.getStringArrayListExtra("album")
+                val imgList = result.data?.getStringArrayListExtra("album")
 
                 for (i in 0 until imgList?.size!!) {
                     imgRVAdapter.addItem(imgList[i])
                     viewModel.activity.value?.activityImages?.add(imgList[i])
+                    viewModel.imageList.add(ActivityImage(-1, imgList[i])) // 새로 추가한 이미지
                 }
             }
         }
     }
 
-    private fun initObserve() {
-        viewModel.activityResult.observe(this@RouteActivityActivity) {
-            if (viewModel.activityResult.value?.activityId != -1) finish()
+    private fun initData() {
+        viewModel.setRouteId(intent.getIntExtra("routeId", -1))
+        val isEditMode = intent.getBooleanExtra("isEdit", false)
+        viewModel.setIsEditMode(isEditMode)
+        if (isEditMode) { // 넘겨받은 활동 데이터 세팅
+            viewModel.initActivityInEditMode(intent.getSerializableExtra("activity") as ActivityResult)
         }
     }
 
+    private fun initObserve() {
+        viewModel.activity.observe(this) {
+            viewModel.checkBtnEnabled()
+        }
+
+        viewModel.isRequestSuccess.observe(this) {
+            if (it == true) finish()
+        }
+    }
+
+    private fun initEditTextListener() {
+        binding.categoryEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.checkBtnEnabled()
+            }
+            override fun afterTextChanged(p0: Editable?) { }
+        })
+    }
+
     private fun setAdapter() {
+        setPlaceAdapter()
+        setCategoryAdapter()
+        setImageAdapter()
+    }
+
+    private fun setPlaceAdapter() {
         placeRVAdapter = KakaoPlaceRVAdapter(placeList)
         binding.placeRv.adapter = placeRVAdapter
         binding.placeRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         placeRVAdapter.setPlaceClickListener(object: KakaoPlaceRVAdapter.MyItemClickListener {
             override fun onItemClick(place: SearchActivityResult) {
                 binding.searchEt.setText(place.place_name)
-                viewModel.activity.value?.locationName = place.place_name
-                viewModel.activity.value?.address = place.address_name
-                viewModel.activity.value?.longitude = place.x
-                viewModel.activity.value?.latitude = place.y
+                viewModel.activity.value?.apply {
+                    locationName = place.place_name
+                    address = place.address_name
+                    longitude = place.x
+                    latitude = place.y
+                }
                 viewModel.setPlaceSearchResult(arrayListOf())
                 viewModel.setPlaceSearchMode(false)
-
-                viewModel.checkBtnEnabled()
+                binding.searchEt.clearFocus()
             }
         })
         // 페이징 처리를 통해 새로운 장소 15개를 얻으면 placeRVAdapter에 해당 내용을 전송 -> 뷰 업데이트
@@ -149,18 +183,19 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 }
             }
         })
+    }
 
+    private fun setCategoryAdapter() {
         categoryRVAdapter = CategoryRVAdapter()
         binding.categoryRv.adapter = categoryRVAdapter
         binding.categoryRv.layoutManager = FlexboxLayoutManager(this)
         binding.categoryRv.itemAnimator = null
         categoryRVAdapter.setCategoryClickListener(object: CategoryRVAdapter.MyItemClickListener {
-            override fun onItemClick(position: Int, isSelected: Boolean) {
+            override fun onItemClick(position: Int, isSelected: Boolean) { // 카테고리 선택
+                viewModel.resetCategory()
                 if (categoryRVAdapter.getItem(position) == Category.ETC) {
                     viewModel.setCategoryETC(true)
-                    viewModel.activity.value?.category = binding.categoryEt.text.toString()
                 } else {
-                    binding.categoryEt.setText("")
                     viewModel.setCategoryETC(false)
                     viewModel.activity.value?.category = categoryRVAdapter.getItem(position).categoryName
                 }
@@ -169,10 +204,13 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 viewModel.checkBtnEnabled()
             }
         })
-        if (viewModel.activity.value?.category != "") {
+        if (!viewModel.activity.value?.category.isNullOrEmpty()) { // 카테고리 아이템 선택
             categoryRVAdapter.setSelectedName(viewModel.activity.value?.category!!)
         }
+    }
 
+    private fun setImageAdapter() {
+        imgList.addAll(viewModel.imageList.map { it.url })
         imgRVAdapter = PictureRVAdapter(imgList)
         binding.pictureRv.adapter = imgRVAdapter
         binding.pictureRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -187,9 +225,13 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                     galleryPermissionLauncher.launch(checkVersion())
                 }
             }
-            override fun onPictureItemClick(position: Int) {
+            override fun onPictureDeleteIconClick(position: Int) {
                 imgRVAdapter.removeItem(position)
                 viewModel.activity.value?.activityImages!!.removeAt(position - 1)
+                val activityImage = viewModel.imageList[position - 1]
+                if (activityImage.id > 0) { // 업로드가 이미 되어있는 사진
+                    viewModel.deletedImageIds.add(activityImage.id)
+                }
             }
         })
     }
@@ -201,7 +243,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         }
 
         binding.dateContent.setOnClickListener {
-            showCalendarBottomSheet(true, viewModel.date.value!!)
+            showCalendarBottomSheet(viewModel.date.value!!)
         }
 
         binding.startTimeTv.setOnClickListener {
@@ -212,47 +254,43 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             showTimePickerBottomSheet(false, viewModel.endTimePair.value)
         }
 
-        binding.categoryEraseIv.setOnClickListener {
-            viewModel.activity.value?.category = ""
-            binding.categoryEt.setText("")
+        binding.categoryEraseIv.setOnClickListener { // 카테고리 EditText 비우기
+            viewModel.resetCategory()
         }
 
-        binding.nextBtn.setOnClickListener {
-            viewModel.addActivity(this)
+        // 완료 버튼
+        binding.doneBtn.setOnClickListener {
+            if (viewModel.isEditMode.value!!) { // 수정 모드
+                viewModel.editActivity(this)
+            } else { // 생성 모드
+                viewModel.addActivity(this)
+            }
+        }
+
+        // 키보드 검색 버튼
+        binding.searchEt.setOnEditorActionListener { it, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) { // 검색 버튼 클릭
+                searchPlace(it) // 장소 검색
+                true
+            } else {
+                false
+            }
         }
     }
 
-    private fun initEditTextListener() {
-        binding.searchEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.activity.value?.locationName = ""
-                viewModel.setPlaceSearchKeyword(binding.searchEt.text.toString())
-                viewModel.checkBtnEnabled()
-            }
-            override fun afterTextChanged(p0: Editable?) { }
-        })
-        binding.categoryEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.activity.value?.category = binding.categoryEt.text.toString()
-                viewModel.checkBtnEnabled()
-            }
-            override fun afterTextChanged(p0: Editable?) { }
-        })
-        binding.locationContentEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.activity.value?.description = binding.locationContentEt.text.toString()
-                binding.locationContentLength.text = binding.locationContentEt.text.length.toString()
-                viewModel.checkBtnEnabled()
-            }
-            override fun afterTextChanged(p0: Editable?) { }
-        })
+    fun searchPlace(view: View) {
+        viewModel.searchPlace() // 장소 검색 진행
+        hideKeyboard() // 키보드 내리기
+        view.clearFocus() // EditText 포커스 해제
     }
 
-    private fun showCalendarBottomSheet(isStartDate: Boolean, date: LocalDate) {
-        val calendarBottomSheet = CalendarBottomSheet(this, isStartDate, date)
+    private fun hideKeyboard() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEt.windowToken, 0)
+    }
+
+    private fun showCalendarBottomSheet(date: LocalDate) {
+        val calendarBottomSheet = CalendarBottomSheet(this, true, date)
         calendarBottomSheet.run {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
         }

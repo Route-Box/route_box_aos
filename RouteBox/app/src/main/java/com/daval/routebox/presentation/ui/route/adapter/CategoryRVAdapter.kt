@@ -13,10 +13,7 @@ class CategoryRVAdapter: RecyclerView.Adapter<CategoryRVAdapter.ViewHolder>(){
     private lateinit var mItemClickListener: MyItemClickListener
     private var selectedIndex: Int = -1
     private var preSelectedIndex: Int = -1
-    private var categoryList = arrayListOf(
-        Category.STAY, Category.TOUR, Category.FOOD, Category.CAFE, Category.SNS
-        , Category.CULTURE, Category.TOILET, Category.PARKING, Category.ETC
-    )
+    private var categoryList = Category.getAllCategories()
 
     fun setCategoryClickListener(itemClickListener: MyItemClickListener) {
         mItemClickListener = itemClickListener
@@ -74,7 +71,8 @@ class CategoryRVAdapter: RecyclerView.Adapter<CategoryRVAdapter.ViewHolder>(){
     }
 
     fun setSelectedName(category: String) {
-        for (i in 0 until categoryList.size) {
+        selectedIndex = categoryList.lastIndex // ETC 카테고리 id 미리 세팅 (categoryList에서 찾아지지 않을 경우 방지)
+        for (i in categoryList.indices) {
             if (categoryList[i].categoryName == category) {
                 selectedIndex = i
             }

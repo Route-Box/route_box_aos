@@ -4,6 +4,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
+import com.daval.routebox.presentation.utils.DateConverter
+import java.io.Serializable
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class RoutePreviewResult(
@@ -139,12 +142,12 @@ data class Activity(
     var address: String = "",
     var latitude: String = "",
     var longitude: String = "",
-    var visitDate: String = "",
+    var visitDate: String = DateConverter.getAPIFormattedDate(LocalDate.now()),
     var startTime: String = "",
     var endTime: String = "",
     var category: String = "", // 음식점, 관광명소 등
     var description: String? = null,
-    var activityImages: MutableList<String> = mutableListOf(),
+    var activityImages: ArrayList<String> = arrayListOf(),
 )
 
 data class ActivityResult(
@@ -159,30 +162,23 @@ data class ActivityResult(
     var category: String = "",
     var description: String = "",
     var activityImages: ArrayList<ActivityImage> = arrayListOf()
-)
+): Serializable {
+    fun convertToActivity(): Activity {
+        return Activity(
+            locationName, address, latitude, longitude,
+            visitDate, startTime, endTime,
+            category, description, activityImages.map { it.url } as ArrayList<String>
+        )
+    }
+}
 
 data class ActivityImage(
     var id: Int,
     var url: String
-)
+): Serializable
 
 data class ActivityId(
     var activityId: Int
-)
-
-// 활동 수정
-data class ActivityUpdateRequest(
-    var locationName: String,
-    var address: String,
-    var latitude: String?,
-    var longitude: String?,
-    var visitDate: String,
-    var startTime: String,
-    var endTime: String,
-    var category: String,
-    var description: String?,
-    var addedActivityImages: ArrayList<String>?,
-    var deletedActivityImageIds: ArrayList<String>?
 )
 
 // 카카오 장소 검색
@@ -289,7 +285,6 @@ data class ConvenienceCategoryResult(
     val longitude: String
 )
 
-// 편의기능 날씨 정보
 data class WeatherApiResult(
     val response: WeatherApiResponse
 )

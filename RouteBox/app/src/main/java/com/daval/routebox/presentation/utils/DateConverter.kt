@@ -18,6 +18,7 @@ object DateConverter {
     private const val DATE_API_PATTERN = "yyyy-MM-dd"
     private const val TIME_PLACEHOLDER = "시간 선택"
     private const val CREATE_DATE_PATTERN = "yyyy.MM.dd"
+    private const val TIME_DELIMINATOR = ":"
 
     fun getFormattedYearMonth(date: LocalDate): String {
         return date.format(DateTimeFormatter.ofPattern(YEAR_MONTH_PATTERN))
@@ -30,6 +31,10 @@ object DateConverter {
 
     fun getAPIFormattedDate(date: LocalDate): String {
         return date.format(DateTimeFormatter.ofPattern(DATE_API_PATTERN))
+    }
+
+    fun getAPIFormattedTime(timePair: Pair<Int, Int>): String {
+        return "${format(MINUTE_FORMAT, timePair.first)}${TIME_DELIMINATOR}${format(MINUTE_FORMAT, timePair.second)}"
     }
 
     // 로컬에서 선택한 시간을 서버 전송 형태로 벼경
@@ -96,6 +101,16 @@ object DateConverter {
     @JvmStatic
     fun getFormattedTime(timePair: Pair<Int, Int>?): String {
         if (timePair == null) return TIME_PLACEHOLDER
-        return "${timePair.first}:${format(MINUTE_FORMAT, timePair.second)}"
+        return "${timePair.first}${TIME_DELIMINATOR}${format(MINUTE_FORMAT, timePair.second)}"
+    }
+
+    fun convertDateStringToLocalDate(dateStr: String): LocalDate { // yyyy-MM-dd 형태의 시간
+        val formatter = DateTimeFormatter.ofPattern(DATE_API_PATTERN) // 변환할 형식 정의
+        return LocalDate.parse(dateStr, formatter) // 문자열을 LocalDate로 변환
+    }
+
+    fun convertTimeStringToIntPair(timeStr: String): Pair<Int, Int> { // hh:mm 형태의 시간
+        val splitString = timeStr.split(TIME_DELIMINATOR)
+        return Pair(splitString[0].toInt(), splitString[1].toInt())
     }
 }

@@ -111,11 +111,17 @@ class RouteViewModel @Inject constructor(
     // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
     private fun combineAllServerTagsByList(): ArrayList<String> {
         val tagNameList: ArrayList<String> = arrayListOf()
-        tagNameList.add(_route.value!!.whoWith)
-        tagNameList.add(_route.value!!.numberOfDays)
-        tagNameList.add(FilterOption.getNumberOfPeopleText(_route.value!!.numberOfPeople))
-        tagNameList.addAll(_route.value!!.routeStyles)
-        tagNameList.add(_route.value!!.transportation)
+        tagNameList.addAll(
+            listOfNotNull(
+                _route.value?.whoWith,
+                _route.value?.numberOfDays,
+                FilterOption.getNumberOfPeopleText(_route.value?.numberOfPeople),
+                _route.value?.transportation
+            )
+        )
+        _route.value?.routeStyles?.let { styles ->
+            tagNameList.addAll(styles)
+        }
         return tagNameList
     }
 

@@ -13,7 +13,7 @@ object BindingAdapter {
     @JvmStatic
     @BindingAdapter("app:imageUrl", "app:placeHolder")
     fun setImage (imageView : ImageView, url : String?, placeHolder: Drawable?){
-        if (placeHolder != null) {
+        if (placeHolder == null) {
             Glide.with(imageView.context)
                 .load(url)
                 .centerCrop()
