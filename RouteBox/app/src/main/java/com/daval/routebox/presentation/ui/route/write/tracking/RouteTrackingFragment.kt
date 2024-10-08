@@ -1,4 +1,4 @@
-package com.daval.routebox.presentation.ui.route.write
+package com.daval.routebox.presentation.ui.route.write.tracking
 
 import android.content.Context
 import android.content.Intent
@@ -24,6 +24,7 @@ import com.daval.routebox.presentation.ui.route.RouteActivityActivity
 import com.daval.routebox.presentation.ui.route.RouteViewModel
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel
+import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.utils.CommonPopupDialog
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
