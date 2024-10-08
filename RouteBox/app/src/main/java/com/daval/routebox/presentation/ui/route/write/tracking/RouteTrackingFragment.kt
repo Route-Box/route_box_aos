@@ -2,6 +2,7 @@ package com.daval.routebox.presentation.ui.route.write.tracking
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -37,6 +39,13 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.route.RouteLine
+import com.kakao.vectormap.route.RouteLineOptions
+import com.kakao.vectormap.route.RouteLineSegment
+import com.kakao.vectormap.route.RouteLineStyle
+import com.kakao.vectormap.route.RouteLineStyles
+import com.kakao.vectormap.route.RouteLineStylesSet
+import java.util.Arrays
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -108,6 +117,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
 
                 initObserve()
                 addBackgroundDots()
+                drawRoutePath()
             }
 
             override fun getZoomLevel(): Int {
@@ -139,6 +149,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
             startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
         }
     }
+
     private fun setActivityAdapter() {
         bottomSheetDialog.activityRv.apply {
             this.adapter = activityAdapter
@@ -230,5 +241,28 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     override fun onClickPositiveButton(id: Int) {
         Toast.makeText(requireActivity(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
         editViewModel.deleteActivity(deleteId)
+    }
+
+    private fun drawRoutePath() {
+        // 기록된 점 조회를 위해 api 호출
+        editViewModel.tryGetMyRouteDetail()
+
+        var layer = kakaoMap.routeLineManager?.addLayer()
+        val stylesSet = RouteLineStylesSet.from(
+            "routePathStyle", RouteLineStyles.from(RouteLineStyle.from(8f, ContextCompat.getColor(requireActivity(), R.color.main)))
+        )
+        val segment: RouteLineSegment = RouteLineSegment.from(routePathToLatLng()).setStyles(stylesSet.getStyles(0))
+        val options = RouteLineOptions.from(segment).setStylesSet(stylesSet)
+        val routeLine: RouteLine = layer!!.addRouteLine(options)
+        routeLine.show()
+
+        routePathToLatLng()
+    }
+
+    private fun routePathToLatLng(): List<LatLng>? {
+        val routePath = editViewModel.route.value?.routePath
+        return routePath?.map {
+            LatLng.from(it.latitude, it.longitude)
+        }
     }
 }
