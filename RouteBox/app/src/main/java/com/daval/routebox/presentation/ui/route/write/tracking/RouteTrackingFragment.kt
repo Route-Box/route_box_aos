@@ -114,9 +114,8 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                     for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
                         var activity = editViewModel.route.value?.routeActivities!![i]
                         addMarker(
-                            activity.latitude.toDouble(),
-                            activity.longitude.toDouble(),
-                            R.drawable.ic_marker, activity.category, (i + 1).toString()
+                            activity.latitude.toDouble(), activity.longitude.toDouble(),
+                            activity.category, (i + 1).toString()
                         )
                     }
                 }
@@ -189,8 +188,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                 kakaoMap.moveCamera(cameraUpdate)
 
                 addMarker(writeViewModel.currentCoordinate.value!!.latitude,
-                    writeViewModel.currentCoordinate.value!!.longitude,
-                    R.drawable.ic_gps_marker, "", "")
+                    writeViewModel.currentCoordinate.value!!.longitude, "", "")
             }
         }
 
@@ -232,8 +230,15 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, markerImg: Int, category: String, activityNumber: String) {
-        var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
+    private fun addMarker(latitude: Double, longitude: Double, category: String, activityNumber: String) {
+        var markerImg: Int
+        if (category != "") {
+            markerImg = returnActivityCategoryImg(category)
+        } else {
+            markerImg = R.drawable.ic_gps_marker
+        }
+        var styles = kakaoMap.labelManager?.addLabelStyles(
+            LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
             LabelTextStyle.from(35, ContextCompat.getColor(requireActivity(), R.color.black)),
         )))
         val layer = kakaoMap.labelManager!!.layer
@@ -279,17 +284,17 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         }
     }
 
-    private fun returnActivityCategoryColor(category: String): Int {
+    private fun returnActivityCategoryImg(category: String): Int {
         return when (category) {
-            "숙소" -> R.color.accommodation
-            "관광지" -> R.color.tourist_attraction
-            "음식점" -> R.color.restaurant
-            "카페" -> R.color.cafe
-            "SNS 스팟" -> R.color.sns_spot
-            "문화 공간" -> R.color.cultural_space
-            "화장실" -> R.color.toilet
-            "주차장" -> R.color.parking_lot
-            else -> R.color.etc
+            "숙소" -> R.drawable.activity_accommodation
+            "관광지" -> R.drawable.activity_tourist
+            "음식점" -> R.drawable.activity_restaurant
+            "카페" -> R.drawable.activity_cafe
+            "SNS 스팟" -> R.drawable.activity_sns_spot
+            "문화 공간" -> R.drawable.activity_culture
+            "화장실" -> R.drawable.activity_toilet
+            "주차장" -> R.drawable.activity_parking
+            else -> R.drawable.activity_etc
         }
     }
 }
