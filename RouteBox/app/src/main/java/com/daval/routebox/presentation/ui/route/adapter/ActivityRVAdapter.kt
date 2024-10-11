@@ -65,7 +65,6 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         fun bind(activity: ActivityResult) {
             binding.isEditMode = isEditMode
             binding.activity = activity
-            //TODO: 활동 번호에 따른 색상 변경
             binding.activityOrder = adapterPosition
 
             if (!activity.activityImages.isNullOrEmpty()) { // 이미지 표시

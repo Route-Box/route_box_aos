@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import com.daval.routebox.presentation.ui.auth.AuthViewModel
 import com.daval.routebox.presentation.ui.auth.LoginActivity
+import com.daval.routebox.presentation.ui.auth.PermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,8 +56,10 @@ class SplashActivity : AppCompatActivity() {
 
     private fun initObserve() {
         viewModel.refreshResponse.observe(this) { response ->
-            if (response?.accessToken?.token?.isEmpty() == true) { // 토큰 재발급 실패 -> 로그인 화면
-                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+            Log.d("ROUTE-TEST", "response = $response")
+            Log.d("ROUTE-TEST", "result = ${response?.accessToken?.token?.isEmpty()}")
+            if (response?.accessToken?.token?.isEmpty() == true) { // 토큰 재발급 실패 -> 권한 안내 화면 -> 로그인 화면
+                startActivity(Intent(this@SplashActivity, PermissionActivity::class.java))
                 finish()
             } else { // 토큰 재발급 성공 -> 메인 화면
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))

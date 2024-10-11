@@ -21,12 +21,14 @@ import com.daval.routebox.R
 import com.daval.routebox.databinding.BottomSheetActivityBinding
 import com.daval.routebox.databinding.FragmentRouteTrackingBinding
 import com.daval.routebox.domain.model.ActivityResult
+import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.presentation.ui.route.RouteActivityActivity
 import com.daval.routebox.presentation.ui.route.RouteViewModel
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
+import com.daval.routebox.presentation.utils.BindingAdapter
 import com.daval.routebox.presentation.utils.CommonPopupDialog
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
@@ -39,6 +41,8 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
+import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.route.RouteLine
 import com.kakao.vectormap.route.RouteLineOptions
 import com.kakao.vectormap.route.RouteLineSegment
@@ -105,12 +109,14 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteTrackingFragment.kakaoMap = kakaoMap
 
+                // 활동 마커 추가하기
                 if (editViewModel.route.value?.routeActivities != null) {
                     for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
+                        var activity = editViewModel.route.value?.routeActivities!![i]
                         addMarker(
-                            editViewModel.route.value?.routeActivities!![i].latitude.toDouble(),
-                            editViewModel.route.value?.routeActivities!![i].longitude.toDouble(),
-                            R.drawable.ic_marker
+                            activity.latitude.toDouble(),
+                            activity.longitude.toDouble(),
+                            R.drawable.ic_marker, activity.category, (i + 1).toString()
                         )
                     }
                 }
@@ -182,7 +188,9 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                 val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
 
-                addMarker(writeViewModel.currentCoordinate.value!!.latitude, writeViewModel.currentCoordinate.value!!.longitude, R.drawable.ic_gps_marker)
+                addMarker(writeViewModel.currentCoordinate.value!!.latitude,
+                    writeViewModel.currentCoordinate.value!!.longitude,
+                    R.drawable.ic_gps_marker, "", "")
             }
         }
 
@@ -224,10 +232,15 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, markerImg: Int) {
-        var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
-        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
+    private fun addMarker(latitude: Double, longitude: Double, markerImg: Int, category: String, activityNumber: String) {
+        var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
+            LabelTextStyle.from(35, ContextCompat.getColor(requireActivity(), R.color.black)),
+        )))
         val layer = kakaoMap.labelManager!!.layer
+        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
+        if (category != "") {
+            options.setTexts(LabelTextBuilder().setTexts(activityNumber))
+        }
         val label = layer!!.addLabel(options)
         label.show()
     }
@@ -263,6 +276,20 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         val routePath = editViewModel.route.value?.routePath
         return routePath?.map {
             LatLng.from(it.latitude, it.longitude)
+        }
+    }
+
+    private fun returnActivityCategoryColor(category: String): Int {
+        return when (category) {
+            "숙소" -> R.color.accommodation
+            "관광지" -> R.color.tourist_attraction
+            "음식점" -> R.color.restaurant
+            "카페" -> R.color.cafe
+            "SNS 스팟" -> R.color.sns_spot
+            "문화 공간" -> R.color.cultural_space
+            "화장실" -> R.color.toilet
+            "주차장" -> R.color.parking_lot
+            else -> R.color.etc
         }
     }
 }
