@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.route
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,11 +10,13 @@ import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteDetailBinding
 import com.daval.routebox.domain.model.ActivityResult
+import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
@@ -26,7 +29,14 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
+import com.kakao.vectormap.label.LabelTextStyle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,7 +47,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var tagAdapter: RouteTagRVAdapter
     private lateinit var activityAdapter: ActivityRVAdapter
-    private lateinit var kakaoMap: KakaoMap
+    private var kakaoMap: KakaoMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +83,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteDetailActivity.kakaoMap = kakaoMap
+                setActivityMarker()
             }
         })
     }
@@ -119,6 +130,36 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
+    private fun setActivityMarker() {
+        if (viewModel.route.value?.routeActivities.isNullOrEmpty()) return
+        // 활동 마커 추가하기
+        viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
+            // 지도를 첫 번째 장소로
+            if (index == 0) {
+                // 지도 위치 조정
+                val latLng = LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble())
+                // 카메라를 마커의 위치로 이동
+                kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(latLng, DEFAULT_ZOOM_LEVEL))
+            }
+            // 지도에 마커 표시
+            addMarker(
+                LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
+                Category.getCategoryByName(activity.category),
+                index.plus(1).toString() // 장소 번호는 0번부터 시작
+            )
+        }
+    }
+
+    // 마커 띄우기
+    private fun addMarker(latLng: LatLng, category: Category, activityNumber: String) {
+        kakaoMap?.labelManager?.layer?.addLabel(LabelOptions.from(latLng)
+            .setStyles(setPinStyle(this, category))
+            .setTexts(
+                LabelTextBuilder().setTexts(activityNumber)
+            )
+        )
+    }
+
     private fun initObserve() {
         viewModel.route.observe(this) { route ->
             if (route.routeId != -1) {
@@ -126,7 +167,8 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             }
 
             if (route.routeActivities.size != 0) { // 활동 정보가 있다면
-                setActivityAdapter()
+                setActivityAdapter() // 어댑터 추가
+                setActivityMarker() // 지도에 활동 마커 표시
             }
         }
 
@@ -200,6 +242,17 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             viewModel.tryChangePublic()
         } else { // 삭제 확인
             viewModel.tryDeleteRoute()
+        }
+    }
+
+    companion object {
+        const val DEFAULT_ZOOM_LEVEL = 10 // 루트를 표시하는 기본 줌 레벨
+
+        fun setPinStyle(context: Context, category: Category): LabelStyles {
+            return LabelStyles.from(
+                LabelStyle.from(category.categoryMarkerIcon)
+                    .setTextStyles(LabelTextStyle.from(35, ContextCompat.getColor(context, R.color.black)))
+            )
         }
     }
 }
