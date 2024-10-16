@@ -12,6 +12,7 @@ import com.daval.routebox.domain.model.FilterType
 import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.repositories.RouteRepository
+import com.kakao.vectormap.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -201,6 +202,16 @@ class RouteEditViewModel @Inject constructor(
     private fun convertToServerTagData(filterType: FilterType): List<String>? {
         return selectedOptionMap.value?.get(filterType)?.map {
             it.optionName
+        }
+    }
+
+    fun hasActivity(): Boolean {
+        return !_route.value!!.routeActivities.isNullOrEmpty()
+    }
+
+    fun getLatLngRoutePath(): List<LatLng> {
+        return _route.value!!.routeActivities.map {
+            LatLng.from(it.latitude.toDouble(), it.longitude.toDouble())
         }
     }
 }

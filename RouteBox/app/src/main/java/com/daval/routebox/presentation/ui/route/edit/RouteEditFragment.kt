@@ -12,19 +12,29 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentRouteEditBinding
+import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.FilterOption
 import com.daval.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.daval.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.DEFAULT_ZOOM_LEVEL
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.setPinStyle
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.setRoutePathStyle
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelTextBuilder
+import com.kakao.vectormap.route.RouteLineOptions
+import com.kakao.vectormap.route.RouteLineSegment
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteEditFragment : Fragment(), FilterOptionClickListener {
 
     private lateinit var binding: FragmentRouteEditBinding
     private val viewModel: RouteEditViewModel by activityViewModels()
-    private lateinit var kakaoMap: KakaoMap
+    private var kakaoMap: KakaoMap? = null
     private lateinit var routeStyleFragment: RouteStyleFragment
 
     override fun onCreateView(
@@ -63,6 +73,8 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteEditFragment.kakaoMap = kakaoMap
+                setActivityMarker()
+                drawRoutePath()
             }
         })
     }
@@ -98,6 +110,47 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_route_style_frm, routeStyleFragment)
             .commit()
+    }
+
+    private fun setActivityMarker() {
+        if (!viewModel.hasActivity()) return
+        // 활동 마커 추가하기
+        viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
+            // 지도를 첫 번째 장소로
+            if (index == 0) {
+                // 지도 위치 조정
+                val latLng = LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble())
+                // 카메라를 마커의 위치로 이동
+                kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(latLng, DEFAULT_ZOOM_LEVEL))
+            }
+            // 지도에 마커 표시
+            addMarker(
+                LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
+                Category.getCategoryByName(activity.category),
+                index.plus(1).toString() // 장소 번호는 0번부터 시작
+            )
+        }
+    }
+
+    private fun drawRoutePath() {
+        if (!viewModel.hasActivity()) return
+        val segment: RouteLineSegment = RouteLineSegment.from(viewModel.getLatLngRoutePath()).setStyles(
+            setRoutePathStyle(requireContext())
+        )
+        val options = RouteLineOptions.from(segment)
+        // 지도에 선 표시
+        kakaoMap?.routeLineManager?.layer?.addRouteLine(options)?.show()
+    }
+
+    // 마커 띄우기
+    private fun addMarker(latLng: LatLng, category: Category, activityNumber: String) {
+        kakaoMap?.labelManager?.layer?.addLabel(
+            LabelOptions.from(latLng)
+            .setStyles(setPinStyle(requireContext(), category))
+            .setTexts(
+                LabelTextBuilder().setTexts(activityNumber)
+            )
+        )
     }
 
     private fun initObserve() {
