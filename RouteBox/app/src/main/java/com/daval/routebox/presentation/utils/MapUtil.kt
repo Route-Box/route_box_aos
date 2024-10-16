@@ -33,7 +33,9 @@ object MapUtil {
         )
     }
 
+    // 루트 경로를 그릴 LatLng 리스트 반환
     fun getLatLngRoutePath(activities: List<ActivityResult>): List<LatLng> {
+        //TODO: 활동 경로 외에도 점들로 기록한 routePath 추가
         return activities.map {
             LatLng.from(it.latitude.toDouble(), it.longitude.toDouble())
         }
