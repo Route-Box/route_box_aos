@@ -2,6 +2,7 @@ package com.daval.routebox.presentation.ui.route
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -151,7 +152,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             addMarker(
                 LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
                 Category.getCategoryByName(activity.category),
-                index.plus(1).toString() // 장소 번호는 0번부터 시작
+                index.plus(1) // 장소 번호는 0번부터 시작
             )
         }
     }
@@ -167,13 +168,29 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     // 마커 띄우기
-    private fun addMarker(latLng: LatLng, category: Category, activityNumber: String) {
-        kakaoMap?.labelManager?.layer?.addLabel(LabelOptions.from(latLng)
-            .setStyles(setPinStyle(this, category))
-            .setTexts(
-                LabelTextBuilder().setTexts(activityNumber)
-            )
+    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
+        val layer = kakaoMap?.labelManager?.layer
+
+        // IconLabel 추가
+        val iconLabel = layer?.addLabel(
+            getMapActivityIconLabelOptions(latLng, category, activityNumber)
         )
+
+        // TextLabel 추가
+        val textLabel = layer?.addLabel(
+            getMapActivityNumberLabelOptions(latLng, activityNumber)
+        )
+
+        // TextLabel의 위치를 IconLabel 내부로 조정
+        if (iconLabel != null && textLabel != null) {
+            // IconLabel의 크기를 가정 (예: 60x60 픽셀)
+            val iconSize = 60f
+            // 텍스트를 아이콘 중심에서 약간 위로 이동
+            val offsetY = - iconSize / (2.3)
+
+            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
+            textLabel.changePixelOffset(0f, offsetY.toFloat())
+        }
     }
 
     private fun initObserve() {
@@ -265,16 +282,39 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     companion object {
         const val DEFAULT_ZOOM_LEVEL = 10 // 루트를 표시하는 기본 줌 레벨
 
-        fun setPinStyle(context: Context, category: Category): LabelStyles {
+        private const val RANK_INTERVAL = 10 // activity 번호에 따른 rank 차이 (더 높은 activityNumber를 가졌다면 핀을 더 위에 표시)
+        private const val RANK_OFFSET = 1 // 아이콘-텍스트 간 rank 차이 (기본적으로 텍스트는 아이콘 위에 표시)
+
+        // IconLabel
+        private fun setMapIconLabelStyles(category: Category): LabelStyles {
             return LabelStyles.from(
                 LabelStyle.from(category.categoryMarkerIcon)
-                    .setTextStyles(LabelTextStyle.from(35, ContextCompat.getColor(context, R.color.black)))
             )
+        }
+
+        fun getMapActivityIconLabelOptions(latLng: LatLng, category: Category, activityNumber: Int): LabelOptions {
+            return LabelOptions.from(latLng)
+                .setStyles(setMapIconLabelStyles(category))
+                .setRank((activityNumber * RANK_INTERVAL).toLong()) // activityNumber가 클수록 높은 rank를 가짐
+        }
+
+        // TextLabel
+        private fun setMapTextLabelStyle(): LabelStyles {
+            return LabelStyles.from(
+                LabelStyle.from(LabelTextStyle.from(28, Color.WHITE))
+            )
+        }
+
+        fun getMapActivityNumberLabelOptions(latLng: LatLng, activityNumber: Int): LabelOptions {
+            return LabelOptions.from(latLng)
+                .setStyles(setMapTextLabelStyle())
+                .setTexts(LabelTextBuilder().setTexts(activityNumber.toString()))
+                .setRank((activityNumber * RANK_INTERVAL + RANK_OFFSET).toLong()) // 텍스트는 아이콘보다 높은 rank를 가짐
         }
 
         fun setRoutePathStyle(context: Context): RouteLineStyles {
             return RouteLineStyles.from(
-                RouteLineStyle.from(8f, ContextCompat.getColor(context, R.color.main))
+                RouteLineStyle.from(6f, ContextCompat.getColor(context, R.color.main))
             )
         }
     }

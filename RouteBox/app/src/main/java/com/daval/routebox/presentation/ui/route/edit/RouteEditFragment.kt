@@ -17,15 +17,14 @@ import com.daval.routebox.domain.model.FilterOption
 import com.daval.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.daval.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
 import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.DEFAULT_ZOOM_LEVEL
-import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.setPinStyle
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.getMapActivityIconLabelOptions
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.getMapActivityNumberLabelOptions
 import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.setRoutePathStyle
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelTextBuilder
 import com.kakao.vectormap.route.RouteLineOptions
 import com.kakao.vectormap.route.RouteLineSegment
 
@@ -126,7 +125,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
             addMarker(
                 LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
                 Category.getCategoryByName(activity.category),
-                index.plus(1).toString() // 장소 번호는 0번부터 시작
+                index.plus(1) // 장소 번호는 0번부터 시작
             )
         }
     }
@@ -142,14 +141,29 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
     }
 
     // 마커 띄우기
-    private fun addMarker(latLng: LatLng, category: Category, activityNumber: String) {
-        kakaoMap?.labelManager?.layer?.addLabel(
-            LabelOptions.from(latLng)
-            .setStyles(setPinStyle(requireContext(), category))
-            .setTexts(
-                LabelTextBuilder().setTexts(activityNumber)
-            )
+    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
+        val layer = kakaoMap?.labelManager?.layer
+
+        // IconLabel 추가
+        val iconLabel = layer?.addLabel(
+            getMapActivityIconLabelOptions(latLng, category, activityNumber)
         )
+
+        // TextLabel 추가
+        val textLabel = layer?.addLabel(
+            getMapActivityNumberLabelOptions(latLng, activityNumber)
+        )
+
+        // TextLabel의 위치를 IconLabel 내부로 조정
+        if (iconLabel != null && textLabel != null) {
+            // IconLabel의 크기를 가정 (예: 60x60 픽셀)
+            val iconSize = 60f
+            // 텍스트를 아이콘 중심에서 약간 위로 이동
+            val offsetY = - iconSize / (2.3)
+
+            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
+            textLabel.changePixelOffset(0f, offsetY.toFloat())
+        }
     }
 
     private fun initObserve() {
