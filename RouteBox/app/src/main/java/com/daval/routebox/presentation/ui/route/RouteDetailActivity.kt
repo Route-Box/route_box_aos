@@ -37,7 +37,13 @@ import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.label.LabelTextBuilder
 import com.kakao.vectormap.label.LabelTextStyle
+import com.kakao.vectormap.route.RouteLineOptions
+import com.kakao.vectormap.route.RouteLineSegment
+import com.kakao.vectormap.route.RouteLineStyle
+import com.kakao.vectormap.route.RouteLineStyles
 import dagger.hilt.android.AndroidEntryPoint
+
+
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -84,6 +90,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteDetailActivity.kakaoMap = kakaoMap
                 setActivityMarker()
+                drawRoutePath()
             }
         })
     }
@@ -131,7 +138,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun setActivityMarker() {
-        if (viewModel.route.value?.routeActivities.isNullOrEmpty()) return
+        if (!viewModel.hasActivity()) return
         // 활동 마커 추가하기
         viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
             // 지도를 첫 번째 장소로
@@ -148,6 +155,16 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 index.plus(1).toString() // 장소 번호는 0번부터 시작
             )
         }
+    }
+
+    private fun drawRoutePath() {
+        if (!viewModel.hasActivity()) return
+        val segment: RouteLineSegment = RouteLineSegment.from(viewModel.getLatLngRoutePath()).setStyles(
+            setRoutePathStyle(this)
+        )
+        val options = RouteLineOptions.from(segment)
+        // 지도에 선 표시
+        kakaoMap?.routeLineManager?.layer?.addRouteLine(options)?.show()
     }
 
     // 마커 띄우기
@@ -168,7 +185,8 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
 
             if (route.routeActivities.size != 0) { // 활동 정보가 있다면
                 setActivityAdapter() // 어댑터 추가
-                setActivityMarker() // 지도에 활동 마커 표시
+                setActivityMarker() // 지도에 활동 마커 표시d
+                drawRoutePath()
             }
         }
 
@@ -252,6 +270,12 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             return LabelStyles.from(
                 LabelStyle.from(category.categoryMarkerIcon)
                     .setTextStyles(LabelTextStyle.from(35, ContextCompat.getColor(context, R.color.black)))
+            )
+        }
+
+        fun setRoutePathStyle(context: Context): RouteLineStyles {
+            return RouteLineStyles.from(
+                RouteLineStyle.from(8f, ContextCompat.getColor(context, R.color.main))
             )
         }
     }
