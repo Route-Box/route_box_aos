@@ -20,12 +20,12 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
     fun removeItem(position: Int) {
         activityList.removeAt(position)
-        this.notifyItemRemoved(position)
+        notifyDataSetChanged()
     }
 
     fun addAllActivities(activityList: MutableList<ActivityResult>) {
         this.activityList = activityList
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     fun returnActivityId(position: Int): Int {
