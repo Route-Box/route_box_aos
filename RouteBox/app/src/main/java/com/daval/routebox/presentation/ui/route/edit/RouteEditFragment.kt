@@ -73,6 +73,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteEditFragment.kakaoMap = kakaoMap
+                setMapCenterPoint()
                 setActivityMarker()
                 drawRoutePath()
             }
@@ -112,17 +113,15 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
             .commit()
     }
 
+    private fun setMapCenterPoint() {
+        // 지도의 중심 위치 변경
+        kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(viewModel.getRoutePathCenterPoint(), DEFAULT_ZOOM_LEVEL))
+    }
+
     private fun setActivityMarker() {
         if (!viewModel.hasActivity()) return
         // 활동 마커 추가하기
         viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
-            // 지도를 첫 번째 장소로
-            if (index == 0) {
-                // 지도 위치 조정
-                val latLng = LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble())
-                // 카메라를 마커의 위치로 이동
-                kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(latLng, DEFAULT_ZOOM_LEVEL))
-            }
             // 지도에 마커 표시
             addMarker(
                 LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
