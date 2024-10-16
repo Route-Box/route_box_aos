@@ -19,12 +19,14 @@ import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.presentation.ui.route.RouteActivityActivity
-import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.DEFAULT_ZOOM_LEVEL
-import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.getMapActivityIconLabelOptions
-import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.getMapActivityNumberLabelOptions
-import com.daval.routebox.presentation.ui.route.RouteDetailActivity.Companion.setRoutePathStyle
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.MapUtil.DEFAULT_ZOOM_LEVEL
+import com.daval.routebox.presentation.utils.MapUtil.TEXT_OFFSET_Y
+import com.daval.routebox.presentation.utils.MapUtil.getLatLngRoutePath
+import com.daval.routebox.presentation.utils.MapUtil.getMapActivityIconLabelOptions
+import com.daval.routebox.presentation.utils.MapUtil.getMapActivityNumberLabelOptions
+import com.daval.routebox.presentation.utils.MapUtil.setRoutePathStyle
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
@@ -159,7 +161,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
-        val segment: RouteLineSegment = RouteLineSegment.from(viewModel.getLatLngRoutePath()).setStyles(
+        val segment: RouteLineSegment = RouteLineSegment.from(getLatLngRoutePath(viewModel.getActivityList())).setStyles(
             setRoutePathStyle(requireContext())
         )
         val options = RouteLineOptions.from(segment)
@@ -183,13 +185,8 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface {
 
         // TextLabel의 위치를 IconLabel 내부로 조정
         if (iconLabel != null && textLabel != null) {
-            // IconLabel의 크기를 가정 (예: 60x60 픽셀)
-            val iconSize = 60f
-            // 텍스트를 아이콘 중심에서 약간 위로 이동
-            val offsetY = - iconSize / (2.3)
-
             // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
-            textLabel.changePixelOffset(0f, offsetY.toFloat())
+            textLabel.changePixelOffset(0f, TEXT_OFFSET_Y.toFloat())
         }
     }
 

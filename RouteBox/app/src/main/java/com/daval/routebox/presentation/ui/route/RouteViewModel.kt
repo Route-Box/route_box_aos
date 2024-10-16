@@ -136,21 +136,8 @@ class RouteViewModel @Inject constructor(
     }
 
     fun hasActivity(): Boolean {
-        return !_route.value!!.routeActivities.isNullOrEmpty()
+        return _route.value!!.routeActivities.isNotEmpty()
     }
 
-    // 루트 경로의 평균 좌표로 지도 중심에 위치할 지점을 반환
-    fun getRoutePathCenterPoint(): LatLng {
-        val routeActivityList = getLatLngRoutePath()
-        return LatLng.from(
-            routeActivityList.map { it.latitude }.average(),
-            routeActivityList.map { it.longitude }.average()
-        )
-    }
-
-    fun getLatLngRoutePath(): List<LatLng> {
-        return _route.value!!.routeActivities.map {
-            LatLng.from(it.latitude.toDouble(), it.longitude.toDouble())
-        }
-    }
+    fun getActivityList() = _route.value!!.routeActivities
 }
