@@ -109,6 +109,21 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
             }
         }
 
+        // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
+        fun combineAllServerTagsByList(route: RouteDetail): ArrayList<String> {
+            val tagNameList: ArrayList<String> = arrayListOf()
+            tagNameList.addAll(
+                listOfNotNull(
+                    route.whoWith, // 누구와
+                    route.numberOfDays, // 며칠 동안
+                    route.transportation, // 이동 수단
+                    FilterOption.getNumberOfPeopleText(route.numberOfPeople), // 몇 명과
+                )
+            )
+            tagNameList.addAll(route.routeStyles) // 루트 스타일
+            return tagNameList
+        }
+
         // int 형태의 numberOfPeople를 명 수 텍스트로 변환
         fun getNumberOfPeopleText(numberOfPeople: Int?): String? {
             if (numberOfPeople == null || numberOfPeople == -1) return null
