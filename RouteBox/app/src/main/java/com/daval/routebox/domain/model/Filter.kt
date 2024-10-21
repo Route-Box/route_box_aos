@@ -110,7 +110,8 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
         }
 
         // int 형태의 numberOfPeople를 명 수 텍스트로 변환
-        fun getNumberOfPeopleText(numberOfPeople: Int?): String {
+        fun getNumberOfPeopleText(numberOfPeople: Int?): String? {
+            if (numberOfPeople == null || numberOfPeople == -1) return null
             return when (numberOfPeople) {
                 in 2..4 -> "${numberOfPeople}명"
                 else -> "5명 이상"
