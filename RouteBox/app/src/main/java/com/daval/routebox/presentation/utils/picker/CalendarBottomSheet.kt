@@ -18,7 +18,7 @@ interface DateClickListener {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarBottomSheet(private var listner: DateClickListener, var isStartDate: Boolean, private var initialDate: LocalDate) : BottomSheetDialogFragment() {
+class CalendarBottomSheet(private var listner: DateClickListener, private var setPrevDateDisable: Boolean, var isStartDate: Boolean, private var initialDate: LocalDate) : BottomSheetDialogFragment() {
     private lateinit var binding: BottomSheetCalendarBinding
     private var criteriaDate = this.initialDate // 캘린더 날짜를 가져오는 기준 일자
 
@@ -56,7 +56,7 @@ class CalendarBottomSheet(private var listner: DateClickListener, var isStartDat
     // 날짜 적용 함수
     private fun setAdapter() {
         // 어댑터 초기화
-        calendarAdapter = CalendarRVAdapter(getSelectedDatePosition(), initialDate.monthValue)
+        calendarAdapter = CalendarRVAdapter(setPrevDateDisable, getSelectedDatePosition(), initialDate.monthValue)
         binding.calendarDateRv.apply {
             layoutManager = GridLayoutManager(requireContext(), DAY_OF_WEEK)
             adapter = calendarAdapter
