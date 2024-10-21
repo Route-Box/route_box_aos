@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/routeTrackingFragment"
-        android:name="com.daval.routebox.presentation.ui.route.write.RouteTrackingFragment"
+        android:name="com.daval.routebox.presentation.ui.route.write.tracking.RouteTrackingFragment"
         android:label="RouteTrackingFragment"
         tools:layout="@layout/fragment_route_tracking" >
         <action

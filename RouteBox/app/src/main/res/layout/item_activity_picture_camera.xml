@@ -11,7 +11,7 @@
             type="com.daval.routebox.domain.model.ActivityPictureAlbum" />
         <variable
             name="viewModel"
-            type="com.daval.routebox.presentation.ui.route.write.RoutePictureAlbumViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.tracking.RoutePictureAlbumViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

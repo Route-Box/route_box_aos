@@ -37,7 +37,8 @@ class PermissionActivity: AppCompatActivity() {
         // 확인 버튼 클릭
         binding.permissionConfirmBtn.setOnClickListener {
             // 회원가입 화면으로 이동
-            startActivity(Intent(this, SignupActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 

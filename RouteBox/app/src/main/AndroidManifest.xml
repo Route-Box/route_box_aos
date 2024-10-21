@@ -75,7 +75,7 @@
         <activity android:name=".presentation.ui.route.write.RouteCreateActivity"/>
         <activity android:name=".presentation.ui.route.write.RouteWriteActivity" />
         <activity android:name=".presentation.ui.route.RouteActivityActivity" />
-        <activity android:name=".presentation.ui.route.write.RoutePictureAlbumActivity" />
+        <activity android:name=".presentation.ui.route.write.tracking.RoutePictureAlbumActivity" />
         <activity android:name=".presentation.ui.route.RouteDetailActivity"/>
         <activity android:name=".presentation.ui.route.RouteWriteCompleteActivity" />
         <activity android:name=".presentation.ui.route.RouteCompleteActivity" />

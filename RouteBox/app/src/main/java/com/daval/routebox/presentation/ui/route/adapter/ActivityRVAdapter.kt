@@ -20,12 +20,12 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
 
     fun removeItem(position: Int) {
         activityList.removeAt(position)
-        this.notifyItemRemoved(position)
+        notifyDataSetChanged()
     }
 
     fun addAllActivities(activityList: MutableList<ActivityResult>) {
         this.activityList = activityList
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     fun returnActivityId(position: Int): Int {
@@ -65,7 +65,6 @@ class ActivityRVAdapter(private val isEditMode: Boolean): RecyclerView.Adapter<A
         fun bind(activity: ActivityResult) {
             binding.isEditMode = isEditMode
             binding.activity = activity
-            //TODO: 활동 번호에 따른 색상 변경
             binding.activityOrder = adapterPosition
 
             if (!activity.activityImages.isNullOrEmpty()) { // 이미지 표시
