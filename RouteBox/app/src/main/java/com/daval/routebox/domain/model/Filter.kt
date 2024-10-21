@@ -1,5 +1,7 @@
 package com.daval.routebox.domain.model
 
+import android.util.Log
+
 /** 필터 유형 */
 enum class FilterType(val order: Int, val maxSelectionCount: Int) {
     WITH_WHOM(0, 0), // 누구와
@@ -56,7 +58,12 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
 
         // 필터 이름 리스트에 해당하는 선택지 리스트 반환
         fun findOptionsByNames(names: List<String>): List<FilterOption> {
-            return entries.filter { it.optionName in names }
+            return entries.filter { entry ->
+                val cleanOptionName = entry.optionName.removeEmojis() // FilterOption의 이모티콘 제거
+                names.any { name ->
+                    name.contains(cleanOptionName) // 부분 일치 확인
+                }
+            }
         }
 
         // 리스트를 FilterType 별로 그룹핑
@@ -108,6 +115,11 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
                 in 2..4 -> "${numberOfPeople}명"
                 else -> "5명 이상"
             }
+        }
+
+        // 이모티콘 제거 함수
+        private fun String.removeEmojis(): String {
+            return this.replace(Regex("[\\p{So}\\p{Cn}]+"), "") // 유니코드 Symbol, Other 및 이모티콘 범위를 제거
         }
     }
 }
