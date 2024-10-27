@@ -58,7 +58,7 @@ object MapUtil {
     // TextLabel
     private fun setMapTextLabelStyle(): LabelStyles {
         return LabelStyles.from(
-            LabelStyle.from(LabelTextStyle.from(28, Color.WHITE))
+            LabelStyle.from(LabelTextStyle.from(28, Color.WHITE).setFont(R.font.pretendard_bold))
         )
     }
 

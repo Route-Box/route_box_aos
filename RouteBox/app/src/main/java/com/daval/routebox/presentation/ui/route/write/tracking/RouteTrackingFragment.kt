@@ -2,7 +2,6 @@ package com.daval.routebox.presentation.ui.route.write.tracking
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -28,11 +28,14 @@ import com.daval.routebox.presentation.ui.route.RouteViewModel
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
-import com.daval.routebox.presentation.utils.BindingAdapter
 import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.MapUtil
+import com.daval.routebox.presentation.utils.MapUtil.getMapActivityIconLabelOptions
+import com.daval.routebox.presentation.utils.MapUtil.getMapActivityNumberLabelOptions
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
+import com.gun0912.tedpermission.provider.TedPermissionProvider
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -41,7 +44,6 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
-import com.kakao.vectormap.label.LabelTextBuilder
 import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.route.RouteLine
 import com.kakao.vectormap.route.RouteLineOptions
@@ -49,7 +51,6 @@ import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.route.RouteLineStyles
 import com.kakao.vectormap.route.RouteLineStylesSet
-import java.util.Arrays
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -114,8 +115,8 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                     for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
                         var activity = editViewModel.route.value?.routeActivities!![i]
                         addMarker(
-                            activity.latitude.toDouble(), activity.longitude.toDouble(),
-                            activity.category, (i + 1).toString()
+                            LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
+                            Category.getCategoryByName(activity.category), (i + 1)
                         )
                     }
                 }
@@ -187,8 +188,8 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                 val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
 
-                addMarker(writeViewModel.currentCoordinate.value!!.latitude,
-                    writeViewModel.currentCoordinate.value!!.longitude, "", "")
+                addGPSMarker(writeViewModel.currentCoordinate.value!!.latitude,
+                    writeViewModel.currentCoordinate.value!!.longitude)
             }
         }
 
@@ -230,24 +231,37 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, category: String, activityNumber: String) {
-        var markerImg: Int
-        if (category != "") {
-            markerImg = returnActivityCategoryImg(category)
-        } else {
-            markerImg = R.drawable.ic_gps_marker
-        }
+    private fun addGPSMarker(latitude: Double, longitude: Double) {
+        var markerImg = R.drawable.ic_gps_marker
         var styles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
             LabelTextStyle.from(35, ContextCompat.getColor(requireActivity(), R.color.black)),
         )))
         val layer = kakaoMap.labelManager!!.layer
         val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
-        if (category != "") {
-            options.setTexts(LabelTextBuilder().setTexts(activityNumber))
-        }
         val label = layer!!.addLabel(options)
         label.show()
+    }
+
+    // 마커 띄우기
+    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
+        val layer = kakaoMap?.labelManager?.layer
+
+        // IconLabel 추가
+        val iconLabel = layer?.addLabel(
+            getMapActivityIconLabelOptions(latLng, category, activityNumber)
+        )
+
+        // TextLabel 추가
+        val textLabel = layer?.addLabel(
+            getMapActivityNumberLabelOptions(latLng, activityNumber)
+        )
+
+        // TextLabel의 위치를 IconLabel 내부로 조정
+        if (iconLabel != null && textLabel != null) {
+            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
+            textLabel.changePixelOffset(0f, MapUtil.TEXT_OFFSET_Y)
+        }
     }
 
     private fun showPopupDialog() {
@@ -281,20 +295,6 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         val routePath = editViewModel.route.value?.routePath
         return routePath?.map {
             LatLng.from(it.latitude, it.longitude)
-        }
-    }
-
-    private fun returnActivityCategoryImg(category: String): Int {
-        return when (category) {
-            "숙소" -> R.drawable.activity_accommodation
-            "관광지" -> R.drawable.activity_tourist
-            "음식점" -> R.drawable.activity_restaurant
-            "카페" -> R.drawable.activity_cafe
-            "SNS 스팟" -> R.drawable.activity_sns_spot
-            "문화 공간" -> R.drawable.activity_culture
-            "화장실" -> R.drawable.activity_toilet
-            "주차장" -> R.drawable.activity_parking
-            else -> R.drawable.activity_etc
         }
     }
 }
