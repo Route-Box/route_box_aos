@@ -17,6 +17,7 @@ import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.presentation.utils.DateConverter
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
+import com.kakao.vectormap.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -116,4 +117,10 @@ class RouteViewModel @Inject constructor(
         var sharedPreferencesHelper = SharedPreferencesHelper(context.getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
         _isLiveTracking.value = !sharedPreferencesHelper.getRouteTracking()
     }
+
+    fun hasActivity(): Boolean {
+        return _route.value!!.routeActivities.isNotEmpty()
+    }
+
+    fun getActivityList() = _route.value!!.routeActivities
 }

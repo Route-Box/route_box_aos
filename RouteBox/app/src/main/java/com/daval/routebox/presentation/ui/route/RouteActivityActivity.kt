@@ -31,7 +31,7 @@ import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.presentation.ui.route.adapter.CategoryRVAdapter
 import com.daval.routebox.presentation.ui.route.adapter.KakaoPlaceRVAdapter
 import com.daval.routebox.presentation.ui.route.adapter.PictureRVAdapter
-import com.daval.routebox.presentation.ui.route.write.RoutePictureAlbumActivity
+import com.daval.routebox.presentation.ui.route.write.tracking.RoutePictureAlbumActivity
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.utils.picker.CalendarBottomSheet
 import com.daval.routebox.presentation.utils.picker.DateClickListener

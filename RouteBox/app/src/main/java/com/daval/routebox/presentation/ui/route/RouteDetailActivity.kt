@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteDetailBinding
 import com.daval.routebox.domain.model.ActivityResult
+import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
@@ -21,13 +22,26 @@ import com.daval.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.daval.routebox.presentation.ui.seek.adapter.RouteTagRVAdapter
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.MapUtil
+import com.daval.routebox.presentation.utils.MapUtil.DEFAULT_ZOOM_LEVEL
+import com.daval.routebox.presentation.utils.MapUtil.getLatLngRoutePath
+import com.daval.routebox.presentation.utils.MapUtil.getMapActivityIconLabelOptions
+import com.daval.routebox.presentation.utils.MapUtil.getMapActivityNumberLabelOptions
+import com.daval.routebox.presentation.utils.MapUtil.getRoutePathCenterPoint
+import com.daval.routebox.presentation.utils.MapUtil.setRoutePathStyle
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.route.RouteLineOptions
+import com.kakao.vectormap.route.RouteLineSegment
 import dagger.hilt.android.AndroidEntryPoint
+
+
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,7 +51,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var tagAdapter: RouteTagRVAdapter
     private lateinit var activityAdapter: ActivityRVAdapter
-    private lateinit var kakaoMap: KakaoMap
+    private var kakaoMap: KakaoMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +87,9 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady: $kakaoMap")
                 this@RouteDetailActivity.kakaoMap = kakaoMap
+                setMapCenterPoint()
+                setActivityMarker()
+                drawRoutePath()
             }
         })
     }
@@ -119,6 +136,56 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
+    private fun setMapCenterPoint() {
+        // 지도의 중심 위치 변경
+        kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(
+            getRoutePathCenterPoint(viewModel.getActivityList()), DEFAULT_ZOOM_LEVEL))
+    }
+
+    private fun setActivityMarker() {
+        if (!viewModel.hasActivity()) return
+        // 활동 마커 추가하기
+        viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
+            // 지도에 마커 표시
+            addMarker(
+                LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
+                Category.getCategoryByName(activity.category),
+                index.plus(1) // 장소 번호는 0번부터 시작
+            )
+        }
+    }
+
+    private fun drawRoutePath() {
+        if (!viewModel.hasActivity()) return
+        val segment: RouteLineSegment = RouteLineSegment.from(getLatLngRoutePath(viewModel.getActivityList())).setStyles(
+            setRoutePathStyle(this)
+        )
+        val options = RouteLineOptions.from(segment)
+        // 지도에 선 표시
+        kakaoMap?.routeLineManager?.layer?.addRouteLine(options)?.show()
+    }
+
+    // 마커 띄우기
+    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
+        val layer = kakaoMap?.labelManager?.layer
+
+        // IconLabel 추가
+        val iconLabel = layer?.addLabel(
+            getMapActivityIconLabelOptions(latLng, category, activityNumber)
+        )
+
+        // TextLabel 추가
+        val textLabel = layer?.addLabel(
+            getMapActivityNumberLabelOptions(latLng, activityNumber)
+        )
+
+        // TextLabel의 위치를 IconLabel 내부로 조정
+        if (iconLabel != null && textLabel != null) {
+            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
+            textLabel.changePixelOffset(0f, MapUtil.TEXT_OFFSET_Y)
+        }
+    }
+
     private fun initObserve() {
         viewModel.route.observe(this) { route ->
             if (route.routeId != -1) {
@@ -126,7 +193,9 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             }
 
             if (route.routeActivities.size != 0) { // 활동 정보가 있다면
-                setActivityAdapter()
+                setActivityAdapter() // 어댑터 추가
+                setActivityMarker() // 지도에 활동 마커 표시d
+                drawRoutePath()
             }
         }
 
