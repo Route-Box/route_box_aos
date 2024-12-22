@@ -1,9 +1,12 @@
 package com.daval.routebox.presentation.ui.auth
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.daval.routebox.databinding.FragmentSignup1NicknameBinding
@@ -29,6 +32,7 @@ class Signup1NicknameFragment : Fragment() {
         }
 
         initObserve()
+        initClickListener()
 
         return binding.root
     }
@@ -37,5 +41,16 @@ class Signup1NicknameFragment : Fragment() {
         viewModel.nickname.observe(viewLifecycleOwner) {
             viewModel.setNicknameValidation()
         }
+    }
+
+    private fun initClickListener() {
+        binding.nicknameCl.setOnClickListener {
+            hideKeyboard()
+        }
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.nicknameEt.windowToken, 0)
     }
 }

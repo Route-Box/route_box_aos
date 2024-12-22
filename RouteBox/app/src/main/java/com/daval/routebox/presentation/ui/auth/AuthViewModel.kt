@@ -130,7 +130,7 @@ class AuthViewModel @Inject constructor(
 
     // 유효한 닉네임 확인
     fun setNicknameValidation() {
-        _isValidNickname.value = nickname.value!!.matches(NICKNAME_REGEX)
+        _isValidNickname.value = nickname.value!!.matches(NICKNAME_REGEX) && nickname.value?.length!! > 1
     }
 
     /** 토큰 */
@@ -155,6 +155,6 @@ class AuthViewModel @Inject constructor(
     }
 
     companion object {
-        val NICKNAME_REGEX = "^[가-힣a-zA-Z0-9]{2,8}$".toRegex() // 닉네임 정규식 - 한글, 영문, 숫자만 허용한 2~8 글자
+        val NICKNAME_REGEX = "^[ㄱ-ㅣ가-힣a-zA-Z0-9]*$".toRegex() // 닉네임 정규식 - 한글, 영문, 숫자만 허용한 2~8 글자
     }
 }

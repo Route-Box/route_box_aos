@@ -83,7 +83,9 @@ class LoginActivity: AppCompatActivity() {
             if (it.accessToken.token.isNotEmpty()) {
                 // Toast.makeText(this, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
                 // 메인 화면으로 이동
-                startActivity(Intent(this, MainActivity::class.java))
+                // UPDATE: 주석 제거
+                // startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, SignupActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(this, "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
