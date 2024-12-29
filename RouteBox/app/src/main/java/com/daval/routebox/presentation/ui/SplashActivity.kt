@@ -15,8 +15,6 @@ import android.util.Log
 import androidx.activity.viewModels
 import com.daval.routebox.presentation.ui.auth.AuthViewModel
 import com.daval.routebox.presentation.ui.auth.LoginActivity
-import com.daval.routebox.presentation.ui.auth.PermissionActivity
-import com.daval.routebox.presentation.ui.auth.SignupActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -57,15 +55,11 @@ class SplashActivity : AppCompatActivity() {
 
     private fun initObserve() {
         viewModel.refreshResponse.observe(this) { response ->
-            Log.d("ROUTE-TEST", "response = $response")
-            Log.d("ROUTE-TEST", "result = ${response?.accessToken?.token?.isEmpty()}")
             if (response?.accessToken?.token?.isEmpty() == true) { // 토큰 재발급 실패 -> 권한 안내 화면 -> 로그인 화면
-                startActivity(Intent(this@SplashActivity, PermissionActivity::class.java))
+                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                 finish()
             } else { // 토큰 재발급 성공 -> 메인 화면
-                // UPDATE: 주석 제거
-                // startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                startActivity(Intent(this@SplashActivity, SignupActivity::class.java))
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 finish()
                 overridePendingTransition(0, 0)
             }
