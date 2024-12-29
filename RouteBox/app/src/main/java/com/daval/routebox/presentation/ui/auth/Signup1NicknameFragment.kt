@@ -2,6 +2,8 @@ package com.daval.routebox.presentation.ui.auth
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +35,7 @@ class Signup1NicknameFragment : Fragment() {
 
         initObserve()
         initClickListener()
+        initEditTextListener()
 
         return binding.root
     }
@@ -47,6 +50,16 @@ class Signup1NicknameFragment : Fragment() {
         binding.nicknameCl.setOnClickListener {
             hideKeyboard()
         }
+    }
+
+    private fun initEditTextListener() {
+        binding.nicknameEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.setNickname(binding.nicknameEt.text.toString())
+            }
+            override fun afterTextChanged(p0: Editable?) { }
+        })
     }
 
     private fun hideKeyboard() {

@@ -39,7 +39,6 @@
             android:maxLines="1"
             android:inputType="text"
             android:maxLength="8"
-            android:text="@={viewModel.nickname}"
             android:theme="@style/EditTextTheme"
             app:layout_constraintTop_toTopOf="@id/nickname_check_btn"
             app:layout_constraintBottom_toBottomOf="@id/nickname_check_btn"

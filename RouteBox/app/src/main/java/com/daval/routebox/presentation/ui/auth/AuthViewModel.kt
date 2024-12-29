@@ -94,7 +94,6 @@ class AuthViewModel @Inject constructor(
 
     /** 회원가입 (내 정보 수정) */
     fun trySignup() {
-        Log.d("AuthViewModel", "birth: ${_birth.value}")
         viewModelScope.launch {
             _isSignupSuccess.value = userRepository.signup(nickname.value!!, _birth.value!!, _gender.value!!).id != 0
         }
@@ -106,9 +105,7 @@ class AuthViewModel @Inject constructor(
 
     fun setNickname(nickname: String) {
         this.nickname.value = nickname
-        if (nickname.isEmpty()) {
-            _isAvailableNickname.value = null
-        }
+        _isAvailableNickname.value = null
     }
 
     fun setBirth(birth: String) {
