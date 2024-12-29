@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.daval.routebox.presentation.ui.auth.AuthViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,22 +55,47 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_signup"
             app:layout_constraintTop_toBottomOf="@id/signup_top_bar"
-            app:layout_constraintBottom_toTopOf="@id/next_btn" />
+            app:layout_constraintBottom_toTopOf="@id/btn_ll" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next_btn"
+        <LinearLayout
+            android:id="@+id/btn_ll"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="@string/next_btn"
-            android:layout_marginHorizontal="22dp"
+            android:orientation="horizontal"
             android:layout_marginBottom="28dp"
-            android:enabled="true"
-            android:textSize="16sp"
-            android:fontFamily="@font/pretendard_bold"
-            android:background="@drawable/selector_main_btn"
-            android:textColor="@drawable/selector_main_btn"
+            android:layout_marginHorizontal="22dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/skip_btn"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="@string/signup_birth_skip"
+                android:layout_marginEnd="4dp"
+                android:enabled="true"
+                android:textSize="16sp"
+                android:stateListAnimator="@null"
+                android:visibility="gone"
+                android:fontFamily="@font/pretendard_bold"
+                android:background="@drawable/selector_gender"
+                android:textColor="@drawable/selector_gender_text" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/next_btn"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1.8"
+                android:text="@string/next_btn"
+                android:enabled="true"
+                android:textSize="16sp"
+                android:stateListAnimator="@null"
+                android:fontFamily="@font/pretendard_bold"
+                android:background="@drawable/selector_main_btn"
+                android:textColor="@drawable/selector_main_btn" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -29,8 +29,8 @@ class AuthViewModel @Inject constructor(
 
     val nickname = MutableLiveData<String>()
 
-    private val _birth = MutableLiveData<String>()
-    val birth: LiveData<String> = _birth
+    private val _birth = MutableLiveData<String?>()
+    val birth: LiveData<String?> = _birth
 
     private val _gender = MutableLiveData<String>()
     val gender: LiveData<String> = _gender
@@ -59,7 +59,7 @@ class AuthViewModel @Inject constructor(
     init {
         _step.value = 1
         nickname.value = ""
-        _birth.value = ""
+        _birth.value = null
         _gender.value = ""
         _terms.value = false
     }
@@ -108,7 +108,7 @@ class AuthViewModel @Inject constructor(
         _isAvailableNickname.value = null
     }
 
-    fun setBirth(birth: String) {
+    fun setBirth(birth: String?) {
         _birth.value = birth
     }
 
