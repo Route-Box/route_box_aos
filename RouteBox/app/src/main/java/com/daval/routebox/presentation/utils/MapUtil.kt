@@ -2,11 +2,12 @@ package com.daval.routebox.presentation.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.daval.routebox.R
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
-import com.kakao.vectormap.LatLng
+import com.google.android.gms.maps.model.LatLng
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
@@ -16,7 +17,7 @@ import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.route.RouteLineStyles
 
 object MapUtil {
-    const val DEFAULT_ZOOM_LEVEL = 10 // 루트를 표시하는 기본 줌 레벨
+    const val DEFAULT_ZOOM_LEVEL = 10f // 루트를 표시하는 기본 줌 레벨
 
     private const val RANK_INTERVAL = 10 // activity 번호에 따른 rank 차이 (더 높은 activityNumber를 가졌다면 핀을 더 위에 표시)
     private const val RANK_OFFSET = 1 // 아이콘-텍스트 간 rank 차이 (기본적으로 텍스트는 아이콘 위에 표시)
@@ -27,17 +28,20 @@ object MapUtil {
     // 루트 경로의 평균 좌표로 지도 중심에 위치할 지점을 반환
     fun getRoutePathCenterPoint(activities: List<ActivityResult>): LatLng {
         val routeActivityList = getLatLngRoutePath(activities)
-        return LatLng.from(
-            routeActivityList.map { it.latitude }.average(),
-            routeActivityList.map { it.longitude }.average()
+        val avgLat = routeActivityList.map { it.latitude }.average()
+        val avgLng = routeActivityList.map { it.longitude }.average()
+        Log.d("MapUtil", "latitude: $avgLat, longitude: $avgLng")
+        return LatLng(
+            avgLat, avgLng
         )
     }
 
     // 루트 경로를 그릴 LatLng 리스트 반환
     fun getLatLngRoutePath(activities: List<ActivityResult>): List<LatLng> {
+        Log.d("MapUtil", "activities: $activities")
         //TODO: 활동 경로 외에도 점들로 기록한 routePath 추가
         return activities.map {
-            LatLng.from(it.latitude.toDouble(), it.longitude.toDouble())
+            LatLng(it.latitude.toDouble(), it.longitude.toDouble())
         }
     }
 
@@ -49,7 +53,7 @@ object MapUtil {
         )
     }
 
-    fun getMapActivityIconLabelOptions(latLng: LatLng, category: Category, activityNumber: Int): LabelOptions {
+    fun getMapActivityIconLabelOptions(latLng: com.kakao.vectormap.LatLng, category: Category, activityNumber: Int): LabelOptions {
         return LabelOptions.from(latLng)
             .setStyles(setMapIconLabelStyles(category))
             .setRank((activityNumber * RANK_INTERVAL).toLong()) // activityNumber가 클수록 높은 rank를 가짐
@@ -62,7 +66,7 @@ object MapUtil {
         )
     }
 
-    fun getMapActivityNumberLabelOptions(latLng: LatLng, activityNumber: Int): LabelOptions {
+    fun getMapActivityNumberLabelOptions(latLng: com.kakao.vectormap.LatLng, activityNumber: Int): LabelOptions {
         return LabelOptions.from(latLng)
             .setStyles(setMapTextLabelStyle())
             .setTexts(LabelTextBuilder().setTexts(activityNumber.toString()))
