@@ -106,19 +106,8 @@ class RouteEditViewModel @Inject constructor(
 
     fun setRoute(route: RouteDetail) {
         _route.value = route
-        tagList = combineAllServerTagsByList()
+        tagList = FilterOption.combineAllServerTagsByList(_route.value!!)
         initSelectedOptionMap(FilterOption.findOptionsByNames(tagList))
-    }
-    
-    // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
-    private fun combineAllServerTagsByList(): ArrayList<String> {
-        val tagNameList: ArrayList<String> = arrayListOf()
-        tagNameList.add(_route.value!!.whoWith)
-        tagNameList.add(_route.value!!.numberOfDays)
-        tagNameList.add(FilterOption.getNumberOfPeopleText(_route.value!!.numberOfPeople))
-        tagNameList.addAll(_route.value!!.routeStyles)
-        tagNameList.add(_route.value!!.transportation)
-        return tagNameList
     }
 
     private fun initSelectedOptionMap(filterOptions: List<FilterOption>) {

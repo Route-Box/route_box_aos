@@ -18,7 +18,7 @@ import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Compan
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarRVAdapter(private val selectedDatePosition: Int, private val selectedMonth: Int) : RecyclerView.Adapter<CalendarRVAdapter.ViewHolder>() {
+class CalendarRVAdapter(private val setPrevDateDisable: Boolean, private val selectedDatePosition: Int, private val selectedMonth: Int) : RecyclerView.Adapter<CalendarRVAdapter.ViewHolder>() {
 
     private var dateList = listOf<LocalDate?>() // 달력에 표시될 날짜 목록
     private var selectedItemPosition = -1 // 달이 넘어가더라도 선택한 날짜는 유일하게 표시해주기 위함
@@ -60,8 +60,9 @@ class CalendarRVAdapter(private val selectedDatePosition: Int, private val selec
         // 날짜의 date만 표시
         holder.dateText.text = dateList[position]!!.dayOfMonth.toString()
 
-        if (dateList[position]!! < TODAY){ // 오늘 이전 날짜 회색 처리
+        if (setPrevDateDisable && dateList[position]!! < TODAY) { // 오늘 이전 날짜 회색 처리
             holder.dateText.setTextColor(ContextCompat.getColor(context, R.color.gray5))
+            holder.dateText.setOnClickListener { null } // 클릭 불가 처리
             return
         }
         if (selectedItemPosition == position) { // 선택 날짜 표시
@@ -76,12 +77,10 @@ class CalendarRVAdapter(private val selectedDatePosition: Int, private val selec
 
         // 날짜 클릭 이벤트
         holder.bg.setOnClickListener {
-            if (dateList[position]!! >= TODAY) { // 오늘 이전의 날짜는 선택할 수 없음
-                notifyItemChanged(selectedItemPosition) // 이전에 선택한 아이템 notify
-                selectedItemPosition = position // 선택한 날짜 position 업데이트
-                notifyItemChanged(selectedItemPosition) // 새로 선택한 아이템 notify
-                mItemClickListener.onDateClick(dateList[selectedItemPosition]!!) // 클릭 이벤트 처리
-            }
+            notifyItemChanged(selectedItemPosition) // 이전에 선택한 아이템 notify
+            selectedItemPosition = position // 선택한 날짜 position 업데이트
+            notifyItemChanged(selectedItemPosition) // 새로 선택한 아이템 notify
+            mItemClickListener.onDateClick(dateList[selectedItemPosition]!!) // 클릭 이벤트 처리
         }
     }
 
