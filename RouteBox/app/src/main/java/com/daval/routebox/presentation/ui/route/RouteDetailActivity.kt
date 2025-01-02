@@ -21,6 +21,7 @@ import com.daval.routebox.presentation.ui.route.edit.RouteEditBaseActivity
 import com.daval.routebox.presentation.ui.seek.adapter.RouteTagRVAdapter
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.MapUtil
 import com.daval.routebox.presentation.utils.MapUtil.DEFAULT_ZOOM_LEVEL
 import com.daval.routebox.presentation.utils.MapUtil.getRoutePathCenterPoint
 import com.daval.routebox.presentation.utils.PopupDialogInterface
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -118,19 +120,25 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
         activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
-    private fun setActivityMarker() {
+    private fun setActivityMarkers() {
         if (!viewModel.hasActivity()) return
-        //TODO: 활동 마커 추가하기
+        // 활동 마커 추가하기
+        viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
+            // 지도에 마커 표시
+            val markerIcon = MapUtil.createMarkerBitmap(this, Category.getCategoryByName(activity.category), index.plus(1))
+            // 마커 추가
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()))
+                    .icon(markerIcon)
+                    .zIndex(1f)
+            )
+        }
     }
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
         //TODO: 이동 경로 선으로 연결
-    }
-
-    // 마커 띄우기
-    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
-        //TODO: 지도에 마커 추가
     }
 
     private fun initObserve() {
@@ -142,7 +150,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
             if (route.routeActivities.size != 0) { // 활동 정보가 있다면
                 setMapCenterPoint() // 지도 중심 좌표 변경
                 setActivityAdapter() // 어댑터 추가
-                setActivityMarker() // 지도에 활동 마커 표시d
+                setActivityMarkers() // 지도에 활동 마커 추가
                 drawRoutePath()
             }
         }
