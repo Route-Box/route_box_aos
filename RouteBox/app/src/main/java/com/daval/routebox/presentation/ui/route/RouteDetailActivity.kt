@@ -138,7 +138,9 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
-        //TODO: 이동 경로 선으로 연결
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(this, viewModel.getActivityList())
+        googleMap.addPolyline(polylineOptions)
     }
 
     private fun initObserve() {
@@ -151,7 +153,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
                 setMapCenterPoint() // 지도 중심 좌표 변경
                 setActivityAdapter() // 어댑터 추가
                 setActivityMarkers() // 지도에 활동 마커 추가
-                drawRoutePath()
+                drawRoutePath() // 경로를 선으로 잇기
             }
         }
 

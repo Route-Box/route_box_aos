@@ -37,7 +37,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
 
     private val viewModel: RouteEditViewModel by activityViewModels()
     private lateinit var bottomSheetDialog: BottomSheetActivityBinding
-    private lateinit var googleMap: GoogleMap
+    private var googleMap: GoogleMap? = null
 
     private val activityAdapter = ActivityRVAdapter(true)
 
@@ -123,7 +123,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
     private fun setMapCenterPoint() {
         val centerLatLng = getRoutePathCenterPoint(viewModel.getActivityList())
         // 카메라 위치 설정 및 줌 레벨 조정
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
     }
 
     private fun setActivityMarkers() {
@@ -133,7 +133,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
             // 지도에 마커 표시
             val markerIcon = MapUtil.createMarkerBitmap(requireContext(), Category.getCategoryByName(activity.category), index.plus(1))
             // 마커 추가
-            googleMap.addMarker(
+            googleMap?.addMarker(
                 MarkerOptions()
                     .position(LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()))
                     .icon(markerIcon)
@@ -144,11 +144,13 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
-        //TODO: 이동 경로 선으로 연결
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), viewModel.getActivityList())
+        googleMap?.addPolyline(polylineOptions)
     }
 
     private fun clearMap() {
-        //TODO: 지도의 마커 초기화
+        googleMap?.clear()
     }
 
     private fun initObserve() {
@@ -156,9 +158,9 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
             if (route.routeActivities.isNotEmpty()) {
                 activityAdapter.addAllActivities(route.routeActivities as MutableList<ActivityResult>)
                 // 마커 및 선 업데이트
-                clearMap()
-//                setActivityMarkers() // 지도에 활동 마커 추가
-                drawRoutePath()
+                clearMap() // 기존 마커 지우기
+                setActivityMarkers() // 지도에 활동 마커 추가
+                drawRoutePath() // 경로 선으로 잇기
             }
         }
     }
@@ -179,5 +181,6 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
         this.googleMap = googleMap
         setMapCenterPoint() // 지도 중심 좌표 설정
         setActivityMarkers() // 지도에 활동 마커 추가
+        drawRoutePath() // 경로 선으로 잇기
     }
 }

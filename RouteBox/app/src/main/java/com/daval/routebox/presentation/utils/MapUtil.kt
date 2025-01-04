@@ -3,7 +3,6 @@ package com.daval.routebox.presentation.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +15,7 @@ import com.daval.routebox.domain.model.Category
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
-import com.kakao.vectormap.label.LabelTextBuilder
-import com.kakao.vectormap.label.LabelTextStyle
-import com.kakao.vectormap.route.RouteLineStyle
-import com.kakao.vectormap.route.RouteLineStyles
+import com.google.android.gms.maps.model.PolylineOptions
 
 object MapUtil {
     const val DEFAULT_ZOOM_LEVEL = 10f // 루트를 표시하는 기본 줌 레벨
@@ -82,9 +74,11 @@ object MapUtil {
     }
 
     // RouteLine
-    fun setRoutePathStyle(context: Context): RouteLineStyles {
-        return RouteLineStyles.from(
-            RouteLineStyle.from(6f, ContextCompat.getColor(context, R.color.main))
-        )
+    fun getRoutePathPolylineOptions(context: Context, activities: List<ActivityResult>): PolylineOptions {
+        return PolylineOptions().apply {
+            addAll(getLatLngRoutePath(activities))
+            width(8f)  // 선의 두께
+            color(ContextCompat.getColor(context, R.color.main))  // 선의 색상
+        }
     }
 }

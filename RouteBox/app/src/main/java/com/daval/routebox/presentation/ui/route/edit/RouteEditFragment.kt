@@ -116,7 +116,9 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
-        //TODO: 이동 경로 선으로 연결
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), viewModel.getActivityList())
+        googleMap.addPolyline(polylineOptions)
     }
 
     private fun initObserve() {
@@ -143,5 +145,6 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
         this.googleMap = googleMap
         setMapCenterPoint() // 지도 중심 좌표 설정
         setActivityMarkers() // 지도에 활동 마커 추가
+        drawRoutePath() // 경로를 선으로 잇기
     }
 }
