@@ -1,9 +1,7 @@
 package com.daval.routebox.presentation.ui.home
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,10 +10,8 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.daval.routebox.R
@@ -28,7 +24,6 @@ import com.daval.routebox.presentation.config.ApplicationClass.Companion.dsManag
 import com.daval.routebox.presentation.config.Constants.ENDPOINT_HOME
 import com.daval.routebox.presentation.config.Constants.WEB_BASE_URL
 import com.daval.routebox.presentation.ui.common.routePreview.RoutePreviewDetailActivity
-import com.daval.routebox.presentation.ui.route.RouteDetailActivity
 import com.daval.routebox.presentation.utils.WebViewBridge
 import com.daval.routebox.presentation.utils.NativeMessageCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -47,9 +42,6 @@ class HomeFragment : Fragment(), NativeMessageCallback {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         initWebViewSetting()
-
-        // SDK 32 이하에서는 자동으로 알림 권한이 활성화! So, SDK 33 이상일 경우에만 권한 요청
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) checkNotificationPermission()
 
         return binding.root
     }
@@ -149,19 +141,5 @@ class HomeFragment : Fragment(), NativeMessageCallback {
         val bottomNavView =
             requireActivity().findViewById<BottomNavigationView>(R.id.main_bottom_nav)
         bottomNavView.selectedItemId = tabId
-    }
-
-    private fun checkNotificationPermission() {
-        // 권한을 구분하기 위한 LOCATION_PERMISSION_REQUEST_CODE 필요!
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.POST_NOTIFICATIONS),
-            NOTIFICATION_PERMISSION_REQUEST_CODE
-        )
-    }
-
-    companion object {
-        private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1
     }
 }

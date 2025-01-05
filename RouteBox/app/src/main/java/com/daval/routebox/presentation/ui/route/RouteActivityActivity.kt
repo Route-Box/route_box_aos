@@ -290,7 +290,11 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     private fun showCalendarBottomSheet(date: LocalDate) {
-        val calendarBottomSheet = CalendarBottomSheet(this, true, date)
+        val calendarBottomSheet = CalendarBottomSheet(this,
+            setPrevDateDisable = false,
+            isStartDate = true,
+            initialDate = date
+        )
         calendarBottomSheet.run {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
         }

@@ -24,8 +24,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // TODO: 나중에 배포 서버 주소로 바꾸기
-        buildConfigField "String", "BASE_URL", properties['dev_base_url']
+        buildConfigField "String", "BASE_URL", properties['base_url']
+        buildConfigField "String", "DEV_BASE_URL", properties['dev_base_url']
         // TODO: 나중에 배포 웹 링크로 바꾸기
         buildConfigField "String", "WEB_BASE_URL", properties['dev_web_base_url']
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
