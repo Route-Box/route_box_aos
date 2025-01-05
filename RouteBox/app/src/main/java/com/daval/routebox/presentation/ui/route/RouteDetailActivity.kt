@@ -44,7 +44,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var tagAdapter: RouteTagRVAdapter
     private lateinit var activityAdapter: ActivityRVAdapter
-    private lateinit var googleMap: GoogleMap
+    private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +74,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
     private fun setMapCenterPoint() {
         val centerLatLng = getRoutePathCenterPoint(viewModel.getActivityList())
         // 카메라 위치 설정 및 줌 레벨 조정
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
     }
 
     private fun initRoute() {
@@ -127,7 +127,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
             // 지도에 마커 표시
             val markerIcon = MapUtil.createMarkerBitmap(this, Category.getCategoryByName(activity.category), index.plus(1))
             // 마커 추가
-            googleMap.addMarker(
+            googleMap?.addMarker(
                 MarkerOptions()
                     .position(LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()))
                     .icon(markerIcon)
@@ -140,7 +140,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
         if (!viewModel.hasActivity()) return
         // 이동 경로 선으로 연결
         val polylineOptions = MapUtil.getRoutePathPolylineOptions(this, viewModel.getActivityList())
-        googleMap.addPolyline(polylineOptions)
+        googleMap?.addPolyline(polylineOptions)
     }
 
     private fun initObserve() {

@@ -31,7 +31,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
     private lateinit var binding: FragmentRouteEditBinding
     private val viewModel: RouteEditViewModel by activityViewModels()
     private lateinit var routeStyleFragment: RouteStyleFragment
-    private lateinit var googleMap: GoogleMap
+    private var googleMap: GoogleMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,7 +95,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
     private fun setMapCenterPoint() {
         val centerLatLng = getRoutePathCenterPoint(viewModel.getActivityList())
         // 카메라 위치 설정 및 줌 레벨 조정
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
     }
 
     private fun setActivityMarkers() {
@@ -105,7 +105,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
             // 지도에 마커 표시
             val markerIcon = MapUtil.createMarkerBitmap(requireContext(), Category.getCategoryByName(activity.category), index.plus(1))
             // 마커 추가
-            googleMap.addMarker(
+            googleMap?.addMarker(
                 MarkerOptions()
                     .position(LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()))
                     .icon(markerIcon)
@@ -118,7 +118,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
         if (!viewModel.hasActivity()) return
         // 이동 경로 선으로 연결
         val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), viewModel.getActivityList())
-        googleMap.addPolyline(polylineOptions)
+        googleMap?.addPolyline(polylineOptions)
     }
 
     private fun initObserve() {
