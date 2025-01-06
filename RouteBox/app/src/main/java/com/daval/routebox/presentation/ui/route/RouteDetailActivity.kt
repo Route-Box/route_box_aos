@@ -3,7 +3,6 @@ package com.daval.routebox.presentation.ui.route
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.viewModels
@@ -24,34 +23,28 @@ import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.utils.CommonPopupDialog
 import com.daval.routebox.presentation.utils.MapUtil
 import com.daval.routebox.presentation.utils.MapUtil.DEFAULT_ZOOM_LEVEL
-import com.daval.routebox.presentation.utils.MapUtil.getLatLngRoutePath
-import com.daval.routebox.presentation.utils.MapUtil.getMapActivityIconLabelOptions
-import com.daval.routebox.presentation.utils.MapUtil.getMapActivityNumberLabelOptions
 import com.daval.routebox.presentation.utils.MapUtil.getRoutePathCenterPoint
-import com.daval.routebox.presentation.utils.MapUtil.setRoutePathStyle
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
-import com.kakao.vectormap.KakaoMap
-import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.route.RouteLineOptions
-import com.kakao.vectormap.route.RouteLineSegment
 import dagger.hilt.android.AndroidEntryPoint
-
 
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
+class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapReadyCallback {
     private lateinit var binding: ActivityRouteDetailBinding
 
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var tagAdapter: RouteTagRVAdapter
     private lateinit var activityAdapter: ActivityRVAdapter
-    private var kakaoMap: KakaoMap? = null
+    private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,25 +66,15 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun initMapSetting() {
-        binding.kakaoMap.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출
-                Log.d("KakaoMap", "onMapDestroy: ")
-            }
-            override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
-                Log.d("KakaoMap", "onMapError: $error")
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                Log.d("KakaoMap", "onMapReady: $kakaoMap")
-                this@RouteDetailActivity.kakaoMap = kakaoMap
-                setMapCenterPoint()
-                setActivityMarker()
-                drawRoutePath()
-            }
-        })
+        // 맵 프래그먼트 초기화
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.route_detail_map_fragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    private fun setMapCenterPoint() {
+        val centerLatLng = getRoutePathCenterPoint(viewModel.getActivityList())
+        // 카메라 위치 설정 및 줌 레벨 조정
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
     }
 
     private fun initRoute() {
@@ -131,59 +114,33 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         activityAdapter = ActivityRVAdapter(false) // 루트 보기 화면에서는 활동 수정 불가
         binding.routeDetailActivityRv.apply {
             this.adapter = activityAdapter
-            this.layoutManager = LinearLayoutManager(this@RouteDetailActivity, LinearLayoutManager.VERTICAL, false)
+            this.layoutManager =
+                LinearLayoutManager(this@RouteDetailActivity, LinearLayoutManager.VERTICAL, false)
         }
         activityAdapter.addAllActivities(viewModel.route.value!!.routeActivities as MutableList<ActivityResult>)
     }
 
-    private fun setMapCenterPoint() {
-        // 지도의 중심 위치 변경
-        kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(
-            getRoutePathCenterPoint(viewModel.getActivityList()), DEFAULT_ZOOM_LEVEL))
-    }
-
-    private fun setActivityMarker() {
+    private fun setActivityMarkers() {
         if (!viewModel.hasActivity()) return
         // 활동 마커 추가하기
         viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
             // 지도에 마커 표시
-            addMarker(
-                LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
-                Category.getCategoryByName(activity.category),
-                index.plus(1) // 장소 번호는 0번부터 시작
+            val markerIcon = MapUtil.createMarkerBitmap(this, Category.getCategoryByName(activity.category), index.plus(1))
+            // 마커 추가
+            googleMap?.addMarker(
+                MarkerOptions()
+                    .position(LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()))
+                    .icon(markerIcon)
+                    .zIndex(1f)
             )
         }
     }
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
-        val segment: RouteLineSegment = RouteLineSegment.from(getLatLngRoutePath(viewModel.getActivityList())).setStyles(
-            setRoutePathStyle(this)
-        )
-        val options = RouteLineOptions.from(segment)
-        // 지도에 선 표시
-        kakaoMap?.routeLineManager?.layer?.addRouteLine(options)?.show()
-    }
-
-    // 마커 띄우기
-    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
-        val layer = kakaoMap?.labelManager?.layer
-
-        // IconLabel 추가
-        val iconLabel = layer?.addLabel(
-            getMapActivityIconLabelOptions(latLng, category, activityNumber)
-        )
-
-        // TextLabel 추가
-        val textLabel = layer?.addLabel(
-            getMapActivityNumberLabelOptions(latLng, activityNumber)
-        )
-
-        // TextLabel의 위치를 IconLabel 내부로 조정
-        if (iconLabel != null && textLabel != null) {
-            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
-            textLabel.changePixelOffset(0f, MapUtil.TEXT_OFFSET_Y)
-        }
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(this, viewModel.getActivityList())
+        googleMap?.addPolyline(polylineOptions)
     }
 
     private fun initObserve() {
@@ -193,9 +150,10 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
             }
 
             if (route.routeActivities.size != 0) { // 활동 정보가 있다면
+                setMapCenterPoint() // 지도 중심 좌표 변경
                 setActivityAdapter() // 어댑터 추가
-                setActivityMarker() // 지도에 활동 마커 표시d
-                drawRoutePath()
+                setActivityMarkers() // 지도에 활동 마커 추가
+                drawRoutePath() // 경로를 선으로 잇기
             }
         }
 
@@ -251,14 +209,27 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
     }
 
     private fun showChangePublicPopupDialog() {
-        val popupContent = if (viewModel.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
-        val dialog = CommonPopupDialog(this, DialogType.CHANGE_PUBLIC.id, String.format(resources.getString(popupContent)), null, null)
+        val popupContent =
+            if (viewModel.isPublic) R.string.route_my_change_to_private_popup_content else R.string.route_my_change_to_public_popup_content
+        val dialog = CommonPopupDialog(
+            this,
+            DialogType.CHANGE_PUBLIC.id,
+            String.format(resources.getString(popupContent)),
+            null,
+            null
+        )
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(this.supportFragmentManager, "PopupDialog")
     }
 
     private fun showDeletePopupDialog() {
-        val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
+        val dialog = CommonPopupDialog(
+            this,
+            DialogType.DELETE.id,
+            String.format(resources.getString(R.string.activity_delete_popup)),
+            null,
+            null
+        )
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(this.supportFragmentManager, "PopupDialog")
     }
@@ -270,5 +241,10 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface {
         } else { // 삭제 확인
             viewModel.tryDeleteRoute()
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+        setMapCenterPoint() // 지도 중심 좌표 설정
     }
 }
