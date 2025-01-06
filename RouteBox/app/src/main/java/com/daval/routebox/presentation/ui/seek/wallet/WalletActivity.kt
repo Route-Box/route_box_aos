@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek.wallet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -46,8 +47,8 @@ class WalletActivity: AppCompatActivity() {
 
         binding.chargeCv.setOnClickListener {
             // TODO: 인앱 결제 기능 추가 했을 때 아래 화면으로 이동
-//            startActivity(Intent(this, ChargeActivity::class.java))
-            Toast.makeText(this, ContextCompat.getString(this, R.string.update), Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, ChargeActivity::class.java))
+            // Toast.makeText(this, ContextCompat.getString(this, R.string.update), Toast.LENGTH_LONG).show()
         }
 
         binding.refundCv.setOnClickListener {

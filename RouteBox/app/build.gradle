@@ -18,7 +18,7 @@ android {
         applicationId "com.daval.routebox"
         minSdk 24
         targetSdk 34
-        versionCode 8
+        versionCode 10
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -117,4 +117,7 @@ dependencies {
 
     // Permission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+
+    // In-App Purchase
+    implementation 'com.android.billingclient:billing-ktx:7.1.1'
 }
