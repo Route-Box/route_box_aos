@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek.wallet
 
+import android.app.DownloadManager.Query
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.queryProductDetails
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityChargeBinding
+import com.daval.routebox.domain.model.Point
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,40 +98,21 @@ class ChargeActivity: AppCompatActivity() {
 
     // 구매 가능한 상품들을 사용자에게 보여주기 위한 함수
     private suspend fun getPurchasePoint() {
-        // TODO: point_10은 테스트를 위한 것! 배포 시 삭제!
-        val pointIdList = arrayListOf(
-            "point_4500", "point_9500",
-            "point_14500", "point_19500", "point_24500", "point_49500"
+        // 구매 가능한 상품들 리스트 -> 우리 서비스에서는 포인트!
+        var pointIdList = mutableListOf(
+            Point.POINT4500.pointId, Point.POINT9500.pointId, Point.POINT14500.pointId,
+            Point.POINT19500.pointId, Point.POINT24500.pointId, Point.POINT49500.pointId
         )
 
-        // 구매 가능한 상품들 리스트 -> 우리 서비스에서는 포인트!
-        val pointList = arrayListOf(
-            // Product를 하나씩 추가
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(pointIdList[0])
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build(),
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(pointIdList[1])
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build(),
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(pointIdList[2])
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build(),
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(pointIdList[3])
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build(),
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(pointIdList[4])
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build(),
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(pointIdList[5])
+        var pointList = arrayListOf<QueryProductDetailsParams.Product>()
+        pointIdList.forEach {
+            pointList.add(
+                QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(it)
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build()
-        )
+            )
+        }
 
         // 포인트 리스트 전달
         val params = QueryProductDetailsParams.newBuilder()
@@ -151,22 +134,22 @@ class ChargeActivity: AppCompatActivity() {
     private fun purchasePointClickListener() {
         // pointIndex는 구글 콘솔에 정렬된 순서대로 지정
         binding.purchase4500.setOnClickListener {
-            startPurchaseFlow(3)
-        }
-        binding.purchase9500.setOnClickListener {
-            startPurchaseFlow(5)
-        }
-        binding.purchase14500.setOnClickListener {
             startPurchaseFlow(0)
         }
-        binding.purchase19500.setOnClickListener {
+        binding.purchase9500.setOnClickListener {
             startPurchaseFlow(1)
         }
-        binding.purchase24500.setOnClickListener {
+        binding.purchase14500.setOnClickListener {
             startPurchaseFlow(2)
         }
-        binding.purchase49500.setOnClickListener {
+        binding.purchase19500.setOnClickListener {
+            startPurchaseFlow(3)
+        }
+        binding.purchase24500.setOnClickListener {
             startPurchaseFlow(4)
+        }
+        binding.purchase49500.setOnClickListener {
+            startPurchaseFlow(5)
         }
     }
 
