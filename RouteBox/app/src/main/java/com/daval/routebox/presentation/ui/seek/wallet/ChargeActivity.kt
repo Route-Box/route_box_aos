@@ -98,25 +98,16 @@ class ChargeActivity: AppCompatActivity() {
 
     // 구매 가능한 상품들을 사용자에게 보여주기 위한 함수
     private suspend fun getPurchasePoint() {
-        // 구매 가능한 상품들 리스트 -> 우리 서비스에서는 포인트!
-        var pointIdList = mutableListOf(
-            Point.POINT4500.pointId, Point.POINT9500.pointId, Point.POINT14500.pointId,
-            Point.POINT19500.pointId, Point.POINT24500.pointId, Point.POINT49500.pointId
-        )
-
-        var pointList = arrayListOf<QueryProductDetailsParams.Product>()
-        pointIdList.forEach {
-            pointList.add(
-                QueryProductDetailsParams.Product.newBuilder()
+        var pointIdList = Point.getPointIdList().map {
+            QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(it)
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build()
-            )
         }
 
         // 포인트 리스트 전달
         val params = QueryProductDetailsParams.newBuilder()
-        params.setProductList(pointList)
+        params.setProductList(pointIdList)
 
         // 인앱 상품의 세부 정보들을 요청
         withContext(Dispatchers.IO) {
@@ -134,22 +125,22 @@ class ChargeActivity: AppCompatActivity() {
     private fun purchasePointClickListener() {
         // pointIndex는 구글 콘솔에 정렬된 순서대로 지정
         binding.purchase4500.setOnClickListener {
-            startPurchaseFlow(0)
+            startPurchaseFlow(Point.POINT4500.pointIndex)
         }
         binding.purchase9500.setOnClickListener {
-            startPurchaseFlow(1)
+            startPurchaseFlow(Point.POINT9500.pointIndex)
         }
         binding.purchase14500.setOnClickListener {
-            startPurchaseFlow(2)
+            startPurchaseFlow(Point.POINT14500.pointIndex)
         }
         binding.purchase19500.setOnClickListener {
-            startPurchaseFlow(3)
+            startPurchaseFlow(Point.POINT19500.pointIndex)
         }
         binding.purchase24500.setOnClickListener {
-            startPurchaseFlow(4)
+            startPurchaseFlow(Point.POINT24500.pointIndex)
         }
         binding.purchase49500.setOnClickListener {
-            startPurchaseFlow(5)
+            startPurchaseFlow(Point.POINT49500.pointIndex)
         }
     }
 

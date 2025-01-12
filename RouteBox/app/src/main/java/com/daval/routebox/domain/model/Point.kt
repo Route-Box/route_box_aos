@@ -6,5 +6,11 @@ enum class Point(val pointIndex: Int, val pointId: String) {
     POINT14500(2, "point_03_14500"),
     POINT19500(3, "point_04_19500"),
     POINT24500(4, "point_05_24500"),
-    POINT49500(5, "point_06_49500")
+    POINT49500(5, "point_06_49500");
+
+    companion object {
+        fun getPointIdList(): List<String> {
+            return Point.entries.map { it.pointId }
+        }
+    }
 }
