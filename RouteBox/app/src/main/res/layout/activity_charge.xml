@@ -127,6 +127,7 @@
                         style="@style/body_b_s" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_4500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="8dp"
@@ -200,6 +201,7 @@
                         style="@style/body_b_s" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_9500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="8dp"
@@ -273,6 +275,7 @@
                         style="@style/body_b_s" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_14500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="8dp"
@@ -346,6 +349,7 @@
                         style="@style/body_b_s" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_19500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="8dp"
@@ -419,6 +423,7 @@
                         style="@style/body_b_s" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_24500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="8dp"
@@ -492,6 +497,7 @@
                         style="@style/body_b_s" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_49500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="8dp"
