@@ -18,6 +18,7 @@
     <string name="signup_nickname_x">이 닉네임은 이미 다른 사람이 사용중이에요</string>
     <string name="signup_nickname_o">사용 가능한 닉네임이에요!</string>
     <string name="signup_birth">생일을 알려주세요</string>
+    <string name="signup_birth_skip">건너뛰기</string>
     <string name="signup_birth_yy">YYYY</string>
     <string name="signup_birth_mm">MM</string>
     <string name="signup_birth_dd">DD</string>

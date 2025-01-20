@@ -155,14 +155,11 @@
                         app:layout_constraintStart_toStartOf="@id/route_detail_title_tv"
                         app:cardCornerRadius="12dp">
 
-                        <com.kakao.vectormap.MapView
-                            android:id="@+id/kakao_map"
+                        <fragment
+                            class="com.google.android.gms.maps.SupportMapFragment"
+                            android:id="@+id/route_detail_map_fragment"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            android:layout_height="match_parent" />
 
                     </androidx.cardview.widget.CardView>
 

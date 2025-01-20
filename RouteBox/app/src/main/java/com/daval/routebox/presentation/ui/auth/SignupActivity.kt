@@ -2,6 +2,8 @@ package com.daval.routebox.presentation.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -35,10 +37,10 @@ class SignupActivity: AppCompatActivity() {
                isEnabled = isAvailableNickname == true // 중복 확인이 끝났을 경우
             }
             viewModel.birth.observe(this@SignupActivity) {
-                isEnabled = viewModel.birth.value != ""
+                isEnabled = viewModel.birth.value != null
             }
             viewModel.gender.observe(this@SignupActivity) {
-                isEnabled = viewModel.birth.value != ""
+                isEnabled = viewModel.gender.value != ""
             }
             viewModel.terms.observe(this@SignupActivity) {
                 isEnabled = viewModel.terms.value != false
@@ -62,10 +64,12 @@ class SignupActivity: AppCompatActivity() {
             when (viewModel.step.value) {
                 1 -> {
                     findNavController(binding.signupContainer).navigate(R.id.action_signup1NicknameFragment_to_signup2BirthFragment)
+                    binding.skipBtn.visibility = View.VISIBLE
                 }
                 2 -> {
                     findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup3GenderFragment)
                     binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
+                    binding.skipBtn.visibility = View.GONE
                 }
                 3 -> {
                     findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup4TermsFragment)
@@ -79,6 +83,17 @@ class SignupActivity: AppCompatActivity() {
             viewModel.setStep(viewModel.step.value!! + 1)
             binding.progressBar.progress = viewModel.step.value!!
             if (viewModel.step.value != 5) binding.nextBtn.isEnabled = false
+        }
+
+        binding.skipBtn.setOnClickListener {
+            viewModel.setBirth("")
+            findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup3GenderFragment)
+            binding.nextBtn.text = ContextCompat.getString(this, R.string.next_btn)
+            binding.skipBtn.visibility = View.GONE
+
+            viewModel.setStep(viewModel.step.value!! + 1)
+            binding.progressBar.progress = viewModel.step.value!!
+            binding.nextBtn.isEnabled = false
         }
     }
 
@@ -97,10 +112,12 @@ class SignupActivity: AppCompatActivity() {
             2 -> {
                 findNavController(binding.signupContainer).navigate(R.id.action_signup2BirthFragment_to_signup1NicknameFragment2)
                 viewModel.setNickname("")
+                binding.skipBtn.visibility = View.GONE
             }
             3 -> {
                 findNavController(binding.signupContainer).navigate(R.id.action_signup3GenderFragment_to_signup2BirthFragment)
-                viewModel.setBirth("")
+                viewModel.setBirth(null)
+                binding.skipBtn.visibility = View.VISIBLE
             }
             4 -> {
                 findNavController(binding.signupContainer).navigate(R.id.action_signup4TermsFragment_to_signup3GenderFragment)
