@@ -53,6 +53,13 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        googleMap?.clear()
+        setActivityMarkers()
+        drawRoutePath()
+    }
+
     private fun initMapSetting() {
         // 맵 프래그먼트 초기화
         val mapFragment = childFragmentManager.findFragmentById(R.id.route_edit_map_fragment) as SupportMapFragment
