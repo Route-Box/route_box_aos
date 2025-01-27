@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -43,7 +44,6 @@ class SeekViewModel @Inject constructor(
     fun getRouteList() {
         viewModelScope.launch {
             val getRouteListResult = repository.getSearchRouteList(_page.value!!, ROUTE_SIZE).result
-
             if (getRouteListResult.size != 0) {
                 _routeList.value = getRouteListResult
             }
