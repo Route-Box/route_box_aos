@@ -2,9 +2,11 @@ package com.daval.routebox.presentation.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.daval.routebox.R
@@ -15,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var preDestinationLabel: String = ""
 
     private var backPressedTime: Long = 0 // 뒤로가기 버튼을 눌렀던 시간 저장
 
@@ -38,6 +41,15 @@ class MainActivity : AppCompatActivity() {
                 setAppFinishedFlow()
             }
         })
+
+        // Navigation 화면 변경을 확인한 후, 같은 메뉴를 또 선택했을 때 화면을 새로고침!
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (preDestinationLabel == destination.label.toString()) {
+                refreshFragment(navController)
+            }
+
+            preDestinationLabel = destination.label.toString()
+        }
     }
 
     private fun setAppFinishedFlow() {
@@ -50,6 +62,12 @@ class MainActivity : AppCompatActivity() {
         if (System.currentTimeMillis() <= backPressedTime + BACK_PRESSED_DURATION) {
             finish()
         }
+    }
+
+    private fun refreshFragment(navController: NavController) {
+        val currentId = navController.currentDestination?.id
+        navController.popBackStack(currentId!!, true)
+        navController.navigate(currentId)
     }
 
     companion object {
