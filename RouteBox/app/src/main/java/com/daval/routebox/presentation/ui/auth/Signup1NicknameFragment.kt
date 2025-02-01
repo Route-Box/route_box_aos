@@ -1,9 +1,14 @@
 package com.daval.routebox.presentation.ui.auth
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.daval.routebox.databinding.FragmentSignup1NicknameBinding
@@ -29,6 +34,8 @@ class Signup1NicknameFragment : Fragment() {
         }
 
         initObserve()
+        initClickListener()
+        initEditTextListener()
 
         return binding.root
     }
@@ -37,5 +44,26 @@ class Signup1NicknameFragment : Fragment() {
         viewModel.nickname.observe(viewLifecycleOwner) {
             viewModel.setNicknameValidation()
         }
+    }
+
+    private fun initClickListener() {
+        binding.nicknameCl.setOnClickListener {
+            hideKeyboard()
+        }
+    }
+
+    private fun initEditTextListener() {
+        binding.nicknameEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.setNickname(binding.nicknameEt.text.toString())
+            }
+            override fun afterTextChanged(p0: Editable?) { }
+        })
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.nicknameEt.windowToken, 0)
     }
 }

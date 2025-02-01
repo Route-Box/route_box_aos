@@ -1,18 +1,27 @@
 package com.daval.routebox.presentation.ui.auth
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.daval.routebox.databinding.FragmentSignup2BirthBinding
+import java.text.DateFormat
+import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Calendar
 
+@SuppressLint("SimpleDateFormat")
+@RequiresApi(Build.VERSION_CODES.O)
 class Signup2BirthFragment : Fragment() {
 
     private lateinit var binding: FragmentSignup2BirthBinding
@@ -60,21 +69,36 @@ class Signup2BirthFragment : Fragment() {
         })
     }
 
+    // 입력한 날짜가 오늘 날짜 전 날짜인지, 올바른 날짜인지 확인
     private fun isBirthValid()  {
-        val dateFormat = SimpleDateFormat(BIRTH_FORMAT)
-        val thisYear = dateFormat.format(Calendar.getInstance().time).substring(0, 4)
-        val date = "${binding.birthYearEt.text}-${binding.birthMonthEt.text}-${binding.birthDayEt.text}"
+        // 기존에 저장했던 Birth 초기화
+        viewModel.setBirth("")
+        
+        val decimalYearFormat = DecimalFormat("0000")
+        val decimalMonthDayFormat = DecimalFormat("00")
+        val today = LocalDate.now().toString().replace("-", "")
 
-        if (Integer.parseInt(binding.birthYearEt.text.toString()) <= Integer.parseInt(thisYear)) {
-            try {
-                dateFormat.isLenient = false
-                dateFormat.parse(date)
-                viewModel.setBirth(date)
-            } catch (_: ParseException) { }
+        // 모든 값이 채워져 있을 때만 유효성 확인
+        if (binding.birthYearEt.text.isNotEmpty() && binding.birthMonthEt.text.isNotEmpty() && binding.birthDayEt.text.isNotEmpty()) {
+            val date = "${decimalYearFormat.format(binding.birthYearEt.text.toString().toInt())}-${decimalMonthDayFormat.format(binding.birthMonthEt.text.toString().toInt())}-${decimalMonthDayFormat.format(binding.birthDayEt.text.toString().toInt())}"
+            // 입력한 날짜가 오늘 이전 날짜인지 확인
+            if (date.replace("-", "").toInt() < today.toInt()) {
+                if (validationDate(date)) {
+                    viewModel.setBirth(date)
+                }
+            }
         }
     }
 
-    companion object {
-        val BIRTH_FORMAT = "yyyy-MM-dd"
+    // 실제로 존재하는 날짜인지 체크
+    private fun validationDate(checkDate: String): Boolean {
+        try {
+            var dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            dateFormat.isLenient = false
+            dateFormat.parse(checkDate)
+            return true
+        } catch (e: ParseException){
+            return false
+        }
     }
 }
