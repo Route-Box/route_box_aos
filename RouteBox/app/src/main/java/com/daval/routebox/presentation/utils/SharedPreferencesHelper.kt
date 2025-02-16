@@ -76,6 +76,18 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
+    // 루트 기록 EndTime 저장
+    fun setEndTime(endTime: String) {
+        sharedPreferences.edit()
+            .putString(ROUTE_END_TIME, endTime)
+            .apply()
+    }
+
+    // 루트 기록 EndTime 불러오기
+    fun getEndTime(): String? {
+        return sharedPreferences.getString(ROUTE_END_TIME, null)
+    }
+
     companion object {
         const val APP_PREF_KEY = "app_pref"
         const val RECENT_SEARCHWORD_KEY = "recent_searchword"
@@ -83,5 +95,6 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
         const val TRACKING_COORDINATE = "tracking_coordinate"
         const val TRACKING_BACKGROUND = "tracking_background"
         const val TRACKING_IS_BACKGROUND = "tracking_is_background"
+        const val ROUTE_END_TIME = "route_end_time"
     }
 }

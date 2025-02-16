@@ -51,6 +51,7 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
         binding.routeStyleDoneBtn.setOnClickListener {
             // 루트 수정 API
             viewModel.tryEditRoute()
+            startActivity(Intent(this@RouteCompleteTagActivity, RouteEditBaseActivity::class.java))
         }
     }
 

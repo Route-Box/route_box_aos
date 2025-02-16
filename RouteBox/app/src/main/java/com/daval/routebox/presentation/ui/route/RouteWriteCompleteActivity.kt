@@ -30,7 +30,6 @@ class RouteWriteCompleteActivity: AppCompatActivity() {
         }
 
         binding.laterTv.setOnClickListener {
-            // TODO: 나중에 하기 API 연결
             finish()
         }
     }

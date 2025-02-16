@@ -42,7 +42,7 @@ object DateConverter {
         return convertKSTToUTC(getAPIFormattedDateAndTime(date, timePair))
     }
 
-    private fun getAPIFormattedDateAndTime(date: LocalDate, timePair: Pair<Int, Int>): String {
+    fun getAPIFormattedDateAndTime(date: LocalDate, timePair: Pair<Int, Int>): String {
         return "${getAPIFormattedDate(date)}T${format(MINUTE_FORMAT, timePair.first)}:${format(MINUTE_FORMAT, timePair.second)}:00" // "2024-08-28T14:11:52" 형태의 서버 데이터로 변환
     }
 

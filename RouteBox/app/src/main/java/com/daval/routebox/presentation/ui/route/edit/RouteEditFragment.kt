@@ -76,7 +76,12 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
         }
         // 완료 버튼
         binding.routeEditDoneBtn.setOnClickListener {
-            viewModel.tryEditRoute() // 루트 제목, 내용 저장 진행
+            if (viewModel.stepId.value == 0) { // 루트 마무리하기
+                viewModel.routeComplete()
+                findNavController().navigate(R.id.action_routeEditFragment_to_routeCompleteActivity)
+            } else { // 루트 수정하기
+                viewModel.tryEditRoute() // 루트 제목, 내용 저장 진행
+            }
         }
     }
 

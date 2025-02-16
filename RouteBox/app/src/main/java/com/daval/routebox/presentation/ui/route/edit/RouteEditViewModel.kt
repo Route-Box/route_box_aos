@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.FilterOption
 import com.daval.routebox.domain.model.FilterType
 import com.daval.routebox.domain.model.RouteDetail
+import com.daval.routebox.domain.model.RouteFinishRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.kakao.vectormap.LatLng
@@ -86,6 +87,13 @@ class RouteEditViewModel @Inject constructor(
                 routeUpdateRequest
             ).routeId != -1
             Log.d("RouteEditViewModel", "EditRouteRequest: $routeUpdateRequest")
+        }
+    }
+
+    /** 루트 마무리하기 */
+    fun routeComplete() {
+        viewModelScope.launch {
+            repository.finishRoute(_routeId.value!!, RouteFinishRequest("", ""))
         }
     }
 
