@@ -4,7 +4,7 @@ import com.daval.routebox.BuildConfig
 
 object Constants {
     // UPDATE: 배포 시 BASE_URL로 변경
-    const val BASE_URL = BuildConfig.BASE_URL
+    const val BASE_URL = BuildConfig.DEV_BASE_URL
     const val KAKAO_BASE_URL = "https://dapi.kakao.com/v2/local/"
     const val OPEN_API_BASE_URL = "https://apis.data.go.kr/"
     const val OPEN_API_SERVICE_KEY = BuildConfig.OPEN_API_SERVICE_KEY

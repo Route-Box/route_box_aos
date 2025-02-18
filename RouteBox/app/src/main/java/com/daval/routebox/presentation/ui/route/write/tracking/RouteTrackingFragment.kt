@@ -163,7 +163,11 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         bottomSheetDialog.activityRv.itemAnimator = null
         activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                    putExtra("routeId", editViewModel.routeId.value)
+                    putExtra("activity", editViewModel.route.value!!.routeActivities[position])
+                    putExtra("isEdit", true)
+                })
             }
             override fun onDeleteButtonClick(position: Int) {
                 deleteId = activityAdapter.returnActivityId(position)
