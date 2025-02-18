@@ -131,18 +131,11 @@ class SeekFragment : Fragment() {
 
     private fun initScrollListener() {
         binding.nestedSv.setOnScrollChangeListener { _, _, _, _, _ ->
-            if (!binding.nestedSv.canScrollVertically(1)) {
-                if (!isEnd) {
-                    if (viewModel.routeList.value!!.size < 3) {
-                        isEnd = true
-                    } else {
-                        viewModel.getRouteList()
-                    }
-                    viewModel.getRouteList()
-                }
-
-                isBottom = true
+            if (!binding.nestedSv.canScrollVertically(1) && !isEnd) {
+                isEnd = (viewModel.routeList.value?.size ?: 0) < 3
+                viewModel.getRouteList()
             }
+            isBottom = true
         }
     }
 
