@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.ui.seek
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,8 +35,8 @@ class SeekFragment : Fragment() {
     private lateinit var binding: FragmentSeekBinding
     private val viewModel : SeekViewModel by viewModels()
     private lateinit var routeAdapter: SeekHomeRouteRVAdapter
-    private var isEnd: Boolean = false
-    private var isBottom: Boolean = false
+    private var isEnd: Boolean = false // 모든 루트를 다 받아왔을 때 (마지막 루트인지 확인)
+    private var isBottom: Boolean = false // 스크롤이 제일 밑에 닿았는지 확인
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,9 +84,7 @@ class SeekFragment : Fragment() {
     private fun initClickListener() {
         binding.topPointIv.setOnClickListener {
             // TODO: 닉네임 전달 or 지갑 API 연동 후 닉네임 연결
-             startActivity(Intent(context, WalletActivity::class.java))
-//            val loading = LoadingDialog(requireActivity())
-//            loading.show()
+            startActivity(Intent(context, WalletActivity::class.java))
         }
 
         binding.topSearchIv.setOnClickListener {
@@ -120,28 +119,24 @@ class SeekFragment : Fragment() {
                 // 만약 새로고침으로 인해 값이 변경되었다면, 새로고침을 안 보이게 처리
                 if (binding.swipeLayout.isRefreshing) binding.swipeLayout.isRefreshing = false
             } else {
-                if (isBottom) {
+                if (isBottom && !isEnd) {
                     routeAdapter.addItems(viewModel.routeList.value!!)
                     isBottom = false
                     viewModel.setPage(viewModel.page.value!! + 1)
                 }
             }
+            isEnd = false
         }
     }
 
     private fun initScrollListener() {
-        binding.nestedSv.setOnScrollChangeListener(object: View.OnScrollChangeListener {
-            override fun onScrollChange(p0: View?, p1: Int, p2: Int, p3: Int, p4: Int) {
-                if (!binding.nestedSv.canScrollVertically(1)) {
-                    if (!isEnd) {
-                        viewModel.getRouteList()
-                    }
-                    if (viewModel.routeList.value!!.size < 3) isEnd = true
-
-                    isBottom = true
-                }
+        binding.nestedSv.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (!binding.nestedSv.canScrollVertically(1) && !isEnd) {
+                isEnd = (viewModel.routeList.value?.size ?: 0) < 3
+                viewModel.getRouteList()
             }
-        })
+            isBottom = true
+        }
     }
 
     private fun initScrollLoading() {
