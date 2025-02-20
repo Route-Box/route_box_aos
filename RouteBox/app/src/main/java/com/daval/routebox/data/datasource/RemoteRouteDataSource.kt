@@ -287,7 +287,7 @@ class RemoteRouteDataSource @Inject constructor(
         var activityResult = ActivityResult()
 
         // 이미지 문자열을 MultipartBody.Part 형태로 변환
-        val activityImagesPart = ImageConverter.getMultipartImgList(context, activityImages!!.toMutableList())
+        val activityImagesPart = ImageConverter.getMultipartImgList(context, activityImages!!.toMutableList(), ACTIVITY_ADD_IMAGE_PART_NAME)
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.createActivity(
@@ -351,7 +351,7 @@ class RemoteRouteDataSource @Inject constructor(
     ): ActivityResult {
         var activityUpdateResult = ActivityResult()
         // 이미지 문자열을 MultipartBody.Part 형태로 변환
-        val activityImagesPart = ImageConverter.getMultipartImgList(context, addedImageList!!.toMutableList())
+        val activityImagesPart = ImageConverter.getMultipartImgList(context, addedImageList!!.toMutableList(), ACTIVITY_EDIT_IMAGE_PART_NAME)
         withContext(Dispatchers.IO) {
             runCatching {
                 routeApiService.updateActivity(
@@ -437,9 +437,8 @@ class RemoteRouteDataSource @Inject constructor(
         return imageIdsString?.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
-    // 이미지 파일을 MultipartBody.Part로 변환하는 함수
-    fun createMultipartBodyPart(file: File, partName: String): MultipartBody.Part {
-        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
+    companion object {
+        private const val ACTIVITY_ADD_IMAGE_PART_NAME = "activityImages"
+        private const val ACTIVITY_EDIT_IMAGE_PART_NAME = "addedActivityImages"
     }
 }
