@@ -5,9 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -25,9 +26,11 @@ import com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.TRACKING_COORDINATE
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.kakao.vectormap.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -75,11 +78,6 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
         routeId = Integer.parseInt(intent.getStringExtra("routeId"))
         writeViewModel.setRouteId(routeId)
         editViewModel.setRouteId(routeId)
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 2
-        private const val LOCATION_BACKGROUND_PERMISSION_REQUEST_CODE = 3
     }
 
     // Background GPS 권한 허용을 위한 부분
@@ -186,7 +184,7 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
             var longitude = coordinate[1]
 
             if (latitude != null && longitude != null) {
-                writeViewModel.setCurrentCoordinate(LatLng.from(latitude, longitude))
+                writeViewModel.setCurrentCoordinate(LatLng(latitude, longitude))
             }
         }
     }
@@ -214,5 +212,23 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
             stopService(this)
             sharedPreferencesHelper.unregisterPreferences(this@RouteWriteActivity)
         }
+    }
+
+    fun getResizedMarker(iconName: Int, width: Int? = null, height: Int? = null): BitmapDescriptor {
+        val bitmap = BitmapFactory.decodeResource(resources, iconName)
+        val resizedBitmap = Bitmap.createScaledBitmap(
+            bitmap,
+            width ?: CURRENT_LOCATION_MARKER_SIZE,
+            height ?: CURRENT_LOCATION_MARKER_SIZE,
+            false
+        )
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap)
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 2
+        private const val LOCATION_BACKGROUND_PERMISSION_REQUEST_CODE = 3
+        const val ROUTE_WRITE_DEFAULT_ZOOM_LEVEL = 15f
+        const val CURRENT_LOCATION_MARKER_SIZE = 40
     }
 }

@@ -26,18 +26,19 @@ import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.daval.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
 import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
+import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
+import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity.Companion.ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
-import com.kakao.vectormap.KakaoMap
-import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -48,10 +49,11 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener {
+class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener,
+    OnMapReadyCallback {
 
     private lateinit var binding: FragmentRouteConvenienceBinding
-    private lateinit var kakaoMap: KakaoMap
+    private var googleMap: GoogleMap? = null
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
     private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
     private var categoryDotImg: Int = -1
@@ -82,36 +84,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         return binding.root
     }
 
-    private fun initMapSetting() {
-        binding.convenienceMap.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출
-                Log.d("KakaoMap", "onMapDestroy: ")
-            }
-            override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
-                Log.d("KakaoMap", "onMapError: $error")
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                Log.d("KakaoMap", "onMapReady: $kakaoMap")
-                this@RouteConvenienceFragment.kakaoMap = kakaoMap
-
-                if (writeViewModel.currentCoordinate.value != null) {
-                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
-                    kakaoMap.moveCamera(cameraUpdate)
-                }
-
-                initObserve()
-            }
-
-            override fun getZoomLevel(): Int {
-                return 17
-            }
-        })
-    }
-
     private fun initClickListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack()
@@ -131,18 +103,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
     private fun initObserve() {
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
-            if (writeViewModel.currentCoordinate.value != null) {
-                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
-                kakaoMap.moveCamera(cameraUpdate)
-
+            Log.d("RouteConvenienceFrag", "latLng: $it")
+            if (writeViewModel.currentCoordinate.value?.latitude != 0.0) {
+                // 카메라 설정
+                setMapCenterPoint()
                 // 현재 위치 마커 띄우기
-                var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.ic_gps_marker)))
-                val options = LabelOptions.from(LatLng.from(writeViewModel.currentCoordinate.value!!.latitude,
-                    writeViewModel.currentCoordinate.value!!.longitude
-                )).setStyles(styles)
-                val layer = kakaoMap.labelManager!!.layer
-                val label = layer!!.addLabel(options)
-                label.show()
+                setCurrentLocationMarker()
                 
                 // 지역 이름 받아오기
                 convenienceViewModel.getRegionCode(writeViewModel.currentCoordinate.value?.latitude.toString(), writeViewModel.currentCoordinate.value?.longitude.toString())
@@ -150,7 +116,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 callWeatherApi()
             } else {
                 var sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-                writeViewModel.setCurrentCoordinate(LatLng.from(sharedPreferencesHelper.getLocationCoordinate()[0]!!, sharedPreferencesHelper.getLocationCoordinate()[1]!!))
+                writeViewModel.setCurrentCoordinate(LatLng(sharedPreferencesHelper.getLocationCoordinate()[0]!!, sharedPreferencesHelper.getLocationCoordinate()[1]!!))
             }
         }
 
@@ -176,13 +142,42 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         }
     }
 
+    private fun initMapSetting() {
+        // 맵 프래그먼트 초기화
+        val mapFragment = childFragmentManager.findFragmentById(R.id.convenience_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    private fun setMapCenterPoint() {
+        // 카메라 위치 설정 및 줌 레벨 조정
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+            writeViewModel.currentCoordinate.value!!,
+            ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
+        ))
+    }
+
+    private fun setCurrentLocationMarker() {
+        val activity = requireActivity() as RouteWriteActivity
+
+        // 마커 추가
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(LatLng(
+                    writeViewModel.currentCoordinate.value!!.latitude,
+                    writeViewModel.currentCoordinate.value!!.longitude
+                ))
+                .icon(activity.getResizedMarker(iconName = R.drawable.ic_gps_marker))
+                .zIndex(1f)
+        )
+    }
+
     // 마커 띄우기
     private fun addMarker(latitude: Double, longitude: Double, markerImg: Int) {
-        var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
-        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
-        val layer = kakaoMap.labelManager!!.layer
-        val label = layer!!.addLabel(options)
-        label.show()
+//        var styles = googleMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
+//        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
+//        val layer = googleMap.labelManager!!.layer
+//        val label = layer!!.addLabel(options)
+//        label.show()
     }
 
     private fun initRadioButton() {
@@ -195,8 +190,8 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         binding.categoryParking.setOnCheckedChangeListener(this)
 
         binding.categoryRadiogroup.setOnCheckedChangeListener { _, buttonId ->
-            convenienceViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
-            kakaoMap.labelManager?.removeAllLabelLayer()
+//            convenienceViewModel.setCameraPosition(googleMap?.cameraPosition!!)
+//            googleMap.labelManager?.removeAllLabelLayer()
 
             when (buttonId) {
                 R.id.category_stay -> {
@@ -329,17 +324,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         )
     }
 
-    // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
-    override fun onResume() {
-        super.onResume()
-        binding.convenienceMap.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.convenienceMap.pause()
-    }
-
     override fun onStop() {
         super.onStop()
         convenienceViewModel.setPlaceCategoryResult()
@@ -357,5 +341,10 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         } else time = (time.toInt() - 1).toString()
 
         return Pair(date.toString(), time)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+        initObserve()
     }
 }
