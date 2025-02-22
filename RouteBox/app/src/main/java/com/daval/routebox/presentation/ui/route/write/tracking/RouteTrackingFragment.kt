@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,7 @@ import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity.Companion.ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.MapUtil
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
@@ -36,7 +36,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -205,19 +204,16 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface, OnMapReadyCallbac
     }
 
     // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, category: String, activityNumber: String) {
-        val markerImg = Category.getCategoryByName(category).categoryMarkerIcon
-//        var styles = googleMap.labelManager?.addLabelStyles(
-//            LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
-//            LabelTextStyle.from(35, ContextCompat.getColor(requireActivity(), R.color.black)),
-//        )))
-//        val layer = googleMap.labelManager!!.layer
-//        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
-//        if (category != "") {
-//            options.setTexts(LabelTextBuilder().setTexts(activityNumber))
-//        }
-//        val label = layer!!.addLabel(options)
-//        label.show()
+    private fun addActivityMarker(latLng: LatLng, categoryName: String, activityNumber: Int) {
+        // 지도에 마커 표시
+        val markerIcon = MapUtil.createMarkerBitmap(requireContext(), Category.getCategoryByName(categoryName), activityNumber)
+        // 마커 추가
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .icon(markerIcon)
+                .zIndex(1f)
+        )
     }
 
     private fun showPopupDialog() {
@@ -232,22 +228,17 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface, OnMapReadyCallbac
     }
 
     private fun drawRoutePath() {
+        val routePath = getRoutePathToLatLng() ?: return
+
         // 기록된 점 조회를 위해 api 호출
         editViewModel.tryGetMyRouteDetail()
 
-//        var layer = googleMap.routeLineManager?.addLayer()
-//        val stylesSet = RouteLineStylesSet.from(
-//            "routePathStyle", RouteLineStyles.from(RouteLineStyle.from(8f, ContextCompat.getColor(requireActivity(), R.color.main)))
-//        )
-//        val segment: RouteLineSegment = RouteLineSegment.from(routePathToLatLng()).setStyles(stylesSet.getStyles(0))
-//        val options = RouteLineOptions.from(segment).setStylesSet(stylesSet)
-//        val routeLine: RouteLine = layer!!.addRouteLine(options)
-//        routeLine.show()
-//
-//        routePathToLatLng()
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), routePath)
+        googleMap?.addPolyline(polylineOptions)
     }
 
-    private fun routePathToLatLng(): List<LatLng>? {
+    private fun getRoutePathToLatLng(): List<LatLng>? {
         val routePath = editViewModel.route.value?.routePath
         return routePath?.map {
             LatLng(it.latitude, it.longitude)
@@ -264,9 +255,9 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface, OnMapReadyCallbac
         if (editViewModel.route.value?.routeActivities != null) {
             for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
                 var activity = editViewModel.route.value?.routeActivities!![i]
-                addMarker(
-                    activity.latitude.toDouble(), activity.longitude.toDouble(),
-                    activity.category, (i + 1).toString()
+                addActivityMarker(
+                    LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()),
+                    activity.category, i + 1
                 )
             }
         }

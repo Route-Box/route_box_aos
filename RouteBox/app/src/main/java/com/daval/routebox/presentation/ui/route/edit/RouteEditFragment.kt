@@ -2,7 +2,6 @@ package com.daval.routebox.presentation.ui.route.edit
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,7 +123,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
         // 이동 경로 선으로 연결
-        val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), viewModel.getActivityList())
+        val polylineOptions = MapUtil.getRoutePathPolylineOptionsByActivities(requireContext(), viewModel.getActivityList())
         googleMap?.addPolyline(polylineOptions)
     }
 
