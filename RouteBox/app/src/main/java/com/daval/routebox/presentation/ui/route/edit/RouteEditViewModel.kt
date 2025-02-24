@@ -93,7 +93,7 @@ class RouteEditViewModel @Inject constructor(
     /** 루트 마무리하기 */
     fun routeComplete() {
         viewModelScope.launch {
-            repository.finishRoute(_routeId.value!!, RouteFinishRequest("", ""))
+            repository.finishRoute(_routeId.value!!, RouteFinishRequest(routeTitle.value!!, routeContent.value!!))
         }
     }
 
