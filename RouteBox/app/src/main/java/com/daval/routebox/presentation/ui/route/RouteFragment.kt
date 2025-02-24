@@ -89,7 +89,7 @@ class RouteFragment : Fragment(), PopupDialogInterface {
         // 기록중인 루트 보러가기 버튼
         binding.routeSeeTrackingBtn.setOnClickListener {
             if (checkRouteEnd()) { // 루트 기록 종료 시간이 지났다면
-                startActivity(Intent(requireActivity(), RouteWriteCompleteActivity::class.java))
+                startActivity(Intent(requireActivity(), RouteWriteCompleteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId))
             } else { // 루트 기록 종료 시간이 지나지 않았다면
                 startActivity(Intent(requireActivity(), RouteWriteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId.toString()))
             }

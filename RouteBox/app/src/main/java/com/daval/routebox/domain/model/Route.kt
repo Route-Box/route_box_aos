@@ -139,7 +139,7 @@ data class RouteUpdateResult(
 // 루트 마무리하기
 data class RouteFinishRequest(
     var routeName: String,
-    var routeDescription: String?
+    var routeDescription: String
 )
 
 data class RouteFinishResult(
