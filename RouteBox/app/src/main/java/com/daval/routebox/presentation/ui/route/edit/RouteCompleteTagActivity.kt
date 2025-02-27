@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.ui.route.edit
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,9 +23,9 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
     private lateinit var binding: ActivityRouteCompleteTagBinding
 
     private val viewModel: RouteCompleteTagViewModel by viewModels()
+    private var routeId: Int = -1
 
     private lateinit var routeStyleFragment: RouteStyleFragment
-    private var routeId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,7 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
             viewModel = this@RouteCompleteTagActivity.viewModel
             lifecycleOwner = this@RouteCompleteTagActivity
         }
+
         routeId = intent.getIntExtra("routeId", -1)
 
         initObserve()
@@ -49,7 +51,6 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
 
         // 완료 버튼
         binding.routeStyleDoneBtn.setOnClickListener {
-            // 루트 수정 API
             viewModel.tryEditRoute()
         }
     }
@@ -68,7 +69,8 @@ class RouteCompleteTagActivity : AppCompatActivity(), FilterOptionClickListener 
                 // 태그 수정 완료 후 루트 수정 화면으로 이동
                 startActivity(
                     Intent(this, RouteEditBaseActivity::class.java)
-                        .putExtra("route", Gson().toJson(RouteDetail())) //TODO: 루트 정보 넘기기
+                        .putExtra("routeId", routeId)
+                        .putExtra("route", Gson().toJson(RouteDetail()))
                         .putExtra("isEditMode", false)
                 )
                 finish()

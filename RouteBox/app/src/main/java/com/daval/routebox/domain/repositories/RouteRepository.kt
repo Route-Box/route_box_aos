@@ -9,6 +9,8 @@ import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.KakaoSearchResult
 import com.daval.routebox.domain.model.MyRoute
 import com.daval.routebox.domain.model.RouteDetail
+import com.daval.routebox.domain.model.RouteFinishRequest
+import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.RoutePointResult
@@ -97,6 +99,12 @@ interface RouteRepository {
         description: String?,
         activityImages: List<String>?
     ): Boolean
+
+    /** 루트 마무리하기 */
+    suspend fun finishRoute(
+        routeId: Int,
+        routeFinishRequest: RouteFinishRequest
+    ): RouteFinishResult
 
     /** 루트 수정 */
     suspend fun updateRoute(

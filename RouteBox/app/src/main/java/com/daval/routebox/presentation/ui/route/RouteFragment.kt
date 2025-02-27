@@ -1,6 +1,7 @@
 package com.daval.routebox.presentation.ui.route
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -28,8 +29,11 @@ import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.utils.CommonPopupDialog
 import com.daval.routebox.presentation.utils.PopupDialogInterface
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -84,10 +88,11 @@ class RouteFragment : Fragment(), PopupDialogInterface {
 
         // 기록중인 루트 보러가기 버튼
         binding.routeSeeTrackingBtn.setOnClickListener {
-            //TODO: 기록이 완료되었다면 기록 완료/루트 스타일 선택 화면으로 돌입
-            //TODO: routeId 전달
-            // 기록중인 루트 보기 화면으로 이동
-            startActivity(Intent(requireActivity(), RouteWriteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId.toString()))
+            if (checkRouteEnd()) { // 루트 기록 종료 시간이 지났다면
+                startActivity(Intent(requireActivity(), RouteWriteCompleteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId))
+            } else { // 루트 기록 종료 시간이 지나지 않았다면
+                startActivity(Intent(requireActivity(), RouteWriteActivity::class.java).putExtra("routeId", viewModel.recordingRouteId.toString()))
+            }
         }
     }
 
@@ -200,6 +205,19 @@ class RouteFragment : Fragment(), PopupDialogInterface {
             viewModel.tryChangePublic()
         } else { // 삭제 확인
             viewModel.tryDeleteRoute()
+        }
+    }
+
+    private fun checkRouteEnd(): Boolean {
+        val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        val endTime = sharedPreferencesHelper.getEndTime().toString()
+        val nowTime = LocalDateTime.now().toString().split(".")[0]
+
+        // endTime이 지난 경우
+        if (nowTime.compareTo(endTime) >= 0) {
+            return true
+        } else { // endTime이 지나기 전인 경우
+            return false
         }
     }
 }

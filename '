@@ -1,0 +1,16 @@
+♻ Refactor: 탐색 홈 새로고침 코드 간결화
+
+Related to: #59
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Feb 18 19:28:55 2025 +0900
+#
+# On branch feat/seek-wallet-55
+# Your branch is ahead of 'origin/feat/seek-wallet-55' by 4 commits.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   RouteBox/app/src/main/java/com/daval/routebox/presentation/ui/seek/SeekFragment.kt
+#

@@ -61,7 +61,6 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="22dp"
                 android:layout_marginEnd="38dp"
-                android:layout_marginTop="40dp"
                 tools:layout="@layout/fragment_route_style"/>
 
         </androidx.core.widget.NestedScrollView>
