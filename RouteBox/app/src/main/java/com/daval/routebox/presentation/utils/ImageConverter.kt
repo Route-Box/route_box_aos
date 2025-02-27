@@ -66,12 +66,12 @@ object ImageConverter {
         }
 
     // bitmap
-    private suspend fun fileToMultipartFile(context: Context, uri: Uri): MultipartBody.Part? =
+    private suspend fun fileToMultipartFile(context: Context, uri: Uri, partName: String): MultipartBody.Part? =
         withContext(Dispatchers.IO) {
             try {
                 val file = uriToFile(context, uri)
                 val requestFile = file?.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val multipartBody = MultipartBody.Part.createFormData("activityImages", file?.name, requestFile!!)
+                val multipartBody = MultipartBody.Part.createFormData(partName, file?.name, requestFile!!)
                 return@withContext multipartBody
             } catch (e: Exception) {
                 Log.d("ImageConverter", "e = $e")
@@ -79,11 +79,11 @@ object ImageConverter {
             }
         }
 
-    suspend fun getMultipartImgList(context: Context, imgList: MutableList<String>): List<MultipartBody.Part?> =
+    suspend fun getMultipartImgList(context: Context, imgList: MutableList<String>, partName: String): List<MultipartBody.Part?> =
         withContext(Dispatchers.IO) {
             // String List를 Uri List로 변환
             val list = imgList.map {
-                fileToMultipartFile(context, Uri.parse(it))
+                fileToMultipartFile(context, Uri.parse(it), partName)
             }
             return@withContext list
         }
