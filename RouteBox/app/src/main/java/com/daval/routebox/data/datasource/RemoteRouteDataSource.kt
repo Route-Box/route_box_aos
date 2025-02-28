@@ -14,6 +14,7 @@ import com.daval.routebox.data.remote.RouteApiService
 import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.ActivityId
 import com.daval.routebox.domain.model.ActivityResult
+import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.KakaoSearchResult
@@ -21,6 +22,8 @@ import com.daval.routebox.domain.model.MyRoute
 import com.daval.routebox.domain.model.PlaceMeta
 import com.daval.routebox.domain.model.RegionInfo
 import com.daval.routebox.domain.model.RouteDetail
+import com.daval.routebox.domain.model.RouteFinishRequest
+import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.RoutePointResult
@@ -34,6 +37,7 @@ import com.daval.routebox.domain.model.WeatherRegionDocuments
 import com.daval.routebox.domain.model.WeatherRegionMeta
 import com.daval.routebox.domain.model.WeatherRegionResponse
 import com.daval.routebox.presentation.utils.ImageConverter
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -41,6 +45,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
+import retrofit2.Response
 import java.io.File
 import javax.inject.Inject
 
@@ -223,7 +229,6 @@ class RemoteRouteDataSource @Inject constructor(
                 routeApiService.addRouteDot(routeId, routePointRequest)
             }.onSuccess {
                 routeDot = it
-                Log.d("ROUTE-TEST", "addRouteDot Success\nrouteDot = ${routeDot}")
             }.onFailure { e ->
                 Log.d("RemoteRouteDataSource", "addRouteDot Fail\ne = $e")
             }
@@ -305,6 +310,27 @@ class RemoteRouteDataSource @Inject constructor(
         return activityResult
     }
 
+    suspend fun finishRoute(
+        routeId: Int,
+        routeFinishRequest: RouteFinishRequest
+    ): RouteFinishResult {
+        var routeFinishResult = RouteFinishResult(-1, "", "", "")
+        withContext(Dispatchers.IO) {
+            kotlin.runCatching {
+                Log.d("RemoteRouteDataSource", "routeId = $routeId / routeFinishRequest = $routeFinishRequest")
+                routeApiService.finishRoute(routeId, routeFinishRequest)
+            }.onSuccess {
+                routeFinishResult = it
+                Log.d("RemoteRouteDataSource", "finishRoute Success\nrouteFinishResult = ${routeFinishResult}")
+            }.onFailure { e ->
+                Log.d("RemoteRouteDataSource", "finishRoute Fail\ne = ${e}")
+            }
+        }
+
+        return routeFinishResult
+    }
+
+
     @SuppressLint("Range")
     fun getUriFromPath(filePath: String, context: Context): Uri {
         val cursor = context.contentResolver.query(
@@ -318,7 +344,6 @@ class RemoteRouteDataSource @Inject constructor(
 
         return uri
     }
-
 
     suspend fun updateRoute(
         routeId: Int,

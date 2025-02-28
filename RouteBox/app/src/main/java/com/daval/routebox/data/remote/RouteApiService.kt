@@ -6,6 +6,8 @@ import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.MyRouteResponse
 import com.daval.routebox.domain.model.RouteDetail
+import com.daval.routebox.domain.model.RouteFinishRequest
+import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.RoutePointResult
@@ -91,6 +93,12 @@ interface RouteApiService {
         @Part("description") description: RequestBody?,
         @Part activityImages: List<MultipartBody.Part?>
     ): ActivityResult
+
+    @PATCH("routes/{routeId}/record-finish")
+    suspend fun finishRoute(
+        @Path("routeId") routeId: Int,
+        @Body routeFinishRequest: RouteFinishRequest
+    ): RouteFinishResult
 
     // 루트 수정
     @PUT("routes/{routeId}")
