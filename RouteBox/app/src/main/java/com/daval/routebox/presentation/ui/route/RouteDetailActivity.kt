@@ -1,8 +1,10 @@
 package com.daval.routebox.presentation.ui.route
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.viewModels
@@ -83,6 +85,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
         viewModel.tryGetMyRouteDetail(routeId)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initClickListeners() {
         // x 버튼
         binding.routeDetailCloseIv.setOnClickListener {
@@ -99,6 +102,26 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
             //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
             intent.putExtra("comment", viewModel.route.value!!.routeName)
             startActivity(intent)
+        }
+
+        // 지도 터치에 우선 순위
+        binding.ivMapTransparent.setOnTouchListener { view, motionEvent ->
+            val action = motionEvent.action
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.routeDetailSv.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.routeDetailSv.requestDisallowInterceptTouchEvent(false)
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    binding.routeDetailSv.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                else -> true
+            }
         }
     }
 
