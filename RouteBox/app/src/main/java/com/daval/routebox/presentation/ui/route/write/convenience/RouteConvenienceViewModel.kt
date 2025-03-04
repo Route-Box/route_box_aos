@@ -14,7 +14,7 @@ import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
-import com.kakao.vectormap.LatLng
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

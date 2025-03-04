@@ -1,25 +1,31 @@
 package com.daval.routebox.presentation.ui.route.write.convenience
 
+import android.annotation.SuppressLint
 import android.app.Service.MODE_PRIVATE
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.daval.routebox.BuildConfig
 import com.daval.routebox.R
 import com.daval.routebox.databinding.BottomSheetConveniencePlaceBinding
 import com.daval.routebox.databinding.FragmentRouteConvenienceBinding
-import com.daval.routebox.domain.model.CategoryGroupCode
+import com.daval.routebox.domain.model.Convenience
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
@@ -36,9 +42,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.CircularBounds
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchNearbyRequest
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -56,11 +66,14 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private var googleMap: GoogleMap? = null
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
     private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
-    private var categoryDotImg: Int = -1
+
     private lateinit var bottomSheetConvenienceDialog: BottomSheetConveniencePlaceBinding
     private var placeList = arrayListOf<ConvenienceCategoryResult>()
     private val placeRVAdapter = ConveniencePlaceRVAdapter(placeList)
-    private lateinit var mainWeather: WeatherData
+    private var mainWeather: WeatherData? = null
+    private lateinit var placesClient: PlacesClient
+
+    private var googlePlaceList = arrayListOf<Place>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,10 +88,13 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             lifecycleOwner = this@RouteConvenienceFragment
         }
 
+        Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY)
+        placesClient = Places.createClient(requireContext())
+
         setInit()
         initMapSetting()
         initClickListener()
-        initRadioButton()
+        initRadioButtons()
         setAdapter()
 
         return binding.root
@@ -123,7 +139,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         convenienceViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
             if (convenienceViewModel.isCategoryEndPage.value == true) {
                 for (i in 0 until convenienceViewModel.placeCategoryResult.value!!.size) {
-                    addMarker(convenienceViewModel.placeCategoryResult.value!![i].latitude.toDouble(), convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
+//                    addMarker(
+//                        convenienceViewModel.placeCategoryResult.value!![i].latitude.toDouble(),
+//                        convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
                 }
             }
 
@@ -172,53 +190,58 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
     // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, markerImg: Int) {
-//        var styles = googleMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
-//        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
-//        val layer = googleMap.labelManager!!.layer
-//        val label = layer!!.addLabel(options)
-//        label.show()
+    private fun addMarker(convenience: Convenience, latLng: LatLng) {
+        val activity = requireActivity() as RouteWriteActivity
+        // 마커 추가
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .icon(activity.getResizedMarker(convenience.markerIcon, 50, 62))
+                .zIndex(1f)
+        )
     }
 
-    private fun initRadioButton() {
-        // 선택한 라디오 버튼 글씨 Bold 처리하기 위한 ChangedListener 부분
-        binding.categoryStay.setOnCheckedChangeListener(this)
-        binding.categoryTour.setOnCheckedChangeListener(this)
-        binding.categoryFood.setOnCheckedChangeListener(this)
-        binding.categoryCafe.setOnCheckedChangeListener(this)
-        binding.categoryCulture.setOnCheckedChangeListener(this)
-        binding.categoryParking.setOnCheckedChangeListener(this)
+    @SuppressLint("ResourceType")
+    private fun initRadioButtons() {
+        // 라디오 버튼 설정
+        val radioButtons = Convenience.entries.map { convenience ->
+            RadioButton(requireContext()).apply {
+                id = View.generateViewId()
+                text = convenience.title
+                layoutParams = RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginEnd = resources.getDimensionPixelSize(R.dimen.convenience_radio_button_margin)
+                }
+                setTextColor(ContextCompat.getColorStateList(requireContext(), R.drawable.selector_convenience_text))
+                background = ContextCompat.getDrawable(requireContext(), R.drawable.selector_convenience_category)
+                buttonDrawable = null
+                gravity = Gravity.CENTER
+                setPadding(
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_horizontal),
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_vertical),
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_horizontal),
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_vertical)
+                )
+            }
+        }
 
-        binding.categoryRadiogroup.setOnCheckedChangeListener { _, buttonId ->
-//            convenienceViewModel.setCameraPosition(googleMap?.cameraPosition!!)
-//            googleMap.labelManager?.removeAllLabelLayer()
+        radioButtons.forEach { radioButton ->
+            binding.categoryRadioGroup.addView(radioButton)
+        }
 
-            when (buttonId) {
-                R.id.category_stay -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.AD5)
-                    categoryDotImg = R.drawable.ic_marker_stay
-                }
-                R.id.category_tour -> {
-//                    convenienceViewModel.setTourCategory()
-                    categoryDotImg = R.drawable.ic_marker_tour
-                    callTourApi()
-                }
-                R.id.category_food -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.FD6)
-                    categoryDotImg = R.drawable.ic_marker_food
-                }
-                R.id.category_cafe -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CE7)
-                    categoryDotImg = R.drawable.ic_marker_cafe
-                }
-                R.id.category_culture -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CT1)
-                    categoryDotImg = R.drawable.ic_marker_culture
-                }
-                R.id.category_parking -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.PK6)
-                    categoryDotImg = R.drawable.ic_marker_parking
-                }
+        // 라디오 버튼 클릭 리스터 설정
+        binding.categoryRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            // 이전 데이터 초기화
+            googlePlaceList.clear()
+            googleMap?.clear()
+            setCurrentLocationMarker()
+            // 라디오 버튼 선택
+            val selectedRadioButton = radioButtons.find { it.id == checkedId }
+            val selectedConvenience = Convenience.entries.find { it.title == selectedRadioButton?.text }
+            selectedConvenience?.let {
+                getSelectedCategoryPlace(it)
             }
         }
     }
@@ -227,6 +250,36 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         val thread = NetworkThread()
         thread.start()
         thread.join()
+    }
+
+    private fun getSelectedCategoryPlace(convenience: Convenience) {
+        Log.e("RouteConvenienceFrag", "장소 검색: ${convenience.title}")
+        val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION,
+            Place.Field.RATING, Place.Field.OPENING_HOURS, Place.Field.CURRENT_OPENING_HOURS
+            )
+        val location = writeViewModel.currentCoordinate.value!!
+        val circle = CircularBounds.newInstance(location, RADIUS)
+
+        val request = SearchNearbyRequest.builder(circle, placeFields)
+            .setIncludedTypes(convenience.typeList)
+            .setMaxResultCount(20)
+            .build()
+
+        // 검색 실행 및 결과 처리
+        placesClient.searchNearby(request)
+            .addOnSuccessListener { response ->
+                for (place in response.places) {
+                    googlePlaceList.add(place)
+                    if (place.location != null) {
+                        addMarker(convenience, place.location!!) // 마커 추가
+                    }
+//                    Log.d("RouteConvenienceFrag", "장소 정보: $place")
+                    Log.d("RouteConvenienceFrag", "장소 이름: ${place.displayName}\n위치: ${place.location}\nrating: ${place.rating}\n오픈 시간: ${place.openingHours}\n${place.currentOpeningHours}")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("RouteConvenienceFrag","검색 실패: ${exception.message}")
+            }
     }
 
     // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
@@ -258,7 +311,13 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             for (i in 0 until item.length()) {
                 var longitude = item.getJSONObject(i).getString("mapx")
                 var latitude = item.getJSONObject(i).getString("mapy")
-                addMarker(latitude.toDouble(), longitude.toDouble(), R.drawable.ic_marker_tour)
+                addMarker(
+                    Convenience.TOUR,
+                    LatLng(
+                        latitude.toDouble(),
+                        longitude.toDouble()
+                    )
+                )
                 result.add(ConvenienceCategoryResult(
                     item.getJSONObject(i).getString("title"),
                     item.getJSONObject(i).getString("firstimage"),
@@ -302,7 +361,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             getMainWeather(weatherResult)
         }
 
-        convenienceViewModel.setWeatherMainData(mainWeather)
+        mainWeather?.let {
+            convenienceViewModel.setWeatherMainData(it)
+        }
     }
 
     private fun getMainWeather(returnResult: JSONArray) {
@@ -346,5 +407,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         initObserve()
+    }
+
+    companion object {
+        const val RADIUS = 2000.0 // 2km 반경
     }
 }
