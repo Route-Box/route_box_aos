@@ -59,6 +59,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
     private var imgList: ArrayList<String?> = arrayListOf(null)
+    private var isEditMode: Boolean = false
 
     private val viewModel: RouteWriteViewModel by viewModels()
 
@@ -117,15 +118,17 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     private fun initData() {
         viewModel.setRouteId(intent.getIntExtra("routeId", -1))
-        Log.d("ROUTE-TEST", "routeId = ${viewModel.routeId}\ncheckContinueActivity = ${viewModel.checkIsContinuedActivity.value}")
-        val isEditMode = intent.getBooleanExtra("isEdit", false)
+        isEditMode = intent.getBooleanExtra("isEdit", false)
         viewModel.setIsEditMode(isEditMode)
         if (isEditMode) { // 넘겨받은 활동 데이터 세팅
             viewModel.initActivityInEditAndSaveMode(intent.getSerializableExtra("activity") as ActivityResult)
-        } else {
+        }
+
+        if (intent.getBooleanExtra("checkIsContinuedActivity", false)) {
             if (sharedPreferencesHelper.getRouteActivity() != null) {
-                // TODO: 팝업 생성
                 viewModel.initActivityInEditAndSaveMode(sharedPreferencesHelper.getRouteActivity()!!)
+            } else {
+                viewModel.resetActivity()
             }
         }
     }
@@ -251,7 +254,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     private fun initClickListener() {
         binding.closeIv.setOnClickListener {
-            viewModel.resetActivity()
             finish()
         }
 
@@ -277,6 +279,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 viewModel.editActivity(this)
             } else { // 생성 모드
                 viewModel.addActivity(this)
+                // TODO: 생성 성공했을 때, 임시저장 데이터 삭제
             }
         }
 
@@ -336,20 +339,24 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     // 루트 활동 임시저장
+    // TODO: 데이터가 입력되어 있을 때만 임시저장하도록 수정
     override fun onPause() {
         super.onPause()
 
-        // ActivityImage를 ArrayList<String>에서 ArrayList<ActivityImage>로 변경
-        val activityTemp = viewModel.returnActivity()
-        var activityImages = arrayListOf<ActivityImage>()
-        if (viewModel.activity.value!!.activityImages.size > 0) {
-            for (i in 0 until viewModel.activity.value!!.activityImages.size) {
-                activityImages.add(ActivityImage(i, viewModel.activity.value!!.activityImages[i]))
+        // 루트 활동 수정 모드가 아닐 경우, 작성한 데이터 임시저장
+        if (!isEditMode) {
+            // ActivityImage를 ArrayList<String>에서 ArrayList<ActivityImage>로 변경
+            val activityTemp = viewModel.returnActivity()
+            var activityImages = arrayListOf<ActivityImage>()
+            if (viewModel.activity.value!!.activityImages.size > 0) {
+                for (i in 0 until viewModel.activity.value!!.activityImages.size) {
+                    activityImages.add(ActivityImage(i, viewModel.activity.value!!.activityImages[i]))
+                }
             }
-        }
-        activityTemp.activityImages = activityImages
+            activityTemp.activityImages = activityImages
 
-        val sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-        sharedPreferencesHelper.setRouteActivity(activityTemp)
+            val sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+            sharedPreferencesHelper.setRouteActivity(activityTemp)
+        }
     }
 }

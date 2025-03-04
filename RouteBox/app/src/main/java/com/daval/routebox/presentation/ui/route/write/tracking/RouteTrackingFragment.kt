@@ -279,14 +279,24 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
             Toast.makeText(requireActivity(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
             editViewModel.deleteActivity(deleteId)
         } else {
+            // 임시저장 데이터 이어서 작성 O
             writeViewModel.checkIsContinuedActivity.value = true
-            Log.d("ROUTE-TEST", "trackingFragment writeViewModel.checkContinueActivity.value = ${writeViewModel.checkIsContinuedActivity.value}")
-            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                putExtra("routeId", writeViewModel.routeId.value)
+                putExtra("checkIsContinuedActivity", true)
+            })
         }
     }
 
     override fun onClickNegativeButton(id: Int) {
-        startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+        if (id == DialogType.CALL_ACTIVITY_DATA.id) {
+            // 임시저장 데이터 이어서 작성 X
+            sharedPreferencesHelper.setRouteActivity(null)
+            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                putExtra("routeId", writeViewModel.routeId.value)
+                putExtra("checkIsContinuedActivity", false)
+            })
+        }
     }
 
     private fun drawRoutePath() {

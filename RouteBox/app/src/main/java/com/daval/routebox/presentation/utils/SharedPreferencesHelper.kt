@@ -34,7 +34,7 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
     }
 
     // 기록 중인 루트 활동 데이터 저장
-    fun setRouteActivity(activity: ActivityResult) {
+    fun setRouteActivity(activity: ActivityResult?) {
         sharedPreferences.edit()
             .putString(ROUTE_ACTIVITY, Gson().toJson(activity))
             .apply()

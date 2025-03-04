@@ -91,6 +91,7 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
         bottomSheetDialog.activityAddBtn.setOnClickListener {
             startActivity(Intent(activity, RouteActivityActivity::class.java)
                 .putExtra("routeId", viewModel.routeId.value)
+                .putExtra("isEdit", false)
             )
         }
 
