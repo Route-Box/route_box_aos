@@ -339,24 +339,31 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     // 루트 활동 임시저장
-    // TODO: 데이터가 입력되어 있을 때만 임시저장하도록 수정
     override fun onPause() {
         super.onPause()
+        val sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
 
         // 루트 활동 수정 모드가 아닐 경우, 작성한 데이터 임시저장
         if (!isEditMode) {
-            // ActivityImage를 ArrayList<String>에서 ArrayList<ActivityImage>로 변경
-            val activityTemp = viewModel.returnActivity()
-            var activityImages = arrayListOf<ActivityImage>()
-            if (viewModel.activity.value!!.activityImages.size > 0) {
-                for (i in 0 until viewModel.activity.value!!.activityImages.size) {
-                    activityImages.add(ActivityImage(i, viewModel.activity.value!!.activityImages[i]))
-                }
-            }
-            activityTemp.activityImages = activityImages
+            // 입력된 데이터가 있을 때만 데이터 임시저장
+            if (viewModel.activity.value?.locationName != ""
+                || viewModel.activity.value?.startTime != "" || viewModel.activity.value?.endTime != ""
+                || viewModel.activity.value?.category != "" || viewModel.activity.value?.description != "" || viewModel.activity.value?.activityImages?.size != 0) {
 
-            val sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-            sharedPreferencesHelper.setRouteActivity(activityTemp)
+                // ActivityImage를 ArrayList<String>에서 ArrayList<ActivityImage>로 변경
+                val activityTemp = viewModel.returnActivity()
+                var activityImages = arrayListOf<ActivityImage>()
+                if (viewModel.activity.value!!.activityImages.size > 0) {
+                    for (i in 0 until viewModel.activity.value!!.activityImages.size) {
+                        activityImages.add(ActivityImage(i, viewModel.activity.value!!.activityImages[i]))
+                    }
+                }
+                activityTemp.activityImages = activityImages
+
+                sharedPreferencesHelper.setRouteActivity(activityTemp)
+            } else {
+                sharedPreferencesHelper.setRouteActivity(null)
+            }
         }
     }
 }
