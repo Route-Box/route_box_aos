@@ -177,6 +177,8 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
         activityAdapter.removeItem(deleteActivityIndex)
     }
 
+    override fun onClickNegativeButton(id: Int) { }
+
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         setMapCenterPoint() // 지도 중심 좌표 설정

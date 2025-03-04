@@ -159,7 +159,7 @@ data class Activity(
     var startTime: String = "",
     var endTime: String = "",
     var category: String = "", // 음식점, 관광명소 등
-    var description: String? = null,
+    var description: String = "",
     var activityImages: ArrayList<String> = arrayListOf(),
 )
 

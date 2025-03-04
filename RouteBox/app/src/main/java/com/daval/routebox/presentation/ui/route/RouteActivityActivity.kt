@@ -27,12 +27,17 @@ import com.daval.routebox.databinding.ActivityRouteActivityBinding
 import com.daval.routebox.domain.model.ActivityImage
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
+import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.presentation.ui.route.adapter.CategoryRVAdapter
 import com.daval.routebox.presentation.ui.route.adapter.KakaoPlaceRVAdapter
 import com.daval.routebox.presentation.ui.route.adapter.PictureRVAdapter
 import com.daval.routebox.presentation.ui.route.write.tracking.RoutePictureAlbumActivity
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
+import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.PopupDialogInterface
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.picker.CalendarBottomSheet
 import com.daval.routebox.presentation.utils.picker.DateClickListener
 import com.daval.routebox.presentation.utils.picker.TimeChangedListener
@@ -42,12 +47,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.util.Calendar
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChangedListener {
 
     private lateinit var binding: ActivityRouteActivityBinding
+    private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
 
     private lateinit var placeRVAdapter: KakaoPlaceRVAdapter
     private var placeList: ArrayList<SearchActivityResult> = arrayListOf()
@@ -88,6 +93,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             method = this@RouteActivityActivity
         }
 
+        sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+
         initData()
         setAdapter()
         initClickListener()
@@ -110,10 +117,16 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     private fun initData() {
         viewModel.setRouteId(intent.getIntExtra("routeId", -1))
+        Log.d("ROUTE-TEST", "routeId = ${viewModel.routeId}\ncheckContinueActivity = ${viewModel.checkIsContinuedActivity.value}")
         val isEditMode = intent.getBooleanExtra("isEdit", false)
         viewModel.setIsEditMode(isEditMode)
         if (isEditMode) { // 넘겨받은 활동 데이터 세팅
-            viewModel.initActivityInEditMode(intent.getSerializableExtra("activity") as ActivityResult)
+            viewModel.initActivityInEditAndSaveMode(intent.getSerializableExtra("activity") as ActivityResult)
+        } else {
+            if (sharedPreferencesHelper.getRouteActivity() != null) {
+                // TODO: 팝업 생성
+                viewModel.initActivityInEditAndSaveMode(sharedPreferencesHelper.getRouteActivity()!!)
+            }
         }
     }
 
@@ -320,5 +333,23 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
     override fun onTimeSelected(isStartTime: Boolean, hour: Int, minute: Int) {
         viewModel.updateTime(isStartTime, Pair(hour, minute))
+    }
+
+    // 루트 활동 임시저장
+    override fun onPause() {
+        super.onPause()
+
+        // ActivityImage를 ArrayList<String>에서 ArrayList<ActivityImage>로 변경
+        val activityTemp = viewModel.returnActivity()
+        var activityImages = arrayListOf<ActivityImage>()
+        if (viewModel.activity.value!!.activityImages.size > 0) {
+            for (i in 0 until viewModel.activity.value!!.activityImages.size) {
+                activityImages.add(ActivityImage(i, viewModel.activity.value!!.activityImages[i]))
+            }
+        }
+        activityTemp.activityImages = activityImages
+
+        val sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
+        sharedPreferencesHelper.setRouteActivity(activityTemp)
     }
 }
