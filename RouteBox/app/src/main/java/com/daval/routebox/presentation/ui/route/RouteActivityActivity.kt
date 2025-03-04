@@ -279,7 +279,6 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 viewModel.editActivity(this)
             } else { // 생성 모드
                 viewModel.addActivity(this)
-                // TODO: 생성 성공했을 때, 임시저장 데이터 삭제
             }
         }
 
@@ -344,7 +343,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         val sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
 
         // 루트 활동 수정 모드가 아닐 경우, 작성한 데이터 임시저장
-        if (!isEditMode) {
+        if (!isEditMode && viewModel.isRequestSuccess.value != true) {
             // 입력된 데이터가 있을 때만 데이터 임시저장
             if (viewModel.activity.value?.locationName != ""
                 || viewModel.activity.value?.startTime != "" || viewModel.activity.value?.endTime != ""
@@ -364,6 +363,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
             } else {
                 sharedPreferencesHelper.setRouteActivity(null)
             }
+        } else if (viewModel.isRequestSuccess.value == true) {
+            sharedPreferencesHelper.setRouteActivity(null)
         }
     }
 }
