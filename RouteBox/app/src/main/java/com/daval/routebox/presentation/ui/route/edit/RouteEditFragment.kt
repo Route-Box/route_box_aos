@@ -1,8 +1,10 @@
 package com.daval.routebox.presentation.ui.route.edit
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -53,6 +55,13 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        googleMap?.clear()
+        setActivityMarkers()
+        drawRoutePath()
+    }
+
     private fun initMapSetting() {
         // 맵 프래그먼트 초기화
         val mapFragment = childFragmentManager.findFragmentById(R.id.route_edit_map_fragment) as SupportMapFragment
@@ -68,6 +77,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
         viewModel.setStepId(0) // 루트 마무리
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initClickListeners() {
         // 활동 수정 버튼
         binding.routeEditActivityEditBtn.setOnClickListener {
@@ -82,6 +92,26 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallb
                 requireActivity().finish()
             } else { // 루트 수정하기
                 viewModel.tryEditRoute() // 루트 제목, 내용 저장 진행
+            }
+        }
+
+        // 지도 터치에 우선 순위
+        binding.ivMapTransparent.setOnTouchListener { view, motionEvent ->
+            val action = motionEvent.action
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.routeEditSv.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.routeEditSv.requestDisallowInterceptTouchEvent(false)
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    binding.routeEditSv.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                else -> true
             }
         }
     }

@@ -171,10 +171,16 @@ class RouteEditActivityFragment : Fragment(), PopupDialogInterface, OnMapReadyCa
         activity?.let { dialog.show(it.supportFragmentManager, "PopupDialog") }
     }
 
+    // 다이얼로그 버튼 클릭
     override fun onClickPositiveButton(id: Int) {
         Toast.makeText(requireContext(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
-        viewModel.deleteActivity(deleteId)
-        activityAdapter.removeItem(deleteActivityIndex)
+        viewModel.deleteActivity(deleteId) // 활동 삭제 진행
+        activityAdapter.removeItem(deleteActivityIndex) // 리사이클러뷰 아이템에서 삭제
+
+        // 지도 업데이트
+        googleMap?.clear()
+        setActivityMarkers()
+        drawRoutePath()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
