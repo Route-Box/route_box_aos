@@ -4,29 +4,47 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityWalletBinding
-import com.daval.routebox.domain.model.History
+import com.daval.routebox.domain.model.PointHistory
+import com.daval.routebox.presentation.ui.seek.SeekViewModel
 import com.daval.routebox.presentation.ui.seek.wallet.adapter.PointHistoryRVAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class WalletActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityWalletBinding
     private lateinit var historyRVAdapter: PointHistoryRVAdapter
-    private var historyList = arrayListOf<History>()
+    private var historyList = arrayListOf<PointHistory>()
+    private val viewModel: SeekViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_wallet)
         binding.apply {
-            
+            viewModel = this@WalletActivity.viewModel
         }
-        initClickListener()
+
         setAdapter()
+        initData()
+        initObserve()
+        initClickListener()
+    }
+
+    private fun initData() {
+        viewModel.getPointHistories()
+    }
+
+    private fun initObserve() {
+        viewModel.pointHistoryList.observe(this@WalletActivity) {
+            historyRVAdapter.addItems(viewModel.returnPointHistory())
+        }
     }
 
     private fun initClickListener() {
@@ -40,7 +58,7 @@ class WalletActivity: AppCompatActivity() {
 
         binding.refundCv.setOnClickListener {
             Toast.makeText(this, ContextCompat.getString(this, R.string.update), Toast.LENGTH_LONG).show()
-            // TODO: 인앱 결제 기능 추가 했을 때 아래 화면으로 이동 
+            // TODO: 환급 기능 추가 했을 때 아래 화면으로 이동
             // startActivity(Intent(this, RefundActivity::class.java))
         }
     }

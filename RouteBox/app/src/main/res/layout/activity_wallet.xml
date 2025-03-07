@@ -5,9 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="point"
             type="com.daval.routebox.domain.model.OwnPoint" />
+        <variable
+            name="viewModel"
+            type="com.daval.routebox.presentation.ui.seek.SeekViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -215,6 +220,7 @@
                 android:id="@+id/empty_cl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="@{viewModel.pointHistoryList.content.size() > 0 ? View.GONE : View.VISIBLE}"
                 app:layout_constraintTop_toBottomOf="@id/point_history_tv"
                 app:layout_constraintBottom_toBottomOf="parent">
 
