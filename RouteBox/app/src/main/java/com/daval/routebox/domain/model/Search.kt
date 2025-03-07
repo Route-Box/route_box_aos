@@ -7,13 +7,6 @@ data class Bank(
     var bankImg: Drawable
 )
 
-data class History(
-    var thumbNailImg: String?,
-    var title: String,
-    var date: String,
-    var point: Int
-)
-
 data class OwnPoint(
     var nickname: String,
     var point: Int
