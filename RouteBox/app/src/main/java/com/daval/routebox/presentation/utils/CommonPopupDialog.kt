@@ -11,6 +11,7 @@ import com.daval.routebox.databinding.DialogCommonPopupBinding
 
 interface PopupDialogInterface {
     fun onClickPositiveButton(id: Int)
+    fun onClickNegativeButton(id: Int)
 }
 
 class CommonPopupDialog(
@@ -76,6 +77,7 @@ class CommonPopupDialog(
     private fun initClickListeners() {
         // 취소 버튼 클릭
         binding.dialogNegativeBtn.setOnClickListener {
+            this.confirmDialogInterface?.onClickNegativeButton(id!!)
             dismiss()
         }
 

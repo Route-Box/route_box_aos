@@ -146,12 +146,20 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
 
         // 활동이 없을 때 나타나는 활동 추가 버튼
         binding.addCv.setOnClickListener {
-            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
+            if (sharedPreferencesHelper.getRouteActivity() != null) {
+                showCallActivityDataPopupDialog()
+            } else {
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+            }
         }
 
         // 활동이 1개 이상일 때 나타나는 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
+            if (sharedPreferencesHelper.getRouteActivity() != null) {
+                showCallActivityDataPopupDialog()
+            } else {
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+            }
         }
     }
 
@@ -173,7 +181,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                 deleteId = activityAdapter.returnActivityId(position)
                 deleteActivityIndex = position
                 // 활동 삭제 팝업 띄우기
-                showPopupDialog()
+                showDeletePopupDialog()
             }
         })
         activityAdapter.addAllActivities(editViewModel.route.value?.routeActivities as MutableList<ActivityResult>)
@@ -254,15 +262,41 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         label.show()
     }
 
-    private fun showPopupDialog() {
+    private fun showDeletePopupDialog() {
         val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(requireActivity().supportFragmentManager, "PopupDialog")
     }
 
+    private fun showCallActivityDataPopupDialog() {
+        val dialog = CommonPopupDialog(this, DialogType.CALL_ACTIVITY_DATA.id, String.format(resources.getString(R.string.check_activity_data)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(requireActivity().supportFragmentManager, "PopupDialog")
+    }
+
     override fun onClickPositiveButton(id: Int) {
-        Toast.makeText(requireActivity(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
-        editViewModel.deleteActivity(deleteId)
+        if (id == DialogType.DELETE.id) {
+            Toast.makeText(requireActivity(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
+            editViewModel.deleteActivity(deleteId)
+        } else {
+            // 임시저장 데이터 이어서 작성 O
+            writeViewModel.checkIsContinuedActivity.value = true
+            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                putExtra("routeId", writeViewModel.routeId.value)
+                putExtra("checkIsContinuedActivity", true)
+            })
+        }
+    }
+
+    override fun onClickNegativeButton(id: Int) {
+        if (id == DialogType.CALL_ACTIVITY_DATA.id) {
+            // 임시저장 데이터 이어서 작성 X
+            sharedPreferencesHelper.setRouteActivity(null)
+            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                putExtra("routeId", writeViewModel.routeId.value)
+                putExtra("checkIsContinuedActivity", false)
+            })
+        }
     }
 
     private fun drawRoutePath() {

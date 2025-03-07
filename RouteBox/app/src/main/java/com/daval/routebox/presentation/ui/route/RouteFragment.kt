@@ -208,6 +208,8 @@ class RouteFragment : Fragment(), PopupDialogInterface {
         }
     }
 
+    override fun onClickNegativeButton(id: Int) { }
+
     private fun checkRouteEnd(): Boolean {
         val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
         val endTime = sharedPreferencesHelper.getEndTime().toString()

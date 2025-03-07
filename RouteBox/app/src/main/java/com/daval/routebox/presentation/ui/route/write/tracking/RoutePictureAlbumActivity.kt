@@ -133,4 +133,6 @@ class RoutePictureAlbumActivity: AppCompatActivity(), PopupDialogInterface {
     }
 
     override fun onClickPositiveButton(id: Int) { }
+
+    override fun onClickNegativeButton(id: Int) { }
 }
