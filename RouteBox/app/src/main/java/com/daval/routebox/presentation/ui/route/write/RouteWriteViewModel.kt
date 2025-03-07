@@ -205,6 +205,13 @@ class RouteWriteViewModel @Inject constructor(
                 && _endTimePair.value != null && _activity.value?.category != ""
     }
 
+    // 활동 임시저장을 위한 데이터 작성 여부 확인
+    fun returnActivityDataIsEmpty(): Boolean {
+        return activity.value?.locationName != ""
+                || activity.value?.startTime != "" || activity.value?.endTime != ""
+                || activity.value?.category != "" || activity.value?.description != "" || activity.value?.activityImages?.size != 0
+    }
+
     fun returnActivity(): ActivityResult {
         return ActivityResult(
             -1,

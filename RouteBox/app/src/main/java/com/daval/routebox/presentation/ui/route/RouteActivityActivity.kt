@@ -345,10 +345,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         // 루트 활동 수정 모드가 아닐 경우, 작성한 데이터 임시저장
         if (!isEditMode && viewModel.isRequestSuccess.value != true) {
             // 입력된 데이터가 있을 때만 데이터 임시저장
-            if (viewModel.activity.value?.locationName != ""
-                || viewModel.activity.value?.startTime != "" || viewModel.activity.value?.endTime != ""
-                || viewModel.activity.value?.category != "" || viewModel.activity.value?.description != "" || viewModel.activity.value?.activityImages?.size != 0) {
-
+            if (viewModel.returnActivityDataIsEmpty()) {
                 // ActivityImage를 ArrayList<String>에서 ArrayList<ActivityImage>로 변경
                 val activityTemp = viewModel.returnActivity()
                 var activityImages = arrayListOf<ActivityImage>()
