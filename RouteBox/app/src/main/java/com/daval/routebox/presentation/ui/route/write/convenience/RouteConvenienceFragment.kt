@@ -46,6 +46,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.CircularBounds
+import com.google.android.libraries.places.api.model.OpeningHours
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.net.SearchNearbyRequest
@@ -150,6 +151,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
             }
         }
+
+        convenienceViewModel.placeCategoryResult.observe(viewLifecycleOwner) { placeList ->
+            placeList?.run {
+                placeRVAdapter.resetAllItems(placeList)
+            }
+        }
     }
 
     private fun setInit() {
@@ -241,7 +248,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             val selectedRadioButton = radioButtons.find { it.id == checkedId }
             val selectedConvenience = Convenience.entries.find { it.title == selectedRadioButton?.text }
             selectedConvenience?.let {
-                getSelectedCategoryPlace(it)
+                getSelectedCategoryPlace(it) // 장소 API 호출
             }
         }
     }
@@ -254,14 +261,18 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
     private fun getSelectedCategoryPlace(convenience: Convenience) {
         Log.e("RouteConvenienceFrag", "장소 검색: ${convenience.title}")
+        // 기존 결과 초기화
+        placeList.clear()
+
+        // API 호출
         val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION,
             Place.Field.RATING, Place.Field.OPENING_HOURS, Place.Field.CURRENT_OPENING_HOURS
             )
-        val location = writeViewModel.currentCoordinate.value!!
-        val circle = CircularBounds.newInstance(location, RADIUS)
+        val currentLocation = writeViewModel.currentCoordinate.value!!
+        val circle = CircularBounds.newInstance(currentLocation, RADIUS)
 
         val request = SearchNearbyRequest.builder(circle, placeFields)
-            .setIncludedTypes(convenience.typeList)
+            .setIncludedTypes(convenience.typeList) // 선택한 편의기능 종류에 따라 검색에 포함시킬 카테고리 유형 설정
             .setMaxResultCount(20)
             .build()
 
@@ -273,12 +284,29 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                     if (place.location != null) {
                         addMarker(convenience, place.location!!) // 마커 추가
                     }
+                    // 장소 추가
+                    placeList.add(
+                        ConvenienceCategoryResult(
+                            placeName = place.displayName,
+                            placeImg = null,
+                            rating = place.rating,
+                            latitude = place.location
+                        )
+                    )
 //                    Log.d("RouteConvenienceFrag", "장소 정보: $place")
                     Log.d("RouteConvenienceFrag", "장소 이름: ${place.displayName}\n위치: ${place.location}\nrating: ${place.rating}\n오픈 시간: ${place.openingHours}\n${place.currentOpeningHours}")
                 }
             }
             .addOnFailureListener { exception ->
                 Log.d("RouteConvenienceFrag","검색 실패: ${exception.message}")
+            }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    convenienceViewModel.setPlaceCategoryResult(placeList)
+                } else {
+                    convenienceViewModel.setPlaceCategoryResult(arrayListOf())
+                    Log.d("RouteConvenienceFrag", "검색 완료 실패")
+                }
             }
     }
 
@@ -318,11 +346,11 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                         longitude.toDouble()
                     )
                 )
-                result.add(ConvenienceCategoryResult(
-                    item.getJSONObject(i).getString("title"),
-                    item.getJSONObject(i).getString("firstimage"),
-                    latitude, longitude
-                ))
+//                result.add(ConvenienceCategoryResult(
+//                    item.getJSONObject(i).getString("title"),
+//                    item.getJSONObject(i).getString("firstimage"),
+//                    latitude, longitude
+//                ))
             }
             placeRVAdapter.resetAllItems(result)
             binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
@@ -387,7 +415,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
     override fun onStop() {
         super.onStop()
-        convenienceViewModel.setPlaceCategoryResult()
+        convenienceViewModel.setPlaceCategoryResult(arrayListOf())
         placeRVAdapter.removeAllItems()
         binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
     }

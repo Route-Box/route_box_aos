@@ -49,6 +49,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/convenience_place_top_cl">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:text="@string/center_point_mine"
+                style="@style/body_r_s"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/place_rv"
                 android:layout_width="match_parent"

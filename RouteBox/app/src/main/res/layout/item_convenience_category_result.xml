@@ -25,7 +25,32 @@
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="@color/route_convenience_category_result"
             tools:text="장소 이름"
-            style="@style/body_b_l" />
+            style="@style/body_r_m" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/place_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_star"
+            android:drawablePadding="4dp"
+            android:textColor="@color/gray2"
+            android:text="@{placeInfo.rating.toString()}"
+            android:visibility="@{placeInfo.rating == null ? View.INVISIBLE : View.VISIBLE}"
+            tools:text="4.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/place_name"
+            style="@style/body_r_s"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            tools:text="영업 중"
+            app:layout_constraintTop_toTopOf="@id/place_name"
+            app:layout_constraintBottom_toBottomOf="@id/place_rating"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/body_r_s"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/place_cv"
@@ -34,8 +59,9 @@
             android:layout_marginTop="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
+            android:visibility="gone"
             app:layout_constraintDimensionRatio="1:0.477"
-            app:layout_constraintTop_toBottomOf="@id/place_name"
+            app:layout_constraintTop_toBottomOf="@id/place_rating"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -50,18 +76,19 @@
                 app:layout_constraintStart_toStartOf="@id/place_cv"
                 app:layout_constraintEnd_toEndOf="@id/place_cv" />
 
-        </com.google.android.material.card.MaterialCardView>
+            <ImageView
+                android:id="@+id/no_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_convenience_no_image"
+                android:visibility="@{placeInfo.placeImg.length == 0 || placeInfo.placeImg == null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintTop_toTopOf="@id/place_cv"
+                app:layout_constraintBottom_toBottomOf="@id/place_cv"
+                app:layout_constraintStart_toStartOf="@id/place_cv"
+                app:layout_constraintEnd_toEndOf="@id/place_cv" />
 
-        <ImageView
-            android:id="@+id/no_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_convenience_no_image"
-            android:visibility="@{placeInfo.placeImg.length == 0 || placeInfo.placeImg == null ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="@id/place_cv"
-            app:layout_constraintBottom_toBottomOf="@id/place_cv"
-            app:layout_constraintStart_toStartOf="@id/place_cv"
-            app:layout_constraintEnd_toEndOf="@id/place_cv" />
+        </com.google.android.material.card.MaterialCardView>
         
         <View
             android:layout_width="match_parent"

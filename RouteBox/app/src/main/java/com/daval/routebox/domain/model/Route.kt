@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import com.daval.routebox.presentation.utils.DateConverter
+import com.google.android.gms.maps.model.LatLng
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -291,11 +292,12 @@ data class TourApiItem(
     val title: String
 )
 
+// 편의기능 결과
 data class ConvenienceCategoryResult(
-    val placeName: String,
-    val placeImg: String?,
-    val latitude: String,
-    val longitude: String
+    val placeName: String?, //
+    val placeImg: String?, // 이미지
+    val rating: Double?, // 평점
+    val latitude: LatLng?
 )
 
 data class WeatherApiResult(

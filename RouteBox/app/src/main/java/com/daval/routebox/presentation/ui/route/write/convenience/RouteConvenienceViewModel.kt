@@ -2,6 +2,7 @@ package com.daval.routebox.presentation.ui.route.write.convenience
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,8 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.WeatherData
-import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
+import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
 import com.google.android.gms.maps.model.LatLng
@@ -77,8 +78,8 @@ class RouteConvenienceViewModel @Inject constructor(
         _cameraPosition.value = position
     }
 
-    fun setPlaceCategoryResult() {
-        _placeCategoryResult.value = arrayListOf()
+    fun setPlaceCategoryResult(placeList: ArrayList<ConvenienceCategoryResult>) {
+        _placeCategoryResult.value = placeList
     }
 
     // 카테고리 검색
@@ -88,9 +89,9 @@ class RouteConvenienceViewModel @Inject constructor(
                 if (cameraPosition.value != null && placeCategory.value != null) {
                     val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, MapCameraRadius)
                     var result = response.documents.map {
-                        ConvenienceCategoryResult(it.place_name, null, it.y, it.x)
+//                        ConvenienceCategoryResult(it.place_name, null, it.y, it.x)
                     }
-                    _placeCategoryResult.value!!.addAll(result)
+//                    _placeCategoryResult.value!!.addAll(result)
                     _isCategoryEndPage.value = response.meta.is_end
                     _placeCategoryPage.value = _placeCategoryPage.value!! + 1
 
