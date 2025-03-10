@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.CategoryGroupCode
+import com.daval.routebox.domain.model.Convenience
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.domain.repositories.OpenApiRepository
@@ -49,6 +50,8 @@ class RouteConvenienceViewModel @Inject constructor(
 
     private val _weatherMainData = MutableLiveData<WeatherData>()
     val weatherMainData: LiveData<WeatherData> = _weatherMainData
+
+    var selectedConvenience: Convenience? = null
 
 
     init {

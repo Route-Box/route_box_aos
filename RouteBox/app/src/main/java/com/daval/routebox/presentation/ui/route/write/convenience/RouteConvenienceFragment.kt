@@ -104,6 +104,14 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        Log.e("RouteConvenienceFrag", "onResume()")
+        //TODO: 뒤로가기 시 편의기능 핀 정보 다시 불러오기
+        convenienceViewModel.selectedConvenience?.let { addConveniencePlacesMarker(it, placeList) }
+    }
+
     private fun initClickListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().popBackStack()
@@ -143,7 +151,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
             Log.d("RouteConvenienceFrag", "latLng: $it")
             if (writeViewModel.currentCoordinate.value?.latitude != 0.0) {
-                // 카메라 설정
+                // 현재 위치 중심으로 카메라 설정
                 setMapCenterPoint()
                 // 현재 위치 마커 띄우기
                 setCurrentLocationMarker()
@@ -212,6 +220,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             )
         )
     }
+
 
     private fun setCurrentLocationMarker() {
         val activity = requireActivity() as RouteWriteActivity
@@ -293,8 +302,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             setCurrentLocationMarker()
             // 라디오 버튼 선택
             val selectedRadioButton = radioButtons.find { it.id == checkedId }
-            val selectedConvenience =
-                Convenience.entries.find { it.title == selectedRadioButton?.text }
+            val selectedConvenience = Convenience.entries.find { it.title == selectedRadioButton?.text }
+            convenienceViewModel.selectedConvenience = selectedConvenience
+
             selectedConvenience?.let {
                 getSelectedCategoryPlace(it) // 장소 API 호출
             }
@@ -395,7 +405,10 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             override fun onItemClick(placeInfo: ConvenienceCategoryResult) {
                 // 바텀시트에 아이템 정보 세팅
                 showPlaceInfoBottomSheet(placeInfo)
-                //TODO: 지도에 핀 하나만 표시
+                // 지도에 핀 하나만 표시
+                googleMap?.clear()
+                setCurrentLocationMarker()
+                addConveniencePlacesMarker(convenienceViewModel.selectedConvenience!!, listOf(placeInfo))
             }
         })
     }
