@@ -37,10 +37,10 @@ class RouteWriteViewModel @Inject constructor(
 
     private var _activityId: Long = 0
 
-    private val _activity = MutableLiveData<Activity>()
-    val activity: LiveData<Activity> = _activity
+    private val _activity = MutableLiveData<Activity?>()
+    val activity: LiveData<Activity?> = _activity
 
-    val placeSearchKeyword = MutableLiveData<String>("")
+    val placeSearchKeyword = MutableLiveData("")
     var imageList = ArrayList<ActivityImage>(arrayListOf())
     var deletedImageIds = ArrayList<Int>(arrayListOf())
 
@@ -84,23 +84,34 @@ class RouteWriteViewModel @Inject constructor(
     private val _preCoordinate = MutableLiveData<LatLng>()
     val preCoordinate: LiveData<LatLng> = _preCoordinate
 
+    private val _checkIsContinuedActivity = MutableLiveData<Boolean>(false)
+    val checkIsContinuedActivity = _checkIsContinuedActivity
+
     init {
         _activity.value = Activity()
         _categoryETC.value = false
         _currentCoordinate.value = LatLng.from(null)
     }
 
-    fun initActivityInEditMode(activity: ActivityResult) {
+    fun initActivityInEditAndSaveMode(activity: ActivityResult) {
         _activityId = activity.activityId.toLong()
         _activity.value = activity.convertToActivity()
         placeSearchKeyword.value = activity.locationName // 장소
         imageList = activity.activityImages // 이미지
         // 시간 초기화
         _date.value = DateConverter.convertDateStringToLocalDate(activity.visitDate)
-        _startTimePair.value = DateConverter.convertTimeStringToIntPair(activity.startTime)
-        _endTimePair.value = DateConverter.convertTimeStringToIntPair(activity.endTime)
-        if (Category.getCategoryByName(activity.category) == Category.ETC) { // 기타 카테고리의 경우
-            _categoryETC.value = true
+
+        if (activity.startTime != "") {
+            _startTimePair.value = DateConverter.convertTimeStringToIntPair(activity.startTime)
+        }
+        if (activity.endTime != "") {
+            _endTimePair.value = DateConverter.convertTimeStringToIntPair(activity.endTime)
+        }
+
+        if (activity.category != "") {
+            if (Category.getCategoryByName(activity.category) == Category.ETC) { // 기타 카테고리의 경우
+                _categoryETC.value = true
+            }
         }
     }
 
@@ -194,9 +205,31 @@ class RouteWriteViewModel @Inject constructor(
                 && _endTimePair.value != null && _activity.value?.category != ""
     }
 
+    // 활동 임시저장을 위한 데이터 작성 여부 확인
+    fun returnActivityDataIsEmpty(): Boolean {
+        return activity.value?.locationName != ""
+                || activity.value?.startTime != "" || activity.value?.endTime != ""
+                || activity.value?.category != "" || activity.value?.description != "" || activity.value?.activityImages?.size != 0
+    }
+
+    fun returnActivity(): ActivityResult {
+        return ActivityResult(
+            -1,
+            _activity.value?.locationName!!,
+            _activity.value?.address!!,
+            _activity.value?.latitude!!,
+            _activity.value?.longitude!!,
+            _activity.value?.visitDate!!,
+            _activity.value?.startTime!!,
+            _activity.value?.endTime!!,
+            _activity.value?.category!!,
+            _activity.value?.description!!,
+            arrayListOf()
+        )
+    }
+
     // 활동 추가
     fun addActivity(context: Context) {
-        Log.d("RouteWriteVM", "addedImages: ${_activity.value?.activityImages}")
         viewModelScope.launch {
             _isRequestSuccess.value = repository.createActivity(
                 context,
@@ -218,7 +251,6 @@ class RouteWriteViewModel @Inject constructor(
     // 활동 수정
     fun editActivity(context: Context) {
         val addedImages = imageList.filter{ it.id == -1 }.map { it.url } // 새로 추가한 이미지
-        Log.d("RouteWriteVM", "addedImages: $addedImages")
         viewModelScope.launch {
             _isRequestSuccess.value = repository.updateActivity(
                 context,

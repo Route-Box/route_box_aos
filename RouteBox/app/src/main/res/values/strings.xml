@@ -177,6 +177,7 @@
     <string name="gps_deny">위치 권한이 거부되었습니다.\n원활한 서비스 이용을 위해 위치 권한을 허용해주세요</string>
     <string name="gps_always_grant">원활한 서비스 이용을 위해 위치 권한 항상 허용을 선택해주세요</string>
     <string name="check_gps_internet_permission">인터넷 연결 혹은 GPS 권한을 확인해주세요</string>
+    <string name="check_activity_data">이전에 작성하던 루트 기록으로 돌아가시겠습니까?</string>
     <!-- 편의 기능 -->
     <string name="weather_temperature">체감온도</string>
     <string name="weather_dust">미세</string>

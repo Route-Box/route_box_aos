@@ -186,4 +186,6 @@ class RouteInsightFragment : Fragment(), PopupDialogInterface {
             viewModel.tryDeleteRoute()
         }
     }
+
+    override fun onClickNegativeButton(id: Int) { }
 }
