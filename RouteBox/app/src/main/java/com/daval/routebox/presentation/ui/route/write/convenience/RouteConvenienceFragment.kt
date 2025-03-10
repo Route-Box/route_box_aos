@@ -179,16 +179,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             }
         }
 
-        convenienceViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
-            if (convenienceViewModel.isCategoryEndPage.value == true) {
-                for (i in 0 until convenienceViewModel.placeCategoryResult.value!!.size) {
-//                    addMarker(
-//                        convenienceViewModel.placeCategoryResult.value!![i].latitude.toDouble(),
-//                        convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
-                }
-            }
-        }
-
         convenienceViewModel.placeCategoryResult.observe(viewLifecycleOwner) { placeList ->
             placeList?.run {
                 placeRVAdapter.resetAllItems(placeList)
@@ -220,7 +210,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             )
         )
     }
-
 
     private fun setCurrentLocationMarker() {
         val activity = requireActivity() as RouteWriteActivity
