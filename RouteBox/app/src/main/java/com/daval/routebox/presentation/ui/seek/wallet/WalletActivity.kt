@@ -35,6 +35,7 @@ class WalletActivity: AppCompatActivity() {
         initData()
         initObserve()
         initClickListener()
+        initScrollListener()
     }
 
     private fun initData() {
@@ -72,6 +73,17 @@ class WalletActivity: AppCompatActivity() {
             binding.emptyCl.visibility = View.VISIBLE
         } else {
             binding.emptyCl.visibility = View.GONE
+        }
+    }
+
+    // TODO: 테스트 필요 (구매하기 API 연동 후 테스트 예정)
+    private fun initScrollListener() {
+        binding.pointHistoryRv.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (!binding.pointHistoryRv.canScrollVertically(1)) {
+                if (viewModel.pointHistoryList.value?.content?.size == 10) {
+                    viewModel.getPointHistories()
+                }
+            }
         }
     }
 }

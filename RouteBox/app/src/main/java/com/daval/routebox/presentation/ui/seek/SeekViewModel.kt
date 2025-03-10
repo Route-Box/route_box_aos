@@ -30,8 +30,8 @@ class SeekViewModel @Inject constructor(
     private val _pointHistoryList = MutableLiveData<PointHistoryResponse>()
     val pointHistoryList: LiveData<PointHistoryResponse> = _pointHistoryList
 
-    private val _historyPage = MutableLiveData<Int>(0)
-    val historyPage: LiveData<Int> = _historyPage
+    private val _pointHistoryPage = MutableLiveData<Int>(0)
+    val pointHistoryPage: LiveData<Int> = _pointHistoryPage
 
     init {
         _routeList.value = arrayListOf()
@@ -44,10 +44,6 @@ class SeekViewModel @Inject constructor(
 
     fun refresh() {
         _page.value = 0
-        _routeList.value = arrayListOf()
-    }
-
-    fun refreshRouteList() {
         _routeList.value = arrayListOf()
     }
 
@@ -68,11 +64,11 @@ class SeekViewModel @Inject constructor(
 
     fun getPointHistories() {
         viewModelScope.launch {
-            val pointHistoryList = seekRepository.getPointHistories(_historyPage.value!!.toInt(), ROUTE_HISTORY_SIZE)
+            val pointHistoryList = seekRepository.getPointHistories(_pointHistoryPage.value!!.toInt(), ROUTE_HISTORY_SIZE)
             if (pointHistoryList.content.isNotEmpty()) {
                 _pointHistoryList.value = pointHistoryList
             }
-            Log.d("ROUTE-TEST", "pointHistory = ${pointHistoryList}")
+            _pointHistoryPage.value = _pointHistoryPage.value!! + 1
         }
     }
 
