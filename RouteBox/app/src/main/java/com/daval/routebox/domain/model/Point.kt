@@ -14,3 +14,29 @@ enum class Point(val pointIndex: Int, val pointId: String) {
         }
     }
 }
+
+data class PointHistoryResponse(
+    val content: List<PointHistory> = listOf(),
+    val page: PointHistoryPage
+)
+
+data class PointHistory(
+    val id: Int,
+    val userId: Int,
+    val route: PointRoute,
+    val transactionType: String,
+    val amount: Int
+)
+
+data class PointRoute(
+    val id: Int,
+    val name: String,
+    val thumbnailImageUrl: String = ""
+)
+
+data class PointHistoryPage(
+    val size: Int,
+    val number: Int,
+    val totalElements: Int,
+    val totalPages: Int
+)

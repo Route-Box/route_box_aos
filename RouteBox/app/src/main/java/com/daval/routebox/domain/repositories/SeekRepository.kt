@@ -1,5 +1,6 @@
 package com.daval.routebox.domain.repositories
 
+import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.SearchRoute
 
 interface SeekRepository {
@@ -13,4 +14,10 @@ interface SeekRepository {
         routeStyle: List<String>? = null,
         transportation: List<String>? = null
     ): List<SearchRoute>
+
+    /** 내 포인트 구매 이력 조회 */
+    suspend fun getPointHistories(
+        page: Int,
+        pageSize: Int
+    ): PointHistoryResponse
 }

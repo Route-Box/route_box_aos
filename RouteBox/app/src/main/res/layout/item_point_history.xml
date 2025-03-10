@@ -6,7 +6,7 @@
     <data>
         <variable
             name="history"
-            type="com.daval.routebox.domain.model.History" />
+            type="com.daval.routebox.domain.model.PointHistory" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +27,7 @@
                 android:id="@+id/route_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:imageUrl="@{history.thumbNailImg}"
+                app:imageUrl="@{history.route.thumbnailImageUrl}"
                 app:placeHolder="@{@drawable/ic_thumbnail_default}" />
 
         </androidx.cardview.widget.CardView>
@@ -36,7 +36,7 @@
             android:id="@+id/title_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{history.title}"
+            android:text="@{history.route.name}"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="35dp"
@@ -53,7 +53,6 @@
             android:id="@+id/date_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{history.date}"
             android:textColor="@color/gray3"
             android:layout_marginEnd="35dp"
             app:layout_constraintBottom_toBottomOf="@id/route_cv"
@@ -66,8 +65,8 @@
             android:id="@+id/point_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{history.point > 0 ? `+` + String.valueOf(history.point) : String.valueOf(history.point)}"
-            android:textColor="@{history.point > 0 ? @color/main : @color/red1_warning}"
+            android:text="@{history.amount > 0 ? `+` + String.valueOf(history.amount) : String.valueOf(history.amount)}"
+            android:textColor="@{history.amount > 0 ? @color/main : @color/red1_warning}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
