@@ -186,6 +186,8 @@
     <string name="tomorrow">내일</string>
     <string name="weather_update_date">%s %s 업데이트\n제공: 기상청</string>
     <string name="center_point_mine">내 위치 중심</string>
+    <string name="place_is_opening_true">영업 중</string>
+    <string name="place_is_opening_false">영업 종료</string>
     <!-- 루트 수정 -->
     <string name="route_edit_input_title">루트 제목을 정해주세요</string>
     <string name="route_edit_input_content">루트 설명을 정해주세요</string>

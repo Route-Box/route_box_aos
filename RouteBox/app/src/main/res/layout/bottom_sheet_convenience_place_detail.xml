@@ -54,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:visibility="@{placeInfo.isOpen ? View.GONE : View.VISIBLE}"
             tools:text="10:00에 영업 시작"
             app:layout_constraintTop_toBottomOf="@id/place_name"
             app:layout_constraintStart_toStartOf="@id/place_name"
@@ -77,7 +78,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@{placeInfo.isOpen ? @color/title_black : @color/red1_warning}"
+            android:text="@{placeInfo.isOpen ? @string/place_is_opening_true : @string/place_is_opening_false}"
             tools:text="영업 중"
             app:layout_constraintTop_toTopOf="@id/place_name"
             app:layout_constraintEnd_toEndOf="parent"

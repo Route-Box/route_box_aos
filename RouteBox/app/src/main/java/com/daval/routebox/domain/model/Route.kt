@@ -295,10 +295,12 @@ data class TourApiItem(
 
 // 편의기능 결과
 data class ConvenienceCategoryResult(
-    val placeName: String?, //
+    val placeId: String?,
+    val placeName: String?, // 이름
     val placeImg: String?, // 이미지
     val rating: Double?, // 평점
-    val latitude: LatLng?
+    val latitude: LatLng?,
+    val isOpen: Boolean? = false,
 ): Serializable
 
 data class WeatherApiResult(
