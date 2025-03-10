@@ -2,6 +2,7 @@ package com.daval.routebox.data.datasource
 
 import android.util.Log
 import com.daval.routebox.data.remote.SeekApiService
+import com.daval.routebox.domain.model.BuyRouteResponse
 import com.daval.routebox.domain.model.SearchRouteResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,5 +32,23 @@ class RemoteSeekDataSource @Inject constructor(
             }
         }
         return searchResult
+    }
+
+    suspend fun buyRoute(
+        routeId: Int
+    ): BuyRouteResponse {
+        var buyRouteResponse = BuyRouteResponse("")
+        withContext(Dispatchers.IO) {
+            runCatching {
+                seekApiService.buyRoute(routeId)
+            }.onSuccess {
+                buyRouteResponse = it
+                Log.d("RemoteSeekDataSource", "buyRoute Success\nresult = $buyRouteResponse")
+            }.onFailure { e ->
+                Log.d("RemoteSeekDataSource", "buyRoute Fail\ne = $e")
+            }
+        }
+        return buyRouteResponse
+
     }
 }

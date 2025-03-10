@@ -1,7 +1,10 @@
 package com.daval.routebox.data.remote
 
+import com.daval.routebox.domain.model.BuyRouteResponse
 import com.daval.routebox.domain.model.SearchRouteResponse
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SeekApiService {
@@ -18,4 +21,9 @@ interface SeekApiService {
         @Query("style") routeStyle: List<String>?, // 루트 스타일
         @Query("transportation") transportation: List<String>? // 이동 수단
     ): SearchRouteResponse
+
+    @POST("routes/{routeId}/purchase")
+    suspend fun buyRoute(
+        @Path("routeId") routeId: Int
+    ): BuyRouteResponse
 }

@@ -366,5 +366,10 @@ data class WeatherRegionResult(
     val y: Double
 )
 
+// TODO: Enum으로 변경
+data class BuyRouteResponse(
+    val paymentMethod: String
+)
+
 const val pictureImgType = 0
 const val pictureAddType = 1
