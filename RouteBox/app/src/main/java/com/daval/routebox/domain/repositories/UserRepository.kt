@@ -1,6 +1,7 @@
 package com.daval.routebox.domain.repositories
 
 import com.daval.routebox.domain.model.EditProfileResponse
+import com.daval.routebox.domain.model.MyInfoResponse
 import com.daval.routebox.domain.model.NicknameAvailabilityResponse
 
 interface UserRepository {
@@ -15,4 +16,7 @@ interface UserRepository {
         birth: String,
         gender: String
     ): EditProfileResponse
+
+    /** 내 유저 정보 조회 */
+    suspend fun getMyInfo(): MyInfoResponse
 }

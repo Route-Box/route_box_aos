@@ -3,6 +3,7 @@ package com.daval.routebox.data.datasource
 import android.util.Log
 import com.daval.routebox.data.remote.UserApiService
 import com.daval.routebox.domain.model.EditProfileResponse
+import com.daval.routebox.domain.model.MyInfoResponse
 import com.daval.routebox.domain.model.NicknameAvailabilityResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -71,5 +72,21 @@ class RemoteUserDataSource @Inject constructor(
 
     private fun createPartFromString(value: String?): RequestBody? {
         return value?.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    // 내 유저 정보 조회
+    suspend fun getMyInfo(): MyInfoResponse {
+        var response = MyInfoResponse(-1, "", "", -1, "", "", "")
+        withContext(Dispatchers.IO) {
+            kotlin.runCatching {
+                userApiService.getMyInfo()
+            }.onSuccess {
+                Log.d("RemoteUserDataSource", "getMyInfo Success $it")
+                response = it
+            }.onFailure {
+                Log.d("RemoteUserDataSource", "getMyInfo Fail $it")
+            }
+        }
+        return response
     }
 }

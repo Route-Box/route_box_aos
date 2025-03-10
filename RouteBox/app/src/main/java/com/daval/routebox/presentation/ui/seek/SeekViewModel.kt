@@ -1,15 +1,17 @@
 package com.daval.routebox.presentation.ui.seek
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.daval.routebox.domain.model.MyInfoResponse
 import com.daval.routebox.domain.model.PointHistory
 import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.RoutePreview
+import com.daval.routebox.domain.repositories.AuthRepository
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.SeekRepository
+import com.daval.routebox.domain.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SeekViewModel @Inject constructor(
     private val repository: RouteRepository,
+    private val userRepository: UserRepository,
     private val seekRepository: SeekRepository
 ): ViewModel() {
     private val _routeList = MutableLiveData<ArrayList<RoutePreview>>()
@@ -26,6 +29,9 @@ class SeekViewModel @Inject constructor(
 
     private val _page = MutableLiveData(0)
     val page: LiveData<Int> = _page
+
+    private val _myInfo = MutableLiveData<MyInfoResponse>()
+    val myInfo: LiveData<MyInfoResponse> = _myInfo
 
     private val _pointHistoryList = MutableLiveData<PointHistoryResponse>()
     val pointHistoryList: LiveData<PointHistoryResponse> = _pointHistoryList
@@ -69,6 +75,12 @@ class SeekViewModel @Inject constructor(
                 _pointHistoryList.value = pointHistoryList
             }
             _pointHistoryPage.value = _pointHistoryPage.value!! + 1
+        }
+    }
+
+    fun getMyInformation() {
+        viewModelScope.launch {
+            _myInfo.value = userRepository.getMyInfo()
         }
     }
 

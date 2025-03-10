@@ -29,6 +29,7 @@ class WalletActivity: AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_wallet)
         binding.apply {
             viewModel = this@WalletActivity.viewModel
+            lifecycleOwner = this@WalletActivity
         }
 
         setAdapter()
@@ -39,6 +40,7 @@ class WalletActivity: AppCompatActivity() {
     }
 
     private fun initData() {
+        viewModel.getMyInformation()
         viewModel.getPointHistories()
     }
 
