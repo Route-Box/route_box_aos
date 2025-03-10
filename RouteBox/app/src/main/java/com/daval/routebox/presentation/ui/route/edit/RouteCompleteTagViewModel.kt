@@ -54,25 +54,24 @@ class RouteCompleteTagViewModel @Inject constructor(
 
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
         val prevOptionMap = selectedOptionMap.value!!.toMutableMap()
-        if (prevOptionMap.contains(option.filterType)) { // 기존 filterType가 존재하는 경우
-            val tagList = prevOptionMap[option.filterType]?.toMutableList() ?: mutableListOf()
-            if (isSelected) { // 리스트에 추가
-                tagList.add(option)
-            } else { // 리스트에서 삭제
-                tagList.remove(option)
-            }
-            if (tagList.isEmpty()) { // 리스트가 비어있을 경우
-                prevOptionMap.remove(option.filterType) // key도 삭제
-            } else {
-                prevOptionMap[option.filterType] = tagList.toList()
-            }
-        } else { // 기존 filterType이 비어있을 경우
-            if (!isSelected) return
-            prevOptionMap[option.filterType] = listOf(option) // 해당 필터에 처음 추가
+        val updatedList = prevOptionMap[option.filterType]?.toMutableList() ?: mutableListOf()
+
+        if (isSelected) {
+            updatedList.add(option)
+        } else {
+            updatedList.remove(option)
         }
-        if (option == FilterOption.WITH_ALONE) { // '누구와'의 혼자 옵션
-            prevOptionMap.remove(FilterType.HOW_MANY) // 몇 명과 옵션 삭제
+
+        if (updatedList.isEmpty()) {
+            prevOptionMap.remove(option.filterType)
+        } else {
+            prevOptionMap[option.filterType] = updatedList
         }
+
+        if (option == FilterOption.WITH_ALONE) {
+            prevOptionMap.remove(FilterType.HOW_MANY)
+        }
+
         selectedOptionMap.value = prevOptionMap
         Log.d("RouteEditViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
         checkButtonEnable()

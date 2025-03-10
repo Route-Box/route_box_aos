@@ -69,27 +69,21 @@ class FilterViewModel @Inject constructor(
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
         Log.d("FilterViewModel", "option: $option, \nisSelected: $isSelected")
         val prevOptionMap = _selectedOptionMap.value!!.toMutableMap()
-        if (prevOptionMap.contains(option.filterType)) { // 기존 filterType가 존재하는 경우
-            val set = prevOptionMap[option.filterType]?.toMutableSet() ?: mutableSetOf()
-            Log.d("FilterViewModel", "prevSet: $set")
-            if (isSelected) { // set에 추가
-                set.add(option)
-            } else { // set에서 삭제
-                set.remove(option)
-            }
-            Log.d("FilterViewModel", "newSet: $set")
-            if (set.isEmpty()) { // set이 비어있을 경우
-                // key도 삭제
-                prevOptionMap.remove(option.filterType)
-            } else {
-                prevOptionMap[option.filterType] = set
-            }
-        } else { // 기존 filterType가 비어있을 경우
-            if (!isSelected) return
-            prevOptionMap[option.filterType] = setOf(option) // 해당 필터에 처음 추가
+        val updatedSet = prevOptionMap[option.filterType]?.toMutableSet() ?: mutableSetOf()
+
+        if (isSelected) {
+            updatedSet.add(option)
+        } else {
+            updatedSet.remove(option)
         }
+
+        if (updatedSet.isEmpty()) {
+            prevOptionMap.remove(option.filterType)
+        } else {
+            prevOptionMap[option.filterType] = updatedSet
+        }
+
         _selectedOptionMap.value = prevOptionMap
-        Log.d("FilterViewModel", "selectedOptionMap: ${_selectedOptionMap.value}")
         checkResetBtnActivation()
     }
 
