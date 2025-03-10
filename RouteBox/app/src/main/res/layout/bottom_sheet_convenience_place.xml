@@ -8,7 +8,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel" />
+            type="com.daval.routebox.presentation.ui.route.write.convenience.RouteConvenienceViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,6 +40,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- 장소 목록 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -64,6 +65,14 @@
                 tools:listitem="@layout/item_convenience_category_result" />
 
         </LinearLayout>
+
+        <!-- 장소 상세 -->
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/convenience_place_top_cl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

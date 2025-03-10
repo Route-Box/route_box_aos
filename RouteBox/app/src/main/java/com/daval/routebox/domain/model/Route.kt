@@ -2,6 +2,7 @@ package com.daval.routebox.domain.model
 
 import android.net.Uri
 import android.os.Build
+import android.os.Parcelable
 import androidx.annotation.RequiresApi
 import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import com.daval.routebox.presentation.utils.DateConverter
@@ -298,7 +299,7 @@ data class ConvenienceCategoryResult(
     val placeImg: String?, // 이미지
     val rating: Double?, // 평점
     val latitude: LatLng?
-)
+): Serializable
 
 data class WeatherApiResult(
     val response: WeatherApiResponse

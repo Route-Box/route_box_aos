@@ -46,7 +46,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.CircularBounds
-import com.google.android.libraries.places.api.model.OpeningHours
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.net.SearchNearbyRequest
@@ -118,6 +117,15 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         }
     }
 
+    private fun showPlaceInfoBottomSheet(placeInfo: ConvenienceCategoryResult) {
+        val placeInfoBottomSheet = ConveniencePlaceBottomSheet()
+        placeInfoBottomSheet.run {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogStyle)
+        }
+        placeInfoBottomSheet.placeInfo = placeInfo
+        placeInfoBottomSheet.show(requireActivity().supportFragmentManager, "")
+    }
+
     private fun initObserve() {
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
             Log.d("RouteConvenienceFrag", "latLng: $it")
@@ -145,11 +153,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 //                        convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
                 }
             }
-
-            if (convenienceViewModel.placeCategoryResult.value != null && convenienceViewModel.placeCategoryResult.value!!.size != 0) {
-                placeRVAdapter.resetAllItems(convenienceViewModel.placeCategoryResult.value!!)
-                binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
-            }
         }
 
         convenienceViewModel.placeCategoryResult.observe(viewLifecycleOwner) { placeList ->
@@ -162,7 +165,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private fun setInit() {
         bottomSheetConvenienceDialog = binding.routeConvenienceBottomSheet
         bottomSheetConvenienceDialog.apply {
-            this.viewModel = this@RouteConvenienceFragment.writeViewModel
+            this.viewModel = this@RouteConvenienceFragment.convenienceViewModel
             this.lifecycleOwner = this@RouteConvenienceFragment
         }
     }
@@ -363,6 +366,14 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
         bottomSheetConvenienceDialog.placeRv.itemAnimator = null
+
+        placeRVAdapter.setItemClickListener(object : ConveniencePlaceRVAdapter.MyItemClickListener {
+            override fun onItemClick(placeInfo: ConvenienceCategoryResult) {
+                // 바텀시트에 아이템 정보 세팅
+                showPlaceInfoBottomSheet(placeInfo)
+                //TODO: 지도에 핀 하나만 표시
+            }
+        })
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
