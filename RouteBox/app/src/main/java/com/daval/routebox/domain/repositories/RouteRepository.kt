@@ -4,7 +4,6 @@ import android.content.Context
 import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.RoutePreviewResult
 import com.daval.routebox.domain.model.ActivityId
-import com.daval.routebox.domain.model.BuyRouteResponse
 import com.daval.routebox.domain.model.CategoryGroupCode
 import com.daval.routebox.domain.model.Insight
 import com.daval.routebox.domain.model.KakaoSearchResult

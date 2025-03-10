@@ -77,6 +77,9 @@ class SeekFragment : Fragment() {
                 viewModel.selectedRouteId = routeId
                 reportMenuShow(view)
             }
+            override fun buyItemClick(routeId: Int) {
+                viewModel.buyRoute(routeId)
+            }
         })
         binding.seekHomeRv.itemAnimator = null
     }

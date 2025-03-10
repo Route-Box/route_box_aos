@@ -1,6 +1,6 @@
 package com.daval.routebox.domain.repositories
 
-import com.daval.routebox.domain.model.BuyRouteResponse
+import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.SearchRoute
 
 interface SeekRepository {
@@ -17,6 +17,7 @@ interface SeekRepository {
 
     /** 루트 구매하기 */
     suspend fun buyRoute(
-        routeId: Int
-    ): BuyRouteResponse
+        routeId: Int,
+        buyRouteRequest: BuyRouteRequest
+    ): String
 }

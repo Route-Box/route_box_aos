@@ -27,6 +27,7 @@ class SeekHomeRouteRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     interface MyItemClickListener {
         fun moreItemClick(view: View, routeId: Int)
         fun commentItemClick(position: Int, data: RoutePreview)
+        fun buyItemClick(routeId: Int)
     }
 
     // 뷰의 타입을 정해주는 부분
@@ -66,6 +67,9 @@ class SeekHomeRouteRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 }
                 binding.moreIv.setOnClickListener {
                     mItemClickListener.moreItemClick(binding.moreIv, routeList[position].routeId)
+                }
+                binding.buyPointBtn.setOnClickListener {
+                    mItemClickListener.buyItemClick(routeList[position].routeId)
                 }
             }
         }

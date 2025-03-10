@@ -5,15 +5,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.repositories.RouteRepository
+import com.daval.routebox.domain.repositories.SeekRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SeekViewModel @Inject constructor(
-    private val repository: RouteRepository
+    private val repository: RouteRepository,
+    private val seekRepository: SeekRepository
 ): ViewModel() {
     private val _routeList = MutableLiveData<ArrayList<RoutePreview>>()
     val routeList: LiveData<ArrayList<RoutePreview>> = _routeList
@@ -22,6 +25,13 @@ class SeekViewModel @Inject constructor(
 
     private val _page = MutableLiveData<Int>()
     val page: LiveData<Int> = _page
+
+    private val _buyResult = MutableLiveData<String>()
+    val buyResult: LiveData<String> = _buyResult
+    
+    // TODO: Enum으로 변경
+    private val _paymentMethod = MutableLiveData("POINT")
+    val paymentMethod: LiveData<String> = _paymentMethod
 
     init {
         _routeList.value = arrayListOf()
@@ -47,6 +57,12 @@ class SeekViewModel @Inject constructor(
             if (getRouteListResult.size != 0) {
                 _routeList.value = getRouteListResult
             }
+        }
+    }
+
+    fun buyRoute(routeId: Int) {
+        viewModelScope.launch {
+            _buyResult.value = seekRepository.buyRoute(routeId, BuyRouteRequest(paymentMethod.value!!))
         }
     }
 

@@ -367,7 +367,7 @@ data class WeatherRegionResult(
 )
 
 // TODO: Enum으로 변경
-data class BuyRouteResponse(
+data class BuyRouteRequest(
     val paymentMethod: String
 )
 
