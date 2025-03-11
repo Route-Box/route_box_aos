@@ -136,6 +136,19 @@ data class RouteUpdateResult(
     var transportation: String
 )
 
+// 루트 마무리하기
+data class RouteFinishRequest(
+    var routeName: String,
+    var routeDescription: String
+)
+
+data class RouteFinishResult(
+    var routeId: Int,
+    var routeName: String,
+    var routeDescription: String,
+    var recordFinishedAt: String
+)
+
 // 활동 추가
 data class Activity(
     var locationName: String = "",
@@ -146,7 +159,7 @@ data class Activity(
     var startTime: String = "",
     var endTime: String = "",
     var category: String = "", // 음식점, 관광명소 등
-    var description: String? = null,
+    var description: String = "",
     var activityImages: ArrayList<String> = arrayListOf(),
 )
 

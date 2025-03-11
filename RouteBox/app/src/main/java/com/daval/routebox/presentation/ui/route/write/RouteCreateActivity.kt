@@ -1,8 +1,10 @@
 package com.daval.routebox.presentation.ui.route.write
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -10,12 +12,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteCreateBinding
+import com.daval.routebox.presentation.utils.DateConverter
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper
+import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.picker.CalendarBottomSheet
 import com.daval.routebox.presentation.utils.picker.DateClickListener
 import com.daval.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.daval.routebox.presentation.utils.picker.TimeChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -45,6 +51,7 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
 
         // 다음 버튼
         binding.routeCreateNextBtn.setOnClickListener {
+            saveEndTime()
             viewModel.tryCreateRoute() // 루트 생성 API
             startActivity(Intent(this, RouteNotYetActivity::class.java))
             finish()
@@ -72,7 +79,7 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
     }
 
     private fun showCalendarBottomSheet(isStartDate: Boolean, date: LocalDate) {
-        val calendarBottomSheet = CalendarBottomSheet(this, isStartDate, date)
+        val calendarBottomSheet = CalendarBottomSheet(this, true, isStartDate, date)
         calendarBottomSheet.run {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
         }
@@ -103,5 +110,11 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
 
     override fun onTimeSelected(isStartTime: Boolean, hour: Int, minute: Int) {
         viewModel.updateTime(isStartTime, Pair(hour, minute))
+    }
+
+    private fun saveEndTime() {
+        val sharedPreferencesHelper = SharedPreferencesHelper(this@RouteCreateActivity.getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
+        val endTime = DateConverter.getAPIFormattedDateAndTime(viewModel.endDate.value!!, viewModel.endTimePair.value!!)
+        sharedPreferencesHelper.setEndTime(endTime)
     }
 }

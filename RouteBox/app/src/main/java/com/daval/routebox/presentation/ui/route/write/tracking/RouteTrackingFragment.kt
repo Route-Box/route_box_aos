@@ -2,6 +2,7 @@ package com.daval.routebox.presentation.ui.route.write.tracking
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +13,6 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -28,14 +28,11 @@ import com.daval.routebox.presentation.ui.route.RouteViewModel
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
+import com.daval.routebox.presentation.utils.BindingAdapter
 import com.daval.routebox.presentation.utils.CommonPopupDialog
-import com.daval.routebox.presentation.utils.MapUtil
-import com.daval.routebox.presentation.utils.MapUtil.getMapActivityIconLabelOptions
-import com.daval.routebox.presentation.utils.MapUtil.getMapActivityNumberLabelOptions
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
-import com.gun0912.tedpermission.provider.TedPermissionProvider
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -44,6 +41,7 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
 import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.route.RouteLine
 import com.kakao.vectormap.route.RouteLineOptions
@@ -51,6 +49,7 @@ import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.route.RouteLineStyles
 import com.kakao.vectormap.route.RouteLineStylesSet
+import java.util.Arrays
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -115,8 +114,8 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                     for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
                         var activity = editViewModel.route.value?.routeActivities!![i]
                         addMarker(
-                            LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
-                            Category.getCategoryByName(activity.category), (i + 1)
+                            activity.latitude.toDouble(), activity.longitude.toDouble(),
+                            activity.category, (i + 1).toString()
                         )
                     }
                 }
@@ -147,12 +146,20 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
 
         // 활동이 없을 때 나타나는 활동 추가 버튼
         binding.addCv.setOnClickListener {
-            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
+            if (sharedPreferencesHelper.getRouteActivity() != null) {
+                showCallActivityDataPopupDialog()
+            } else {
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+            }
         }
 
         // 활동이 1개 이상일 때 나타나는 활동 추가 버튼
         bottomSheetDialog.activityAddBtn.setOnClickListener {
-            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", editViewModel.routeId.value.toString()).putExtra("routeId", writeViewModel.routeId.value))
+            if (sharedPreferencesHelper.getRouteActivity() != null) {
+                showCallActivityDataPopupDialog()
+            } else {
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+            }
         }
     }
 
@@ -164,13 +171,17 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         bottomSheetDialog.activityRv.itemAnimator = null
         activityAdapter.setActivityClickListener(object: ActivityRVAdapter.MyItemClickListener {
             override fun onEditButtonClick(position: Int, data: ActivityResult) {
-                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).putExtra("routeId", writeViewModel.routeId.value))
+                startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                    putExtra("routeId", editViewModel.routeId.value)
+                    putExtra("activity", editViewModel.route.value!!.routeActivities[position])
+                    putExtra("isEdit", true)
+                })
             }
             override fun onDeleteButtonClick(position: Int) {
                 deleteId = activityAdapter.returnActivityId(position)
                 deleteActivityIndex = position
                 // 활동 삭제 팝업 띄우기
-                showPopupDialog()
+                showDeletePopupDialog()
             }
         })
         activityAdapter.addAllActivities(editViewModel.route.value?.routeActivities as MutableList<ActivityResult>)
@@ -188,8 +199,8 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
                 val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
                 kakaoMap.moveCamera(cameraUpdate)
 
-                addGPSMarker(writeViewModel.currentCoordinate.value!!.latitude,
-                    writeViewModel.currentCoordinate.value!!.longitude)
+                addMarker(writeViewModel.currentCoordinate.value!!.latitude,
+                    writeViewModel.currentCoordinate.value!!.longitude, "", "")
             }
         }
 
@@ -231,37 +242,24 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     // 마커 띄우기
-    private fun addGPSMarker(latitude: Double, longitude: Double) {
-        var markerImg = R.drawable.ic_gps_marker
+    private fun addMarker(latitude: Double, longitude: Double, category: String, activityNumber: String) {
+        var markerImg: Int
+        if (category != "") {
+            markerImg = returnActivityCategoryImg(category)
+        } else {
+            markerImg = R.drawable.ic_gps_marker
+        }
         var styles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
             LabelTextStyle.from(35, ContextCompat.getColor(requireActivity(), R.color.black)),
         )))
         val layer = kakaoMap.labelManager!!.layer
         val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
+        if (category != "") {
+            options.setTexts(LabelTextBuilder().setTexts(activityNumber))
+        }
         val label = layer!!.addLabel(options)
         label.show()
-    }
-
-    // 마커 띄우기
-    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
-        val layer = kakaoMap?.labelManager?.layer
-
-        // IconLabel 추가
-        val iconLabel = layer?.addLabel(
-            getMapActivityIconLabelOptions(latLng, category, activityNumber)
-        )
-
-        // TextLabel 추가
-        val textLabel = layer?.addLabel(
-            getMapActivityNumberLabelOptions(latLng, activityNumber)
-        )
-
-        // TextLabel의 위치를 IconLabel 내부로 조정
-        if (iconLabel != null && textLabel != null) {
-            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
-            textLabel.changePixelOffset(0f, MapUtil.TEXT_OFFSET_Y)
-        }
     }
 
     private fun showPopupDialog() {
@@ -270,9 +268,35 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         dialog.show(requireActivity().supportFragmentManager, "PopupDialog")
     }
 
+    private fun showCallActivityDataPopupDialog() {
+        val dialog = CommonPopupDialog(this, DialogType.CALL_ACTIVITY_DATA.id, String.format(resources.getString(R.string.check_activity_data)), null, null)
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(requireActivity().supportFragmentManager, "PopupDialog")
+    }
+
     override fun onClickPositiveButton(id: Int) {
-        Toast.makeText(requireActivity(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
-        editViewModel.deleteActivity(deleteId)
+        if (id == DialogType.DELETE.id) {
+            Toast.makeText(requireActivity(), "활동이 삭제되었습니다", Toast.LENGTH_SHORT).show()
+            editViewModel.deleteActivity(deleteId)
+        } else {
+            // 임시저장 데이터 이어서 작성 O
+            writeViewModel.checkIsContinuedActivity.value = true
+            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                putExtra("routeId", writeViewModel.routeId.value)
+                putExtra("checkIsContinuedActivity", true)
+            })
+        }
+    }
+
+    override fun onClickNegativeButton(id: Int) {
+        if (id == DialogType.CALL_ACTIVITY_DATA.id) {
+            // 임시저장 데이터 이어서 작성 X
+            sharedPreferencesHelper.setRouteActivity(null)
+            startActivity(Intent(requireActivity(), RouteActivityActivity::class.java).apply {
+                putExtra("routeId", writeViewModel.routeId.value)
+                putExtra("checkIsContinuedActivity", false)
+            })
+        }
     }
 
     private fun drawRoutePath() {
@@ -295,6 +319,20 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         val routePath = editViewModel.route.value?.routePath
         return routePath?.map {
             LatLng.from(it.latitude, it.longitude)
+        }
+    }
+
+    private fun returnActivityCategoryImg(category: String): Int {
+        return when (category) {
+            "숙소" -> R.drawable.activity_accommodation
+            "관광지" -> R.drawable.activity_tourist
+            "음식점" -> R.drawable.activity_restaurant
+            "카페" -> R.drawable.activity_cafe
+            "SNS 스팟" -> R.drawable.activity_sns_spot
+            "문화 공간" -> R.drawable.activity_culture
+            "화장실" -> R.drawable.activity_toilet
+            "주차장" -> R.drawable.activity_parking
+            else -> R.drawable.activity_etc
         }
     }
 }

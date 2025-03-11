@@ -1,6 +1,5 @@
 package com.daval.routebox.presentation.ui.auth
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,8 +28,8 @@ class AuthViewModel @Inject constructor(
 
     val nickname = MutableLiveData<String>()
 
-    private val _birth = MutableLiveData<String>()
-    val birth: LiveData<String> = _birth
+    private val _birth = MutableLiveData<String?>()
+    val birth: LiveData<String?> = _birth
 
     private val _gender = MutableLiveData<String>()
     val gender: LiveData<String> = _gender
@@ -59,7 +58,7 @@ class AuthViewModel @Inject constructor(
     init {
         _step.value = 1
         nickname.value = ""
-        _birth.value = ""
+        _birth.value = null
         _gender.value = ""
         _terms.value = false
     }
@@ -94,7 +93,6 @@ class AuthViewModel @Inject constructor(
 
     /** 회원가입 (내 정보 수정) */
     fun trySignup() {
-        Log.d("AuthViewModel", "birth: ${_birth.value}")
         viewModelScope.launch {
             _isSignupSuccess.value = userRepository.signup(nickname.value!!, _birth.value!!, _gender.value!!).id != 0
         }
@@ -106,12 +104,10 @@ class AuthViewModel @Inject constructor(
 
     fun setNickname(nickname: String) {
         this.nickname.value = nickname
-        if (nickname.isEmpty()) {
-            _isAvailableNickname.value = null
-        }
+        _isAvailableNickname.value = null
     }
 
-    fun setBirth(birth: String) {
+    fun setBirth(birth: String?) {
         _birth.value = birth
     }
 
@@ -130,7 +126,7 @@ class AuthViewModel @Inject constructor(
 
     // 유효한 닉네임 확인
     fun setNicknameValidation() {
-        _isValidNickname.value = nickname.value!!.matches(NICKNAME_REGEX)
+        _isValidNickname.value = nickname.value!!.matches(NICKNAME_REGEX) && nickname.value?.length!! > 1
     }
 
     /** 토큰 */
@@ -155,6 +151,6 @@ class AuthViewModel @Inject constructor(
     }
 
     companion object {
-        val NICKNAME_REGEX = "^[가-힣a-zA-Z0-9]{2,8}$".toRegex() // 닉네임 정규식 - 한글, 영문, 숫자만 허용한 2~8 글자
+        val NICKNAME_REGEX = "^[ㄱ-ㅣ가-힣a-zA-Z0-9]*$".toRegex() // 닉네임 정규식 - 한글, 영문, 숫자만 허용한 2~8 글자
     }
 }

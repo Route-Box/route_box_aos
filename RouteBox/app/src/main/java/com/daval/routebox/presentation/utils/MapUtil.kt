@@ -1,78 +1,83 @@
 package com.daval.routebox.presentation.utils
 
 import android.content.Context
-import android.graphics.Color
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.daval.routebox.R
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
-import com.kakao.vectormap.label.LabelTextBuilder
-import com.kakao.vectormap.label.LabelTextStyle
-import com.kakao.vectormap.route.RouteLineStyle
-import com.kakao.vectormap.route.RouteLineStyles
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 
 object MapUtil {
-    const val DEFAULT_ZOOM_LEVEL = 10 // 루트를 표시하는 기본 줌 레벨
-
-    private const val RANK_INTERVAL = 10 // activity 번호에 따른 rank 차이 (더 높은 activityNumber를 가졌다면 핀을 더 위에 표시)
-    private const val RANK_OFFSET = 1 // 아이콘-텍스트 간 rank 차이 (기본적으로 텍스트는 아이콘 위에 표시)
-
-    private const val ICON_SIZE = 60f // IconLabel의 크기를 가정
-    const val TEXT_OFFSET_Y = - (ICON_SIZE / (2.3)).toFloat() // 텍스트를 이동할 offset (아이콘 중심에서 약간 위로 이동)
+    const val DEFAULT_ZOOM_LEVEL = 10f // 루트를 표시하는 기본 줌 레벨
 
     // 루트 경로의 평균 좌표로 지도 중심에 위치할 지점을 반환
     fun getRoutePathCenterPoint(activities: List<ActivityResult>): LatLng {
         val routeActivityList = getLatLngRoutePath(activities)
-        return LatLng.from(
-            routeActivityList.map { it.latitude }.average(),
-            routeActivityList.map { it.longitude }.average()
+        val avgLat = routeActivityList.map { it.latitude }.average()
+        val avgLng = routeActivityList.map { it.longitude }.average()
+        Log.d("MapUtil", "latitude: $avgLat, longitude: $avgLng")
+        return LatLng(
+            avgLat, avgLng
         )
     }
 
     // 루트 경로를 그릴 LatLng 리스트 반환
     fun getLatLngRoutePath(activities: List<ActivityResult>): List<LatLng> {
+        Log.d("MapUtil", "activities: $activities")
         //TODO: 활동 경로 외에도 점들로 기록한 routePath 추가
         return activities.map {
-            LatLng.from(it.latitude.toDouble(), it.longitude.toDouble())
+            LatLng(it.latitude.toDouble(), it.longitude.toDouble())
         }
     }
 
     /** 스타일 관련 */
-    // IconLabel
-    private fun setMapIconLabelStyles(category: Category): LabelStyles {
-        return LabelStyles.from(
-            LabelStyle.from(category.categoryMarkerIcon)
-        )
-    }
+    fun createMarkerBitmap(context: Context, category: Category, activityNumber: Int): BitmapDescriptor {
+        // 커스텀 마커 레이아웃 생성
+        val markerView = LayoutInflater.from(context).inflate(R.layout.custom_marker, null)
 
-    fun getMapActivityIconLabelOptions(latLng: LatLng, category: Category, activityNumber: Int): LabelOptions {
-        return LabelOptions.from(latLng)
-            .setStyles(setMapIconLabelStyles(category))
-            .setRank((activityNumber * RANK_INTERVAL).toLong()) // activityNumber가 클수록 높은 rank를 가짐
-    }
+        // 배경 이미지뷰 설정
+        val backgroundImageView = markerView.findViewById<ImageView>(R.id.marker_background)
+        val drawable = ContextCompat.getDrawable(context, category.categoryMarkerIcon)?.mutate()
+        backgroundImageView.setImageDrawable(drawable)
+
+        // 숫자 텍스트 설정 및 스타일 적용
+        val numberTextView = markerView.findViewById<TextView>(R.id.marker_number)
+        numberTextView.text = activityNumber.toString()
+
+        // 마커 뷰 크기 설정
+        markerView.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        markerView.layout(0, 0, markerView.measuredWidth, markerView.measuredHeight)
 
     // TextLabel
     private fun setMapTextLabelStyle(): LabelStyles {
         return LabelStyles.from(
-            LabelStyle.from(LabelTextStyle.from(28, Color.WHITE).setFont(R.font.pretendard_bold))
+            LabelStyle.from(LabelTextStyle.from(28, Color.WHITE))
         )
-    }
+        val canvas = Canvas(bitmap)
+        markerView.draw(canvas)
 
-    fun getMapActivityNumberLabelOptions(latLng: LatLng, activityNumber: Int): LabelOptions {
-        return LabelOptions.from(latLng)
-            .setStyles(setMapTextLabelStyle())
-            .setTexts(LabelTextBuilder().setTexts(activityNumber.toString()))
-            .setRank((activityNumber * RANK_INTERVAL + RANK_OFFSET).toLong()) // 텍스트는 아이콘보다 높은 rank를 가짐
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     // RouteLine
-    fun setRoutePathStyle(context: Context): RouteLineStyles {
-        return RouteLineStyles.from(
-            RouteLineStyle.from(6f, ContextCompat.getColor(context, R.color.main))
-        )
+    fun getRoutePathPolylineOptions(context: Context, activities: List<ActivityResult>): PolylineOptions {
+        return PolylineOptions().apply {
+            addAll(getLatLngRoutePath(activities))
+            width(8f)  // 선의 두께
+            color(ContextCompat.getColor(context, R.color.main))  // 선의 색상
+        }
     }
 }

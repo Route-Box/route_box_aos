@@ -54,7 +54,11 @@ class ClearableEditText @JvmOverloads constructor(
         clearButton = findViewById(R.id.clearable_clear_iv)
         clearButton.visibility = INVISIBLE
         clearText()
-        checkClearButtonVisibility(clearButton, editText.text)
+
+        // 포커스 변경 리스너 설정
+        editText.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+            checkClearButtonVisibility(clearButton, editText.text, hasFocus)
+        }
     }
 
     private fun setMaxLines(maxLines: Int) {
@@ -63,7 +67,7 @@ class ClearableEditText @JvmOverloads constructor(
         if (maxLines == 1) {
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
             editText.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) { // MaxLines가 1이라면 엔터키 클릭 시 포커스 해제 및 키보드 내리기
                     editText.clearFocus()
                     hideKeyboard()
                     true
@@ -71,8 +75,7 @@ class ClearableEditText @JvmOverloads constructor(
                     false
                 }
             }
-        }
-        else { // 줄바꿈 가능하도록 설정
+        } else { // 줄바꿈 가능하도록 설정
             editText.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
             editText.isSingleLine = false
         }
@@ -90,15 +93,21 @@ class ClearableEditText @JvmOverloads constructor(
     private fun clearText() {
         clearButton.setOnClickListener {
             editText.text = null
+            clearButton.visibility = INVISIBLE
         }
     }
 
     companion object {
+        // X 버튼 노출 여부 확인 (포커스 상태와 텍스트 길이 모두 체크)
+        fun checkClearButtonVisibility(clearButton: ImageView, text: CharSequence?, hasFocus: Boolean) {
+            clearButton.visibility = if (hasFocus && (text?.length ?: 0) > 0) VISIBLE else INVISIBLE
+        }
+
         @JvmStatic
         @BindingAdapter("app:bindText")
         fun bindText(view: ClearableEditText, text: LiveData<String>?) {
             text?.let {
-                if (view.editText.text.toString() != text.value) { // 함수 호출시 무한루프를 방지하기 위해 기존 텍스트와의 동일여부를 검사
+                if (view.editText.text.toString() != text.value) { // 함수 호출시 무한루프를 방지하기 위해 기존 텍스트와의 동일 여부를 검사
                     view.editText.setText(it.value)
                 }
                 // 관찰자 등록
@@ -107,7 +116,6 @@ class ClearableEditText @JvmOverloads constructor(
                         view.editText.setText(newValue)
                     }
                 }
-                checkClearButtonVisibility(view.clearButton, it.value)
             }
         }
 
@@ -125,16 +133,11 @@ class ClearableEditText @JvmOverloads constructor(
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     listener?.onChange()
-                    checkClearButtonVisibility(view.clearButton, s)
+                    checkClearButtonVisibility(view.clearButton, s, view.editText.isFocused)
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
             })
-        }
-
-        // x 버튼 노출 여부 확인
-        fun checkClearButtonVisibility(clearButton: ImageView, text: CharSequence?) {
-            clearButton.visibility = if ((text?.length ?: 0) > 0) VISIBLE else INVISIBLE // 입력 내용이 있을 경우 표시
         }
     }
 }

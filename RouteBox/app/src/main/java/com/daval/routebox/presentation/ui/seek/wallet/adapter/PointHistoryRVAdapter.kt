@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.databinding.ItemPointHistoryBinding
-import com.daval.routebox.domain.model.History
+import com.daval.routebox.domain.model.PointHistory
 
 class PointHistoryRVAdapter(
-    private val historyList: ArrayList<History>
+    private val historyList: ArrayList<PointHistory>
 ): RecyclerView.Adapter<PointHistoryRVAdapter.ViewHolder>() {
 
     private lateinit var itemClickListener: OnItemClickListener
 
     interface OnItemClickListener {
-        fun onItemClick(data: History)
+        fun onItemClick(data: PointHistory)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -32,8 +32,13 @@ class PointHistoryRVAdapter(
     override fun getItemCount(): Int = historyList.size
 
     inner class ViewHolder(val binding: ItemPointHistoryBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(history: History) {
+        fun bind(history: PointHistory) {
             binding.history = history
         }
+    }
+
+    // TODO: API 수정
+    fun addItems(histories: List<PointHistory>) {
+        historyList.addAll(histories)
     }
 }

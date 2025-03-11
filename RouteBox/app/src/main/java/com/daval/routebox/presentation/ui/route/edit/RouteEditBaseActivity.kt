@@ -2,6 +2,7 @@ package com.daval.routebox.presentation.ui.route.edit
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -44,7 +45,10 @@ class RouteEditBaseActivity : AppCompatActivity() {
         }
         viewModel.isEditMode = intent.getBooleanExtra("isEditMode", false)
         routeId = intent.getIntExtra("routeId", -1)
-        viewModel.setRouteId(routeId)
+
+        if (routeId != -1) {
+            viewModel.setRouteId(routeId)
+        }
     }
 
     private fun initClickListeners() {

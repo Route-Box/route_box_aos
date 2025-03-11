@@ -89,7 +89,7 @@ class RouteViewModel @Inject constructor(
            _isGetRouteDetailSuccess.value = (_route.value?.routeId != -1)
            selectedRouteId = routeId
            isPublic = _route.value!!.isPublic
-           _tagList.value = combineAllServerTagsByList()
+           _tagList.value = FilterOption.combineAllServerTagsByList(_route.value!!)
            Log.d("RouteViewModel", "tagList: ${_tagList.value}")
        }
     }
@@ -107,23 +107,6 @@ class RouteViewModel @Inject constructor(
         viewModelScope.launch {
             _isDeleteRouteSuccess.value = (repository.deleteRoute(selectedRouteId).routeId != -1)
         }
-    }
-
-    // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
-    private fun combineAllServerTagsByList(): ArrayList<String> {
-        val tagNameList: ArrayList<String> = arrayListOf()
-        tagNameList.addAll(
-            listOfNotNull(
-                _route.value?.whoWith,
-                _route.value?.numberOfDays,
-                FilterOption.getNumberOfPeopleText(_route.value?.numberOfPeople),
-                _route.value?.transportation
-            )
-        )
-        _route.value?.routeStyles?.let { styles ->
-            tagNameList.addAll(styles)
-        }
-        return tagNameList
     }
 
     fun getIsLiveTracking(isLiveTracking: Boolean) {

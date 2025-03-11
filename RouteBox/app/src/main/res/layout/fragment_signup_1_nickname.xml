@@ -11,6 +11,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/nickname_cl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -37,7 +38,7 @@
             android:textCursorDrawable="@null"
             android:maxLines="1"
             android:inputType="text"
-            android:text="@={viewModel.nickname}"
+            android:maxLength="8"
             android:theme="@style/EditTextTheme"
             app:layout_constraintTop_toTopOf="@id/nickname_check_btn"
             app:layout_constraintBottom_toBottomOf="@id/nickname_check_btn"

@@ -17,7 +17,8 @@ import javax.inject.Inject
 class RouteCompleteTagViewModel @Inject constructor(
     private val repository: RouteRepository
 ): ViewModel() {
-    private val selectedOptionMap: MutableLiveData<Map<FilterType, Set<FilterOption>>> = MutableLiveData(mapOf())
+    private val selectedOptionMap: MutableLiveData<Map<FilterType, List<FilterOption>>> =
+        MutableLiveData(mapOf())
 
     private val _routeId = MutableLiveData<Int>()
     val routeId: LiveData<Int> = _routeId
@@ -53,34 +54,33 @@ class RouteCompleteTagViewModel @Inject constructor(
 
     fun updateSelectedOption(option: FilterOption, isSelected: Boolean) {
         val prevOptionMap = selectedOptionMap.value!!.toMutableMap()
-        if (prevOptionMap.contains(option.filterType)) { // 기존 filterType가 존재하는 경우
-            val set = prevOptionMap[option.filterType]?.toMutableSet() ?: mutableSetOf()
-            if (isSelected) { // set에 추가
-                set.add(option)
-            } else { // set에서 삭제
-                set.remove(option)
-            }
-            if (set.isEmpty()) { // set이 비어있을 경우
-                // key도 삭제
-                prevOptionMap.remove(option.filterType)
-            } else {
-                prevOptionMap[option.filterType] = set
-            }
-        } else { // 기존 filterType가 비어있을 경우
-            if (!isSelected) return
-            prevOptionMap[option.filterType] = setOf(option) // 해당 필터에 처음 추가
+        val updatedList = prevOptionMap[option.filterType]?.toMutableList() ?: mutableListOf()
+
+        if (isSelected) {
+            updatedList.add(option)
+        } else {
+            updatedList.remove(option)
         }
-        if (option == FilterOption.WITH_ALONE) { // '누구와'의 혼자 옵션
-            prevOptionMap.remove(FilterType.HOW_MANY) // 몇 명과 옵션 삭제
+
+        if (updatedList.isEmpty()) {
+            prevOptionMap.remove(option.filterType)
+        } else {
+            prevOptionMap[option.filterType] = updatedList
         }
+
+        if (option == FilterOption.WITH_ALONE) {
+            prevOptionMap.remove(FilterType.HOW_MANY)
+        }
+
         selectedOptionMap.value = prevOptionMap
-        Log.d("RouteStyleViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
+        Log.d("RouteEditViewModel", "selectedOptionMap: ${selectedOptionMap.value}")
         checkButtonEnable()
     }
 
     // 선택된 옵션 중에 '누구와 - 혼자'가 있을 경우
     private fun isHasWithAloneOption(): Boolean {
-        return selectedOptionMap.value?.get(FilterType.WITH_WHOM)?.contains(FilterOption.WITH_ALONE) ?: false
+        return selectedOptionMap.value?.get(FilterType.WITH_WHOM)?.contains(FilterOption.WITH_ALONE)
+            ?: false
     }
 
     // 모든 선택지가 잘 채워졌는지 확인

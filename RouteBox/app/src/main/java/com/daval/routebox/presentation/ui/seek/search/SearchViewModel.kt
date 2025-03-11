@@ -27,8 +27,8 @@ class SearchViewModel @Inject constructor(
 
     val searchWord = MutableLiveData<String>("") // 사용자가 입력한 검색어
 
-    private val _resentSearchWordSet = MutableLiveData<MutableSet<String>?>(linkedSetOf()) // 최근 검색어
-    val resentSearchWordSet: LiveData<MutableSet<String>?> = _resentSearchWordSet
+    private val _recentSearchWordSet = MutableLiveData<MutableSet<String>?>(linkedSetOf()) // 최근 검색어
+    val recentSearchWordSet: LiveData<MutableSet<String>?> = _recentSearchWordSet
 
     private val _selectedOrderOption = MutableLiveData<OrderOptionType>(OrderOptionType.ORDER_RECENT) // 선택된 검색 결과 정렬 옵션
     val selectedOrderOption: LiveData<OrderOptionType> = _selectedOrderOption
@@ -39,7 +39,11 @@ class SearchViewModel @Inject constructor(
     // 루트 검색
     fun inputRouteSearchWord() {
         Log.d("SearchViewModel", "입력한 검색어: ${searchWord.value}")
-        // 검색 결과 수정
+        if(searchWord.value.isNullOrBlank()) {
+            _routeSearchKeyWord.value = ""
+            return
+        }
+        // 검색어 수정
         _routeSearchKeyWord.value = searchWord.value
         // 루트 검색 결과 저장
         viewModelScope.launch {
@@ -65,27 +69,27 @@ class SearchViewModel @Inject constructor(
     // 최근 검색어 저장
     fun setRecentSearchWordSet(set: Set<String>?) {
         if (set == null) {
-            _resentSearchWordSet.value = linkedSetOf()
+            _recentSearchWordSet.value = linkedSetOf()
             return
         }
-        _resentSearchWordSet.value = set as MutableSet<String>?
+        _recentSearchWordSet.value = set as MutableSet<String>?
     }
 
     // 최근 검색어 모두 초기화
     fun clearAllRecentSearchWords() {
-        _resentSearchWordSet.value = linkedSetOf()
+        _recentSearchWordSet.value = linkedSetOf()
     }
 
     // 최근 검색어 업데이트
     fun updateRecentSearchWord(word: String, searchType: SearchType) {
-        val tempSet = _resentSearchWordSet.value!!
+        val tempSet = _recentSearchWordSet.value!!
         when (searchType) {
             SearchType.ADD -> { // 추가
-                if (_resentSearchWordSet.value!!.contains(word)) { // 이미 존재하는 검색어를 다시 입력했을 경우
+                if (_recentSearchWordSet.value!!.contains(word)) { // 이미 존재하는 검색어를 다시 입력했을 경우
                     tempSet.remove(word) // 이전 검색어 삭제
                 }
-                if (_resentSearchWordSet.value!!.size >= MAX_RECENT_SEARCHWORD) { // 최대 검색어 개수를 넘겼을 경우
-                    tempSet.remove(_resentSearchWordSet.value!!.last()) // 가장 오래된 검색어 삭제
+                if (_recentSearchWordSet.value!!.size >= MAX_RECENT_SEARCHWORD) { // 최대 검색어 개수를 넘겼을 경우
+                    tempSet.remove(_recentSearchWordSet.value!!.last()) // 가장 오래된 검색어 삭제
                 }
                 tempSet.add(word)
             }
@@ -100,7 +104,7 @@ class SearchViewModel @Inject constructor(
                 _routeSearchKeyWord.value = word
             }
         }
-        _resentSearchWordSet.value = tempSet // 관측을 위해 다시 저장
+        _recentSearchWordSet.value = tempSet // 관측을 위해 다시 저장
     }
 
     // 선택한 정렬 옵션 값 업데이트

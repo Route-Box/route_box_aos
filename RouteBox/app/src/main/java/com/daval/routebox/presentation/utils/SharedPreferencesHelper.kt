@@ -1,21 +1,30 @@
 package com.daval.routebox.presentation.utils
 
 import android.content.SharedPreferences
+import com.daval.routebox.domain.model.Activity
+import com.daval.routebox.domain.model.ActivityResult
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kakao.vectormap.LatLng
 
 
 class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) {
+    // 최근 검색어 저장
+    fun setRecentSearchWords(wordSet: Set<String>?) {
+        sharedPreferences.edit()
+            .putStringSet(RECENT_SEARCHWORD_KEY, wordSet)
+            .apply()
+    }
+
     // 최근 검색어 불러오기
     fun getRecentSearchWords(): Set<String>? {
         return sharedPreferences.getStringSet(RECENT_SEARCHWORD_KEY, null)
     }
 
-    // 최근 검색어 저장
-    fun setRecentSearchWords(wordSet: Set<String>?) {
+    // 루트 기록 여부 저장
+    fun setRouteTracking(isTracking: Boolean) {
         sharedPreferences.edit()
-            .putStringSet(RECENT_SEARCHWORD_KEY, wordSet)
+            .putBoolean(TRACKING_KEY, isTracking)
             .apply()
     }
 
@@ -24,11 +33,16 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
         return sharedPreferences.getBoolean(TRACKING_KEY, false)
     }
 
-    // 루트 기록 여부 저장
-    fun setRouteTracking(isTracking: Boolean) {
+    // 기록 중인 루트 활동 데이터 저장
+    fun setRouteActivity(activity: ActivityResult?) {
         sharedPreferences.edit()
-            .putBoolean(TRACKING_KEY, isTracking)
+            .putString(ROUTE_ACTIVITY, Gson().toJson(activity))
             .apply()
+    }
+
+    // 기록 중인 루트 활동 데이터 불러오기
+    fun getRouteActivity(): ActivityResult? {
+        return Gson().fromJson(sharedPreferences.getString(ROUTE_ACTIVITY, ""), object : TypeToken<ActivityResult?>() {}.type)
     }
 
     // 기록하기 화면인지 아닌지를 확인하기 위함
@@ -76,12 +90,27 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
+    // 루트 기록 EndTime 저장
+    fun setEndTime(endTime: String) {
+        sharedPreferences.edit()
+            .putString(ROUTE_END_TIME, endTime)
+            .apply()
+    }
+
+    // 루트 기록 EndTime 불러오기
+    fun getEndTime(): String? {
+        return sharedPreferences.getString(ROUTE_END_TIME, null)
+    }
+
     companion object {
         const val APP_PREF_KEY = "app_pref"
         const val RECENT_SEARCHWORD_KEY = "recent_searchword"
         const val TRACKING_KEY = "route_tracking"
+        const val ROUTE_ACTIVITY = "route_activity"
+        const val ROUTE_ACTIVITY_IMAGES = "route_activity_images"
         const val TRACKING_COORDINATE = "tracking_coordinate"
         const val TRACKING_BACKGROUND = "tracking_background"
         const val TRACKING_IS_BACKGROUND = "tracking_is_background"
+        const val ROUTE_END_TIME = "route_end_time"
     }
 }

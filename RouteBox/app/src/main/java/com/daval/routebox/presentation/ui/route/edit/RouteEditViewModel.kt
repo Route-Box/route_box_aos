@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.FilterOption
 import com.daval.routebox.domain.model.FilterType
 import com.daval.routebox.domain.model.RouteDetail
+import com.daval.routebox.domain.model.RouteFinishRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.kakao.vectormap.LatLng
@@ -89,6 +90,13 @@ class RouteEditViewModel @Inject constructor(
         }
     }
 
+    /** 루트 마무리하기 */
+    fun routeComplete() {
+        viewModelScope.launch {
+            repository.finishRoute(_routeId.value!!, RouteFinishRequest(routeTitle.value!!, routeContent.value!!))
+        }
+    }
+
     /** 활동 삭제 */
     fun deleteActivity(activityId: Int) {
         viewModelScope.launch {
@@ -106,19 +114,8 @@ class RouteEditViewModel @Inject constructor(
 
     fun setRoute(route: RouteDetail) {
         _route.value = route
-        tagList = combineAllServerTagsByList()
+        tagList = FilterOption.combineAllServerTagsByList(_route.value!!)
         initSelectedOptionMap(FilterOption.findOptionsByNames(tagList))
-    }
-    
-    // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
-    private fun combineAllServerTagsByList(): ArrayList<String> {
-        val tagNameList: ArrayList<String> = arrayListOf()
-        tagNameList.add(_route.value!!.whoWith)
-        tagNameList.add(_route.value!!.numberOfDays)
-        tagNameList.add(FilterOption.getNumberOfPeopleText(_route.value!!.numberOfPeople))
-        tagNameList.addAll(_route.value!!.routeStyles)
-        tagNameList.add(_route.value!!.transportation)
-        return tagNameList
     }
 
     private fun initSelectedOptionMap(filterOptions: List<FilterOption>) {

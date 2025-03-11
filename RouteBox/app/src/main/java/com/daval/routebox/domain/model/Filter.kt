@@ -1,12 +1,14 @@
 package com.daval.routebox.domain.model
 
+import android.util.Log
+
 /** 필터 유형 */
 enum class FilterType(val order: Int, val maxSelectionCount: Int) {
-    WITH_WHOM(0, 0), // 누구와
-    HOW_MANY(1, 0), // 몇 명과
-    HOW_LONG(2, 0), // 며칠 동안
+    WITH_WHOM(0, 1), // 누구와
+    HOW_MANY(1, 1), // 몇 명과
+    HOW_LONG(2, 1), // 며칠 동안
     ROUTE_STYLE(3, 2), // 원하는 스타일
-    MEANS_OF_TRANSPORTATION(4, 0), // 이동 수단
+    MEANS_OF_TRANSPORTATION(4, 1), // 이동 수단
 }
 
 /** 필터 옵션 */
@@ -56,7 +58,12 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
 
         // 필터 이름 리스트에 해당하는 선택지 리스트 반환
         fun findOptionsByNames(names: List<String>): List<FilterOption> {
-            return entries.filter { it.optionName in names }
+            return entries.filter { entry ->
+                val cleanOptionName = entry.optionName.removeEmojis() // FilterOption의 이모티콘 제거
+                names.any { name ->
+                    name.contains(cleanOptionName) // 부분 일치 확인
+                }
+            }
         }
 
         // 리스트를 FilterType 별로 그룹핑
@@ -102,12 +109,33 @@ enum class FilterOption(val filterType: FilterType, val optionName: String) {
             }
         }
 
+        // 서버에서 받아온 whoWith, numberOfPeople, routeStyles, transportation를 통합
+        fun combineAllServerTagsByList(route: RouteDetail): ArrayList<String> {
+            val tagNameList: ArrayList<String> = arrayListOf()
+            tagNameList.addAll(
+                listOfNotNull(
+                    route.whoWith, // 누구와
+                    route.numberOfDays, // 며칠 동안
+                    route.transportation, // 이동 수단
+                    FilterOption.getNumberOfPeopleText(route.numberOfPeople), // 몇 명과
+                )
+            )
+            tagNameList.addAll(route.routeStyles) // 루트 스타일
+            return tagNameList
+        }
+
         // int 형태의 numberOfPeople를 명 수 텍스트로 변환
-        fun getNumberOfPeopleText(numberOfPeople: Int?): String {
+        fun getNumberOfPeopleText(numberOfPeople: Int?): String? {
+            if (numberOfPeople == null || numberOfPeople == -1) return null
             return when (numberOfPeople) {
                 in 2..4 -> "${numberOfPeople}명"
                 else -> "5명 이상"
             }
+        }
+
+        // 이모티콘 제거 함수
+        private fun String.removeEmojis(): String {
+            return this.replace(Regex("[\\p{So}\\p{Cn}]+"), "") // 유니코드 Symbol, Other 및 이모티콘 범위를 제거
         }
     }
 }

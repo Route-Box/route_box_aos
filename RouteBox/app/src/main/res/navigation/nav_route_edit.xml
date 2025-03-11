@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_routeEditFragment_to_routeEditActivityFragment"
             app:destination="@id/routeEditActivityFragment"/>
+        <action
+            android:id="@+id/action_routeEditFragment_to_routeCompleteActivity"
+            app:destination="@id/routeCompleteActivity" />
     </fragment>
 
     <!-- 활동 수정 -->
@@ -23,5 +26,12 @@
         android:label="RouteEditActivityFragment"
         tools:layout="@layout/fragment_route_edit_activity">
     </fragment>
+
+    <!-- 루트 마무리하기 -->
+    <activity
+        android:id="@+id/routeCompleteActivity"
+        android:name="com.daval.routebox.presentation.ui.route.RouteCompleteActivity"
+        android:label="RouteCompleteActivity"
+        tools:layout="@layout/activity_route_complete" />
 
 </navigation>

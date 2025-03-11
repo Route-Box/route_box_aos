@@ -1,9 +1,11 @@
 package com.daval.routebox.presentation.ui.route.edit
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -16,28 +18,23 @@ import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.FilterOption
 import com.daval.routebox.presentation.ui.common.routeStyle.FilterOptionClickListener
 import com.daval.routebox.presentation.ui.common.routeStyle.RouteStyleFragment
+import com.daval.routebox.presentation.utils.MapUtil
 import com.daval.routebox.presentation.utils.MapUtil.DEFAULT_ZOOM_LEVEL
-import com.daval.routebox.presentation.utils.MapUtil.getMapActivityIconLabelOptions
-import com.daval.routebox.presentation.utils.MapUtil.getMapActivityNumberLabelOptions
-import com.daval.routebox.presentation.utils.MapUtil.TEXT_OFFSET_Y
-import com.daval.routebox.presentation.utils.MapUtil.getLatLngRoutePath
 import com.daval.routebox.presentation.utils.MapUtil.getRoutePathCenterPoint
-import com.daval.routebox.presentation.utils.MapUtil.setRoutePathStyle
-import com.kakao.vectormap.KakaoMap
-import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.route.RouteLineOptions
-import com.kakao.vectormap.route.RouteLineSegment
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteEditFragment : Fragment(), FilterOptionClickListener {
+class RouteEditFragment : Fragment(), FilterOptionClickListener, OnMapReadyCallback {
 
     private lateinit var binding: FragmentRouteEditBinding
     private val viewModel: RouteEditViewModel by activityViewModels()
-    private var kakaoMap: KakaoMap? = null
     private lateinit var routeStyleFragment: RouteStyleFragment
+    private var googleMap: GoogleMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,27 +56,17 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
         return binding.root
     }
 
-    private fun initMapSetting() {
-        binding.kakaoMap.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출
-                Log.d("KakaoMap", "onMapDestroy: ")
-            }
+    override fun onResume() {
+        super.onResume()
+        googleMap?.clear()
+        setActivityMarkers()
+        drawRoutePath()
+    }
 
-            override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
-                Log.d("KakaoMap", "onMapError: $error")
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                Log.d("KakaoMap", "onMapReady: $kakaoMap")
-                this@RouteEditFragment.kakaoMap = kakaoMap
-                setMapCenterPoint()
-                setActivityMarker()
-                drawRoutePath()
-            }
-        })
+    private fun initMapSetting() {
+        // 맵 프래그먼트 초기화
+        val mapFragment = childFragmentManager.findFragmentById(R.id.route_edit_map_fragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun setInit() {
@@ -91,6 +78,7 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
         viewModel.setStepId(0) // 루트 마무리
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initClickListeners() {
         // 활동 수정 버튼
         binding.routeEditActivityEditBtn.setOnClickListener {
@@ -99,7 +87,33 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
         }
         // 완료 버튼
         binding.routeEditDoneBtn.setOnClickListener {
-            viewModel.tryEditRoute() // 루트 제목, 내용 저장 진행
+            if (viewModel.stepId.value == 0) { // 루트 마무리하기
+                viewModel.routeComplete()
+                findNavController().navigate(R.id.action_routeEditFragment_to_routeCompleteActivity)
+                requireActivity().finish()
+            } else { // 루트 수정하기
+                viewModel.tryEditRoute() // 루트 제목, 내용 저장 진행
+            }
+        }
+
+        // 지도 터치에 우선 순위
+        binding.ivMapTransparent.setOnTouchListener { view, motionEvent ->
+            val action = motionEvent.action
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.routeEditSv.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.routeEditSv.requestDisallowInterceptTouchEvent(false)
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    binding.routeEditSv.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                else -> true
+            }
         }
     }
 
@@ -116,54 +130,32 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
     }
 
     private fun setMapCenterPoint() {
-        // 지도의 중심 위치 변경
-        kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(
-            getRoutePathCenterPoint(viewModel.getActivityList()), DEFAULT_ZOOM_LEVEL)
-        )
+        val centerLatLng = getRoutePathCenterPoint(viewModel.getActivityList())
+        // 카메라 위치 설정 및 줌 레벨 조정
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, DEFAULT_ZOOM_LEVEL))
     }
 
-    private fun setActivityMarker() {
+    private fun setActivityMarkers() {
         if (!viewModel.hasActivity()) return
         // 활동 마커 추가하기
         viewModel.route.value?.routeActivities!!.forEachIndexed { index, activity ->
             // 지도에 마커 표시
-            addMarker(
-                LatLng.from(activity.latitude.toDouble(), activity.longitude.toDouble()),
-                Category.getCategoryByName(activity.category),
-                index.plus(1) // 장소 번호는 0번부터 시작
+            val markerIcon = MapUtil.createMarkerBitmap(requireContext(), Category.getCategoryByName(activity.category), index.plus(1))
+            // 마커 추가
+            googleMap?.addMarker(
+                MarkerOptions()
+                    .position(LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()))
+                    .icon(markerIcon)
+                    .zIndex(1f)
             )
         }
     }
 
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
-        val segment: RouteLineSegment = RouteLineSegment.from(getLatLngRoutePath(viewModel.getActivityList())).setStyles(
-            setRoutePathStyle(requireContext())
-        )
-        val options = RouteLineOptions.from(segment)
-        // 지도에 선 표시
-        kakaoMap?.routeLineManager?.layer?.addRouteLine(options)?.show()
-    }
-
-    // 마커 띄우기
-    private fun addMarker(latLng: LatLng, category: Category, activityNumber: Int) {
-        val layer = kakaoMap?.labelManager?.layer
-
-        // IconLabel 추가
-        val iconLabel = layer?.addLabel(
-            getMapActivityIconLabelOptions(latLng, category, activityNumber)
-        )
-
-        // TextLabel 추가
-        val textLabel = layer?.addLabel(
-            getMapActivityNumberLabelOptions(latLng, activityNumber)
-        )
-
-        // TextLabel의 위치를 IconLabel 내부로 조정
-        if (iconLabel != null && textLabel != null) {
-            // changePixelOffset 메서드를 사용하여 텍스트 라벨의 위치 조정
-            textLabel.changePixelOffset(0f, TEXT_OFFSET_Y)
-        }
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), viewModel.getActivityList())
+        googleMap?.addPolyline(polylineOptions)
     }
 
     private fun initObserve() {
@@ -184,5 +176,12 @@ class RouteEditFragment : Fragment(), FilterOptionClickListener {
 
     override fun onOptionItemClick(option: FilterOption, isSelected: Boolean) {
         viewModel.updateSelectedOption(option, isSelected)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+        setMapCenterPoint() // 지도 중심 좌표 설정
+        setActivityMarkers() // 지도에 활동 마커 추가
+        drawRoutePath() // 경로를 선으로 잇기
     }
 }
