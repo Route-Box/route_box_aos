@@ -140,7 +140,7 @@ class SearchFragment: Fragment() {
     private fun saveRecentSearchWords() {
         // sharedPreferences에 최근 검색어 저장
         val sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
-        sharedPreferencesHelper.setRecentSearchWords(viewModel.resentSearchWordSet.value)
+        sharedPreferencesHelper.setRecentSearchWords(viewModel.recentSearchWordSet.value)
     }
 
     private fun setSearchWordAdapter() {
@@ -186,10 +186,6 @@ class SearchFragment: Fragment() {
     }
 
     private fun searchRoute() {
-        if (viewModel.searchWord.value.isNullOrBlank()) { // 검색 결과가 없을 경우 리턴
-            Toast.makeText(requireActivity(), "검색어를 입력해 주세요", Toast.LENGTH_SHORT).show()
-            return
-        }
         viewModel.inputRouteSearchWord() // 루트 검색 진행
         hideKeyboard() // 키보드 내리기
     }
@@ -201,7 +197,7 @@ class SearchFragment: Fragment() {
         }
 
         // 최근 검색어 관측
-        viewModel.resentSearchWordSet.observe(viewLifecycleOwner) { set ->
+        viewModel.recentSearchWordSet.observe(viewLifecycleOwner) { set ->
             Log.d("SearchDetailFrag", "최근 검색어 관측: $set")
             if (!set.isNullOrEmpty()) {
                 setSearchWordAdapter()
