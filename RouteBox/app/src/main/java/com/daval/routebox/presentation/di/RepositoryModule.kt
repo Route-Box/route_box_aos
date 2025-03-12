@@ -3,17 +3,20 @@ package com.daval.routebox.presentation.di
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.data.datasource.RemoteAuthDataSource
+import com.daval.routebox.data.datasource.RemoteCommentDataSource
 import com.daval.routebox.data.datasource.RemoteOpenApiDataSource
 import com.daval.routebox.data.datasource.RemoteRouteDataSource
 import com.daval.routebox.data.datasource.RemoteSeekDataSource
 import com.daval.routebox.data.datasource.RemoteUserDataSource
 import com.daval.routebox.data.repositoriyImpl.AuthRepositoryImpl
+import com.daval.routebox.data.repositoriyImpl.CommentRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.ReportRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.RouteRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.OpenApiRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.SeekRepositoryImpl
 import com.daval.routebox.data.repositoriyImpl.UserRepositoryImpl
 import com.daval.routebox.domain.repositories.AuthRepository
+import com.daval.routebox.domain.repositories.CommentRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.domain.repositories.ReportRepository
 import com.daval.routebox.domain.repositories.RouteRepository
@@ -46,6 +49,13 @@ object RepositoryModule {
     fun provideRouteRepository(
         remoteRouteDataSource: RemoteRouteDataSource,
     ): RouteRepository = RouteRepositoryImpl(remoteRouteDataSource)
+
+    /** 댓글 */
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Provides
+    fun provideCommentRepository(
+        remoteCommentDataSource: RemoteCommentDataSource,
+    ): CommentRepository = CommentRepositoryImpl(remoteCommentDataSource)
 
     /** 탐색 */
     @Provides

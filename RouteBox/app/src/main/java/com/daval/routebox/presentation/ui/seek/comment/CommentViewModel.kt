@@ -4,8 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CommentViewModel: ViewModel() {
+@HiltViewModel
+class CommentViewModel @Inject constructor(
+
+): ViewModel() {
 
     //TODO: API가 나오면 서버 응답값에 맞게 변경
     private val _postTitle = MutableLiveData<String>()
