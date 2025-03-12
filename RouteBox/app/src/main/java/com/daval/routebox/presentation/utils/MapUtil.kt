@@ -61,10 +61,11 @@ object MapUtil {
         )
         markerView.layout(0, 0, markerView.measuredWidth, markerView.measuredHeight)
 
-    // TextLabel
-    private fun setMapTextLabelStyle(): LabelStyles {
-        return LabelStyles.from(
-            LabelStyle.from(LabelTextStyle.from(28, Color.WHITE))
+        // 마커 뷰를 비트맵으로 변환
+        val bitmap = Bitmap.createBitmap(
+            markerView.measuredWidth,
+            markerView.measuredHeight,
+            Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(bitmap)
         markerView.draw(canvas)

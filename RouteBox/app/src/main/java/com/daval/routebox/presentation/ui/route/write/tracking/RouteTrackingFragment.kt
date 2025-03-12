@@ -220,11 +220,9 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     private fun addBackgroundDots() {
-        if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
-            val backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
-            for (i in 0 until backgroundDots!!.size) {
-                writeViewModel.addDot(backgroundDots[i]!!.latitude, backgroundDots[i]!!.longitude)
-            }
+        var backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
+        if (backgroundDots?.size != 0) {
+            writeViewModel.addDots(backgroundDots)
             sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf())
         }
     }
@@ -262,7 +260,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         label.show()
     }
 
-    private fun showPopupDialog() {
+    private fun showDeletePopupDialog() {
         val dialog = CommonPopupDialog(this, DialogType.DELETE.id, String.format(resources.getString(R.string.activity_delete_popup)), null, null)
         dialog.isCancelable = false // 배경 클릭 막기
         dialog.show(requireActivity().supportFragmentManager, "PopupDialog")

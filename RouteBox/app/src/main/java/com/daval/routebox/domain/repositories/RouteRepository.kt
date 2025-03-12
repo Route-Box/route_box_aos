@@ -12,13 +12,13 @@ import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.domain.model.RouteFinishRequest
 import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
-import com.daval.routebox.domain.model.RoutePointRequest
-import com.daval.routebox.domain.model.RoutePointResult
+import com.daval.routebox.domain.model.RoutePoint
 import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.model.RoutePublicRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.model.RouteUpdateResult
 import com.daval.routebox.domain.model.WeatherRegionResponse
+import retrofit2.Response
 
 interface RouteRepository {
     /** 편의 기능 카테고리 검색 */
@@ -67,10 +67,10 @@ interface RouteRepository {
     ): RouteId
 
     /** 루트 경로 (점) 기록 */
-    suspend fun addRouteDot(
+    suspend fun addRouteDots(
         routeId: Int,
-        routePointRequest: RoutePointRequest
-    ): RoutePointResult
+        routePoint: RoutePoint
+    ): Response<Unit>
 
     /** 루트 공개 여부 수정 */
     suspend fun updateRoutePublic(

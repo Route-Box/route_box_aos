@@ -104,14 +104,14 @@ data class RouteId(
 )
 
 // 루트 점 기록
+data class RoutePoint(
+    var points: ArrayList<RoutePointRequest?>? = arrayListOf()
+)
+
 data class RoutePointRequest(
     var latitude: String,
     var longitude: String,
     var recordAt: String
-)
-
-data class RoutePointResult(
-    var pointId: Int
 )
 
 // 내 루트 수정
