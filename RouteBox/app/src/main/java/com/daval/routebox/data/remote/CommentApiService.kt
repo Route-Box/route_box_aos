@@ -2,6 +2,7 @@ package com.daval.routebox.data.remote
 
 import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.EditCommentRequest
+import com.daval.routebox.domain.model.GetCommentsResponse
 import com.daval.routebox.domain.model.PostCommentRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,7 +20,7 @@ interface CommentApiService {
     @GET("comments/{commentId}")
     suspend fun getComments(
         @Path("routeId") routeId: Int
-    ): BaseResponse
+    ): GetCommentsResponse
 
     @PATCH("comments/{commentId}")
     suspend fun editComment(

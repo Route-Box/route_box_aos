@@ -1,7 +1,15 @@
 package com.daval.routebox.domain.model
 
-data class Comment (
-    val content: String
+data class GetCommentsResponse(
+    val comments: List<Comment>
+)
+
+data class Comment(
+    val commentId: Int,
+    val content: String,
+    val timeAgo: String,
+    val userNickname: String,
+    val userProfileImageUrl: String
 )
 
 data class EditCommentRequest(
