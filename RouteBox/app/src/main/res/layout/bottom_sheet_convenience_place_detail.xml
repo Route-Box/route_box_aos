@@ -86,15 +86,15 @@
             style="@style/body_r_s"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/place_image_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="3"
-            tools:listitem="@layout/item_activity_image"
+            tools:listitem="@layout/item_convenience_place_image"
             app:layout_constraintTop_toBottomOf="@id/place_rating"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

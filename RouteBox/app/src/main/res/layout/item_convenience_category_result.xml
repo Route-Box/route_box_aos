@@ -52,51 +52,13 @@
             app:layout_constraintBottom_toBottomOf="@id/place_rating"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/body_r_s"/>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/place_cv"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            android:visibility="gone"
-            app:layout_constraintDimensionRatio="1:0.477"
-            app:layout_constraintTop_toBottomOf="@id/place_rating"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/gray6"
-                app:imageUrl="@{placeInfo.placeImg}"
-                app:placeHolder="@{null}"
-                app:layout_constraintTop_toTopOf="@id/place_cv"
-                app:layout_constraintBottom_toBottomOf="@id/place_cv"
-                app:layout_constraintStart_toStartOf="@id/place_cv"
-                app:layout_constraintEnd_toEndOf="@id/place_cv" />
-
-            <ImageView
-                android:id="@+id/no_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_convenience_no_image"
-                android:visibility="@{placeInfo.placeImg.length == 0 || placeInfo.placeImg == null ? View.VISIBLE : View.GONE}"
-                app:layout_constraintTop_toTopOf="@id/place_cv"
-                app:layout_constraintBottom_toBottomOf="@id/place_cv"
-                app:layout_constraintStart_toStartOf="@id/place_cv"
-                app:layout_constraintEnd_toEndOf="@id/place_cv" />
-
-        </com.google.android.material.card.MaterialCardView>
         
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gray5"
             android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@id/place_cv"
+            app:layout_constraintTop_toBottomOf="@id/place_rating"
             app:layout_constraintStart_toStartOf="parent" />
         
     </androidx.constraintlayout.widget.ConstraintLayout>

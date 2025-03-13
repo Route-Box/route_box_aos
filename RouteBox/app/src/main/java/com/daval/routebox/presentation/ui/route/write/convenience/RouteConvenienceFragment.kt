@@ -311,7 +311,8 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             Place.Field.LOCATION,
             Place.Field.RATING,
             Place.Field.OPENING_HOURS,
-            Place.Field.CURRENT_OPENING_HOURS
+            Place.Field.CURRENT_OPENING_HOURS,
+            Place.Field.PHOTO_METADATAS
         )
 
         val currentLocation = writeViewModel.currentCoordinate.value!!
@@ -328,6 +329,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 val response = placesClient.searchNearby(request).await()
 
                 val deferredResults = response.places.map { place ->
+                    Log.d("RouteConvenienceFrag", "ID: ${place.id}\n" +
+                            "장소 이름: ${place.displayName}\n" +
+                            "위치: ${place.location}\n" +
+                            "rating: ${place.rating}\n" +
+                            "photo: ${place.photoMetadatas}")
+
                     async {
                         addPlace(place) // 비동기적으로 장소 추가
                     }
@@ -361,7 +368,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 ConvenienceCategoryResult(
                     placeId = place.id,
                     placeName = place.displayName,
-                    placeImg = null,
+                    photoMetadataList = place.photoMetadatas,
                     rating = place.rating,
                     latitude = place.location,
                     isOpen = isOpen

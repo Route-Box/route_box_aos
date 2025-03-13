@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import com.daval.routebox.presentation.utils.DateConverter
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.PhotoMetadata
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -297,7 +298,7 @@ data class TourApiItem(
 data class ConvenienceCategoryResult(
     val placeId: String?,
     val placeName: String?, // 이름
-    val placeImg: String?, // 이미지
+    val photoMetadataList: List<PhotoMetadata>?, // 사진 메타데이터 리스트
     val rating: Double?, // 평점
     val latitude: LatLng?,
     val isOpen: Boolean? = false,
