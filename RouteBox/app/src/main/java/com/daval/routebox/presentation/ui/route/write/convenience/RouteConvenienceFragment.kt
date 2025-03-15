@@ -109,7 +109,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
         Log.e("RouteConvenienceFrag", "onResume()")
         //TODO: 뒤로가기 시 편의기능 핀 정보 다시 불러오기
-        convenienceViewModel.selectedConvenience.value?.let { addConveniencePlacesMarker(it, placeList) }
     }
 
     private fun initClickListener() {
@@ -229,18 +228,16 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
     // 마커 띄우기
-    private fun addConveniencePlacesMarker(convenience: Convenience, placeList: List<ConvenienceCategoryResult>) {
+    private fun addConveniencePlacesMarker(place: ConvenienceCategoryResult) {
         val activity = requireActivity() as RouteWriteActivity
-        placeList.forEach { place ->
-            if (place.latitude != null) {
-                // 마커 추가
-                googleMap?.addMarker(
-                    MarkerOptions()
-                        .position(place.latitude)
-                        .icon(activity.getResizedMarker(convenience.markerIcon, 50, 62))
-                        .zIndex(1f)
-                )
-            }
+        if (place.latitude != null) {
+            // 마커 추가
+            googleMap?.addMarker(
+                MarkerOptions()
+                    .position(place.latitude)
+                    .icon(activity.getResizedMarker(convenienceViewModel.selectedConvenience.value!!.markerIcon, 50, 62))
+                    .zIndex(1f)
+            )
         }
     }
 
@@ -305,6 +302,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         // 기존 결과 초기화
         placeList.clear()
 
+        // 응답에 포함할 필드 설정
         val placeFields = listOf(
             Place.Field.ID,
             Place.Field.DISPLAY_NAME,
@@ -316,7 +314,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         )
 
         val currentLocation = writeViewModel.currentCoordinate.value!!
-        val circle = CircularBounds.newInstance(currentLocation, RADIUS)
+        val circle = CircularBounds.newInstance(currentLocation, SEARCH_RADIUS) // 검색 기준, 범위 설정
 
         val request = SearchNearbyRequest.builder(circle, placeFields)
             .setIncludedTypes(convenience.typeList)
@@ -334,15 +332,11 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 }
 
                 deferredResults.awaitAll() // 모든 비동기 작업 완료 대기
-
-                withContext(Dispatchers.Main) {
-                    addConveniencePlacesMarker(convenience, placeList)
-                    convenienceViewModel.setPlaceCategoryResult(placeList) // UI 업데이트
-                }
             } catch (e: Exception) {
                 Log.e("RouteConvenienceFrag", "검색 실패: ${e.message}")
+            } finally {
                 withContext(Dispatchers.Main) {
-                    convenienceViewModel.setPlaceCategoryResult(arrayListOf())
+                    convenienceViewModel.setPlaceCategoryResult(placeList) // UI 업데이트
                 }
             }
         }
@@ -350,26 +344,26 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
     private suspend fun addPlace(place: Place) {
         place.id?.let { placeId ->
-            val isOpen = try {
-                getIsOpenStatus(placeId) // 가게 영업 여부 확인
-            } catch (e: Exception) {
-                Log.e("RouteConvenienceFrag", "isOpen 값 가져오기 실패: ${e.message}")
-                null
+            val isOpen = getIsOpenStatus(placeId) // 가게 영업 여부 확인
+
+            val newPlace = ConvenienceCategoryResult(
+                placeId = place.id,
+                placeName = place.displayName,
+                photoMetadataList = place.photoMetadatas,
+                rating = place.rating,
+                latitude = place.location,
+                isOpen = isOpen
+            )
+
+            withContext(Dispatchers.Main) {
+                addConveniencePlacesMarker(newPlace) // 지도에 편의기능 마커 추가
             }
 
             placeList.add(
-                ConvenienceCategoryResult(
-                    placeId = place.id,
-                    placeName = place.displayName,
-                    photoMetadataList = place.photoMetadatas,
-                    rating = place.rating,
-                    latitude = place.location,
-                    isOpen = isOpen
-                )
+                newPlace
             )
         }
     }
-
 
     // 가게 영업 여부 확인
     private suspend fun getIsOpenStatus(placeId: String): Boolean? {
@@ -398,7 +392,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 // 지도에 핀 하나만 표시
                 googleMap?.clear()
                 setCurrentLocationMarker()
-                addConveniencePlacesMarker(convenienceViewModel.selectedConvenience.value!!, listOf(placeInfo))
+                addConveniencePlacesMarker(placeInfo)
             }
         })
     }
@@ -476,6 +470,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
     companion object {
-        const val RADIUS = 2000.0 // 2km 반경
+        const val SEARCH_RADIUS = 500.0 // 2km 반경
     }
 }
