@@ -35,7 +35,8 @@ class RouteConvenienceViewModel @Inject constructor(
     private val _weatherMainData = MutableLiveData<WeatherData>()
     val weatherMainData: LiveData<WeatherData> = _weatherMainData
 
-    var selectedConvenience: Convenience? = null
+    private val _selectedConvenience = MutableLiveData<Convenience?>(null)
+    val selectedConvenience: LiveData<Convenience?> = _selectedConvenience
 
 
     init {
@@ -70,5 +71,9 @@ class RouteConvenienceViewModel @Inject constructor(
             _weatherRegion.value = "${response.documents[0].region_1depth_name} ${response.documents[0].region_2depth_name} ${response.documents[0].region_3depth_name}"
             _weatherDepth3Region.value = response.documents[0].region_3depth_name
         }
+    }
+
+    fun selectConvenienceChip(selectedConvenience: Convenience?) {
+        _selectedConvenience.value = selectedConvenience
     }
 }

@@ -123,7 +123,7 @@
         <include
             android:id="@+id/route_convenience_bottom_sheet"
             layout="@layout/bottom_sheet_convenience_place"
-            android:visibility="@{convenienceViewModel.placeCategoryResult.size() == 0 ? View.GONE : View.VISIBLE}"
+            android:visibility="@{convenienceViewModel.selectedConvenience == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

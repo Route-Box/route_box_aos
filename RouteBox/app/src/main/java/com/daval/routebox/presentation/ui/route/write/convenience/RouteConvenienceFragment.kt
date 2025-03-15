@@ -109,7 +109,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
         Log.e("RouteConvenienceFrag", "onResume()")
         //TODO: 뒤로가기 시 편의기능 핀 정보 다시 불러오기
-        convenienceViewModel.selectedConvenience?.let { addConveniencePlacesMarker(it, placeList) }
+        convenienceViewModel.selectedConvenience.value?.let { addConveniencePlacesMarker(it, placeList) }
     }
 
     private fun initClickListener() {
@@ -292,7 +292,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             // 라디오 버튼 선택
             val selectedRadioButton = radioButtons.find { it.id == checkedId }
             val selectedConvenience = Convenience.entries.find { it.title == selectedRadioButton?.text }
-            convenienceViewModel.selectedConvenience = selectedConvenience
+            convenienceViewModel.selectConvenienceChip(selectedConvenience)
 
             selectedConvenience?.let {
                 callNearbySearchAPI(it) // 장소 API 호출
@@ -398,7 +398,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 // 지도에 핀 하나만 표시
                 googleMap?.clear()
                 setCurrentLocationMarker()
-                addConveniencePlacesMarker(convenienceViewModel.selectedConvenience!!, listOf(placeInfo))
+                addConveniencePlacesMarker(convenienceViewModel.selectedConvenience.value!!, listOf(placeInfo))
             }
         })
     }

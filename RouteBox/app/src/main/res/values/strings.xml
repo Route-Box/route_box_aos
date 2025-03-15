@@ -186,6 +186,7 @@
     <string name="tomorrow">내일</string>
     <string name="weather_update_date">%s %s 업데이트\n제공: 기상청</string>
     <string name="center_point_mine">내 위치 중심</string>
+    <string name="convenience_place_empty">결과가 존재하지 않아요.</string>
     <string name="place_is_opening_true">영업 중</string>
     <string name="place_is_opening_false">영업 종료</string>
     <!-- 루트 수정 -->
