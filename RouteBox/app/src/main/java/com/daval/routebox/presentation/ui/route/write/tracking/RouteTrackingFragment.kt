@@ -220,11 +220,9 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     private fun addBackgroundDots() {
-        if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
-            val backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
-            for (i in 0 until backgroundDots!!.size) {
-                writeViewModel.addDot(backgroundDots[i]!!.latitude, backgroundDots[i]!!.longitude)
-            }
+        var backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
+        if (backgroundDots?.size != 0) {
+            writeViewModel.addDots(backgroundDots)
             sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf())
         }
     }

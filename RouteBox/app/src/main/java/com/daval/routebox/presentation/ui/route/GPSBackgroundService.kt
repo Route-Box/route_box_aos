@@ -13,9 +13,12 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.daval.routebox.R
+import com.daval.routebox.domain.model.RoutePointRequest
+import com.daval.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.google.android.gms.location.LocationCallback
@@ -23,9 +26,10 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.kakao.vectormap.LatLng
+import java.time.LocalDateTime
 import kotlin.random.Random
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 // RouteWriteActivity에서 권한을 먼저 물어보기 때문에 아래에서는 권한 요청을 하지 않도록 구현!
 @SuppressLint("MissingPermission")
 // Service는 사용자와 상호작용 하지 않고, 백그라운드에서 작업을 수행할 수 있도록 하는 요소!
@@ -121,15 +125,27 @@ class GPSBackgroundService(): Service() {
                 // 백그라운드에서 저장된 점인지 아닌지 구분
                 var sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
                 // 만약 점을 기록하고 있다면, 점들을 바로바로 서버로 전송
+                Log.d("ROUTE-TEST", "getRouteTracking = ${sharedPreferencesHelper.getRouteTracking()}")
                 if (sharedPreferencesHelper.getRouteTracking()) {
                     // 백그라운드에서 작동되고 있다면, list 형태로 점들을 저장
                     if (sharedPreferencesHelper.getIsBackground()) {
+                        val latLng = LatLng.from(latitude, longitude)
                         if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
-                            var dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
-                            dotsList?.add(LatLng.from(latitude, longitude))
+                            val dotsList = sharedPreferencesHelper.getBackgroundCoordinate()
+                            dotsList?.add(
+                                RoutePointRequest(
+                                    latLng.latitude.toString(), latLng.longitude.toString(),
+                                    convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
+                                )
+                            )
                             sharedPreferencesHelper.setBackgroundCoordinate(dotsList!!)
                         } else {
-                            sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(LatLng.from(latitude, longitude)))
+                            sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf(
+                                RoutePointRequest(
+                                    latLng.latitude.toString(), latLng.longitude.toString(),
+                                    convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
+                                )
+                            ))
                         }
                     }
                 }
