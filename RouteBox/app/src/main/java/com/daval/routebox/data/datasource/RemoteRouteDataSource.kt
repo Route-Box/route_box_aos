@@ -25,8 +25,7 @@ import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.domain.model.RouteFinishRequest
 import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
-import com.daval.routebox.domain.model.RoutePointRequest
-import com.daval.routebox.domain.model.RoutePointResult
+import com.daval.routebox.domain.model.RoutePoint
 import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.model.RoutePreviewResult
 import com.daval.routebox.domain.model.RoutePublicRequest
@@ -219,22 +218,23 @@ class RemoteRouteDataSource @Inject constructor(
         return routeId
     }
 
-    suspend fun addRouteDot(
+    suspend fun addRouteDots(
         routeId: Int,
-        routePointRequest: RoutePointRequest
-    ): RoutePointResult {
-        var routeDot = RoutePointResult(-1)
+        routePoints: RoutePoint
+    ): Response<Unit> {
+        var routeDotsResult: Response<Unit>? = null
         withContext(Dispatchers.IO) {
             runCatching {
-                routeApiService.addRouteDot(routeId, routePointRequest)
+                routeApiService.addRouteDots(routeId, routePoints)
             }.onSuccess {
-                routeDot = it
+                routeDotsResult = it
+                Log.d("RemoteRouteDataSource", "addRouteDots Success\nrouteDotsResult = ${routeDotsResult}")
             }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "addRouteDot Fail\ne = $e")
+                Log.d("RemoteRouteDataSource", "addRouteDots Fail\ne = $e")
             }
         }
 
-        return routeDot
+        return routeDotsResult!!
     }
 
     suspend fun updateRoutePublic(

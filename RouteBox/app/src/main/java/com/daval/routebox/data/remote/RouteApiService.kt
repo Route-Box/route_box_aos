@@ -9,8 +9,7 @@ import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.domain.model.RouteFinishRequest
 import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
-import com.daval.routebox.domain.model.RoutePointRequest
-import com.daval.routebox.domain.model.RoutePointResult
+import com.daval.routebox.domain.model.RoutePoint
 import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.model.RoutePublicRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
@@ -18,6 +17,7 @@ import com.daval.routebox.domain.model.RouteUpdateResult
 import com.daval.routebox.domain.model.RouteWriteTime
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -58,11 +58,12 @@ interface RouteApiService {
         @Query("userLocalTime") userLocalTime: String
     ): RouteId
 
-    @POST("routes/{routeId}/point")
-    suspend fun addRouteDot(
+    // 점 배열로 보내기
+    @POST("routes/{routeId}/points")
+    suspend fun addRouteDots(
         @Path("routeId") routeId: Int,
-        @Body routePointRequest: RoutePointRequest
-    ): RoutePointResult
+        @Body routePoints: RoutePoint
+    ): Response<Unit>
 
     // 루트 공개여부 수정
     @PATCH("routes/{routeId}/public")

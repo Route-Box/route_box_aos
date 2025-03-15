@@ -37,6 +37,9 @@
             android:name=".presentation.ui.route.GPSBackgroundService"
             android:enabled="true" android:exported="false"
             android:foregroundServiceType="location" />
+        <service
+            android:name=".presentation.utils.AppExitService"
+            android:stopWithTask="true" />
         <activity
             android:name=".presentation.ui.SplashActivity"
             android:exported="true">

@@ -1,6 +1,7 @@
 package com.daval.routebox.data.remote
 
 import com.daval.routebox.domain.model.EditProfileResponse
+import com.daval.routebox.domain.model.MyInfoResponse
 import com.daval.routebox.domain.model.NicknameAvailabilityResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,4 +28,7 @@ interface UserApiService {
         @Part("introduction") introduction: RequestBody?,
         @Part profileImage: MultipartBody.Part?,
     ): EditProfileResponse
+
+    @GET("users/me")
+    suspend fun getMyInfo(): MyInfoResponse
 }

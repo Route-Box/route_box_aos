@@ -2,6 +2,8 @@ package com.daval.routebox.data.datasource
 
 import android.util.Log
 import com.daval.routebox.data.remote.SeekApiService
+import com.daval.routebox.domain.model.PointHistoryPage
+import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.SearchRouteResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,5 +33,23 @@ class RemoteSeekDataSource @Inject constructor(
             }
         }
         return searchResult
+    }
+
+    suspend fun getPointHistories(
+        page: Int,
+        pageSize: Int
+    ): PointHistoryResponse {
+        var pointHistoryResponse = PointHistoryResponse(listOf(), PointHistoryPage(-1, -1, -1, -1))
+        withContext(Dispatchers.IO) {
+            runCatching {
+                seekApiService.getPointHistories(page, pageSize)
+            }.onSuccess {
+                pointHistoryResponse = it
+                Log.d("RemoteSeekDataSource", "getPointHistories Success\nresult = $pointHistoryResponse")
+            }.onFailure { e ->
+                Log.d("RemoteSeekDataSource", "getPointHistories Fail\ne = $e")
+            }
+        }
+        return pointHistoryResponse
     }
 }
