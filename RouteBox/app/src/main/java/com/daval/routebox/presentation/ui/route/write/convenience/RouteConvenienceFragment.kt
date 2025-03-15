@@ -295,12 +295,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             convenienceViewModel.selectedConvenience = selectedConvenience
 
             selectedConvenience?.let {
-                getSelectedCategoryPlace(it) // 장소 API 호출
+                callNearbySearchAPI(it) // 장소 API 호출
             }
         }
     }
 
-    private fun getSelectedCategoryPlace(convenience: Convenience) {
+    private fun callNearbySearchAPI(convenience: Convenience) {
         Log.e("RouteConvenienceFrag", "장소 검색: ${convenience.title}")
         // 기존 결과 초기화
         placeList.clear()
@@ -323,18 +323,11 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             .setMaxResultCount(20)
             .build()
 
-        // 코루틴 스코프 시작
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = placesClient.searchNearby(request).await()
 
                 val deferredResults = response.places.map { place ->
-                    Log.d("RouteConvenienceFrag", "ID: ${place.id}\n" +
-                            "장소 이름: ${place.displayName}\n" +
-                            "위치: ${place.location}\n" +
-                            "rating: ${place.rating}\n" +
-                            "photo: ${place.photoMetadatas}")
-
                     async {
                         addPlace(place) // 비동기적으로 장소 추가
                     }
@@ -358,7 +351,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private suspend fun addPlace(place: Place) {
         place.id?.let { placeId ->
             val isOpen = try {
-                getIsOpenStatus(placeId)
+                getIsOpenStatus(placeId) // 가게 영업 여부 확인
             } catch (e: Exception) {
                 Log.e("RouteConvenienceFrag", "isOpen 값 가져오기 실패: ${e.message}")
                 null
@@ -378,6 +371,7 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
 
+    // 가게 영업 여부 확인
     private suspend fun getIsOpenStatus(placeId: String): Boolean? {
         val isOpenCalendar: Calendar = Calendar.getInstance()
         val request = IsOpenRequest.newInstance(placeId, isOpenCalendar.timeInMillis)
@@ -482,6 +476,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
     companion object {
-        const val RADIUS = 500.0 // 2km 반경
+        const val RADIUS = 2000.0 // 2km 반경
     }
 }
