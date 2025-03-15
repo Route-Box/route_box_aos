@@ -470,6 +470,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     }
 
     companion object {
-        const val SEARCH_RADIUS = 500.0 // 2km 반경
+        const val SEARCH_RADIUS = 2000.0 // 2km 반경
     }
 }

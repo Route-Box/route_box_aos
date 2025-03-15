@@ -19,7 +19,7 @@ import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import com.daval.routebox.presentation.utils.DateConverter
-import com.kakao.vectormap.LatLng
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -90,7 +90,7 @@ class RouteWriteViewModel @Inject constructor(
     init {
         _activity.value = Activity()
         _categoryETC.value = false
-        _currentCoordinate.value = LatLng.from(null)
+        _currentCoordinate.value = LatLng(0.0, 0.0)
     }
 
     fun initActivityInEditAndSaveMode(activity: ActivityResult) {
