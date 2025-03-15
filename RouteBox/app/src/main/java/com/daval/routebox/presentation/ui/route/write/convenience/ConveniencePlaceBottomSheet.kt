@@ -110,7 +110,9 @@ class ConveniencePlaceBottomSheet : BottomSheetDialogFragment() {
             val filteredList = results.filterNotNull()
 
             withContext(Dispatchers.Main) {
-                imageRVAdapter.updateImageList(filteredList)
+                if (filteredList.isNotEmpty()) {
+                    imageRVAdapter.updateImageList(filteredList)
+                }
             }
         }
     }
