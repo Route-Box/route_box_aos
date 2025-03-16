@@ -1,16 +1,15 @@
 package com.daval.routebox.presentation.ui.seek.comment
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.Comment
-import com.daval.routebox.domain.usecase.DeleteCommentUseCase
-import com.daval.routebox.domain.usecase.EditCommentUseCase
-import com.daval.routebox.domain.usecase.GetCommentsUseCase
-import com.daval.routebox.domain.usecase.PostCommentUseCase
+import com.daval.routebox.domain.usecase.comment.DeleteCommentUseCase
+import com.daval.routebox.domain.usecase.comment.EditCommentUseCase
+import com.daval.routebox.domain.usecase.comment.GetCommentsUseCase
+import com.daval.routebox.domain.usecase.comment.PostCommentUseCase
+import com.daval.routebox.domain.usecase.report.ReportCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +19,8 @@ class CommentViewModel @Inject constructor(
     private val getCommentsUseCase: GetCommentsUseCase,
     private val postCommentUseCase: PostCommentUseCase,
     private val editCommentUseCase: EditCommentUseCase,
-    private val deleteCommentUseCase: DeleteCommentUseCase
+    private val deleteCommentUseCase: DeleteCommentUseCase,
+    private val reportCommentUseCase: ReportCommentUseCase
 ) : ViewModel() {
     private val _routeName = MutableLiveData<String>()
     val routeName: LiveData<String> = _routeName
@@ -114,6 +114,13 @@ class CommentViewModel @Inject constructor(
                 updatedList.removeAll { it.commentId == commentId }
                 _commentList.value = updatedList
             }
+        }
+    }
+
+    // 댓글 신고
+    fun reportComment(commentId: Int) {
+        viewModelScope.launch {
+            val response = reportCommentUseCase.invoke(commentId)
         }
     }
 

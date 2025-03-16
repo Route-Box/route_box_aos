@@ -1,5 +1,7 @@
 package com.daval.routebox.data.remote
 
+import com.daval.routebox.domain.model.BaseResponse
+import com.daval.routebox.domain.model.ReportCommentRequest
 import com.daval.routebox.domain.model.ReportId
 import com.daval.routebox.domain.model.ReportRoute
 import com.daval.routebox.domain.model.ReportUser
@@ -19,4 +21,10 @@ interface ReportApiService {
     suspend fun reportRoute(
         @Body reportRouteBody: ReportRoute
     ): RouteReportId
+
+    // 댓글 신고
+    @POST("reports/comment")
+    suspend fun reportComment(
+        @Body reportRouteBody: ReportCommentRequest
+    ): BaseResponse
 }

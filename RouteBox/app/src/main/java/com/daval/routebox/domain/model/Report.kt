@@ -25,6 +25,10 @@ data class ReportRoute(
     var reasonDetail: String?
 )
 
+data class ReportCommentRequest(
+    var commentId: Int
+)
+
 // 루트 신고 사유
 enum class RouteReportReason(val type: String, val description: Int) {
     IRRELEVANT_CONTENT("IRRELEVANT_CONTENT", R.string.report_reason_not_trip),

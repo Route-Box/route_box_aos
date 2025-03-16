@@ -1,10 +1,7 @@
-package com.daval.routebox.domain.usecase
+package com.daval.routebox.domain.usecase.comment
 
-import android.net.Uri
 import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.EditCommentRequest
-import com.daval.routebox.domain.model.GetCommentsResponse
-import com.daval.routebox.domain.model.PostCommentRequest
 import com.daval.routebox.domain.repositories.CommentRepository
 import javax.inject.Inject
 

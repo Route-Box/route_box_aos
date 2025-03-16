@@ -22,7 +22,7 @@ import com.daval.routebox.domain.repositories.ReportRepository
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.SeekRepository
 import com.daval.routebox.domain.repositories.UserRepository
-import com.davl.routebox.data.datasource.RemoteReportDataSource
+import com.daval.routebox.data.datasource.RemoteReportDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
