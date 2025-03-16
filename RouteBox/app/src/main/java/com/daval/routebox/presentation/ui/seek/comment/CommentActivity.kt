@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityCommentBinding
 import com.daval.routebox.presentation.ui.seek.comment.adapter.CommentRVAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CommentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCommentBinding
 
@@ -29,14 +31,19 @@ class CommentActivity : AppCompatActivity() {
             lifecycleOwner = this@CommentActivity
         }
 
-        initComment()
+        initData()
         initClickListeners()
         setAdapter()
         initObserve()
     }
 
-    private fun initComment() {
-        intent.getStringExtra("comment")?.let { viewModel.initComment(it) }
+    private fun initData() {
+        intent.apply {
+            getStringExtra("routeName")?.let { viewModel.initTitle(it) }
+            getIntExtra("routeId", -1)?.let { viewModel.initRouteId(it) }
+        }
+
+        viewModel.getComments()
     }
 
     private fun initClickListeners() {
@@ -55,10 +62,9 @@ class CommentActivity : AppCompatActivity() {
         }
         commentAdapter.setCommentClickListener(object: CommentRVAdapter.MyItemClickListener {
             // 아이템 클릭
-            override fun onMoreButtonClick(view: View?, position: Int, isMine: Boolean) {
-                //TODO: 내 댓글이라면 수정/삭제하기 메뉴 노출, 아니라면 신고하기 메뉴 노출
-                if (position % 2 == 0) myMenuShow(view!!)
-                else reportMenuShow(view!!)
+            override fun onMoreButtonClick(view: View?, commentId: Int, isMine: Boolean) {
+                if (isMine) myMenuShow(view!!, commentId)
+                else reportMenuShow(view!!, commentId)
             }
         })
     }
@@ -68,22 +74,22 @@ class CommentActivity : AppCompatActivity() {
         viewModel.commentList.observe(this) { commentList ->
             Log.d("CommentActivity", "commentList: $commentList")
             if (!commentList.isNullOrEmpty()) {
-                commentAdapter.addComment(commentList)
+                commentAdapter.updateComment(commentList)
             }
         }
     }
 
-    private fun myMenuShow(view: View) {
+    private fun myMenuShow(view: View, commentId: Int) {
         val popupMenu = PopupMenu(this, view)
         popupMenu.inflate(R.menu.my_option_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    Toast.makeText(this, "수정하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    viewModel.setContentForEdit(commentId)
                     true
                 }
                 R.id.menu_delete -> {
-                    Toast.makeText(this, "삭제하기 버튼 클릭", Toast.LENGTH_SHORT).show()
+                    viewModel.deleteComment(commentId)
                     true
                 }
                 else -> { false }
@@ -92,7 +98,7 @@ class CommentActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    private fun reportMenuShow(view: View) {
+    private fun reportMenuShow(view: View, commentId: Int) {
         val popupMenu = PopupMenu(this, view)
         popupMenu.inflate(R.menu.report_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->

@@ -5,9 +5,9 @@ data class GetCommentsResponse(
 )
 
 data class Comment(
-    val commentId: Int,
-    val content: String,
-    val timeAgo: String,
+    val commentId: Int = 0,
+    val content: String = "",
+    val timeAgo: String = "",
     val userNickname: String,
     val userProfileImageUrl: String
 )

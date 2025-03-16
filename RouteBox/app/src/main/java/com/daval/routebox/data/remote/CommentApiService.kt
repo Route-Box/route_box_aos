@@ -17,7 +17,7 @@ interface CommentApiService {
         @Body postCommentRequest: PostCommentRequest
     ): BaseResponse
 
-    @GET("comments/{commentId}")
+    @GET("comments/{routeId}")
     suspend fun getComments(
         @Path("routeId") routeId: Int
     ): GetCommentsResponse

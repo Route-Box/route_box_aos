@@ -2,7 +2,9 @@ package com.daval.routebox.data.repositoriyImpl
 
 import com.daval.routebox.data.datasource.RemoteCommentDataSource
 import com.daval.routebox.domain.model.BaseResponse
+import com.daval.routebox.domain.model.EditCommentRequest
 import com.daval.routebox.domain.model.GetCommentsResponse
+import com.daval.routebox.domain.model.PostCommentRequest
 import com.daval.routebox.domain.repositories.CommentRepository
 import javax.inject.Inject
 
@@ -13,12 +15,12 @@ class CommentRepositoryImpl @Inject constructor(
         return remoteCommentDataSource.getComments(routeId)
     }
 
-    override suspend fun postComment(commentId: Int, content: String): BaseResponse {
-        return remoteCommentDataSource.postComment(commentId, content)
+    override suspend fun postComment(request: PostCommentRequest): BaseResponse {
+        return remoteCommentDataSource.postComment(request)
     }
 
-    override suspend fun editComment(commentId: Int, content: String): BaseResponse {
-        return remoteCommentDataSource.editComment(commentId, content)
+    override suspend fun editComment(commentId: Int, request: EditCommentRequest): BaseResponse {
+        return remoteCommentDataSource.editComment(commentId, request)
     }
 
     override suspend fun deleteComment(commentId: Int): BaseResponse {

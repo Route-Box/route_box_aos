@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.databinding.ItemCommentBinding
+import com.daval.routebox.domain.model.Comment
 
 class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
 
-    private var commentList = ArrayList<String>()
+    private var commentList = listOf<Comment>()
     private lateinit var mItemClickListener: MyItemClickListener
 
     fun setCommentClickListener(itemClickListener: MyItemClickListener) {
@@ -18,13 +19,13 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addComment(commentList: ArrayList<String>) {
+    fun updateComment(commentList: List<Comment>) {
         this.commentList = commentList
         notifyDataSetChanged()
     }
 
     interface MyItemClickListener {
-        fun onMoreButtonClick(view: View?, position: Int, isMine: Boolean)
+        fun onMoreButtonClick(view: View?, commentId: Int, isMine: Boolean)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -40,7 +41,7 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
         holder.bind(commentList[position])
         holder.apply {
             binding.itemCommentMoreIv.setOnClickListener {
-                mItemClickListener.onMoreButtonClick(binding.itemCommentMoreIv, position, true)
+                mItemClickListener.onMoreButtonClick(binding.itemCommentMoreIv, commentList[position].commentId, true)
             }
         }
     }
@@ -48,9 +49,8 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
     override fun getItemCount(): Int = commentList.size
 
     inner class ViewHolder(val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
-        //TODO: 실제 Comment 데이터로 변경
-        fun bind(commentContent: String) {
-            binding.commentContent = commentContent
+        fun bind(commentContent: Comment) {
+            binding.commentContent = commentContent.content
         }
     }
 }

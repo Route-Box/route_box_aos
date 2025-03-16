@@ -39,7 +39,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:layout_marginStart="12dp"
-                android:text="@{viewModel.postTitle}"
+                android:text="@{viewModel.routeName}"
                 tools:text="게시물 제목"
                 style="@style/body_b_l"/>
 
@@ -104,7 +104,7 @@
                 android:layout_width="34dp"
                 android:layout_height="34dp"
                 android:src="@drawable/ic_comment_send"
-                android:onClick="@{() -> viewModel.postComment()}"/>
+                android:onClick="@{() -> viewModel.sendComment()}"/>
 
         </LinearLayout>
 

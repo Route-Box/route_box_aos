@@ -52,6 +52,7 @@ class RoutePreviewDetailActivity: AppCompatActivity() {
         binding.commentTv.setOnClickListener {
             val intent = Intent(this, CommentActivity::class.java)
             intent.putExtra("routeId", viewModel.routeId)
+                .putExtra("routeId", viewModel.routePreviewDetail.value!!.routeName)
             startActivity(intent)
         }
 

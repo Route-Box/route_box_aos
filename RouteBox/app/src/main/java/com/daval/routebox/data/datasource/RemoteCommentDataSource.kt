@@ -30,12 +30,12 @@ class RemoteCommentDataSource @Inject constructor(
         return response
     }
 
-    suspend fun postComment(commentId: Int, content: String): BaseResponse {
+    suspend fun postComment(request: PostCommentRequest): BaseResponse {
         var response = BaseResponse()
 
         withContext(Dispatchers.IO) {
             runCatching {
-                commentApiService.postComment(PostCommentRequest(commentId, content))
+                commentApiService.postComment(request)
             }.onSuccess {
                 Log.d("RemoteCommentDataSource", "postComment Success $it")
                 response = it
@@ -47,12 +47,12 @@ class RemoteCommentDataSource @Inject constructor(
         return response
     }
 
-    suspend fun editComment(commentId: Int, content: String): BaseResponse {
+    suspend fun editComment(commentId: Int, request: EditCommentRequest): BaseResponse {
         var response = BaseResponse()
 
         withContext(Dispatchers.IO) {
             runCatching {
-                commentApiService.editComment(commentId, EditCommentRequest(content))
+                commentApiService.editComment(commentId, request)
             }.onSuccess {
                 Log.d("RemoteCommentDataSource", "editComment Success $it")
                 response = it
