@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import com.daval.routebox.presentation.utils.DateConverter
+import com.google.android.gms.maps.model.LatLng
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -215,17 +216,9 @@ data class RegionInfo(
 
 data class SearchActivityResult(
     val id: String, // 장소 ID
-    val place_name: String, // 장소명, 업체명
-    val category_name: String, // 카테고리 이름
-    val category_group_code: String, // 중요 카테고리만 그룹핑한 카테고리 그룹 코드
-    val category_group_name: String, // 중요 카테고리만 그룹핑한 카테고리 그룹명
-    val phone: String, // 전화번호
-    val address_name: String, // 전체 지번 주소
-    val road_address_name: String, // 전체 도로명 주소
-    val x: String, // X 좌표값 혹은 longitude
-    val y: String, // Y 좌표값 혹은 latitude
-    val place_url: String, // 장소 상세페이지 URL
-    val distance: String // 중심좌표까지의 거리. 단, x,y 파라미터를 준 경우에만 존재. 단위는 meter
+    val placeName: String, // 장소명, 업체명
+    val latLng: LatLng,
+    val addressName: String
 )
 
 data class ActivityPictureAlbum(
