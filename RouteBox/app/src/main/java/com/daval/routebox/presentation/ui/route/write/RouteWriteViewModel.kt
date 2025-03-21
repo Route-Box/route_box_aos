@@ -174,7 +174,7 @@ class RouteWriteViewModel @Inject constructor(
         checkBtnEnabled()
     }
 
-    // 카카오 키워드로 장소 검색
+    // 구글 텍스트로 장소 검색
     fun searchPlace(placesClient: PlacesClient) {
         viewModelScope.launch {
             val placeFields = listOf(

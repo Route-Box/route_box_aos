@@ -30,7 +30,7 @@ import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.presentation.ui.route.adapter.CategoryRVAdapter
-import com.daval.routebox.presentation.ui.route.adapter.KakaoPlaceRVAdapter
+import com.daval.routebox.presentation.ui.route.adapter.PlaceSearchResultRVAdapter
 import com.daval.routebox.presentation.ui.route.adapter.PictureRVAdapter
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.ui.route.write.tracking.RoutePictureAlbumActivity
@@ -54,7 +54,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private lateinit var binding: ActivityRouteActivityBinding
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
 
-    private lateinit var placeRVAdapter: KakaoPlaceRVAdapter
+    private lateinit var placeRVAdapter: PlaceSearchResultRVAdapter
     private var placeList: ArrayList<SearchActivityResult> = arrayListOf()
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
@@ -179,10 +179,10 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     private fun setPlaceAdapter() {
-        placeRVAdapter = KakaoPlaceRVAdapter(placeList)
+        placeRVAdapter = PlaceSearchResultRVAdapter(placeList)
         binding.placeRv.adapter = placeRVAdapter
         binding.placeRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        placeRVAdapter.setPlaceClickListener(object: KakaoPlaceRVAdapter.MyItemClickListener {
+        placeRVAdapter.setPlaceClickListener(object: PlaceSearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(place: SearchActivityResult) {
                 binding.searchEt.setText(place.placeName)
                 viewModel.activity.value?.apply {
