@@ -296,11 +296,11 @@ data class TourApiItem(
 
 // 편의기능 결과
 data class ConvenienceCategoryResult(
-    val placeId: String?,
-    val placeName: String?, // 이름
-    val photoMetadataList: List<PhotoMetadata>?, // 사진 메타데이터 리스트
-    val rating: Double?, // 평점
-    val latitude: LatLng?,
+    val placeId: String? = "",
+    val placeName: String? = "", // 이름
+    val photoMetadataList: List<PhotoMetadata>? = arrayListOf(), // 사진 메타데이터 리스트
+    val rating: Double? = 0.0, // 평점
+    val latitude: LatLng? = LatLng(0.0, 0.0),
     val isOpen: Boolean? = false,
 ): Serializable
 

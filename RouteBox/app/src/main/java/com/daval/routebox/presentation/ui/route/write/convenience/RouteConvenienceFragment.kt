@@ -180,6 +180,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
 
         convenienceViewModel.placeCategoryResult.observe(viewLifecycleOwner) { placeList ->
             placeList?.run {
+                placeList.forEach { place ->
+                    addConveniencePlacesMarker(place)
+                }
                 placeRVAdapter.resetAllItems(placeList)
             }
         }
@@ -292,89 +295,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             convenienceViewModel.selectConvenienceChip(selectedConvenience)
 
             selectedConvenience?.let {
-                callNearbySearchAPI(it) // 장소 API 호출
+                // 장소 API 호출
+                convenienceViewModel.getNearbySearchPlaceResult(placesClient, writeViewModel.currentCoordinate.value!!)
             }
-        }
-    }
-
-    private fun callNearbySearchAPI(convenience: Convenience) {
-        Log.e("RouteConvenienceFrag", "장소 검색: ${convenience.title}")
-        // 기존 결과 초기화
-        placeList.clear()
-
-        // 응답에 포함할 필드 설정
-        val placeFields = listOf(
-            Place.Field.ID,
-            Place.Field.DISPLAY_NAME,
-            Place.Field.LOCATION,
-            Place.Field.RATING,
-            Place.Field.OPENING_HOURS,
-            Place.Field.CURRENT_OPENING_HOURS,
-            Place.Field.PHOTO_METADATAS
-        )
-
-        val currentLocation = writeViewModel.currentCoordinate.value!!
-        val circle = CircularBounds.newInstance(currentLocation, SEARCH_RADIUS) // 검색 기준, 범위 설정
-
-        val request = SearchNearbyRequest.builder(circle, placeFields)
-            .setIncludedTypes(convenience.typeList)
-            .setMaxResultCount(20)
-            .build()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = placesClient.searchNearby(request).await()
-
-                val deferredResults = response.places.map { place ->
-                    async {
-                        addPlace(place) // 비동기적으로 장소 추가
-                    }
-                }
-
-                deferredResults.awaitAll() // 모든 비동기 작업 완료 대기
-            } catch (e: Exception) {
-                Log.e("RouteConvenienceFrag", "검색 실패: ${e.message}")
-            } finally {
-                withContext(Dispatchers.Main) {
-                    convenienceViewModel.setPlaceCategoryResult(placeList) // UI 업데이트
-                }
-            }
-        }
-    }
-
-    private suspend fun addPlace(place: Place) {
-        place.id?.let { placeId ->
-            val isOpen = getIsOpenStatus(placeId) // 가게 영업 여부 확인
-
-            val newPlace = ConvenienceCategoryResult(
-                placeId = place.id,
-                placeName = place.displayName,
-                photoMetadataList = place.photoMetadatas,
-                rating = place.rating,
-                latitude = place.location,
-                isOpen = isOpen
-            )
-
-            withContext(Dispatchers.Main) {
-                addConveniencePlacesMarker(newPlace) // 지도에 편의기능 마커 추가
-            }
-
-            placeList.add(
-                newPlace
-            )
-        }
-    }
-
-    // 가게 영업 여부 확인
-    private suspend fun getIsOpenStatus(placeId: String): Boolean? {
-        val isOpenCalendar: Calendar = Calendar.getInstance()
-        val request = IsOpenRequest.newInstance(placeId, isOpenCalendar.timeInMillis)
-
-        return try {
-            placesClient.isOpen(request).await().isOpen
-        } catch (e: Exception) {
-            Log.e("RouteConvenienceFrag", "isOpen 확인 실패: ${e.message}")
-            null
         }
     }
 
