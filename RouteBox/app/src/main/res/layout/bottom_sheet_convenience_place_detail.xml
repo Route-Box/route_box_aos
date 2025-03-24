@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="placeInfo"
+            type="com.daval.routebox.domain.model.ConvenienceCategoryResult" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="325dp"
+        android:paddingHorizontal="22dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/convenience_place_top_cl"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@drawable/bottom_dialog_radius"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bottom_sheet_top"
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#D9D9D9"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{placeInfo.placeName}"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toTopOf="@id/convenience_place_top_cl"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/route_convenience_category_result"
+            tools:text="장소 이름"
+            style="@style/body_r_m" />
+
+        <TextView
+            android:id="@+id/place_open_hour_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:visibility="@{placeInfo.isOpen ? View.GONE : View.VISIBLE}"
+            tools:text="10:00에 영업 시작"
+            app:layout_constraintTop_toBottomOf="@id/place_name"
+            app:layout_constraintStart_toStartOf="@id/place_name"
+            style="@style/body_r_s"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/place_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_star"
+            android:drawablePadding="4dp"
+            android:textColor="@color/gray2"
+            android:text="@{placeInfo.rating.toString()}"
+            android:visibility="@{placeInfo.rating == null ? View.INVISIBLE : View.VISIBLE}"
+            tools:text="4.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/place_open_hour_tv"
+            style="@style/body_r_s"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@{placeInfo.isOpen ? @color/title_black : @color/red1_warning}"
+            android:text="@{placeInfo.isOpen ? @string/place_is_opening_true : @string/place_is_opening_false}"
+            tools:text="영업 중"
+            app:layout_constraintTop_toTopOf="@id/place_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/body_r_s"/>
+
+        <ImageView
+            android:id="@+id/no_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingVertical="25dp"
+            android:layout_gravity="center"
+            android:visibility="@{placeInfo.photoMetadataList.size() > 0 ? View.GONE : View.VISIBLE}"
+            android:backgroundTint="@color/gray6"
+            android:background="@drawable/radius_16"
+            android:src="@drawable/ic_convenience_no_image"
+            app:layout_constraintTop_toBottomOf="@id/place_rating"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/place_image_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_convenience_place_image"
+            app:layout_constraintTop_toBottomOf="@id/place_rating"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

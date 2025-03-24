@@ -2,6 +2,7 @@ package com.daval.routebox.data.repositoriyImpl
 
 import com.daval.routebox.data.datasource.RemoteUserDataSource
 import com.daval.routebox.domain.model.EditProfileResponse
+import com.daval.routebox.domain.model.MyInfoResponse
 import com.daval.routebox.domain.model.NicknameAvailabilityResponse
 import com.daval.routebox.domain.repositories.UserRepository
 import javax.inject.Inject
@@ -20,5 +21,9 @@ class UserRepositoryImpl @Inject constructor(
         gender: String
     ): EditProfileResponse {
         return remoteUserDataSource.patchMyInfo(nickname, birth, gender, null, null)
+    }
+
+    override suspend fun getMyInfo(): MyInfoResponse {
+        return remoteUserDataSource.getMyInfo()
     }
 }

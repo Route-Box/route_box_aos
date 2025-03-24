@@ -1,5 +1,6 @@
 package com.daval.routebox.data.remote
 
+import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.SearchRouteResponse
 import retrofit2.http.Body
@@ -22,6 +23,12 @@ interface SeekApiService {
         @Query("style") routeStyle: List<String>?, // 루트 스타일
         @Query("transportation") transportation: List<String>? // 이동 수단
     ): SearchRouteResponse
+
+    @GET("users/me/point-histories")
+    suspend fun getPointHistories(
+        @Query("page") page: Int = 0,
+        @Query("pageSize") pageSize: Int = 10
+    ): PointHistoryResponse
 
     @POST("routes/{routeId}/purchase")
     suspend fun buyRoute(

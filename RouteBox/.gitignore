@@ -8,6 +8,10 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 /.idea/other.xml
+.idea/other.xml
+,idea
+/.idea
+.gitignore
 .DS_Store
 /build
 /captures

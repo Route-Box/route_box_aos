@@ -2,9 +2,12 @@ package com.daval.routebox.domain.model
 
 import android.net.Uri
 import android.os.Build
+import android.os.Parcelable
 import androidx.annotation.RequiresApi
 import com.daval.routebox.presentation.ui.route.write.convenience.WeatherType
 import com.daval.routebox.presentation.utils.DateConverter
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.PhotoMetadata
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -104,14 +107,14 @@ data class RouteId(
 )
 
 // 루트 점 기록
+data class RoutePoint(
+    var points: ArrayList<RoutePointRequest?>? = arrayListOf()
+)
+
 data class RoutePointRequest(
     var latitude: String,
     var longitude: String,
     var recordAt: String
-)
-
-data class RoutePointResult(
-    var pointId: Int
 )
 
 // 내 루트 수정
@@ -291,12 +294,15 @@ data class TourApiItem(
     val title: String
 )
 
+// 편의기능 결과
 data class ConvenienceCategoryResult(
-    val placeName: String,
-    val placeImg: String?,
-    val latitude: String,
-    val longitude: String
-)
+    val placeId: String? = "",
+    val placeName: String? = "", // 이름
+    val photoMetadataList: List<PhotoMetadata>? = arrayListOf(), // 사진 메타데이터 리스트
+    val rating: Double? = 0.0, // 평점
+    val latitude: LatLng? = LatLng(0.0, 0.0),
+    val isOpen: Boolean? = false,
+): Serializable
 
 data class WeatherApiResult(
     val response: WeatherApiResponse

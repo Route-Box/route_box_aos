@@ -24,3 +24,13 @@ data class RefreshResponse(
     val accessToken: TokenResult,
     val refreshToken: TokenResult,
 )
+
+data class MyInfoResponse(
+    val id: Int,
+    val profileImageUrl: String,
+    val nickname: String,
+    val point: Int,
+    val gender: String,
+    val birthDay: String,
+    val introduction: String
+)

@@ -2,6 +2,7 @@ package com.daval.routebox.data.repositoriyImpl
 
 import com.daval.routebox.data.datasource.RemoteSeekDataSource
 import com.daval.routebox.domain.model.BuyRouteRequest
+import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.SearchRoute
 import com.daval.routebox.domain.repositories.SeekRepository
 import javax.inject.Inject
@@ -24,5 +25,9 @@ class SeekRepositoryImpl @Inject constructor(
 
     override suspend fun buyRoute(routeId: Int, buyRouteRequest: BuyRouteRequest): String {
         return remoteSeekDataSource.buyRoute(routeId, buyRouteRequest)
+    }
+
+    override suspend fun getPointHistories(page: Int, pageSize: Int): PointHistoryResponse {
+        return remoteSeekDataSource.getPointHistories(page, pageSize)
     }
 }

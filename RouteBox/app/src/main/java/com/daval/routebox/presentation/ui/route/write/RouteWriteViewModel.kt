@@ -12,14 +12,14 @@ import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.ActivityImage
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
+import com.daval.routebox.domain.model.RoutePoint
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
 import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import com.daval.routebox.presentation.utils.DateConverter
-import com.daval.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
-import com.kakao.vectormap.LatLng
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -90,7 +90,7 @@ class RouteWriteViewModel @Inject constructor(
     init {
         _activity.value = Activity()
         _categoryETC.value = false
-        _currentCoordinate.value = LatLng.from(null)
+        _currentCoordinate.value = LatLng(0.0, 0.0)
     }
 
     fun initActivityInEditAndSaveMode(activity: ActivityResult) {
@@ -264,18 +264,13 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     // 지도 점 추가
-    fun addDot(latitude: Double, longitude: Double) {
+    fun addDots(routeDotsList: ArrayList<RoutePointRequest?>?) {
         viewModelScope.launch {
-            if (routeId.value != null && _currentCoordinate.value != null) {
-                repository.addRouteDot(
+            if (routeId.value != null && _currentCoordinate.value != null && routeDotsList?.size != 0) {
+                repository.addRouteDots(
                     _routeId.value!!,
-                    RoutePointRequest(
-                        latitude.toString(),
-                        longitude.toString(),
-                        convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
-                    )
+                    RoutePoint(routeDotsList)
                 )
-
                 setPreCoordinate(_currentCoordinate.value!!)
             }
         }
