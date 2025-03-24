@@ -2,21 +2,33 @@ package com.daval.routebox.presentation.ui.route.write.convenience
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.daval.routebox.domain.model.CategoryGroupCode
+import com.daval.routebox.domain.model.Convenience
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.WeatherData
-import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
+import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
-import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
-import com.kakao.vectormap.LatLng
+import com.daval.routebox.presentation.ui.route.write.convenience.RouteConvenienceFragment.Companion.SEARCH_RADIUS
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.CircularBounds
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.IsOpenRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchNearbyRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,20 +37,8 @@ class RouteConvenienceViewModel @Inject constructor(
     private val repository: RouteRepository,
     private val openApiRepository: OpenApiRepository
 ): ViewModel() {
-    private val _cameraPosition = MutableLiveData<LatLng>()
-    val cameraPosition: LiveData<LatLng> = _cameraPosition
-
-    private val _placeCategoryResult = MutableLiveData<ArrayList<ConvenienceCategoryResult>>()
+    private val _placeCategoryResult = MutableLiveData<ArrayList<ConvenienceCategoryResult>>(arrayListOf())
     val placeCategoryResult: LiveData<ArrayList<ConvenienceCategoryResult>> = _placeCategoryResult
-
-    private val _placeCategory = MutableLiveData<CategoryGroupCode>()
-    val placeCategory: LiveData<CategoryGroupCode> = _placeCategory
-
-    private val _placeCategoryPage = MutableLiveData<Int>()
-    val placeCategoryPage: LiveData<Int> = _placeCategoryPage
-
-    private val _isCategoryEndPage = MutableLiveData<Boolean>()
-    val isCategoryEndPage: LiveData<Boolean> = _isCategoryEndPage
 
     private val _weatherRegion = MutableLiveData<String>()
     val weatherRegion: LiveData<String> = _weatherRegion
@@ -49,10 +49,11 @@ class RouteConvenienceViewModel @Inject constructor(
     private val _weatherMainData = MutableLiveData<WeatherData>()
     val weatherMainData: LiveData<WeatherData> = _weatherMainData
 
+    private val _selectedConvenience = MutableLiveData<Convenience?>(null)
+    val selectedConvenience: LiveData<Convenience?> = _selectedConvenience
+
 
     init {
-        _isCategoryEndPage.value = false
-        _placeCategoryPage.value = 1
         _placeCategoryResult.value = arrayListOf()
     }
 
@@ -60,68 +61,79 @@ class RouteConvenienceViewModel @Inject constructor(
         _weatherMainData.value = weatherData
     }
 
-    fun setKakaoCategory(category: CategoryGroupCode) {
-        _placeCategory.value = category
-        _placeCategoryPage.value = 1
-        _placeCategoryResult.value = arrayListOf()
-        _isCategoryEndPage.value = false
-
-        searchCategory()
+    fun setPlaceCategoryResult(placeList: ArrayList<ConvenienceCategoryResult>) {
+        _placeCategoryResult.value = placeList
     }
 
-//    fun setTourCategory() {
-//        getTourList()
-//    }
+    fun getNearbySearchPlaceResult(placesClient: PlacesClient, currentLocation: LatLng) {
+        val placeList: ArrayList<ConvenienceCategoryResult> = arrayListOf() // 임시 저장
 
-    fun setCameraPosition(position: LatLng) {
-        _cameraPosition.value = position
-    }
+        // 응답에 포함할 필드 설정
+        val placeFields = listOf(
+            Place.Field.ID,
+            Place.Field.DISPLAY_NAME,
+            Place.Field.LOCATION,
+            Place.Field.RATING,
+            Place.Field.OPENING_HOURS,
+            Place.Field.CURRENT_OPENING_HOURS,
+            Place.Field.PHOTO_METADATAS
+        )
 
-    fun setPlaceCategoryResult() {
-        _placeCategoryResult.value = arrayListOf()
-    }
+        val circle = CircularBounds.newInstance(currentLocation, SEARCH_RADIUS) // 검색 기준, 범위 설정
 
-    // 카테고리 검색
-    private fun searchCategory() {
+        val request = SearchNearbyRequest.builder(circle, placeFields)
+            .setIncludedTypes(_selectedConvenience.value!!.typeList)
+            .setMaxResultCount(20)
+            .build()
+
         viewModelScope.launch {
-            while (true) {
-                if (cameraPosition.value != null && placeCategory.value != null) {
-                    val response = repository.searchKakaoCategory(_placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString(), placeCategoryPage.value!!, MapCameraRadius)
-                    var result = response.documents.map {
-                        ConvenienceCategoryResult(it.place_name, null, it.y, it.x)
-                    }
-                    _placeCategoryResult.value!!.addAll(result)
-                    _isCategoryEndPage.value = response.meta.is_end
-                    _placeCategoryPage.value = _placeCategoryPage.value!! + 1
+            try {
+                val response = placesClient.searchNearby(request).await()
 
-                    if (_isCategoryEndPage.value == true) break
+                val deferredResults = response.places.map { place ->
+                    async {
+                        placeList.add(getPlaceWithIsOpen(placesClient, place)) // 비동기적으로 장소 추가
+                    }
                 }
+                deferredResults.awaitAll() // 모든 비동기 작업 완료 대기
+            } catch (e: Exception) {
+                Log.e("RouteConvenienceVM", "검색 실패: ${e.message}")
+            } finally {
+                setPlaceCategoryResult(placeList) // UI 업데이트
             }
         }
     }
 
-    // 장소 검색 페이징 처리
-//    fun pagingSearchCategory() {
-//        viewModelScope.launch {
-//            val response = repository.searchKakaoCategory(
-//                _placeCategory.value!!, cameraPosition.value!!.latitude.toString(), cameraPosition.value!!.longitude.toString()
-//            )
-//            _placeCategoryResult.value = response.documents as ArrayList
-//            _isCategoryEndPage.value = response.meta.is_end
-//        }
-//    }
+    private suspend fun getPlaceWithIsOpen(placesClient: PlacesClient, place: Place): ConvenienceCategoryResult {
+        place.id?.let { placeId ->
+            val isOpen = getIsOpenStatus(placesClient, placeId) // 가게 영업 여부 확인
 
-    // TODO: 나중에 아래 방식으로 수정
-//    private fun getTourList() {
-//        viewModelScope.launch {
-//            val response = tourRepository.getTourList(
-//                "AND", "Route Box", BuildConfig.OPEN_API_SERVICE_KEY,
-//                mapX = cameraPosition.value!!.longitude.toString(), mapY = cameraPosition.value!!.latitude.toString(),
-//                MapCameraRadius.toString(), "12", "json"
-//            )
-//            Log.d("ROUTE-TEST", "response = $response")
-//        }
-//    }
+            val newPlace = ConvenienceCategoryResult(
+                placeId = place.id,
+                placeName = place.displayName,
+                photoMetadataList = place.photoMetadatas,
+                rating = place.rating,
+                latitude = place.location,
+                isOpen = isOpen
+            )
+
+            return newPlace
+        }
+        return ConvenienceCategoryResult()
+    }
+
+    // 가게 영업 여부 확인
+    private suspend fun getIsOpenStatus(placesClient: PlacesClient, placeId: String): Boolean? {
+        val isOpenCalendar: Calendar = Calendar.getInstance()
+        val request = IsOpenRequest.newInstance(placeId, isOpenCalendar.timeInMillis)
+
+        return try {
+            placesClient.isOpen(request).await().isOpen
+        } catch (e: Exception) {
+            Log.e("RouteConvenienceVM", "isOpen 확인 실패: ${e.message}")
+            null
+        }
+    }
 
     @SuppressLint("DefaultLocale")
     fun getWeatherList() {
@@ -143,5 +155,9 @@ class RouteConvenienceViewModel @Inject constructor(
             _weatherRegion.value = "${response.documents[0].region_1depth_name} ${response.documents[0].region_2depth_name} ${response.documents[0].region_3depth_name}"
             _weatherDepth3Region.value = response.documents[0].region_3depth_name
         }
+    }
+
+    fun selectConvenienceChip(selectedConvenience: Convenience?) {
+        _selectedConvenience.value = selectedConvenience
     }
 }

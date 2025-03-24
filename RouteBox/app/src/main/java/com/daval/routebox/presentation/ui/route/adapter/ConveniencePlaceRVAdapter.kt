@@ -10,6 +10,16 @@ class ConveniencePlaceRVAdapter(
     private var placeList: ArrayList<ConvenienceCategoryResult>
 ): RecyclerView.Adapter<ConveniencePlaceRVAdapter.ViewHolder>() {
 
+    private lateinit var mItemClickListener: MyItemClickListener
+
+    interface MyItemClickListener {
+        fun onItemClick(placeInfo: ConvenienceCategoryResult)
+    }
+
+    fun setItemClickListener(itemClickListener: MyItemClickListener) {
+        mItemClickListener = itemClickListener
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -20,6 +30,9 @@ class ConveniencePlaceRVAdapter(
 
     override fun onBindViewHolder(holder: ConveniencePlaceRVAdapter.ViewHolder, position: Int) {
         holder.bind(placeList[position])
+        holder.itemView.setOnClickListener {
+            mItemClickListener.onItemClick(placeList[position])
+        }
     }
 
     override fun getItemCount(): Int = placeList.size

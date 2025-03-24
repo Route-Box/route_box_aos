@@ -33,6 +33,7 @@ android {
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
         buildConfigField "String", "OPEN_API_SERVICE_KEY", properties['open_api_service_key']
         buildConfigField "String", "APPLICATOIN_ID", properties['APPLICATION_ID']
+        buildConfigField "String", "GOOGLE_API_KEY", properties['google_maps_api_key']
     }
 
     buildTypes {
@@ -88,6 +89,7 @@ dependencies {
 
     // Google Map
     implementation 'com.google.android.gms:play-services-maps:19.0.0'
+    implementation 'com.google.android.libraries.places:places:4.1.0'
 
     // Flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
