@@ -20,14 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.kakao.vectormap.MapView
+            <fragment
+                class="com.google.android.gms.maps.SupportMapFragment"
                 android:id="@+id/convenience_map"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_height="match_parent" />
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -37,106 +34,12 @@
                 android:scrollbars="none"
                 android:layout_marginTop="16dp">
 
-                <LinearLayout
-                    android:id="@+id/category_ll"
+                <RadioGroup
+                    android:id="@+id/category_radio_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioGroup
-                        android:id="@+id/category_radiogroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatRadioButton
-                            android:id="@+id/category_stay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginStart="22dp"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="16dp"
-                            android:background="@drawable/selector_convenience_category"
-                            android:textColor="@drawable/selector_convenience_text"
-                            android:button="@null"
-                            android:textAlignment="center"
-                            android:text="@string/category_stay_default_ic"
-                            style="@style/body_r_s" />
-
-                        <androidx.appcompat.widget.AppCompatRadioButton
-                            android:id="@+id/category_tour"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="16dp"
-                            android:background="@drawable/selector_convenience_category"
-                            android:textColor="@drawable/selector_convenience_text"
-                            android:button="@null"
-                            android:textAlignment="center"
-                            android:text="@string/category_tour_default_ic"
-                            style="@style/body_r_s" />
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/category_food"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="16dp"
-                            android:background="@drawable/selector_convenience_category"
-                            android:textColor="@drawable/selector_convenience_text"
-                            android:button="@null"
-                            android:textAlignment="center"
-                            android:text="@string/category_food_default_ic"
-                            style="@style/body_r_s" />
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/category_cafe"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="16dp"
-                            android:background="@drawable/selector_convenience_category"
-                            android:textColor="@drawable/selector_convenience_text"
-                            android:button="@null"
-                            android:textAlignment="center"
-                            android:text="@string/category_cafe_default_ic"
-                            style="@style/body_r_s" />
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/category_culture"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="16dp"
-                            android:background="@drawable/selector_convenience_category"
-                            android:textColor="@drawable/selector_convenience_text"
-                            android:button="@null"
-                            android:textAlignment="center"
-                            android:text="@string/category_culture_default_ic"
-                            style="@style/body_r_s" />
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/category_parking"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="16dp"
-                            android:layout_marginEnd="22dp"
-                            android:background="@drawable/selector_convenience_category"
-                            android:textColor="@drawable/selector_convenience_text"
-                            android:button="@null"
-                            android:textAlignment="center"
-                            android:text="@string/category_parking_default_ic"
-                            style="@style/body_r_s" />
-
-                    </RadioGroup>
-
-                </LinearLayout>
+                    android:orientation="horizontal"
+                    android:padding="8dp"/>
 
             </HorizontalScrollView>
             
@@ -220,7 +123,7 @@
         <include
             android:id="@+id/route_convenience_bottom_sheet"
             layout="@layout/bottom_sheet_convenience_place"
-            android:visibility="@{convenienceViewModel.placeCategoryResult.size() == 0 ? View.GONE : View.VISIBLE}"
+            android:visibility="@{convenienceViewModel.selectedConvenience == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

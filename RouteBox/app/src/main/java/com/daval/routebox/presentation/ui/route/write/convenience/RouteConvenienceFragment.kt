@@ -1,64 +1,83 @@
 package com.daval.routebox.presentation.ui.route.write.convenience
 
+import android.annotation.SuppressLint
 import android.app.Service.MODE_PRIVATE
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.daval.routebox.BuildConfig
 import com.daval.routebox.R
 import com.daval.routebox.databinding.BottomSheetConveniencePlaceBinding
 import com.daval.routebox.databinding.FragmentRouteConvenienceBinding
-import com.daval.routebox.domain.model.CategoryGroupCode
+import com.daval.routebox.domain.model.Convenience
 import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
 import com.daval.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
-import com.daval.routebox.presentation.ui.route.write.MapCameraRadius
+import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
+import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity.Companion.ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.WeatherCoordinatorConverter
-import com.kakao.vectormap.KakaoMap
-import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.CircularBounds
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.IsOpenRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchNearbyRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.URL
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener {
+class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener,
+    OnMapReadyCallback {
 
     private lateinit var binding: FragmentRouteConvenienceBinding
-    private lateinit var kakaoMap: KakaoMap
+    private var googleMap: GoogleMap? = null
     private val writeViewModel: RouteWriteViewModel by activityViewModels()
     private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
-    private var categoryDotImg: Int = -1
+
     private lateinit var bottomSheetConvenienceDialog: BottomSheetConveniencePlaceBinding
     private var placeList = arrayListOf<ConvenienceCategoryResult>()
     private val placeRVAdapter = ConveniencePlaceRVAdapter(placeList)
-    private lateinit var mainWeather: WeatherData
+    private var mainWeather: WeatherData? = null
+    private lateinit var placesClient: PlacesClient
+
+    private var googlePlaceList = arrayListOf<Place>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,43 +92,23 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             lifecycleOwner = this@RouteConvenienceFragment
         }
 
+        Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY)
+        placesClient = Places.createClient(requireContext())
+
         setInit()
         initMapSetting()
         initClickListener()
-        initRadioButton()
+        initRadioButtons()
         setAdapter()
 
         return binding.root
     }
 
-    private fun initMapSetting() {
-        binding.convenienceMap.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출
-                Log.d("KakaoMap", "onMapDestroy: ")
-            }
-            override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
-                Log.d("KakaoMap", "onMapError: $error")
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                Log.d("KakaoMap", "onMapReady: $kakaoMap")
-                this@RouteConvenienceFragment.kakaoMap = kakaoMap
+    override fun onResume() {
+        super.onResume()
 
-                if (writeViewModel.currentCoordinate.value != null) {
-                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
-                    kakaoMap.moveCamera(cameraUpdate)
-                }
-
-                initObserve()
-            }
-
-            override fun getZoomLevel(): Int {
-                return 17
-            }
-        })
+        Log.e("RouteConvenienceFrag", "onResume()")
+        //TODO: 뒤로가기 시 편의기능 핀 정보 다시 불러오기
     }
 
     private fun initClickListener() {
@@ -119,51 +118,72 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         binding.weatherCv.setOnClickListener {
             val weatherBottomSheet = WeatherBottomSheet()
             val bundle = Bundle()
-            bundle.putString("latitude", writeViewModel.currentCoordinate.value?.latitude.toString())
-            bundle.putString("longitude", writeViewModel.currentCoordinate.value?.longitude.toString())
+            bundle.putString(
+                "latitude",
+                writeViewModel.currentCoordinate.value?.latitude.toString()
+            )
+            bundle.putString(
+                "longitude",
+                writeViewModel.currentCoordinate.value?.longitude.toString()
+            )
             weatherBottomSheet.arguments = bundle
             weatherBottomSheet.run {
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
             }
-            weatherBottomSheet.show(requireActivity().supportFragmentManager, weatherBottomSheet.tag)
+            weatherBottomSheet.show(
+                requireActivity().supportFragmentManager,
+                weatherBottomSheet.tag
+            )
         }
+    }
+
+    private fun showPlaceInfoBottomSheet(placeInfo: ConvenienceCategoryResult) {
+        val placeInfoBottomSheet = ConveniencePlaceBottomSheet()
+        placeInfoBottomSheet.run {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogStyle)
+        }
+        placeInfoBottomSheet.placeInfo = placeInfo
+        placeInfoBottomSheet.show(requireActivity().supportFragmentManager, "")
     }
 
     private fun initObserve() {
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
-            if (writeViewModel.currentCoordinate.value != null) {
-                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
-                kakaoMap.moveCamera(cameraUpdate)
-
+            Log.d("RouteConvenienceFrag", "latLng: $it")
+            if (writeViewModel.currentCoordinate.value?.latitude != 0.0) {
+                // 현재 위치 중심으로 카메라 설정
+                setMapCenterPoint()
                 // 현재 위치 마커 띄우기
-                var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.ic_gps_marker)))
-                val options = LabelOptions.from(LatLng.from(writeViewModel.currentCoordinate.value!!.latitude,
-                    writeViewModel.currentCoordinate.value!!.longitude
-                )).setStyles(styles)
-                val layer = kakaoMap.labelManager!!.layer
-                val label = layer!!.addLabel(options)
-                label.show()
-                
+                setCurrentLocationMarker()
+
                 // 지역 이름 받아오기
-                convenienceViewModel.getRegionCode(writeViewModel.currentCoordinate.value?.latitude.toString(), writeViewModel.currentCoordinate.value?.longitude.toString())
+                convenienceViewModel.getRegionCode(
+                    writeViewModel.currentCoordinate.value?.latitude.toString(),
+                    writeViewModel.currentCoordinate.value?.longitude.toString()
+                )
                 // 현재 위치 날씨 받아오기
                 callWeatherApi()
             } else {
-                var sharedPreferencesHelper = SharedPreferencesHelper(requireActivity().getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE))
-                writeViewModel.setCurrentCoordinate(LatLng.from(sharedPreferencesHelper.getLocationCoordinate()[0]!!, sharedPreferencesHelper.getLocationCoordinate()[1]!!))
+                var sharedPreferencesHelper = SharedPreferencesHelper(
+                    requireActivity().getSharedPreferences(
+                        APP_PREF_KEY,
+                        MODE_PRIVATE
+                    )
+                )
+                writeViewModel.setCurrentCoordinate(
+                    LatLng(
+                        sharedPreferencesHelper.getLocationCoordinate()[0]!!,
+                        sharedPreferencesHelper.getLocationCoordinate()[1]!!
+                    )
+                )
             }
         }
 
-        convenienceViewModel.isCategoryEndPage.observe(viewLifecycleOwner) {
-            if (convenienceViewModel.isCategoryEndPage.value == true) {
-                for (i in 0 until convenienceViewModel.placeCategoryResult.value!!.size) {
-                    addMarker(convenienceViewModel.placeCategoryResult.value!![i].latitude.toDouble(), convenienceViewModel.placeCategoryResult.value!![i].longitude.toDouble(), categoryDotImg)
+        convenienceViewModel.placeCategoryResult.observe(viewLifecycleOwner) { placeList ->
+            placeList?.run {
+                placeList.forEach { place ->
+                    addConveniencePlacesMarker(place)
                 }
-            }
-
-            if (convenienceViewModel.placeCategoryResult.value != null && convenienceViewModel.placeCategoryResult.value!!.size != 0) {
-                placeRVAdapter.resetAllItems(convenienceViewModel.placeCategoryResult.value!!)
-                binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
+                placeRVAdapter.resetAllItems(placeList)
             }
         }
     }
@@ -171,107 +191,113 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private fun setInit() {
         bottomSheetConvenienceDialog = binding.routeConvenienceBottomSheet
         bottomSheetConvenienceDialog.apply {
-            this.viewModel = this@RouteConvenienceFragment.writeViewModel
+            this.viewModel = this@RouteConvenienceFragment.convenienceViewModel
             this.lifecycleOwner = this@RouteConvenienceFragment
         }
     }
 
-    // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, markerImg: Int) {
-        var styles = kakaoMap.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(markerImg)))
-        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
-        val layer = kakaoMap.labelManager!!.layer
-        val label = layer!!.addLabel(options)
-        label.show()
+    private fun initMapSetting() {
+        // 맵 프래그먼트 초기화
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.convenience_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
-    private fun initRadioButton() {
-        // 선택한 라디오 버튼 글씨 Bold 처리하기 위한 ChangedListener 부분
-        binding.categoryStay.setOnCheckedChangeListener(this)
-        binding.categoryTour.setOnCheckedChangeListener(this)
-        binding.categoryFood.setOnCheckedChangeListener(this)
-        binding.categoryCafe.setOnCheckedChangeListener(this)
-        binding.categoryCulture.setOnCheckedChangeListener(this)
-        binding.categoryParking.setOnCheckedChangeListener(this)
+    private fun setMapCenterPoint() {
+        // 카메라 위치 설정 및 줌 레벨 조정
+        googleMap?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                writeViewModel.currentCoordinate.value!!,
+                ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
+            )
+        )
+    }
 
-        binding.categoryRadiogroup.setOnCheckedChangeListener { _, buttonId ->
-            convenienceViewModel.setCameraPosition(kakaoMap.cameraPosition!!.position)
-            kakaoMap.labelManager?.removeAllLabelLayer()
+    private fun setCurrentLocationMarker() {
+        val activity = requireActivity() as RouteWriteActivity
 
-            when (buttonId) {
-                R.id.category_stay -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.AD5)
-                    categoryDotImg = R.drawable.ic_marker_stay
-                }
-                R.id.category_tour -> {
-//                    convenienceViewModel.setTourCategory()
-                    categoryDotImg = R.drawable.ic_marker_tour
-                    callTourApi()
-                }
-                R.id.category_food -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.FD6)
-                    categoryDotImg = R.drawable.ic_marker_food
-                }
-                R.id.category_cafe -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CE7)
-                    categoryDotImg = R.drawable.ic_marker_cafe
-                }
-                R.id.category_culture -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.CT1)
-                    categoryDotImg = R.drawable.ic_marker_culture
-                }
-                R.id.category_parking -> {
-                    convenienceViewModel.setKakaoCategory(CategoryGroupCode.PK6)
-                    categoryDotImg = R.drawable.ic_marker_parking
-                }
-            }
+        // 마커 추가
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(
+                    LatLng(
+                        writeViewModel.currentCoordinate.value!!.latitude,
+                        writeViewModel.currentCoordinate.value!!.longitude
+                    )
+                )
+                .icon(activity.getResizedMarker(iconName = R.drawable.ic_gps_marker))
+                .zIndex(1f)
+        )
+    }
+
+    // 마커 띄우기
+    private fun addConveniencePlacesMarker(place: ConvenienceCategoryResult) {
+        val activity = requireActivity() as RouteWriteActivity
+        if (place.latitude != null) {
+            // 마커 추가
+            googleMap?.addMarker(
+                MarkerOptions()
+                    .position(place.latitude)
+                    .icon(activity.getResizedMarker(convenienceViewModel.selectedConvenience.value!!.markerIcon, 50, 62))
+                    .zIndex(1f)
+            )
         }
     }
 
-    private fun callTourApi() {
-        val thread = NetworkThread()
-        thread.start()
-        thread.join()
-    }
-
-    // Open Api 결과를 받고, JSON을 파싱하기 위한 부분!!
-    inner class NetworkThread: Thread() {
-        override fun run() {
-            val site = "${OPEN_API_BASE_URL}B551011/KorService1/locationBasedList1?numOfRows=300&MobileOS=AND&MobileApp=Route%20Box&_type=json&mapX=${convenienceViewModel.cameraPosition.value?.longitude}&mapY=${convenienceViewModel.cameraPosition.value?.latitude}&radius=$MapCameraRadius&contentTypeId=12&serviceKey=${OPEN_API_SERVICE_KEY}"
-            val conn = URL(site).openConnection()
-            // 데이터가 들어오는 통로 역할
-            val input = conn.getInputStream()
-            val br = BufferedReader(InputStreamReader(input))
-
-            // Json 문서는 문자열로 데이터를 모두 읽어온 후, Json에 관련된 객체를 만들어서 데이터를 가져옴
-            var str: String? = null
-            // 버퍼는 일시적으로 데이터를 저장하는 메모리!
-            val buf = StringBuffer()
-
-            // 들어오는 값이 없을 때까지 받아오는 과정
-            do {
-                str = br.readLine()
-                if (str != null) buf.append(str)
-            } while (str != null)
-
-            // 하나로 되어있는 결과를 JSON 객체 형태로 가져와 데이터 파싱
-            val root = JSONObject(buf.toString())
-            val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
-            val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-
-            var result = arrayListOf<ConvenienceCategoryResult>()
-            for (i in 0 until item.length()) {
-                var longitude = item.getJSONObject(i).getString("mapx")
-                var latitude = item.getJSONObject(i).getString("mapy")
-                addMarker(latitude.toDouble(), longitude.toDouble(), R.drawable.ic_marker_tour)
-                result.add(ConvenienceCategoryResult(
-                    item.getJSONObject(i).getString("title"),
-                    item.getJSONObject(i).getString("firstimage"),
-                    latitude, longitude
-                ))
+    @SuppressLint("ResourceType")
+    private fun initRadioButtons() {
+        // 라디오 버튼 설정
+        val radioButtons = Convenience.entries.map { convenience ->
+            RadioButton(requireContext()).apply {
+                id = View.generateViewId()
+                text = convenience.title
+                layoutParams = RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginEnd =
+                        resources.getDimensionPixelSize(R.dimen.convenience_radio_button_margin)
+                }
+                setTextColor(
+                    ContextCompat.getColorStateList(
+                        requireContext(),
+                        R.drawable.selector_convenience_text
+                    )
+                )
+                background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.selector_convenience_category
+                )
+                buttonDrawable = null
+                gravity = Gravity.CENTER
+                setPadding(
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_horizontal),
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_vertical),
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_horizontal),
+                    resources.getDimensionPixelSize(R.dimen.convenience_radio_button_padding_vertical)
+                )
             }
-            placeRVAdapter.resetAllItems(result)
-            binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.VISIBLE
+        }
+
+        radioButtons.forEach { radioButton ->
+            binding.categoryRadioGroup.addView(radioButton)
+        }
+
+        // 라디오 버튼 클릭 리스터 설정
+        binding.categoryRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            // 이전 데이터 초기화
+            googlePlaceList.clear()
+            googleMap?.clear()
+            setCurrentLocationMarker()
+            // 라디오 버튼 선택
+            val selectedRadioButton = radioButtons.find { it.id == checkedId }
+            val selectedConvenience = Convenience.entries.find { it.title == selectedRadioButton?.text }
+            convenienceViewModel.selectConvenienceChip(selectedConvenience)
+
+            selectedConvenience?.let {
+                // 장소 API 호출
+                convenienceViewModel.getNearbySearchPlaceResult(placesClient, writeViewModel.currentCoordinate.value!!)
+            }
         }
     }
 
@@ -281,6 +307,17 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         }
         bottomSheetConvenienceDialog.placeRv.itemAnimator = null
+
+        placeRVAdapter.setItemClickListener(object : ConveniencePlaceRVAdapter.MyItemClickListener {
+            override fun onItemClick(placeInfo: ConvenienceCategoryResult) {
+                // 바텀시트에 아이템 정보 세팅
+                showPlaceInfoBottomSheet(placeInfo)
+                // 지도에 핀 하나만 표시
+                googleMap?.clear()
+                setCurrentLocationMarker()
+                addConveniencePlacesMarker(placeInfo)
+            }
+        })
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
@@ -307,7 +344,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
             getMainWeather(weatherResult)
         }
 
-        convenienceViewModel.setWeatherMainData(mainWeather)
+        mainWeather?.let {
+            convenienceViewModel.setWeatherMainData(it)
+        }
     }
 
     private fun getMainWeather(returnResult: JSONArray) {
@@ -329,20 +368,9 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         )
     }
 
-    // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
-    override fun onResume() {
-        super.onResume()
-        binding.convenienceMap.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.convenienceMap.pause()
-    }
-
     override fun onStop() {
         super.onStop()
-        convenienceViewModel.setPlaceCategoryResult()
+        convenienceViewModel.setPlaceCategoryResult(arrayListOf())
         placeRVAdapter.removeAllItems()
         binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
     }
@@ -357,5 +385,14 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         } else time = (time.toInt() - 1).toString()
 
         return Pair(date.toString(), time)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+        initObserve()
+    }
+
+    companion object {
+        const val SEARCH_RADIUS = 2000.0 // 2km 반경
     }
 }
