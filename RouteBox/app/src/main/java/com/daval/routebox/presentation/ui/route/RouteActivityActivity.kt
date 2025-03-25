@@ -22,20 +22,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.daval.routebox.BuildConfig
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteActivityBinding
 import com.daval.routebox.domain.model.ActivityImage
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
-import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.domain.model.SearchActivityResult
 import com.daval.routebox.presentation.ui.route.adapter.CategoryRVAdapter
-import com.daval.routebox.presentation.ui.route.adapter.KakaoPlaceRVAdapter
+import com.daval.routebox.presentation.ui.route.adapter.PlaceSearchResultRVAdapter
 import com.daval.routebox.presentation.ui.route.adapter.PictureRVAdapter
-import com.daval.routebox.presentation.ui.route.write.tracking.RoutePictureAlbumActivity
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
-import com.daval.routebox.presentation.utils.CommonPopupDialog
-import com.daval.routebox.presentation.utils.PopupDialogInterface
+import com.daval.routebox.presentation.ui.route.write.tracking.RoutePictureAlbumActivity
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.picker.CalendarBottomSheet
@@ -43,6 +41,8 @@ import com.daval.routebox.presentation.utils.picker.DateClickListener
 import com.daval.routebox.presentation.utils.picker.TimeChangedListener
 import com.daval.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.util.Calendar
@@ -54,7 +54,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private lateinit var binding: ActivityRouteActivityBinding
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
 
-    private lateinit var placeRVAdapter: KakaoPlaceRVAdapter
+    private lateinit var placeRVAdapter: PlaceSearchResultRVAdapter
     private var placeList: ArrayList<SearchActivityResult> = arrayListOf()
     private lateinit var categoryRVAdapter: CategoryRVAdapter
     private lateinit var imgRVAdapter: PictureRVAdapter
@@ -64,6 +64,8 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     private val viewModel: RouteWriteViewModel by viewModels()
 
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
+    private lateinit var placesClient: PlacesClient
 
     // 앨범 접근 권한 요청
     private fun checkVersion(): String {
@@ -96,6 +98,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
         sharedPreferencesHelper = SharedPreferencesHelper(getSharedPreferences(APP_PREF_KEY, Context.MODE_PRIVATE))
 
+        initPlaceClient()
         initData()
         setAdapter()
         initClickListener()
@@ -114,6 +117,11 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
                 }
             }
         }
+    }
+
+    private fun initPlaceClient() {
+        Places.initialize(this, BuildConfig.GOOGLE_API_KEY)
+        placesClient = Places.createClient(this)
     }
 
     private fun initData() {
@@ -141,6 +149,17 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
         viewModel.isRequestSuccess.observe(this) {
             if (it == true) finish()
         }
+
+        // 페이징 처리를 통해 새로운 장소 15개를 얻으면 placeRVAdapter에 해당 내용을 전송 -> 뷰 업데이트
+        viewModel.placeSearchResult.observe(this) {
+            // 다시 검색했을 경우, RecyclerView 데이터 새로 추가
+            if (viewModel.placeSearchPage.value == 1) {
+                placeRVAdapter.resetAllItems(viewModel.placeSearchResult.value!!)
+            }
+            else {
+                placeRVAdapter.addAllItems(viewModel.placeSearchResult.value!!)
+            }
+        }
     }
 
     private fun initEditTextListener() {
@@ -160,31 +179,24 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     private fun setPlaceAdapter() {
-        placeRVAdapter = KakaoPlaceRVAdapter(placeList)
+        placeRVAdapter = PlaceSearchResultRVAdapter(placeList)
         binding.placeRv.adapter = placeRVAdapter
         binding.placeRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        placeRVAdapter.setPlaceClickListener(object: KakaoPlaceRVAdapter.MyItemClickListener {
+        placeRVAdapter.setPlaceClickListener(object: PlaceSearchResultRVAdapter.MyItemClickListener {
             override fun onItemClick(place: SearchActivityResult) {
-                binding.searchEt.setText(place.place_name)
+                binding.searchEt.setText(place.placeName)
                 viewModel.activity.value?.apply {
-                    locationName = place.place_name
-                    address = place.address_name
-                    longitude = place.x
-                    latitude = place.y
+                    locationName = place.placeName
+                    address = place.addressName
+                    longitude = place.latLng.longitude.toString()
+                    latitude = place.latLng.latitude.toString()
                 }
                 viewModel.setPlaceSearchResult(arrayListOf())
                 viewModel.setPlaceSearchMode(false)
                 binding.searchEt.clearFocus()
             }
         })
-        // 페이징 처리를 통해 새로운 장소 15개를 얻으면 placeRVAdapter에 해당 내용을 전송 -> 뷰 업데이트
-        viewModel.placeSearchResult.observe(this) {
-            // 다시 검색했을 경우, RecyclerView 데이터 새로 추가
-            if (viewModel.placeSearchPage.value == 1) placeRVAdapter.resetAllItems(viewModel.placeSearchResult.value!!)
-            else {
-                placeRVAdapter.addAllItems(viewModel.placeSearchResult.value!!)
-            }
-        }
+
         // Kakao 위치 검색의 경우, 15개씩 결과값 리턴
         // So, 만약 스크롤 최하단에 도착했다면, 새로운 15개의 값을 얻기 위한 API 호출
         binding.placeRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -294,7 +306,7 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
     }
 
     fun searchPlace(view: View) {
-        viewModel.searchPlace() // 장소 검색 진행
+        viewModel.searchPlace(placesClient) // 장소 검색 진행
         hideKeyboard() // 키보드 내리기
         view.clearFocus() // EditText 포커스 해제
     }
