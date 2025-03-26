@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.utils
 import android.content.SharedPreferences
 import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.ActivityResult
+import com.daval.routebox.domain.model.RoutePointRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kakao.vectormap.LatLng
@@ -69,15 +70,15 @@ class SharedPreferencesHelper(private val sharedPreferences: SharedPreferences) 
     }
 
     // 앱이 종료되었을 때 기록되는 점들을 저장
-    fun setBackgroundCoordinate(coordinate: ArrayList<LatLng?>) {
+    fun setBackgroundCoordinate(coordinate: ArrayList<RoutePointRequest?>?) {
         sharedPreferences.edit()
             .putString(TRACKING_BACKGROUND, Gson().toJson(coordinate))
             .apply()
     }
 
     // 앱이 종료되었을 때 기록된 점 불러오기
-    fun getBackgroundCoordinate(): ArrayList<LatLng?>? {
-        return Gson().fromJson(sharedPreferences.getString(TRACKING_BACKGROUND, ""), object : TypeToken<ArrayList<LatLng?>?>() {}.type)
+    fun getBackgroundCoordinate(): ArrayList<RoutePointRequest?>? {
+        return Gson().fromJson(sharedPreferences.getString(TRACKING_BACKGROUND, ""), object : TypeToken<ArrayList<RoutePointRequest?>?>() {}.type)
     }
 
     // DataChangedListener 추가

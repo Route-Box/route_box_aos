@@ -12,25 +12,26 @@ import com.daval.routebox.domain.model.Activity
 import com.daval.routebox.domain.model.ActivityImage
 import com.daval.routebox.domain.model.ActivityResult
 import com.daval.routebox.domain.model.Category
+import com.daval.routebox.domain.model.RoutePoint
 import com.daval.routebox.domain.model.RoutePointRequest
 import com.daval.routebox.domain.model.SearchActivityResult
-import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.OpenApiRepository
+import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.presentation.ui.route.write.RouteCreateActivity.Companion.TODAY
 import com.daval.routebox.presentation.utils.DateConverter
-import com.daval.routebox.presentation.utils.DateConverter.convertKSTLocalDateTimeToUTCString
-import com.kakao.vectormap.LatLng
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchByTextRequest
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteWriteViewModel @Inject constructor(
     private val repository: RouteRepository,
-    private val openApiRepository: OpenApiRepository
 ): ViewModel() {
     private val _routeId = MutableLiveData<Int>()
     val routeId: LiveData<Int> = _routeId
@@ -90,7 +91,7 @@ class RouteWriteViewModel @Inject constructor(
     init {
         _activity.value = Activity()
         _categoryETC.value = false
-        _currentCoordinate.value = LatLng.from(null)
+        _currentCoordinate.value = LatLng(0.0, 0.0)
     }
 
     fun initActivityInEditAndSaveMode(activity: ActivityResult) {
@@ -172,15 +173,38 @@ class RouteWriteViewModel @Inject constructor(
         checkBtnEnabled()
     }
 
-    // 카카오 키워드로 장소 검색
-    fun searchPlace() {
+    // 구글 텍스트로 장소 검색
+    fun searchPlace(placesClient: PlacesClient) {
         viewModelScope.launch {
-            _placeSearchPage.value = 1
+            val placeFields = listOf(
+                Place.Field.ID,
+                Place.Field.DISPLAY_NAME,
+                Place.Field.FORMATTED_ADDRESS,
+                Place.Field.LOCATION
+            )
 
-            val response = repository.searchKakaoPlace(placeSearchKeyword.value.toString(), _placeSearchPage.value!!)
-            _placeSearchResult.value = response.documents as ArrayList
-            _isKeywordEndPage.value = response.meta.is_end
-            _placeSearchMode.value = true
+            val request = SearchByTextRequest.builder(placeSearchKeyword.value.toString(), placeFields)
+                .build()
+
+            placesClient.searchByText(request)
+                .addOnSuccessListener { response ->
+                    _placeSearchPage.value = 1
+                    val places = response.places
+                    // places를 RecyclerView에 표시
+                    _placeSearchResult.value = places.map { place ->
+                        SearchActivityResult(
+                            place.id!!,
+                            place.displayName!!,
+                            place.location!!,
+                            place.formattedAddress!!
+                        )
+                    } as ArrayList
+                    _isKeywordEndPage.value = true //TODO: 페이징 처리 필요
+                    _placeSearchMode.value = true
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("RouteWriteVM", "Error searching places", exception)
+                }
         }
     }
 
@@ -264,18 +288,13 @@ class RouteWriteViewModel @Inject constructor(
     }
 
     // 지도 점 추가
-    fun addDot(latitude: Double, longitude: Double) {
+    fun addDots(routeDotsList: ArrayList<RoutePointRequest?>?) {
         viewModelScope.launch {
-            if (routeId.value != null && _currentCoordinate.value != null) {
-                repository.addRouteDot(
+            if (routeId.value != null && _currentCoordinate.value != null && routeDotsList?.size != 0) {
+                repository.addRouteDots(
                     _routeId.value!!,
-                    RoutePointRequest(
-                        latitude.toString(),
-                        longitude.toString(),
-                        convertKSTLocalDateTimeToUTCString(LocalDateTime.now())
-                    )
+                    RoutePoint(routeDotsList)
                 )
-
                 setPreCoordinate(_currentCoordinate.value!!)
             }
         }

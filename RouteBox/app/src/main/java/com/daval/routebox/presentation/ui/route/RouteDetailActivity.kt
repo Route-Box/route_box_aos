@@ -164,7 +164,7 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
     private fun drawRoutePath() {
         if (!viewModel.hasActivity()) return
         // 이동 경로 선으로 연결
-        val polylineOptions = MapUtil.getRoutePathPolylineOptions(this, viewModel.getActivityList())
+        val polylineOptions = MapUtil.getRoutePathPolylineOptionsByActivities(this, viewModel.getActivityList())
         googleMap?.addPolyline(polylineOptions)
     }
 

@@ -15,14 +15,14 @@ import com.daval.routebox.domain.model.RouteDetail
 import com.daval.routebox.domain.model.RouteFinishRequest
 import com.daval.routebox.domain.model.RouteFinishResult
 import com.daval.routebox.domain.model.RouteId
-import com.daval.routebox.domain.model.RoutePointRequest
-import com.daval.routebox.domain.model.RoutePointResult
+import com.daval.routebox.domain.model.RoutePoint
 import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.domain.model.RoutePublicRequest
 import com.daval.routebox.domain.model.RouteUpdateRequest
 import com.daval.routebox.domain.model.RouteUpdateResult
 import com.daval.routebox.domain.model.WeatherRegionResponse
 import com.daval.routebox.domain.repositories.RouteRepository
+import retrofit2.Response
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,8 +61,8 @@ class RouteRepositoryImpl @Inject constructor(
         return remoteRouteDataSource.checkRouteIsRecording(userLocalTime)
     }
 
-    override suspend fun addRouteDot(routeId: Int, routePointRequest: RoutePointRequest): RoutePointResult {
-        return remoteRouteDataSource.addRouteDot(routeId, routePointRequest)
+    override suspend fun addRouteDots(routeId: Int, routePoint: RoutePoint): Response<Unit> {
+        return remoteRouteDataSource.addRouteDots(routeId, routePoint)
     }
 
     override suspend fun updateRoutePublic(routeId: Int, isPublic: RoutePublicRequest): RoutePublicRequest {

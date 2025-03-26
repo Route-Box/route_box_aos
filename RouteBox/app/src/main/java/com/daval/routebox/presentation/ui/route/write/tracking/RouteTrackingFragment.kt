@@ -2,17 +2,14 @@ package com.daval.routebox.presentation.ui.route.write.tracking
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -27,33 +24,24 @@ import com.daval.routebox.presentation.ui.route.RouteActivityActivity
 import com.daval.routebox.presentation.ui.route.RouteViewModel
 import com.daval.routebox.presentation.ui.route.adapter.ActivityRVAdapter
 import com.daval.routebox.presentation.ui.route.edit.RouteEditViewModel
+import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
+import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity.Companion.ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
-import com.daval.routebox.presentation.utils.BindingAdapter
 import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.MapUtil
 import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
-import com.kakao.vectormap.KakaoMap
-import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
-import com.kakao.vectormap.label.LabelTextBuilder
-import com.kakao.vectormap.label.LabelTextStyle
-import com.kakao.vectormap.route.RouteLine
-import com.kakao.vectormap.route.RouteLineOptions
-import com.kakao.vectormap.route.RouteLineSegment
-import com.kakao.vectormap.route.RouteLineStyle
-import com.kakao.vectormap.route.RouteLineStyles
-import com.kakao.vectormap.route.RouteLineStylesSet
-import java.util.Arrays
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-class RouteTrackingFragment: Fragment(), PopupDialogInterface {
+class RouteTrackingFragment: Fragment(), PopupDialogInterface, OnMapReadyCallback {
 
     private lateinit var binding: FragmentRouteTrackingBinding
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
@@ -64,7 +52,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     private var deleteId: Int = -1
     private var deleteActivityIndex: Int = -1
     private val activityAdapter = ActivityRVAdapter(true)
-    private lateinit var kakaoMap: KakaoMap
+    private var googleMap: GoogleMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,9 +67,10 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         }
 
         initSharedPreferences()
-        addBackgroundDots()
         initMapSetting()
+        addBackgroundDots()
         setInit()
+        initObserve()
         initClickListener()
 
         return binding.root
@@ -94,41 +83,9 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     private fun initMapSetting() {
-        binding.trackingMap.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출
-                Log.d("KakaoMap", "onMapDestroy: ")
-            }
-            override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
-                Log.d("KakaoMap", "onMapError: $error")
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                Log.d("KakaoMap", "onMapReady: $kakaoMap")
-                this@RouteTrackingFragment.kakaoMap = kakaoMap
-
-                // 활동 마커 추가하기
-                if (editViewModel.route.value?.routeActivities != null) {
-                    for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
-                        var activity = editViewModel.route.value?.routeActivities!![i]
-                        addMarker(
-                            activity.latitude.toDouble(), activity.longitude.toDouble(),
-                            activity.category, (i + 1).toString()
-                        )
-                    }
-                }
-
-                initObserve()
-                addBackgroundDots()
-                drawRoutePath()
-            }
-
-            override fun getZoomLevel(): Int {
-                return 17
-            }
-        })
+        // 맵 프래그먼트 초기화
+        val mapFragment = childFragmentManager.findFragmentById(R.id.tracking_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun setInit() {
@@ -195,12 +152,9 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         }
 
         writeViewModel.currentCoordinate.observe(viewLifecycleOwner) {
+            setMapCenterPoint()
             if (writeViewModel.currentCoordinate.value != null) {
-                val cameraUpdate = CameraUpdateFactory.newCenterPosition(writeViewModel.currentCoordinate.value)
-                kakaoMap.moveCamera(cameraUpdate)
-
-                addMarker(writeViewModel.currentCoordinate.value!!.latitude,
-                    writeViewModel.currentCoordinate.value!!.longitude, "", "")
+                setCurrentLocationMarker()
             }
         }
 
@@ -219,47 +173,53 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
         }
     }
 
+    private fun setCurrentLocationMarker() {
+        val activity = requireActivity() as RouteWriteActivity
+
+        // 마커 추가
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(LatLng(
+                    writeViewModel.currentCoordinate.value!!.latitude,
+                    writeViewModel.currentCoordinate.value!!.longitude
+                ))
+                .icon(activity.getResizedMarker(iconName = R.drawable.ic_gps_marker))
+                .zIndex(1f)
+        )
+    }
+
+    private fun setMapCenterPoint() {
+        // 카메라 위치 설정 및 줌 레벨 조정
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+            writeViewModel.currentCoordinate.value!!,
+            ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
+        ))
+    }
+
     private fun addBackgroundDots() {
-        if (sharedPreferencesHelper.getBackgroundCoordinate() != null) {
-            val backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
-            for (i in 0 until backgroundDots!!.size) {
-                writeViewModel.addDot(backgroundDots[i]!!.latitude, backgroundDots[i]!!.longitude)
-            }
+        var backgroundDots = sharedPreferencesHelper.getBackgroundCoordinate()
+        if (backgroundDots?.size != 0) {
+            writeViewModel.addDots(backgroundDots)
             sharedPreferencesHelper.setBackgroundCoordinate(arrayListOf())
         }
     }
 
-    // 크래시가 발생할 수도 있어 지도의 LifeCycle도 함께 관리 필요!
-    override fun onResume() {
-        super.onResume()
-        binding.trackingMap.resume()
-    }
-
     override fun onPause() {
         super.onPause()
-        binding.trackingMap.pause()
         sharedPreferencesHelper.setIsBackground(true)
     }
 
     // 마커 띄우기
-    private fun addMarker(latitude: Double, longitude: Double, category: String, activityNumber: String) {
-        var markerImg: Int
-        if (category != "") {
-            markerImg = returnActivityCategoryImg(category)
-        } else {
-            markerImg = R.drawable.ic_gps_marker
-        }
-        var styles = kakaoMap.labelManager?.addLabelStyles(
-            LabelStyles.from(LabelStyle.from(markerImg).setTextStyles(
-            LabelTextStyle.from(35, ContextCompat.getColor(requireActivity(), R.color.black)),
-        )))
-        val layer = kakaoMap.labelManager!!.layer
-        val options = LabelOptions.from(LatLng.from(latitude, longitude)).setStyles(styles)
-        if (category != "") {
-            options.setTexts(LabelTextBuilder().setTexts(activityNumber))
-        }
-        val label = layer!!.addLabel(options)
-        label.show()
+    private fun addActivityMarker(latLng: LatLng, categoryName: String, activityNumber: Int) {
+        // 지도에 마커 표시
+        val markerIcon = MapUtil.createMarkerBitmap(requireContext(), Category.getCategoryByName(categoryName), activityNumber)
+        // 마커 추가
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .icon(markerIcon)
+                .zIndex(1f)
+        )
     }
 
     private fun showDeletePopupDialog() {
@@ -300,39 +260,38 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface {
     }
 
     private fun drawRoutePath() {
+        val routePath = getRoutePathToLatLng() ?: return
+
         // 기록된 점 조회를 위해 api 호출
         editViewModel.tryGetMyRouteDetail()
 
-        var layer = kakaoMap.routeLineManager?.addLayer()
-        val stylesSet = RouteLineStylesSet.from(
-            "routePathStyle", RouteLineStyles.from(RouteLineStyle.from(8f, ContextCompat.getColor(requireActivity(), R.color.main)))
-        )
-        val segment: RouteLineSegment = RouteLineSegment.from(routePathToLatLng()).setStyles(stylesSet.getStyles(0))
-        val options = RouteLineOptions.from(segment).setStylesSet(stylesSet)
-        val routeLine: RouteLine = layer!!.addRouteLine(options)
-        routeLine.show()
-
-        routePathToLatLng()
+        // 이동 경로 선으로 연결
+        val polylineOptions = MapUtil.getRoutePathPolylineOptions(requireContext(), routePath)
+        googleMap?.addPolyline(polylineOptions)
     }
 
-    private fun routePathToLatLng(): List<LatLng>? {
+    private fun getRoutePathToLatLng(): List<LatLng>? {
         val routePath = editViewModel.route.value?.routePath
         return routePath?.map {
-            LatLng.from(it.latitude, it.longitude)
+            LatLng(it.latitude, it.longitude)
         }
     }
 
-    private fun returnActivityCategoryImg(category: String): Int {
-        return when (category) {
-            "숙소" -> R.drawable.activity_accommodation
-            "관광지" -> R.drawable.activity_tourist
-            "음식점" -> R.drawable.activity_restaurant
-            "카페" -> R.drawable.activity_cafe
-            "SNS 스팟" -> R.drawable.activity_sns_spot
-            "문화 공간" -> R.drawable.activity_culture
-            "화장실" -> R.drawable.activity_toilet
-            "주차장" -> R.drawable.activity_parking
-            else -> R.drawable.activity_etc
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+        setMapCenterPoint()
+        setCurrentLocationMarker()
+        addBackgroundDots()
+        drawRoutePath()
+        // 활동 마커 추가하기
+        if (editViewModel.route.value?.routeActivities != null) {
+            for (i in 0 until editViewModel.route.value?.routeActivities!!.size) {
+                var activity = editViewModel.route.value?.routeActivities!![i]
+                addActivityMarker(
+                    LatLng(activity.latitude.toDouble(), activity.longitude.toDouble()),
+                    activity.category, i + 1
+                )
+            }
         }
     }
 }

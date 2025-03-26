@@ -74,9 +74,17 @@ object MapUtil {
     }
 
     // RouteLine
-    fun getRoutePathPolylineOptions(context: Context, activities: List<ActivityResult>): PolylineOptions {
+    fun getRoutePathPolylineOptionsByActivities(context: Context, activities: List<ActivityResult>): PolylineOptions {
         return PolylineOptions().apply {
             addAll(getLatLngRoutePath(activities))
+            width(8f)  // 선의 두께
+            color(ContextCompat.getColor(context, R.color.main))  // 선의 색상
+        }
+    }
+
+    fun getRoutePathPolylineOptions(context: Context, latLngList: List<LatLng>): PolylineOptions {
+        return PolylineOptions().apply {
+            addAll(latLngList)
             width(8f)  // 선의 두께
             color(ContextCompat.getColor(context, R.color.main))  // 선의 색상
         }
