@@ -13,7 +13,7 @@ data class Comment(
 )
 
 data class EditCommentRequest(
-    val comment: String
+    val content: String
 )
 
 data class PostCommentRequest(

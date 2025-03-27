@@ -81,7 +81,6 @@ class CommentViewModel @Inject constructor(
 
     // 댓글 작성
     private fun postComment() {
-        Log.d("postComment", "postComment")
         if (content.value.isNullOrBlank() || routeId.value == null) return
         viewModelScope.launch {
             val response = postCommentUseCase.invoke(routeId.value!!, content.value ?: "")
@@ -92,7 +91,6 @@ class CommentViewModel @Inject constructor(
 
     // 댓글 수정
     private fun editComment(commentId: Int, newContent: String) {
-        Log.d("editComment", "editComment")
         viewModelScope.launch {
             val response = editCommentUseCase.invoke(commentId, newContent)
             if (response.isSuccess) {
