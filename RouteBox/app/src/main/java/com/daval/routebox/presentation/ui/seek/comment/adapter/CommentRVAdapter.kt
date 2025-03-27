@@ -49,8 +49,8 @@ class CommentRVAdapter: RecyclerView.Adapter<CommentRVAdapter.ViewHolder>(){
     override fun getItemCount(): Int = commentList.size
 
     inner class ViewHolder(val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(commentContent: Comment) {
-            binding.commentContent = commentContent.content
+        fun bind(comment: Comment) {
+            binding.comment = comment
         }
     }
 }

@@ -86,6 +86,7 @@
     <string name="complete_refund">환급 요청을 완료했습니다.</string>
     <string name="go_home">홈으로</string>
     <!-- 댓글 -->
+    <string name="comment_cancel">메세지 수정 중</string>
     <string name="comment_hint">댓글을 입력해주세요</string>
     <string name="comment_empty">아직 댓글이 없습니다.\n첫 번째 댓글을 남겨주세요.</string>
     <string name="comment_date">2일 전</string>

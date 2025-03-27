@@ -24,7 +24,7 @@ interface CommentApiService {
 
     @PATCH("comments/{commentId}")
     suspend fun editComment(
-        @Path("routeId") routeId: Int,
+        @Path("commentId") commentId: Int,
         @Body editCommentRequest: EditCommentRequest
     ): BaseResponse
 
