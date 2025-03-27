@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek.comment
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -80,6 +81,7 @@ class CommentViewModel @Inject constructor(
 
     // 댓글 작성
     private fun postComment() {
+        Log.d("postComment", "postComment")
         if (content.value.isNullOrBlank() || routeId.value == null) return
         viewModelScope.launch {
             val response = postCommentUseCase.invoke(routeId.value!!, content.value ?: "")
@@ -90,6 +92,7 @@ class CommentViewModel @Inject constructor(
 
     // 댓글 수정
     private fun editComment(commentId: Int, newContent: String) {
+        Log.d("editComment", "editComment")
         viewModelScope.launch {
             val response = editCommentUseCase.invoke(commentId, newContent)
             if (response.isSuccess) {
@@ -125,7 +128,7 @@ class CommentViewModel @Inject constructor(
     }
 
     // 수정 모드 해제 및 작성 모드로 복귀
-    private fun resetToWriteMode() {
+    fun resetToWriteMode() {
         _isEditMode.value = false
         editingCommentId = null
         content.value = ""

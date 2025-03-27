@@ -3,6 +3,7 @@ package com.daval.routebox.presentation.ui.seek.comment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -40,7 +41,7 @@ class CommentActivity : AppCompatActivity() {
     private fun initData() {
         intent.apply {
             getStringExtra("routeName")?.let { viewModel.initTitle(it) }
-            getIntExtra("routeId", -1)?.let { viewModel.initRouteId(it) }
+            getIntExtra("routeId", -1).let { viewModel.initRouteId(it) }
         }
 
         viewModel.getComments()
@@ -86,6 +87,7 @@ class CommentActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     viewModel.setContentForEdit(commentId)
+                    showKeyboard()
                     true
                 }
                 R.id.menu_delete -> {
@@ -111,5 +113,13 @@ class CommentActivity : AppCompatActivity() {
             }
         }
         popupMenu.show()
+    }
+
+    private fun showKeyboard() {
+        binding.commentInputEt.requestFocus()
+        binding.commentInputEt.post {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.commentInputEt, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 }
