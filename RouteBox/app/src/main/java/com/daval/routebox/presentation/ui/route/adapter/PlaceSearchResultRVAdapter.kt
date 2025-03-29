@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.databinding.ItemKakaoSearchPlaceBinding
 import com.daval.routebox.domain.model.SearchActivityResult
 
-class KakaoPlaceRVAdapter(
+class PlaceSearchResultRVAdapter(
     private var placeList: ArrayList<SearchActivityResult>
-): RecyclerView.Adapter<KakaoPlaceRVAdapter.ViewHolder>() {
+): RecyclerView.Adapter<PlaceSearchResultRVAdapter.ViewHolder>() {
 
     private lateinit var mItemClickListener: MyItemClickListener
 
@@ -23,12 +23,12 @@ class KakaoPlaceRVAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): KakaoPlaceRVAdapter.ViewHolder {
+    ): PlaceSearchResultRVAdapter.ViewHolder {
         val binding: ItemKakaoSearchPlaceBinding = ItemKakaoSearchPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: KakaoPlaceRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlaceSearchResultRVAdapter.ViewHolder, position: Int) {
         holder.bind(placeList[position])
         // 장소 선택 연결
         holder.itemView.setOnClickListener {
