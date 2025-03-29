@@ -40,3 +40,7 @@ data class PointHistoryPage(
     val totalElements: Int,
     val totalPages: Int
 )
+
+data class BuyPointRequestResponse(
+    val point: Int
+)

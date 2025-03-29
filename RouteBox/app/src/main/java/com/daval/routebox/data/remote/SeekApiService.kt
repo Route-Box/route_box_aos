@@ -1,5 +1,6 @@
 package com.daval.routebox.data.remote
 
+import com.daval.routebox.domain.model.BuyPointRequestResponse
 import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.SearchRouteResponse
@@ -35,4 +36,9 @@ interface SeekApiService {
         @Path("routeId") routeId: Int,
         @Body buyRouteRequest: BuyRouteRequest
     ): String
+
+    @POST("/users/me/points")
+    suspend fun buyPoints(
+        @Body buyPointsRequest: BuyPointRequestResponse
+    ): BuyPointRequestResponse
 }
