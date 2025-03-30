@@ -44,8 +44,18 @@ class ChargeActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_charge)
 
+        binding.apply {
+            viewModel = this@ChargeActivity.viewModel
+            lifecycleOwner = this@ChargeActivity
+        }
+
+        initData()
         initClickListener()
         setInAppPurchase()
+    }
+
+    private fun initData() {
+        viewModel.getMyInformation()
     }
 
     private fun initClickListener() {

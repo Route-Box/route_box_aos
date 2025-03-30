@@ -7,11 +7,6 @@ data class Bank(
     var bankImg: Drawable
 )
 
-data class OwnPoint(
-    var nickname: String,
-    var point: Int
-)
-
 data class SearchRouteResponse(
     val routes: List<SearchRoute>
 )

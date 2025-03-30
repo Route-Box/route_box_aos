@@ -111,6 +111,8 @@ class SeekViewModel @Inject constructor(
     fun buyPoints() {
         viewModelScope.launch {
             seekRepository.buyPoints(_purchasePoint.value!!.pointValue)
+            // 포인트 업데이트
+            getMyInformation()
         }
     }
 

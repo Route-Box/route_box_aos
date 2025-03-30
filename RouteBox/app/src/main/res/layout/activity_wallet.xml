@@ -9,7 +9,6 @@
         <variable
             name="viewModel"
             type="com.daval.routebox.presentation.ui.seek.SeekViewModel" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

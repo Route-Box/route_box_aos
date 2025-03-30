@@ -6,8 +6,8 @@
 
     <data>
         <variable
-            name="point"
-            type="com.daval.routebox.domain.model.OwnPoint" />
+            name="viewModel"
+            type="com.daval.routebox.presentation.ui.seek.SeekViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +63,7 @@
                     android:id="@+id/nickname_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{point.nickname}"
+                    android:text="@{viewModel.myInfo.nickname}"
                     android:layout_marginTop="32dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
                     android:id="@+id/point_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{String.valueOf(point.point)}"
+                    android:text="@{String.valueOf(viewModel.myInfo.point)}"
                     android:textColor="@color/main"
                     android:layout_marginTop="4dp"
                     app:layout_constraintTop_toBottomOf="@id/nickname_tv"
