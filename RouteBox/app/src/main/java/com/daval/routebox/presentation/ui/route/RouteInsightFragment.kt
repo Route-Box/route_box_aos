@@ -92,7 +92,8 @@ class RouteInsightFragment : Fragment(), PopupDialogInterface {
                 // 댓글 화면으로 이동
                 val intent = Intent(requireActivity(), CommentActivity::class.java)
                 //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
-                intent.putExtra("comment", viewModel.routeList.value!![position].routeName)
+                intent.putExtra("routeName", viewModel.routeList.value!![position].routeName)
+                    .putExtra("routeId", viewModel.routeList.value!![position].routeId)
                 startActivity(intent)
             }
 
