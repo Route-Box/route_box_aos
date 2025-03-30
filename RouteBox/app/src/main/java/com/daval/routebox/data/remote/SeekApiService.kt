@@ -37,7 +37,7 @@ interface SeekApiService {
         @Body buyRouteRequest: BuyRouteRequest
     ): String
 
-    @POST("/users/me/points")
+    @POST("users/me/points")
     suspend fun buyPoints(
         @Body buyPointsRequest: BuyPointRequestResponse
     ): BuyPointRequestResponse

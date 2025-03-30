@@ -31,6 +31,6 @@ interface SeekRepository {
 
     /** 포인트 구매하기 */
     suspend fun buyPoints(
-        point: BuyPointRequestResponse
+        point: Int
     ): BuyPointRequestResponse
 }

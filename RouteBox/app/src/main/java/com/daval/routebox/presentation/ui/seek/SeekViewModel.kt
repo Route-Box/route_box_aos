@@ -1,11 +1,14 @@
 package com.daval.routebox.presentation.ui.seek
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.daval.routebox.domain.model.BuyPointRequestResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.MyInfoResponse
+import com.daval.routebox.domain.model.Point
 import com.daval.routebox.domain.model.PointHistory
 import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.RoutePreview
@@ -47,6 +50,9 @@ class SeekViewModel @Inject constructor(
     private val _pointHistoryPage = MutableLiveData<Int>(0)
     val pointHistoryPage: LiveData<Int> = _pointHistoryPage
 
+    private val _purchasePoint = MutableLiveData<Point>()
+    val purchasePoint: LiveData<Point> = _purchasePoint
+
     init {
         _routeList.value = arrayListOf()
         _page.value = 0
@@ -54,6 +60,10 @@ class SeekViewModel @Inject constructor(
 
     fun setPage(page: Int) {
         _page.value = page
+    }
+
+    fun setPurchasePoint(point: Point) {
+        _purchasePoint.value = point
     }
 
     fun refresh() {
@@ -95,6 +105,12 @@ class SeekViewModel @Inject constructor(
     fun getMyInformation() {
         viewModelScope.launch {
             _myInfo.value = userRepository.getMyInfo()
+        }
+    }
+
+    fun buyPoints() {
+        viewModelScope.launch {
+            seekRepository.buyPoints(_purchasePoint.value!!.pointValue)
         }
     }
 

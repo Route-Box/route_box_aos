@@ -74,12 +74,12 @@ class RemoteSeekDataSource @Inject constructor(
     }
 
     suspend fun buyPoints(
-        buyPointRequestResponse: BuyPointRequestResponse
+        point: Int
     ): BuyPointRequestResponse {
         var buyPointResponse = BuyPointRequestResponse(0)
         withContext(Dispatchers.IO) {
             runCatching {
-                seekApiService.buyPoints(buyPointRequestResponse)
+                seekApiService.buyPoints(BuyPointRequestResponse(point))
             }.onSuccess {
                 buyPointResponse = it
                 Log.d("RemoteSeekDataSource", "buyPoint Success\nresult = $buyPointResponse")

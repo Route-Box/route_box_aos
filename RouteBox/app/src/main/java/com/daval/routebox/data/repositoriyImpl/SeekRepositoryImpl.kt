@@ -32,7 +32,7 @@ class SeekRepositoryImpl @Inject constructor(
         return remoteSeekDataSource.getPointHistories(page, pageSize)
     }
 
-    override suspend fun buyPoints(point: BuyPointRequestResponse): BuyPointRequestResponse {
+    override suspend fun buyPoints(point: Int): BuyPointRequestResponse {
         return remoteSeekDataSource.buyPoints(point)
     }
 }

@@ -1,8 +1,8 @@
 package com.daval.routebox.presentation.ui.seek.wallet
 
-import android.app.DownloadManager.Query
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.android.billingclient.api.BillingClient
@@ -20,11 +20,14 @@ import com.android.billingclient.api.queryProductDetails
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityChargeBinding
 import com.daval.routebox.domain.model.Point
+import com.daval.routebox.presentation.ui.seek.SeekViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class ChargeActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityChargeBinding
@@ -35,6 +38,7 @@ class ChargeActivity: AppCompatActivity() {
     private lateinit var pointDetailList: ProductDetailsResult
     // 구매한 상품의 소모 완료 여부를 확인하기 위한 리스너
     private lateinit var consumeListener: ConsumeResponseListener
+    private val viewModel: SeekViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,8 +65,8 @@ class ChargeActivity: AppCompatActivity() {
         // 아래 코드는 그 부분을 처리해주는 코드!
         consumeListener = ConsumeResponseListener { billingResult, purchaseToken ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                // 포인트 재구매 가능
-                Log.d("PURCHASE-TEST", "소모 완료")
+                // 서버에 포인트 구매 내역 전송
+                viewModel.buyPoints()
             } else {
                 // 포인트 재구매 불가능
                 Log.d("PURCHASE-TEST", "소모 실패")
@@ -126,21 +130,27 @@ class ChargeActivity: AppCompatActivity() {
         // pointIndex는 구글 콘솔에 정렬된 순서대로 지정
         binding.purchase4500.setOnClickListener {
             startPurchaseFlow(Point.POINT4500.pointIndex)
+            viewModel.setPurchasePoint(Point.POINT4500)
         }
         binding.purchase9500.setOnClickListener {
             startPurchaseFlow(Point.POINT9500.pointIndex)
+            viewModel.setPurchasePoint(Point.POINT9500)
         }
         binding.purchase14500.setOnClickListener {
             startPurchaseFlow(Point.POINT14500.pointIndex)
+            viewModel.setPurchasePoint(Point.POINT14500)
         }
         binding.purchase19500.setOnClickListener {
             startPurchaseFlow(Point.POINT19500.pointIndex)
+            viewModel.setPurchasePoint(Point.POINT19500)
         }
         binding.purchase24500.setOnClickListener {
             startPurchaseFlow(Point.POINT24500.pointIndex)
+            viewModel.setPurchasePoint(Point.POINT24500)
         }
         binding.purchase49500.setOnClickListener {
             startPurchaseFlow(Point.POINT49500.pointIndex)
+            viewModel.setPurchasePoint(Point.POINT49500)
         }
     }
 
