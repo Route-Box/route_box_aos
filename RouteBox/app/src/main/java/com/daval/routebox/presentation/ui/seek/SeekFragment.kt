@@ -71,7 +71,10 @@ class SeekFragment : Fragment() {
         binding.seekHomeRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         routeAdapter.setRouteCommentClickListener(object: SeekHomeRouteRVAdapter.MyItemClickListener {
             override fun commentItemClick(position: Int, data: RoutePreview) {
-                startActivity(Intent(context, CommentActivity::class.java).putExtra("routeId", data.routeId))
+                startActivity(Intent(context, CommentActivity::class.java)
+                    .putExtra("routeId", data.routeId)
+                    .putExtra("routeName", data.routeName)
+                )
             }
             override fun moreItemClick(view: View, routeId: Int) {
                 viewModel.selectedRouteId = routeId

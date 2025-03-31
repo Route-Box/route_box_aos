@@ -100,7 +100,9 @@ class RouteDetailActivity : AppCompatActivity(), PopupDialogInterface, OnMapRead
             // 댓글 화면으로 이동
             val intent = Intent(this, CommentActivity::class.java)
             //TODO: 댓글 화면에서 필요한 정보 넘기기 (routeId 등)
-            intent.putExtra("comment", viewModel.route.value!!.routeName)
+            intent.putExtra("routeName", viewModel.route.value!!.routeName)
+                .putExtra("routeId", viewModel.route.value!!.routeId)
+
             startActivity(intent)
         }
 

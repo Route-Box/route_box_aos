@@ -69,4 +69,17 @@ object BindingAdapter {
     fun setMyRouteContent(textView: TextView, content: String?) {
         textView.text = content ?: "수정하기를 눌러 제목과 내용을 추가해주세요"
     }
+
+    @JvmStatic
+    @BindingAdapter("profileImage")
+    fun loadProfileImage(view: ImageView, imageUrl: String?) {
+        val defaultImage = R.drawable.ic_profile_default
+        Glide.with(view)
+            .load(imageUrl)
+            .placeholder(defaultImage)
+            .error(defaultImage)
+            .fallback(defaultImage)
+            .into(view)
+    }
+
 }

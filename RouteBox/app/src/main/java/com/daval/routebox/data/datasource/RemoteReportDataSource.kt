@@ -1,7 +1,9 @@
-package com.davl.routebox.data.datasource
+package com.daval.routebox.data.datasource
 
 import android.util.Log
 import com.daval.routebox.data.remote.ReportApiService
+import com.daval.routebox.domain.model.BaseResponse
+import com.daval.routebox.domain.model.ReportCommentRequest
 import com.daval.routebox.domain.model.ReportId
 import com.daval.routebox.domain.model.ReportRoute
 import com.daval.routebox.domain.model.ReportUser
@@ -22,9 +24,9 @@ class RemoteReportDataSource @Inject constructor(
                 reportApiService.reportUser(reportUserBody)
             }.onSuccess {
                 reportId = it
-                Log.d("RemoteRouteDataSource", "reportUser Success\nreportId = ${reportId}")
+                Log.d("RemoteReportDataSource", "reportUser Success\nreportId = ${reportId}")
             }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportUser Fail\ne = $e")
+                Log.d("RemoteReportDataSource", "reportUser Fail\ne = $e")
             }
         }
 
@@ -40,12 +42,30 @@ class RemoteReportDataSource @Inject constructor(
                 reportApiService.reportRoute(reportRouteBody)
             }.onSuccess {
                 reportId = it
-                Log.d("RemoteRouteDataSource", "reportRoute Success\nreportId = ${reportId}")
+                Log.d("RemoteReportDataSource", "reportRoute Success\nreportId = ${reportId}")
             }.onFailure { e ->
-                Log.d("RemoteRouteDataSource", "reportRoute Fail\ne = $e")
+                Log.d("RemoteReportDataSource", "reportRoute Fail\ne = $e")
             }
         }
 
         return reportId
+    }
+
+    suspend fun reportComment(
+        reportCommentBody: ReportCommentRequest
+    ): BaseResponse {
+        var response = BaseResponse()
+        withContext(Dispatchers.IO) {
+            runCatching {
+                reportApiService.reportComment(reportCommentBody)
+            }.onSuccess {
+                response = it
+                Log.d("RemoteReportDataSource", "reportComment Success\nreportId = ${response}")
+            }.onFailure { e ->
+                Log.d("RemoteReportDataSource", "reportComment Fail\ne = $e")
+            }
+        }
+
+        return response
     }
 }

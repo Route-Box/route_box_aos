@@ -1,5 +1,7 @@
 package com.daval.routebox.domain.repositories
 
+import com.daval.routebox.domain.model.BaseResponse
+import com.daval.routebox.domain.model.ReportCommentRequest
 import com.daval.routebox.domain.model.ReportId
 import com.daval.routebox.domain.model.ReportRoute
 import com.daval.routebox.domain.model.ReportUser
@@ -15,4 +17,9 @@ interface ReportRepository {
     suspend fun reportRoute(
         reportRouteBody: ReportRoute
     ): RouteReportId
+
+    /** 댓글 신고 */
+    suspend fun reportComment(
+        reportCommentBody: ReportCommentRequest
+    ): BaseResponse
 }
