@@ -79,11 +79,16 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
     }
 
     private fun showCalendarBottomSheet(isStartDate: Boolean, date: LocalDate) {
-        val calendarBottomSheet = CalendarBottomSheet(this, true, isStartDate, date)
-        calendarBottomSheet.run {
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
+        val calendarBottomSheet = CalendarBottomSheet(this, true, isStartDate, date) //CalendarBottomSheet()
+        calendarBottomSheet.show(supportFragmentManager, calendarBottomSheet.tag)
+
+        supportFragmentManager.setFragmentResultListener("calendarResult", this) { _, bundle ->
+            val selectedDate = bundle.getString("selectedDate") ?: return@setFragmentResultListener
+            val isStart = bundle.getBoolean("isStartDate")
+
+            // 선택된 날짜를 처리
+            onDateReceived(isStart, LocalDate.parse(selectedDate))
         }
-        calendarBottomSheet.show(this.supportFragmentManager, calendarBottomSheet.tag)
     }
 
     private fun showTimePickerBottomSheet(isStartTime: Boolean, initTime: Pair<Int, Int>?) {
