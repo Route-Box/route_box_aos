@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -21,16 +22,20 @@ import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.daval.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
+import com.daval.routebox.presentation.ui.seek.wallet.ChargeActivity
 import com.daval.routebox.presentation.ui.seek.wallet.WalletActivity
+import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.PopupDialogInterface
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.apply
 import kotlin.getValue
 
+@SuppressLint("StringFormatInvalid")
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class SeekFragment : Fragment() {
+class SeekFragment : Fragment(), PopupDialogInterface {
 
     private lateinit var binding: FragmentSeekBinding
     private val viewModel : SeekViewModel by viewModels()
@@ -80,8 +85,9 @@ class SeekFragment : Fragment() {
                 viewModel.selectedRouteId = routeId
                 reportMenuShow(view)
             }
-            override fun buyItemClick(routeId: Int) {
-                viewModel.buyRoute(routeId)
+            override fun buyItemClick(data: RoutePreview) {
+                viewModel.selectedRouteId = data.routeId
+                showPopupDialog(5)
             }
         })
         binding.seekHomeRv.itemAnimator = null
@@ -133,6 +139,16 @@ class SeekFragment : Fragment() {
             }
             isEnd = false
         }
+
+        viewModel.buyResult.observe(viewLifecycleOwner) {
+            if (viewModel.buyResult.value == true) {
+                showPopupDialog(6)
+                viewModel.resetBuyResult()
+            } else if (viewModel.buyResult.value == false) {
+                showPopupDialog(7)
+                viewModel.resetBuyResult()
+            }
+        }
     }
 
     private fun initScrollListener() {
@@ -153,4 +169,45 @@ class SeekFragment : Fragment() {
             viewModel.getRouteList()
         })
     }
+
+    private fun showPopupDialog(dialogTypeId: Int) {
+        val content = setPopupContent(dialogTypeId)
+        val dialog = CommonPopupDialog(this@SeekFragment,
+            dialogTypeId, content[0], content[2], content[1]
+        )
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(requireActivity().supportFragmentManager, "PopupDialog")
+    }
+
+    // 구매하기 단계에서 나오는 3가지 팝업 문구 정리
+    private fun setPopupContent(dialogTypeId: Int): ArrayList<String> {
+        return when (dialogTypeId) {
+            5 -> arrayListOf(
+                String.format(resources.getString(R.string.buy_route_popup_default_content), "닉네임"),
+                resources.getString(R.string.buy_point),
+                resources.getString(R.string.popup_negative_default)
+            )
+            6 -> arrayListOf(
+                resources.getString(R.string.buy_route_popup_success_content),
+                resources.getString(R.string.buy_route_popup_success_content_positive),
+                resources.getString(R.string.buy_route_popup_success_content_negative)
+            )
+            else -> arrayListOf(
+                resources.getString(R.string.buy_route_popup_failure_content),
+                resources.getString(R.string.charge),
+                resources.getString(R.string.confirm_btn)
+            )
+        }
+    }
+
+    // TODO: 서버 결과값 받아서 처리
+    override fun onClickPositiveButton(id: Int) {
+        when (id) {
+            5 -> viewModel.buyRoute()
+            6 -> Log.d("ROUTE-TEST", "바로 확인하기")
+            7 -> startActivity(Intent(requireActivity(), ChargeActivity::class.java))
+        }
+    }
+
+    override fun onClickNegativeButton(id: Int) { }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.BuyPointRequestResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.MyInfoResponse
@@ -34,8 +35,8 @@ class SeekViewModel @Inject constructor(
     private val _page = MutableLiveData(0)
     val page: LiveData<Int> = _page
 
-    private val _buyResult = MutableLiveData<String>()
-    val buyResult: LiveData<String> = _buyResult
+    private val _buyResult = MutableLiveData<Boolean?>(null)
+    val buyResult: LiveData<Boolean?> = _buyResult
     
     // TODO: Enum으로 변경
     private val _paymentMethod = MutableLiveData("POINT")
@@ -66,6 +67,10 @@ class SeekViewModel @Inject constructor(
         _purchasePoint.value = point
     }
 
+    fun resetBuyResult() {
+        _buyResult.value = null
+    }
+
     fun refresh() {
         _page.value = 0
         _routeList.value = arrayListOf()
@@ -86,9 +91,9 @@ class SeekViewModel @Inject constructor(
         }
     }
 
-    fun buyRoute(routeId: Int) {
+    fun buyRoute() {
         viewModelScope.launch {
-            _buyResult.value = seekRepository.buyRoute(routeId, BuyRouteRequest(paymentMethod.value!!))
+            _buyResult.value = seekRepository.buyRoute(selectedRouteId, BuyRouteRequest(paymentMethod.value!!)).isSuccess
         }
     }
 

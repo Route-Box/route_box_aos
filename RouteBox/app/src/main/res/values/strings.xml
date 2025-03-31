@@ -49,6 +49,11 @@
 
     <!-- 탐색 -->
     <string name="route_kor">루트</string>
+    <string name="buy_route_popup_default_content">%s의 루트를 구매하시겠습니까?</string>
+    <string name="buy_route_popup_success_content">성공적으로 구매가 완료되었습니다.\n마이페이지에서 확인할 수 있습니다.</string>
+    <string name="buy_route_popup_success_content_positive">바로 확인하기</string>
+    <string name="buy_route_popup_success_content_negative">현재 페이지 유지</string>
+    <string name="buy_route_popup_failure_content">포인트가 부족합니다.</string>
     <!-- 내 지갑 -->
     <string name="my_wallet">내 지갑</string>
     <string name="own_point">님의 보유 포인트</string>

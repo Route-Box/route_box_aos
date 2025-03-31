@@ -2,6 +2,7 @@ package com.daval.routebox.data.datasource
 
 import android.util.Log
 import com.daval.routebox.data.remote.SeekApiService
+import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.BuyPointRequestResponse
 import com.daval.routebox.domain.model.PointHistoryPage
 import com.daval.routebox.domain.model.PointHistoryResponse
@@ -58,14 +59,14 @@ class RemoteSeekDataSource @Inject constructor(
     suspend fun buyRoute(
         routeId: Int,
         buyRouteRequest: BuyRouteRequest
-    ): String {
-        var buyRouteResponse = ""
+    ): BaseResponse {
+        var buyRouteResponse = BaseResponse()
         withContext(Dispatchers.IO) {
             runCatching {
                 seekApiService.buyRoute(routeId, buyRouteRequest)
             }.onSuccess {
                 buyRouteResponse = it
-                Log.d("RemoteSeekDataSource", "buyRoute Success\nresult = $buyRouteResponse")
+                Log.d("RemoteSeekDataSource", "buyRoute Success\nresult = ${buyRouteResponse.isSuccess}")
             }.onFailure { e ->
                 Log.d("RemoteSeekDataSource", "buyRoute Fail\ne = $e")
             }

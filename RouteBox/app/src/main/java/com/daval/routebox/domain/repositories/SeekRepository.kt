@@ -1,5 +1,6 @@
 package com.daval.routebox.domain.repositories
 
+import com.daval.routebox.domain.model.BaseResponse
 import com.daval.routebox.domain.model.BuyPointRequestResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.PointHistoryResponse
@@ -21,7 +22,7 @@ interface SeekRepository {
     suspend fun buyRoute(
         routeId: Int,
         buyRouteRequest: BuyRouteRequest
-    ): String
+    ): BaseResponse
 
     /** 내 포인트 구매 이력 조회 */
     suspend fun getPointHistories(
