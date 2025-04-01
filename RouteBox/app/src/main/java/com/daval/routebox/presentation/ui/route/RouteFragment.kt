@@ -129,7 +129,7 @@ class RouteFragment : Fragment(), PopupDialogInterface {
         viewModel.routeList.observe(viewLifecycleOwner) { routeList ->
             Log.d("RouteFragment", "routeList: $routeList")
             if (!routeList.isNullOrEmpty()) {
-                myRouteAdapter.addRoute(routeList)
+                myRouteAdapter.submitList(routeList)
             }
         }
 
