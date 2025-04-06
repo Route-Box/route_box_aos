@@ -20,7 +20,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.daval.routebox.BuildConfig
 import com.daval.routebox.R
 import com.daval.routebox.databinding.BottomSheetConveniencePlaceBinding
@@ -30,7 +29,6 @@ import com.daval.routebox.domain.model.ConvenienceCategoryResult
 import com.daval.routebox.domain.model.WeatherData
 import com.daval.routebox.presentation.config.Constants.OPEN_API_BASE_URL
 import com.daval.routebox.presentation.config.Constants.OPEN_API_SERVICE_KEY
-import com.daval.routebox.presentation.ui.route.adapter.ConveniencePlaceRVAdapter
 import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity
 import com.daval.routebox.presentation.ui.route.write.RouteWriteActivity.Companion.ROUTE_WRITE_DEFAULT_ZOOM_LEVEL
 import com.daval.routebox.presentation.ui.route.write.RouteWriteViewModel
@@ -44,23 +42,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.CircularBounds
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.IsOpenRequest
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.api.net.SearchNearbyRequest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListener,
@@ -72,8 +59,8 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     private val convenienceViewModel: RouteConvenienceViewModel by activityViewModels()
 
     private lateinit var bottomSheetConvenienceDialog: BottomSheetConveniencePlaceBinding
-    private var placeList = arrayListOf<ConvenienceCategoryResult>()
-    private val placeRVAdapter = ConveniencePlaceRVAdapter(placeList)
+    private lateinit var bottomSheetController: ConveniencePlaceBottomSheet
+
     private var mainWeather: WeatherData? = null
     private lateinit var placesClient: PlacesClient
 
@@ -95,20 +82,12 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY)
         placesClient = Places.createClient(requireContext())
 
-        setInit()
+        initPlaceSearchResultBottomSheet()
         initMapSetting()
         initClickListener()
         initRadioButtons()
-        setAdapter()
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        Log.e("RouteConvenienceFrag", "onResume()")
-        //TODO: 뒤로가기 시 편의기능 핀 정보 다시 불러오기
     }
 
     private fun initClickListener() {
@@ -135,15 +114,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 weatherBottomSheet.tag
             )
         }
-    }
-
-    private fun showPlaceInfoBottomSheet(placeInfo: ConvenienceCategoryResult) {
-        val placeInfoBottomSheet = ConveniencePlaceBottomSheet()
-        placeInfoBottomSheet.run {
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogStyle)
-        }
-        placeInfoBottomSheet.placeInfo = placeInfo
-        placeInfoBottomSheet.show(requireActivity().supportFragmentManager, "")
     }
 
     private fun initObserve() {
@@ -183,17 +153,15 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
                 placeList.forEach { place ->
                     addConveniencePlacesMarker(place)
                 }
-                placeRVAdapter.resetAllItems(placeList)
             }
         }
     }
 
-    private fun setInit() {
+    private fun initPlaceSearchResultBottomSheet() {
         bottomSheetConvenienceDialog = binding.routeConvenienceBottomSheet
-        bottomSheetConvenienceDialog.apply {
-            this.viewModel = this@RouteConvenienceFragment.convenienceViewModel
-            this.lifecycleOwner = this@RouteConvenienceFragment
-        }
+
+        bottomSheetController = ConveniencePlaceBottomSheet(childFragmentManager, convenienceViewModel)
+        bottomSheetController.bind(bottomSheetConvenienceDialog)
     }
 
     private fun initMapSetting() {
@@ -301,25 +269,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
         }
     }
 
-    private fun setAdapter() {
-        bottomSheetConvenienceDialog.placeRv.apply {
-            this.adapter = placeRVAdapter
-            this.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
-        }
-        bottomSheetConvenienceDialog.placeRv.itemAnimator = null
-
-        placeRVAdapter.setItemClickListener(object : ConveniencePlaceRVAdapter.MyItemClickListener {
-            override fun onItemClick(placeInfo: ConvenienceCategoryResult) {
-                // 바텀시트에 아이템 정보 세팅
-                showPlaceInfoBottomSheet(placeInfo)
-                // 지도에 핀 하나만 표시
-                googleMap?.clear()
-                setCurrentLocationMarker()
-                addConveniencePlacesMarker(placeInfo)
-            }
-        })
-    }
-
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         buttonView.typeface = if (isChecked) resources.getFont(R.font.pretendard_bold) else resources.getFont(R.font.pretendard_regular)
     }
@@ -371,8 +320,6 @@ class RouteConvenienceFragment: Fragment(), CompoundButton.OnCheckedChangeListen
     override fun onStop() {
         super.onStop()
         convenienceViewModel.setPlaceCategoryResult(arrayListOf())
-        placeRVAdapter.removeAllItems()
-        binding.routeConvenienceBottomSheet.bottomSheetCl.visibility = View.GONE
     }
 
     private fun getDateAndTime(): Pair<String, String> {

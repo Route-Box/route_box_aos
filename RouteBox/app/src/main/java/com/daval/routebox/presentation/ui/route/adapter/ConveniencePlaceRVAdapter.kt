@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.route.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -23,12 +24,12 @@ class ConveniencePlaceRVAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ConveniencePlaceRVAdapter.ViewHolder {
+    ): ViewHolder {
         val binding: ItemConvenienceCategoryResultBinding = ItemConvenienceCategoryResultBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ConveniencePlaceRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(placeList[position])
         holder.itemView.setOnClickListener {
             mItemClickListener.onItemClick(placeList[position])
@@ -43,6 +44,7 @@ class ConveniencePlaceRVAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addAllItems(placeItems: ArrayList<ConvenienceCategoryResult>) {
         placeList = arrayListOf()
         placeList.addAll(placeItems)

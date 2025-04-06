@@ -16,34 +16,13 @@
         android:minHeight="325dp"
         android:paddingHorizontal="22dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/convenience_place_top_cl"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:background="@drawable/bottom_dialog_radius"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/bottom_sheet_top"
-                android:layout_width="40dp"
-                android:layout_height="4dp"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="#D9D9D9"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <TextView
             android:id="@+id/place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{placeInfo.placeName}"
             android:layout_marginTop="30dp"
-            app:layout_constraintTop_toTopOf="@id/convenience_place_top_cl"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="@color/route_convenience_category_result"
             tools:text="장소 이름"
