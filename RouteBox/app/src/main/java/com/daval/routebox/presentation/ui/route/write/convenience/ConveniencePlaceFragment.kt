@@ -30,7 +30,6 @@ class ConveniencePlaceFragment : Fragment() {
     ): View? {
         binding = FragmentConveniencePlaceBinding.inflate(inflater, container, false)
 
-        Log.d("BSCheck", "ConveniencePlaceFragment - onCreateView")
         setInit()
         return binding.root
     }
@@ -58,14 +57,14 @@ class ConveniencePlaceFragment : Fragment() {
 
         placeRVAdapter.setItemClickListener(object : ConveniencePlaceRVAdapter.MyItemClickListener {
             override fun onItemClick(placeInfo: ConvenienceCategoryResult) {
-                //TODO: 프래그먼트 변경, 지도에 핀 하나만 표시
+                viewModel.setPlaceInfo(placeInfo) // 장소 상세 정보 설정
+                viewModel.setPlaceDetailFragment() // 장소 상세 화면
             }
         })
     }
 
     private fun initObserve() {
         viewModel.placeCategoryResult.observe(viewLifecycleOwner) {
-            Log.d("BSCheck", "placeCategoryResult: $it")
             placeRVAdapter.addAllItems(it)
         }
     }

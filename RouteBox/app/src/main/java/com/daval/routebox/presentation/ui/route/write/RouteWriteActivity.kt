@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.daval.routebox.R
 import com.daval.routebox.databinding.ActivityRouteWriteBinding
 import com.daval.routebox.presentation.ui.route.GPSBackgroundService
@@ -118,9 +119,10 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
 
     private fun initClickListener() {
         // 안드로이드 기본 뒤로가기 버튼 클릭
-        onBackPressedDispatcher.addCallback(this) {
-            finish()
-        }
+//        onBackPressedDispatcher.addCallback(this) {
+//            Toast.makeText(this@RouteWriteActivity, "뒤로가기 버튼 클릭 in Activity", Toast.LENGTH_SHORT).show()
+//            finish()
+//        }
 
         binding.trackingCv.setOnClickListener {
             viewModel.setIsLiveTracking(this)
@@ -136,10 +138,10 @@ class RouteWriteActivity: AppCompatActivity(), SharedPreferences.OnSharedPrefere
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab!!.position) {
                     0 -> {
-                        Navigation.findNavController(binding.routeContainer).navigate(R.id.action_routeTrackingFragment_to_routeConvenienceFragment)
+                        findNavController(binding.routeContainer).navigate(R.id.action_routeTrackingFragment_to_routeConvenienceFragment)
                     }
                     1 -> {
-                        Navigation.findNavController(binding.routeContainer).navigate(R.id.action_routeConvenienceFragment_to_routeTrackingFragment)
+                        findNavController(binding.routeContainer).navigate(R.id.action_routeConvenienceFragment_to_routeTrackingFragment)
                     }
                 }
             }

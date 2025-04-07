@@ -1,11 +1,13 @@
 package com.daval.routebox.presentation.ui.route.write.convenience
 
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.daval.routebox.BuildConfig
 import com.daval.routebox.databinding.FragmentConveniencePlaceDetailBinding
@@ -21,12 +23,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
+@RequiresApi(Build.VERSION_CODES.O)
 class ConveniencePlaceDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentConveniencePlaceDetailBinding
 
     lateinit var viewModel: RouteConvenienceViewModel
-    lateinit var placeInfo: ConvenienceCategoryResult
 
     private lateinit var placesClient: PlacesClient
     private lateinit var imageRVAdapter: ConveniencePlaceImageRVAdapter
@@ -38,28 +40,24 @@ class ConveniencePlaceDetailFragment : Fragment() {
     ): View? {
         binding = FragmentConveniencePlaceDetailBinding.inflate(inflater, container, false)
 
-        // placeInfo가 초기화된 후에 setInit() 호출
-        if (::placeInfo.isInitialized) {
-            setInit()
-        }
-
+        initObserve()
         return binding.root
     }
 
-    private fun setInit() {
+    private fun setInit(placeInfo: ConvenienceCategoryResult) {
         Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY)
         placesClient = Places.createClient(requireContext())
 
         binding.apply {
-            placeInfo = this@ConveniencePlaceDetailFragment.placeInfo
-            lifecycleOwner = this@ConveniencePlaceDetailFragment
+            this.placeInfo = placeInfo
+            this.lifecycleOwner = this@ConveniencePlaceDetailFragment
         }
 
-        Log.d("ConveniencePlaceBS", "photoMetadataSize: ${placeInfo.photoMetadataList?.size}")
+        Log.d("ConveniencePlaceBS", "place: ${placeInfo.placeName}, photoMetadataSize: ${placeInfo.photoMetadataList?.size}")
 
         if (!placeInfo.photoMetadataList.isNullOrEmpty()) {
             setAdapter()
-            fetchPlacePhotos(placeInfo.photoMetadataList!!.take(IMAGE_MAX_SIZE))
+            fetchPlacePhotos(placeInfo.photoMetadataList.take(IMAGE_MAX_SIZE))
         }
     }
 
@@ -101,6 +99,13 @@ class ConveniencePlaceDetailFragment : Fragment() {
         }
     }
 
+    private fun initObserve() {
+        viewModel.selectedPlaceInfo.observe(viewLifecycleOwner) {
+            if (it != null) {
+                setInit(it)
+            }
+        }
+    }
 
     companion object {
         private const val IMAGE_MAX_SIZE = 5
