@@ -8,6 +8,8 @@ import com.daval.routebox.domain.model.PointHistoryPage
 import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.SearchRouteResponse
+import com.daval.routebox.presentation.utils.ErrorHandler
+import com.daval.routebox.presentation.utils.ErrorHandler.handleError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -66,9 +68,11 @@ class RemoteSeekDataSource @Inject constructor(
                 seekApiService.buyRoute(routeId, buyRouteRequest)
             }.onSuccess {
                 buyRouteResponse = it
-                Log.d("RemoteSeekDataSource", "buyRoute Success\nresult = ${buyRouteResponse.isSuccess}")
+                Log.d("RemoteSeekDataSource", "buyRoute Success\nresult $it")
             }.onFailure { e ->
                 Log.d("RemoteSeekDataSource", "buyRoute Fail\ne = $e")
+                val error = e.handleError()
+                buyRouteResponse = BaseResponse(error.isSuccess, error.code, error.message)
             }
         }
         return buyRouteResponse

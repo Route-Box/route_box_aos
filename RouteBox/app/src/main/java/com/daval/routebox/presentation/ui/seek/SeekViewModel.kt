@@ -94,6 +94,7 @@ class SeekViewModel @Inject constructor(
     fun buyRoute() {
         viewModelScope.launch {
             _buyResult.value = seekRepository.buyRoute(selectedRouteId, BuyRouteRequest(paymentMethod.value!!)).isSuccess
+            Log.d("BUY-ROUTE", "selectedRouteId = ${selectedRouteId} / paymentMethod.value = ${paymentMethod.value}")
         }
     }
 
