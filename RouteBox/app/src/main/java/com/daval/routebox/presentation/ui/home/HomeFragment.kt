@@ -110,13 +110,13 @@ class HomeFragment : Fragment(), NativeMessageCallback {
     override fun onMessageReceived(type: MessageType, page: WebViewPage, id: String) {
         when (page) {
             WebViewPage.MY_ROUTE -> { // 내 루트 탭으로 이동
+                Log.d("myrouteNav", "myrouteNav")
                 selectBottomNavTab(R.id.myRouteFragment)
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMyRouteFragment())
             }
 
             WebViewPage.SEARCH -> { // 탐색 탭으로 이동
+                Log.d("seekNav", "seekNav")
                 selectBottomNavTab(R.id.seekFragment)
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSeekFragment())
             }
 
             WebViewPage.ROUTE -> { // 루트 조회 화면으로 이동
@@ -137,9 +137,10 @@ class HomeFragment : Fragment(), NativeMessageCallback {
     }
 
     private fun selectBottomNavTab(tabId: Int) {
-        // 바텀네비 아이템 선택 처리
-        val bottomNavView =
-            requireActivity().findViewById<BottomNavigationView>(R.id.main_bottom_nav)
-        bottomNavView.selectedItemId = tabId
+        val bottomNavView = requireActivity().findViewById<BottomNavigationView>(R.id.main_bottom_nav)
+        bottomNavView.post {
+            bottomNavView.menu.performIdentifierAction(tabId, 0)
+        }
     }
+
 }
