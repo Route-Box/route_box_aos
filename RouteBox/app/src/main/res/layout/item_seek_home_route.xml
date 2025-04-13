@@ -82,6 +82,7 @@
                 android:paddingVertical="8dp"
                 android:paddingHorizontal="15dp"
                 android:text="@string/buy_point"
+                android:visibility="@{preview.isPurchased ? View.GONE : View.VISIBLE}"
                 android:background="@drawable/radius_100"
                 android:layout_marginEnd="6dp"
                 style="@style/small_fill_default"
