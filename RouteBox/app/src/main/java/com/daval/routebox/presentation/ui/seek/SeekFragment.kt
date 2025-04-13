@@ -3,12 +3,10 @@ package com.daval.routebox.presentation.ui.seek
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -121,7 +119,7 @@ class SeekFragment : Fragment() {
 
                 // 만약 새로고침으로 인해 값이 변경되었다면, 새로고침을 안 보이게 처리
                 if (binding.swipeLayout.isRefreshing) binding.swipeLayout.isRefreshing = false
-            } else {
+            } else if (viewModel.routeList.value?.size != 0) {
                 if (isBottom && !isEnd) {
                     routeAdapter.addItems(viewModel.routeList.value!!)
                     isBottom = false
