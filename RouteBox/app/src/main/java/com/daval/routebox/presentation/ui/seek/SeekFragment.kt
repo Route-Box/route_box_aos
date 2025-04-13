@@ -20,6 +20,7 @@ import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentSeekBinding
 import com.daval.routebox.domain.model.RoutePreview
 import com.daval.routebox.presentation.ui.common.report.ReportFeedActivity
+import com.daval.routebox.presentation.ui.route.RouteDetailActivity
 import com.daval.routebox.presentation.ui.seek.adapter.SeekHomeRouteRVAdapter
 import com.daval.routebox.presentation.ui.seek.comment.CommentActivity
 import com.daval.routebox.presentation.ui.seek.wallet.ChargeActivity
@@ -87,6 +88,7 @@ class SeekFragment : Fragment(), PopupDialogInterface {
             }
             override fun buyItemClick(data: RoutePreview) {
                 viewModel.selectedRouteId = data.routeId
+                viewModel.selectedRouteOwner = data.nickname
                 showPopupDialog(5)
             }
         })
@@ -95,7 +97,6 @@ class SeekFragment : Fragment(), PopupDialogInterface {
 
     private fun initClickListener() {
         binding.topPointIv.setOnClickListener {
-            // TODO: 닉네임 전달 or 지갑 API 연동 후 닉네임 연결
             startActivity(Intent(context, WalletActivity::class.java))
         }
 
@@ -141,10 +142,11 @@ class SeekFragment : Fragment(), PopupDialogInterface {
         }
 
         viewModel.buyResult.observe(viewLifecycleOwner) {
-            if (viewModel.buyResult.value == true) {
+            if (viewModel.buyResult.value?.code == 200) {
                 showPopupDialog(6)
                 viewModel.resetBuyResult()
-            } else if (viewModel.buyResult.value == false) {
+            } else if (viewModel.buyResult.value?.code == 3005) {
+                // 포인트가 부족한 경우
                 showPopupDialog(7)
                 viewModel.resetBuyResult()
             }
@@ -183,7 +185,7 @@ class SeekFragment : Fragment(), PopupDialogInterface {
     private fun setPopupContent(dialogTypeId: Int): ArrayList<String> {
         return when (dialogTypeId) {
             5 -> arrayListOf(
-                String.format(resources.getString(R.string.buy_route_popup_default_content), "닉네임"),
+                String.format(resources.getString(R.string.buy_route_popup_default_content), viewModel.selectedRouteOwner),
                 resources.getString(R.string.buy_point),
                 resources.getString(R.string.popup_negative_default)
             )
@@ -200,11 +202,10 @@ class SeekFragment : Fragment(), PopupDialogInterface {
         }
     }
 
-    // TODO: 서버 결과값 받아서 처리
     override fun onClickPositiveButton(id: Int) {
         when (id) {
             5 -> viewModel.buyRoute()
-            6 -> Log.d("ROUTE-TEST", "바로 확인하기")
+            6 -> startActivity(Intent(requireActivity(), RouteDetailActivity::class.java).putExtra("routeId", viewModel.selectedRouteId))
             7 -> startActivity(Intent(requireActivity(), ChargeActivity::class.java))
         }
     }

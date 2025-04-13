@@ -6,14 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daval.routebox.domain.model.BaseResponse
-import com.daval.routebox.domain.model.BuyPointRequestResponse
 import com.daval.routebox.domain.model.BuyRouteRequest
 import com.daval.routebox.domain.model.MyInfoResponse
 import com.daval.routebox.domain.model.Point
 import com.daval.routebox.domain.model.PointHistory
 import com.daval.routebox.domain.model.PointHistoryResponse
 import com.daval.routebox.domain.model.RoutePreview
-import com.daval.routebox.domain.repositories.AuthRepository
 import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.SeekRepository
 import com.daval.routebox.domain.repositories.UserRepository
@@ -31,16 +29,15 @@ class SeekViewModel @Inject constructor(
     val routeList: LiveData<ArrayList<RoutePreview>> = _routeList
 
     var selectedRouteId = 0
+    var selectedRouteOwner = ""
 
     private val _page = MutableLiveData(0)
     val page: LiveData<Int> = _page
 
-    private val _buyResult = MutableLiveData<Boolean?>(null)
-    val buyResult: LiveData<Boolean?> = _buyResult
-    
-    // TODO: Enum으로 변경
-    private val _paymentMethod = MutableLiveData("POINT")
-    val paymentMethod: LiveData<String> = _paymentMethod
+    private val _buyResult = MutableLiveData<BaseResponse?>(null)
+    val buyResult: LiveData<BaseResponse?> = _buyResult
+
+    private val _paymentMethod = MutableLiveData(PAYMENT_METHOD)
 
     private val _myInfo = MutableLiveData<MyInfoResponse>()
     val myInfo: LiveData<MyInfoResponse> = _myInfo
@@ -93,8 +90,7 @@ class SeekViewModel @Inject constructor(
 
     fun buyRoute() {
         viewModelScope.launch {
-            _buyResult.value = seekRepository.buyRoute(selectedRouteId, BuyRouteRequest(paymentMethod.value!!)).isSuccess
-            Log.d("BUY-ROUTE", "selectedRouteId = ${selectedRouteId} / paymentMethod.value = ${paymentMethod.value}")
+            _buyResult.value = seekRepository.buyRoute(selectedRouteId, BuyRouteRequest(_paymentMethod.value!!))
         }
     }
 
@@ -125,5 +121,6 @@ class SeekViewModel @Inject constructor(
     companion object {
         const val ROUTE_SIZE = 3
         const val ROUTE_HISTORY_SIZE = 10
+        const val PAYMENT_METHOD = "POINT"
     }
 }
