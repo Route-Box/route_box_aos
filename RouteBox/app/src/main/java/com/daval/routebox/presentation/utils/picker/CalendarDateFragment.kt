@@ -2,14 +2,11 @@ package com.daval.routebox.presentation.utils.picker
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.daval.routebox.databinding.FragmentCalendarDateBinding
 import com.daval.routebox.presentation.utils.DateConverter
@@ -22,30 +19,14 @@ class CalendarDateFragment : Fragment() {
     private lateinit var binding: FragmentCalendarDateBinding
 
     private lateinit var calendarAdapter: CalendarRVAdapter
-    private lateinit var navController: NavController
 
     private var isStartDate: Boolean = false
+    private lateinit var listener: DateClickListener
 
     private var initialDate: LocalDate = LocalDate.now() // 캘린더 날짜를 가져오는 기준 일자
     private var setPrevDateDisable: Boolean = true
 
     private var criteriaDate = this.initialDate // 캘린더 날짜를 가져오는 기준 일자
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            val args = CalendarDateFragmentArgs.fromBundle(it)
-            isStartDate = args.isStartDate
-            initialDate = try {
-                LocalDate.parse(args.initialDate)
-            } catch (e: Exception) {
-                LocalDate.now() // 오류 발생 시 현재 날짜 사용
-            }
-            setPrevDateDisable = args.setPrevDateDisable
-            Log.d("CalendarDateFrag", "onCreate\nisStartDate: $isStartDate, initialDate: $initialDate")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +34,6 @@ class CalendarDateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCalendarDateBinding.inflate(inflater, container, false)
-        navController = findNavController()
 
         initClickListeners()
         setAdapter()
@@ -82,12 +62,7 @@ class CalendarDateFragment : Fragment() {
 
         calendarAdapter.setMyDateClickListener(object : CalendarRVAdapter.MyDateClickListener {
             override fun onDateClick(selectedDate: LocalDate) {
-                val result = Bundle().apply {
-                    putString("selectedDate", selectedDate.toString())
-                }
-
-                parentFragmentManager.setFragmentResult("calendarResult", result)
-                parentFragmentManager.popBackStack() // 현재 Fragment 닫기
+                listener.onDateReceived(isStartDate, selectedDate)
             }
         })
     }
@@ -138,5 +113,16 @@ class CalendarDateFragment : Fragment() {
     companion object {
         const val DAY_OF_WEEK = 7 // 일주일
         const val SUNDAY = 0
+
+        fun newInstance(isStartDate: Boolean, setPrevDateDisable: Boolean, initialDate: LocalDate, listener: DateClickListener): CalendarDateFragment {
+            val fragment = CalendarDateFragment()
+            fragment.apply {
+                this.isStartDate = isStartDate
+                this.setPrevDateDisable = setPrevDateDisable
+                this.initialDate = initialDate
+                this.listener = listener
+            }
+            return fragment
+        }
     }
 }

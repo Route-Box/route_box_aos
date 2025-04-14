@@ -2,12 +2,11 @@ package com.daval.routebox.presentation.utils.picker
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.navigation.fragment.findNavController
+import com.daval.routebox.R
 import com.daval.routebox.databinding.BottomSheetCalendarBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.time.LocalDate
@@ -32,30 +31,29 @@ class CalendarBottomSheet(
     ): View {
         binding = BottomSheetCalendarBinding.inflate(inflater, container, false)
 
-        setNavigation()
         initClickListeners()
 
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setNavigation()
+    }
+
     private fun setNavigation() {
-        val safeInitialDate = initialDate.toString()
-        val action = CalendarDateFragmentDirections.actionCalendarDateFragmentSelf(
-            isStartDate = isStartDate,
-            initialDate = safeInitialDate,
-            setPrevDateDisable = setPrevDateDisable
+        val fragment = CalendarDateFragment.newInstance(
+            isStartDate, setPrevDateDisable, initialDate,
+            object : DateClickListener {
+                override fun onDateReceived(isStartDate: Boolean, date: LocalDate) {
+                    listener.onDateReceived(isStartDate, date)
+                    dismiss() // 날짜 전달 후 바텀시트 닫기
+                }
+            }
         )
-
-        parentFragment?.findNavController()?.navigate(action) ?: run {
-            Log.e("CalendarBottomSheet", "parentFragment is null")
-        }
-
-        parentFragmentManager.setFragmentResultListener("calendarResult", this) { _, bundle ->
-            Log.d("CalendarBottomSheet", "setFragmentResultListener()")
-            val selectedDate = bundle.getString("selectedDate") ?: return@setFragmentResultListener
-            listener.onDateReceived(isStartDate, LocalDate.parse(selectedDate))
-            dismiss() // BottomSheet 닫기
-        }
+        childFragmentManager.beginTransaction()
+            .replace(R.id.calendar_frm, fragment)
+            .commitAllowingStateLoss()
     }
 
     private fun initClickListeners() {
