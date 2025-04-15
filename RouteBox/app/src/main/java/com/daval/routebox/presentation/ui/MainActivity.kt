@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
             if (preDestinationLabel == destination.label.toString()) {
                 refreshFragment(navController)
             }
-
             preDestinationLabel = destination.label.toString()
         }
     }
