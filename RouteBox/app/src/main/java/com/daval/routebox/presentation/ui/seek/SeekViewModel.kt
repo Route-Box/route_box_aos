@@ -1,5 +1,6 @@
 package com.daval.routebox.presentation.ui.seek
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
