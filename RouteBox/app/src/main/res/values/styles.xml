@@ -110,6 +110,18 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="calendar_month_tv">
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="maxHeight">63dp</item>
+        <item name="background">@drawable/bg_circle_fill</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/title_black</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="common_checkbox" parent="body_r_s">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

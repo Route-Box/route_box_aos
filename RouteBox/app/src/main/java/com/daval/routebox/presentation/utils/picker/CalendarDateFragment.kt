@@ -22,6 +22,7 @@ class CalendarDateFragment : Fragment() {
 
     private var isStartDate: Boolean = false
     private lateinit var listener: DateClickListener
+    private lateinit var navigationListener: CalendarNavigationListener
 
     private var initialDate: LocalDate = LocalDate.now() // 캘린더 날짜를 가져오는 기준 일자
     private var setPrevDateDisable: Boolean = true
@@ -48,6 +49,11 @@ class CalendarDateFragment : Fragment() {
         }
         binding.calendarNextMonthIv.setOnClickListener { // 다음 달
             setCalendarDate(+1)
+        }
+
+        // 달력 변경
+        binding.calendarYearMonthTv.setOnClickListener {
+//            navigationListener.navigateToMonthView()
         }
     }
 
@@ -114,13 +120,20 @@ class CalendarDateFragment : Fragment() {
         const val DAY_OF_WEEK = 7 // 일주일
         const val SUNDAY = 0
 
-        fun newInstance(isStartDate: Boolean, setPrevDateDisable: Boolean, initialDate: LocalDate, listener: DateClickListener): CalendarDateFragment {
+        fun newInstance(
+            isStartDate: Boolean,
+            setPrevDateDisable: Boolean,
+            initialDate: LocalDate,
+            listener: DateClickListener,
+            navigationListener: CalendarNavigationListener
+        ): CalendarDateFragment {
             val fragment = CalendarDateFragment()
             fragment.apply {
                 this.isStartDate = isStartDate
                 this.setPrevDateDisable = setPrevDateDisable
                 this.initialDate = initialDate
                 this.listener = listener
+                this.navigationListener = navigationListener
             }
             return fragment
         }

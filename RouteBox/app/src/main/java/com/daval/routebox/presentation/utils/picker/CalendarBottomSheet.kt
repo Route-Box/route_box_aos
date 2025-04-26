@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.daval.routebox.R
 import com.daval.routebox.databinding.BottomSheetCalendarBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -15,14 +16,21 @@ interface DateClickListener {
     fun onDateReceived(isStartDate: Boolean, date: LocalDate)
 }
 
+interface CalendarNavigationListener {
+    fun navigateToMonthView()
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 class CalendarBottomSheet(
     private var listener: DateClickListener,
     private var setPrevDateDisable: Boolean,
     var isStartDate: Boolean,
     private var initialDate: LocalDate
-) : BottomSheetDialogFragment() {
+) : BottomSheetDialogFragment(), CalendarNavigationListener {
     private lateinit var binding: BottomSheetCalendarBinding
+
+    private lateinit var dateFragment: CalendarDateFragment // 일력
+    private lateinit var monthFragment: CalendarMonthFragment // 월력
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,21 +46,33 @@ class CalendarBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setNavigation()
+
+        initFragment()
     }
 
-    private fun setNavigation() {
-        val fragment = CalendarDateFragment.newInstance(
+    private fun initFragment() {
+        dateFragment = CalendarDateFragment.newInstance(
             isStartDate, setPrevDateDisable, initialDate,
             object : DateClickListener {
                 override fun onDateReceived(isStartDate: Boolean, date: LocalDate) {
                     listener.onDateReceived(isStartDate, date)
                     dismiss() // 날짜 전달 후 바텀시트 닫기
                 }
-            }
+            },
+            this
         )
+
+        monthFragment = CalendarMonthFragment.newInstance(setPrevDateDisable)
+
         childFragmentManager.beginTransaction()
-            .replace(R.id.calendar_frm, fragment)
+            .replace(R.id.calendar_frm, dateFragment)
+            .commitAllowingStateLoss()
+    }
+
+    private fun setNavigation(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .add(R.id.calendar_frm, fragment)
+            .addToBackStack(null)
             .commitAllowingStateLoss()
     }
 
@@ -61,5 +81,9 @@ class CalendarBottomSheet(
         binding.calendarCloseIv.setOnClickListener {
             dismiss() // 창 닫기
         }
+    }
+
+    override fun navigateToMonthView() {
+        setNavigation(monthFragment)
     }
 }
