@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,11 +17,10 @@ import com.daval.routebox.presentation.utils.SharedPreferencesHelper
 import com.daval.routebox.presentation.utils.SharedPreferencesHelper.Companion.APP_PREF_KEY
 import com.daval.routebox.presentation.utils.picker.CalendarBottomSheet
 import com.daval.routebox.presentation.utils.picker.DateClickListener
-import com.daval.routebox.presentation.utils.picker.TimePickerBottomSheet
 import com.daval.routebox.presentation.utils.picker.TimeChangedListener
+import com.daval.routebox.presentation.utils.picker.TimePickerBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -51,6 +50,10 @@ class RouteCreateActivity : AppCompatActivity(), DateClickListener, TimeChangedL
 
         // 다음 버튼
         binding.routeCreateNextBtn.setOnClickListener {
+            if (!viewModel.isValidTime()) {
+                Toast.makeText(this, "종료일이 시작일보다 빠를 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             saveEndTime()
             viewModel.tryCreateRoute() // 루트 생성 API
             startActivity(Intent(this, RouteNotYetActivity::class.java))

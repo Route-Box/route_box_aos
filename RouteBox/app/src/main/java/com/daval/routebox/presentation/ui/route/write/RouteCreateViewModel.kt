@@ -55,6 +55,11 @@ class RouteCreateViewModel @Inject constructor(
         updateButtonActivation()
     }
 
+    fun isValidTime(): Boolean {
+        return _startTimePair.value!!.first <= endTimePair.value!!.first &&
+                _startTimePair.value!!.second <= endTimePair.value!!.second
+    }
+
     // 버튼 활성화 여부 업데이트
     private fun updateButtonActivation() {
         _buttonActivation.value = _startTimePair.value != null && _endTimePair.value != null

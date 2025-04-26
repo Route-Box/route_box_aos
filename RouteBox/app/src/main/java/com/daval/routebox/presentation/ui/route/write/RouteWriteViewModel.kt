@@ -299,6 +299,11 @@ class RouteWriteViewModel @Inject constructor(
             }
         }
     }
+
+    fun isValidTime(): Boolean {
+        return _startTimePair.value!!.first <= endTimePair.value!!.first &&
+                _startTimePair.value!!.second <= endTimePair.value!!.second
+    }
 }
 
 const val MapCameraRadius = 2500
