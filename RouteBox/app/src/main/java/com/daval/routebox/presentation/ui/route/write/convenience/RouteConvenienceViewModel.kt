@@ -52,6 +52,11 @@ class RouteConvenienceViewModel @Inject constructor(
     private val _selectedConvenience = MutableLiveData<Convenience?>(null)
     val selectedConvenience: LiveData<Convenience?> = _selectedConvenience
 
+    private val _selectedPlaceInfo = MutableLiveData<ConvenienceCategoryResult?>(null)
+    var selectedPlaceInfo: LiveData<ConvenienceCategoryResult?> = _selectedPlaceInfo
+
+    private val _placeBottomSheetState = MutableLiveData<PlaceSearchResultStatus>()
+    var placeBottomSheetState: LiveData<PlaceSearchResultStatus> = _placeBottomSheetState
 
     init {
         _placeCategoryResult.value = arrayListOf()
@@ -159,5 +164,26 @@ class RouteConvenienceViewModel @Inject constructor(
 
     fun selectConvenienceChip(selectedConvenience: Convenience?) {
         _selectedConvenience.value = selectedConvenience
+        _placeCategoryResult.value = arrayListOf()
+        setPlaceDefaultFragment()
     }
+
+    fun setPlaceDefaultFragment() {
+        _placeBottomSheetState.value = PlaceSearchResultStatus.DEFAULT
+        _selectedPlaceInfo.value = null
+    }
+
+    // 장소 상세 정보 세팅
+    fun setPlaceInfo(placeInfo: ConvenienceCategoryResult) {
+        _selectedPlaceInfo.value = placeInfo
+    }
+
+    // 장소 상세 정보 표시
+    fun setPlaceDetailFragment() {
+        _placeBottomSheetState.value = PlaceSearchResultStatus.DETAIL
+    }
+}
+
+enum class PlaceSearchResultStatus() {
+    DEFAULT, DETAIL
 }

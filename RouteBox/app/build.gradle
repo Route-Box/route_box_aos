@@ -9,7 +9,7 @@ plugins {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def kakaoApiKey = properties.getProperty('kakao_api_key_no_quotes')
-def googleMapApiKey = properties.getProperty('google_maps_api_key')
+def googleMapApiKey = properties.getProperty('google_maps_api_key_no_quotes')
 
 android {
     namespace 'com.daval.routebox'

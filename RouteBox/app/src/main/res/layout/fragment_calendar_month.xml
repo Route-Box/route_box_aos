@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 상단 날짜 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:paddingHorizontal="22dp"
+        android:paddingBottom="20dp"
+        app:layout_constraintTop_toBottomOf="@id/calendar_close_iv"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/calendar_top_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/calendar_previous_year_iv"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="3dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_arrow_left" />
+
+            <TextView
+                android:id="@+id/calendar_year_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="3dp"
+                android:layout_marginHorizontal="10dp"
+                tools:text="2023년"
+                style="@style/title_l"/>
+
+            <ImageView
+                android:id="@+id/calendar_next_year_iv"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="3dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_arrow_left"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/calendar_current_month_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="4dp"
+            android:background="@drawable/radius_4_outline_gray"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textSize="12sp"
+            tools:text="7월"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/calendar_top_ll"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_top_ll"/>
+
+        <!-- 달력 -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:columnCount="3"
+            app:layout_constraintTop_toBottomOf="@+id/calendar_top_ll"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:text="1월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="2월"
+                style="@style/calendar_month_tv" />
+            <TextView
+                android:text="3월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="4월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="5월"
+                style="@style/calendar_month_tv" />
+            <TextView
+                android:text="6월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="7월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="8월"
+                style="@style/calendar_month_tv" />
+            <TextView
+                android:text="9월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="10월"
+                style="@style/calendar_month_tv"/>
+            <TextView
+                android:text="11월"
+                style="@style/calendar_month_tv" />
+            <TextView
+                android:text="12월"
+                style="@style/calendar_month_tv"/>
+
+        </GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

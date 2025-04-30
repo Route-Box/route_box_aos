@@ -14,6 +14,8 @@ import java.time.temporal.ChronoUnit
 @RequiresApi(Build.VERSION_CODES.O)
 object DateConverter {
     private const val YEAR_MONTH_PATTERN = "yyyy년 M월"
+    const val YEAR_PATTERN = "yyyy년"
+    const val MONTH_PATTERN = "M월"
     private const val DATE_PATTERN = "yy년 M월 d일"
     private const val DATE_API_PATTERN = "yyyy-MM-dd"
     private const val TIME_PLACEHOLDER = "시간 선택"
@@ -22,6 +24,10 @@ object DateConverter {
 
     fun getFormattedYearMonth(date: LocalDate): String {
         return date.format(DateTimeFormatter.ofPattern(YEAR_MONTH_PATTERN))
+    }
+
+    fun getFormattedText(date: LocalDate, pattern: String): String {
+        return date.format(DateTimeFormatter.ofPattern(pattern))
     }
 
     @JvmStatic

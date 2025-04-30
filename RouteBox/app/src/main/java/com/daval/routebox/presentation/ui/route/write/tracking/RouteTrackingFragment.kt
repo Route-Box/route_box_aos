@@ -98,6 +98,7 @@ class RouteTrackingFragment: Fragment(), PopupDialogInterface, OnMapReadyCallbac
 
     private fun initClickListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+//            Toast.makeText(context, "뒤로가기 버튼 클릭 in 기록하기", Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.daval.routebox.presentation.ui.route.write.convenience.RouteConvenienceViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/convenience_criteria_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="22dp"
+            android:text="@string/center_point_mine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/body_r_s"/>
+
+        <!-- 장소 없을 때 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/comment_empty_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:drawablePadding="16dp"
+            android:textColor="@color/gray1"
+            android:textAlignment="center"
+            android:drawableTop="@drawable/img_empty"
+            android:text="@string/convenience_place_empty"
+            android:visibility="@{viewModel.placeCategoryResult.isEmpty ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@id/convenience_criteria_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/body_r_s"/>
+
+        <!-- 장소 목록 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/place_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            tools:listitem="@layout/item_convenience_category_result"
+            app:layout_constraintTop_toBottomOf="@id/convenience_criteria_tv"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

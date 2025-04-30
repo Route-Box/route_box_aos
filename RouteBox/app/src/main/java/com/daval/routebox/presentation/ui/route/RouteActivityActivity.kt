@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -287,6 +288,10 @@ class RouteActivityActivity: AppCompatActivity(), DateClickListener, TimeChanged
 
         // 완료 버튼
         binding.doneBtn.setOnClickListener {
+            if (!viewModel.isValidTime()) {
+                Toast.makeText(this, "종료일이 시작일보다 빠를 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             if (viewModel.isEditMode.value!!) { // 수정 모드
                 viewModel.editActivity(this)
             } else { // 생성 모드
