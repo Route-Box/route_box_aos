@@ -78,7 +78,7 @@ data class MyRoute(
     var routeId: Int = -1,
     var routeName: String = "",
     var routeDescription: String = "",
-    var routeImageUrl: String = "",
+    var routeImageUrl: String? = "",
     var isPublic: Boolean = false,
     var purchaseCount: Int = 0,
     var commentCount: Int = 0,

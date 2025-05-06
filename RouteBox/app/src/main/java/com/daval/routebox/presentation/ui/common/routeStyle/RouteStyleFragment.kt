@@ -20,7 +20,7 @@ interface FilterOptionClickListener {
 class RouteStyleFragment : Fragment() {
     private lateinit var binding: FragmentRouteStyleBinding
 
-    private var listner: FilterOptionClickListener? = null
+    private var listener: FilterOptionClickListener? = null
     private var isFilterScreen: Boolean = false
     private var selectedOptions: List<FilterOption>? = null
 
@@ -62,6 +62,7 @@ class RouteStyleFragment : Fragment() {
                         flexWrap = FlexWrap.WRAP
                         flexDirection = FlexDirection.ROW
                     }
+                    itemAnimator = null
                 }
             }
         }
@@ -80,7 +81,7 @@ class RouteStyleFragment : Fragment() {
                             showHowManyLayout(View.VISIBLE)
                         }
                     }
-                    listner?.onOptionItemClick(selectedOption, isSelected)
+                    listener?.onOptionItemClick(selectedOption, isSelected)
                 }
             })
         }
@@ -103,7 +104,7 @@ class RouteStyleFragment : Fragment() {
     companion object {
         fun newInstance(listener: FilterOptionClickListener, isFilterScreen: Boolean, selectedOptions: List<FilterOption>?): RouteStyleFragment {
             val fragment = RouteStyleFragment()
-            fragment.listner = listener
+            fragment.listener = listener
             fragment.isFilterScreen = isFilterScreen
             fragment.selectedOptions = selectedOptions
             return fragment

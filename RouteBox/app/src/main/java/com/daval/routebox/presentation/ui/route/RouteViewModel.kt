@@ -35,8 +35,8 @@ class RouteViewModel @Inject constructor(
     private val _isLiveTracking = MutableLiveData<Boolean>()
     val isLiveTracking: LiveData<Boolean> = _isLiveTracking
 
-    private val _routeList = MutableLiveData<List<MyRoute>>(emptyList())
-    val routeList: LiveData<List<MyRoute>> = _routeList
+    private val _routeList = MutableLiveData<List<MyRoute>?>(emptyList())
+    val routeList: LiveData<List<MyRoute>?> = _routeList
 
     private val _insight = MutableLiveData<Insight>()
     val insight: LiveData<Insight> = _insight
@@ -98,9 +98,22 @@ class RouteViewModel @Inject constructor(
     fun tryChangePublic() {
         viewModelScope.launch {
             val response = repository.updateRoutePublic(selectedRouteId, RoutePublicRequest(!isPublic))
+
             _route.value = _route.value!!.copy(isPublic = response.isPublic)
+
+            // routeList 내부 요소 업데이트
+            val updatedList = _routeList.value?.map { route ->
+                if (route.routeId == selectedRouteId) {
+                    route.copy(isPublic = response.isPublic) // 새로운 객체로 교체!
+                } else {
+                    route
+                }
+            }
+
+            _routeList.value = updatedList
         }
     }
+
 
     /** 루트 삭제 */
     fun tryDeleteRoute() {
