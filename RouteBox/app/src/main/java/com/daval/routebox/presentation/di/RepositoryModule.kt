@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daval.routebox.data.datasource.RemoteAuthDataSource
 import com.daval.routebox.data.datasource.RemoteCommentDataSource
+import com.daval.routebox.data.datasource.RemoteHomeDataSource
 import com.daval.routebox.data.datasource.RemoteOpenApiDataSource
 import com.daval.routebox.data.datasource.RemoteRouteDataSource
 import com.daval.routebox.data.datasource.RemoteSeekDataSource
@@ -23,6 +24,8 @@ import com.daval.routebox.domain.repositories.RouteRepository
 import com.daval.routebox.domain.repositories.SeekRepository
 import com.daval.routebox.domain.repositories.UserRepository
 import com.daval.routebox.data.datasource.RemoteReportDataSource
+import com.daval.routebox.data.repositoriyImpl.HomeRepositoryImpl
+import com.daval.routebox.domain.repositories.HomeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +34,12 @@ import dagger.hilt.android.components.ViewModelComponent
 @Module
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
+    /** 홈 */
+    @Provides
+    fun provideHomeRepository(
+        remoteHomeDataSource: RemoteHomeDataSource
+    ): HomeRepository = HomeRepositoryImpl(remoteHomeDataSource)
+
     /** 인증 */
     @Provides
     fun provideAuthRepository(

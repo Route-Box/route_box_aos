@@ -1,6 +1,7 @@
 package com.daval.routebox.presentation.di
 
 import com.daval.routebox.data.remote.CommentApiService
+import com.daval.routebox.data.remote.HomeApiService
 import com.daval.routebox.data.remote.KakaoApiService
 import com.daval.routebox.data.remote.OpenApiService
 import com.daval.routebox.data.remote.ReportApiService
@@ -30,6 +31,12 @@ object ServiceModule {
     @Singleton
     fun provideRefreshService(@NetworkModule.RefreshRetrofit retrofit: Retrofit) : RefreshApiService =
         retrofit.create(RefreshApiService::class.java)
+
+    /** 홈 */
+    @Provides
+    @Singleton
+    fun provideHomeService(@NetworkModule.BasicRetrofit retrofit: Retrofit) : HomeApiService =
+        retrofit.create(HomeApiService::class.java)
 
     /** 유저 */
     @Provides

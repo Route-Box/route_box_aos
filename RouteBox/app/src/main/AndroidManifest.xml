@@ -40,9 +40,12 @@
         <service
             android:name=".presentation.utils.AppExitService"
             android:stopWithTask="true" />
-        <activity
-            android:name=".presentation.ui.SplashActivity"
-            android:exported="true">
+<!--        <activity-->
+<!--            android:name=".presentation.ui.SplashActivity"-->
+<!--            android:exported="true">-->
+        <activity android:name=".presentation.ui.MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -63,8 +66,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.ui.auth.LoginActivity" />
-        <activity android:name=".presentation.ui.MainActivity"
-            android:windowSoftInputMode="adjustPan"/>
+<!--        <activity android:name=".presentation.ui.MainActivity"-->
+<!--            android:windowSoftInputMode="adjustPan"/>-->
+        <activity android:name=".presentation.ui.SplashActivity" />
         <activity android:name=".presentation.ui.auth.PermissionActivity"/>
         <activity android:name=".presentation.ui.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize" />

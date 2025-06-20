@@ -14,7 +14,6 @@ class HomeViewModel @Inject constructor(
     private val _alarmStatus = MutableLiveData<Boolean>(false)
     val alarmStatus: LiveData<Boolean> = _alarmStatus
 
-    // TODO: API 연동 후 삭제
-    private val _recommendTitle = MutableLiveData<String>("따뜻한 6월엔 여기로 데이트 어때요? 테스트")
+    private val _recommendTitle = MutableLiveData<String>("")
     val recommendTitle: LiveData<String> = _recommendTitle
 }
