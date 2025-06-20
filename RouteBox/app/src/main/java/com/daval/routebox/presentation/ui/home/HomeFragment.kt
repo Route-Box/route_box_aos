@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.apply {
             viewModel = this@HomeFragment.viewModel
+            lifecycleOwner = this@HomeFragment
         }
 
         setAdapter()

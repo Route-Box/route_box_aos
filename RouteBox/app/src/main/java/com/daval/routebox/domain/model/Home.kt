@@ -20,3 +20,14 @@ data class PopularRoute(
     val id: Int,
     val name: String
 )
+
+data class Notifications(
+    val notifications: List<Notification>
+)
+
+data class Notification(
+    val id: Int,
+    val content: String,
+    val date: String,
+    val isRead: Boolean
+)
