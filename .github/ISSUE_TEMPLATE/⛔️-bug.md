@@ -2,8 +2,8 @@
 name: "⛔️ Bug"
 about: 수정이 필요한 버그/에러에 대하여 작성해 주세요
 title: "[Bug] 버그 내용"
-labels: "\U0001F41B bug"
-assignees: ''
+labels: "\U0001F41B bug, ✔ version3"
+assignees: JM2308
 
 ---
 

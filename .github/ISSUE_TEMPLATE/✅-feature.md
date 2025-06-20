@@ -2,8 +2,8 @@
 name: "✅ Feature"
 about: 진행할 작업에 대해 작성해 주세요.
 title: "[Feat] 작업 내용"
-labels: "\U0001F41B bug, ✨ feature"
-assignees: nahy-512
+labels: "✨ feature, ✔ version3"
+assignees: JM2308
 
 ---
 
