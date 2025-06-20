@@ -20,6 +20,8 @@ object DateConverter {
     private const val DATE_API_PATTERN = "yyyy-MM-dd"
     private const val TIME_PLACEHOLDER = "시간 선택"
     private const val CREATE_DATE_PATTERN = "yyyy.MM.dd"
+    // TODO: 날짜 변경 추가하기
+    private const val NOTIFICATION_DATE_PATTERN = "MM-dd"
     private const val TIME_DELIMINATOR = ":"
 
     fun getFormattedYearMonth(date: LocalDate): String {

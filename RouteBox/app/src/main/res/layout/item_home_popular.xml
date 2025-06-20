@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="route"
+            type="com.daval.routebox.domain.model.PopularRoute" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/popular_cv"
+            android:layout_width="220dp"
+            android:layout_height="146dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#E2F1EC"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="74dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@{route.name}"
+                android:textColor="#32425E"
+                style="@style/body_b_m"
+                tools:text="여자친구에게 칭찬 왕창 받은 데이트 코스"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
