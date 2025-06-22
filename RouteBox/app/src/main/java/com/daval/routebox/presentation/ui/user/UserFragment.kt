@@ -71,7 +71,9 @@ class UserFragment : Fragment() {
     }
 
     private fun initClickListener() {
-
+        binding.introductionTv.setOnClickListener {
+            startActivity(Intent(requireActivity(), IntroductionActivity::class.java))
+        }
     }
 
     // MEMO: 웹뷰에서 로그인 액티비티로 이동을 위해 썼던 코드 / UI 제작 후 사용 안할 시 제거

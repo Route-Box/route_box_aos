@@ -1,41 +1,41 @@
 package com.daval.routebox.domain.model
 
 data class User(
-    val id: Int,
-    val profileImageUrl: String,
-    val nickname: String,
-    val gender: String,
-    val birthDay: String,
-    val introduction: String,
-    val numOfRoutes: Int,
-    val mostVisitedLocation: String,
-    val mostTaggedRouteStyles: String
+    var id: Int,
+    var profileImageUrl: String,
+    var nickname: String,
+    var gender: String,
+    var birthDay: String,
+    var introduction: String,
+    var numOfRoutes: Int,
+    var mostVisitedLocation: String,
+    var mostTaggedRouteStyles: String
 )
 
 data class NicknameAvailabilityResponse(
-    val nickname: String,
-    val isAvailable: Boolean
+    var nickname: String,
+    var isAvailable: Boolean
 )
 
 data class EditProfileResponse(
-    val id: Int = 0,
-    val profileImage: String = "",
-    val point: Int = 0,
-    val gender: String = "",
-    val birthDay: String = "",
-    val introduction: String = ""
+    var id: Int = 0,
+    var profileImage: String = "",
+    var point: Int = 0,
+    var gender: String = "",
+    var birthDay: String = "",
+    var introduction: String = ""
 )
 
 data class UserRoutes(
-    val routes: List<UserRoute>
+    var routes: List<UserRoute>
 )
 
 data class UserRoute(
-    val routeId: Int,
-    val routeName: String,
-    val routeDescription: String,
-    val routeImageUrl: String,
-    val purchaseCount: Int,
-    val commentCount: Int,
-    val createdAt: String
+    var routeId: Int,
+    var routeName: String,
+    var routeDescription: String,
+    var routeImageUrl: String,
+    var purchaseCount: Int,
+    var commentCount: Int,
+    var createdAt: String
 )

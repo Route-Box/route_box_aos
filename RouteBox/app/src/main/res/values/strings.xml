@@ -213,6 +213,8 @@
     <string name="where">에서</string>
     <string name="mostVisitedLocation">여행을 많이 갔어요</string>
     <string name="user_route_title">%s의 루트박스</string>
+    <string name="user_introduction">한 줄 소개</string>
+    <string name="user_introduction_content">한 줄 소개를 작성해주세요</string>
 
     <!-- 신고하기 -->
     <string name="report_title">해당 게시글을 신고하는 이유를 알려주세요.</string>

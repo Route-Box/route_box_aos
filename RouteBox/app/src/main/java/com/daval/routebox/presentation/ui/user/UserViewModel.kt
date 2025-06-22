@@ -12,6 +12,11 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val repository: UserRepository
 ): ViewModel() {
-    private val _userInfo = MutableLiveData<User>()
+    private val _userInfo = MutableLiveData<User>(
+        User(
+            1, "", "닉", "성별", "생일",
+            "소개", 1, "지역", "루트스타일"
+        )
+    )
     val userInfo: LiveData<User> = _userInfo
 }
