@@ -215,6 +215,20 @@
     <string name="user_route_title">%s의 루트박스</string>
     <string name="user_introduction">한 줄 소개</string>
     <string name="user_introduction_content">한 줄 소개를 작성해주세요</string>
+    <string name="user_setting">설정</string>
+    <string name="setting_info">내 정보 수정</string>
+    <string name="setting_notification">알림 설정</string>
+    <string name="setting_notification_1">마케팅 정보 알림</string>
+    <string name="setting_notification_2">여행 도중 사진 알림</string>
+    <string name="setting_notification_2_content">여행 도중, 특정 위치에서 일정 시간 이상 시간 머물때, 놓치지 않고 기록할 수 있게 알림을 줍니다.</string>
+    <string name="setting_service">서비스 약관</string>
+    <string name="setting_service_1">이용약관</string>
+    <string name="setting_service_2">개인정보처리방침</string>
+    <string name="setting_service_3">위치정보이용 약관</string>
+    <string name="setting_ask">1:1 문의</string>
+    <string name="logout">로그아웃</string>
+    <string name="logout_content">로그아웃 하시겠습니까?</string>
+    <string name="delete_account"><u>회원 탈퇴</u></string>
 
     <!-- 신고하기 -->
     <string name="report_title">해당 게시글을 신고하는 이유를 알려주세요.</string>

@@ -71,8 +71,12 @@ class UserFragment : Fragment() {
     }
 
     private fun initClickListener() {
-        binding.introductionTv.setOnClickListener {
+        binding.pencilIv.setOnClickListener {
             startActivity(Intent(requireActivity(), IntroductionActivity::class.java))
+        }
+
+        binding.menuIv.setOnClickListener {
+            startActivity(Intent(requireActivity(), SettingActivity::class.java))
         }
     }
 

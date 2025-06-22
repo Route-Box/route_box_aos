@@ -119,16 +119,26 @@
 
                     <TextView
                         android:id="@+id/introduction_tv"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@{viewModel.userInfo.introduction}"
                         android:layout_marginTop="16dp"
                         android:textColor="@color/gray4"
+                        android:layout_marginEnd="4dp"
                         style="@style/body_r_m"
-                        app:drawableEndCompat="@drawable/ic_pencil"
                         app:layout_constraintTop_toBottomOf="@id/route_num_title"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/pencil_iv"
                         tools:text="설명설명소개소개설명설명소개소개설명설명소개소개설명설명소개소개설명설명소개소개" />
+
+                    <ImageView
+                        android:id="@+id/pencil_iv"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_pencil"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/introduction_tv"
+                        app:layout_constraintBottom_toBottomOf="@id/introduction_tv" />
 
                     <View
                         android:id="@+id/line"
