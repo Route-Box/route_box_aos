@@ -37,6 +37,9 @@ class SettingActivity: AppCompatActivity(), PopupDialogInterface {
         binding.icBack.setOnClickListener {
             finish()
         }
+        binding.settingInfo.setOnClickListener {
+            startActivity(Intent(this@SettingActivity, SettingUserActivity::class.java))
+        }
         binding.settingNotification.setOnClickListener {
             startActivity(Intent(this@SettingActivity, SettingNotificationActivity::class.java))
         }

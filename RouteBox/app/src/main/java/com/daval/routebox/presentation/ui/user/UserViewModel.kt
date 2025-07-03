@@ -20,5 +20,13 @@ class UserViewModel @Inject constructor(
     )
     val userInfo: LiveData<User> = _userInfo
 
+    private val _tempUserInfo = MutableLiveData<User>(
+        User(
+            1, "", "닉", "성별", "생일",
+            "소개", 1, "지역", "루트스타일"
+        )
+    )
+    val tempUserInfo: LiveData<User> = _tempUserInfo
+
     var selectedRouteId: Int = -1
 }

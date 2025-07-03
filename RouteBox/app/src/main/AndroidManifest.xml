@@ -96,6 +96,7 @@
         <activity android:name=".presentation.ui.user.SettingActivity" />
         <activity android:name=".presentation.ui.user.SettingNotificationActivity" />
         <activity android:name=".presentation.ui.user.SettingServiceActivity" />
+        <activity android:name=".presentation.ui.user.SettingUserActivity" />
         <activity android:name=".presentation.ui.common.report.ReportFeedActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
