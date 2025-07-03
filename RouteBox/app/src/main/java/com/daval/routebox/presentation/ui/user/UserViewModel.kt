@@ -19,4 +19,6 @@ class UserViewModel @Inject constructor(
         )
     )
     val userInfo: LiveData<User> = _userInfo
+
+    var selectedRouteId: Int = -1
 }

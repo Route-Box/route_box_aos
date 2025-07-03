@@ -8,16 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.daval.routebox.R
 import com.daval.routebox.databinding.FragmentUserBinding
+import com.daval.routebox.domain.model.DialogType
 import com.daval.routebox.domain.model.UserRoute
 import com.daval.routebox.presentation.ui.auth.LoginActivity
+import com.daval.routebox.presentation.ui.common.report.ReportFeedActivity
 import com.daval.routebox.presentation.ui.home.UserRouteRVAdapter
 import com.daval.routebox.presentation.ui.route.RouteDetailActivity
+import com.daval.routebox.presentation.utils.CommonPopupDialog
+import com.daval.routebox.presentation.utils.PopupDialogInterface
 import com.daval.routebox.presentation.utils.RecyclerViewHorizontalDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserFragment : Fragment() {
+class UserFragment : Fragment(), PopupDialogInterface {
     private lateinit var binding: FragmentUserBinding
 
     private lateinit var userRouteRVAdapter: UserRouteRVAdapter
@@ -61,11 +66,12 @@ class UserFragment : Fragment() {
         }
         userRouteRVAdapter.setRouteClickListener(object: UserRouteRVAdapter.RouteItemClickListener {
             override fun onItemClick(routeId: Int) {
+                viewModel.selectedRouteId = routeId
                 // 루트 보기 화면으로 이동
                 startActivity(Intent(requireActivity(), RouteDetailActivity::class.java).putExtra("routeId", routeId))
             }
             override fun onOptionClick(routeId: Int) {
-
+                showReportPopupDialog()
             }
         })
     }
@@ -85,4 +91,19 @@ class UserFragment : Fragment() {
         requireActivity().startActivity(Intent(requireActivity(), LoginActivity::class.java))
         requireActivity().finish()
     }
+
+    private fun showReportPopupDialog() {
+        val dialog = CommonPopupDialog(this, DialogType.REPORT.id, String.format(resources.getString(
+            R.string.report_question)), resources.getString(R.string.popup_negative_default), resources.getString(R.string.report))
+        dialog.isCancelable = false // 배경 클릭 막기
+        dialog.show(requireActivity().supportFragmentManager, "PopupDialog")
+    }
+
+    override fun onClickPositiveButton(id: Int) {
+        startActivity(Intent(context, ReportFeedActivity::class.java)
+            .putExtra("routeId", viewModel.selectedRouteId)
+        )
+    }
+
+    override fun onClickNegativeButton(id: Int) { }
 }
