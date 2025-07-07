@@ -49,6 +49,9 @@ class SettingActivity: AppCompatActivity(), PopupDialogInterface {
         binding.logout.setOnClickListener {
             showLogoutPopupDialog()
         }
+        binding.deleteAccount.setOnClickListener {
+            startActivity(Intent(this@SettingActivity, DeleteAccountActivity::class.java))
+        }
     }
 
     private fun showLogoutPopupDialog() {
