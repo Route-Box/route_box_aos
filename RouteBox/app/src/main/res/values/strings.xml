@@ -209,7 +209,51 @@
     <string name="route_activity_empty">아직 만들어진 활동이 없어요.</string>
     <string name="activity_delete_popup">삭제하시겠습니까?</string>
 
+    <!-- 마이페이지 -->
+    <string name="where">에서</string>
+    <string name="mostVisitedLocation">여행을 많이 갔어요</string>
+    <string name="user_route_title">%s의 루트박스</string>
+    <string name="user_introduction">한 줄 소개</string>
+    <string name="user_introduction_content">한 줄 소개를 작성해주세요</string>
+    <string name="user_setting">설정</string>
+    <string name="setting_info">내 정보 수정</string>
+    <string name="nickname">닉네임</string>
+    <string name="birth">생년월일</string>
+    <string name="gender">성별</string>
+    <string name="setting_notification">알림 설정</string>
+    <string name="setting_notification_1">마케팅 정보 알림</string>
+    <string name="setting_notification_2">여행 도중 사진 알림</string>
+    <string name="setting_notification_2_content">여행 도중, 특정 위치에서 일정 시간 이상 시간 머물때, 놓치지 않고 기록할 수 있게 알림을 줍니다.</string>
+    <string name="setting_service">서비스 약관</string>
+    <string name="setting_service_1">이용약관</string>
+    <string name="setting_service_2">개인정보처리방침</string>
+    <string name="setting_service_3">위치정보이용 약관</string>
+    <string name="setting_inquiry">1:1 문의</string>
+    <string name="inquiry">문의하기</string>
+    <string name="inquiry_history">나의 문의 내역</string>
+    <string name="inquiry_type">문의 유형</string>
+    <string name="inquiry_content">문의 내용을 작성해주세요</string>
+    <string name="add_picture">사진 추가하기</string>
+    <string name="inquiry_user_info">회원정보</string>
+    <string name="error">오류</string>
+    <string name="logout">로그아웃</string>
+    <string name="logout_content">로그아웃 하시겠습니까?</string>
+
+    <!-- 탈퇴하기 -->
+    <string name="delete_account"><u>회원 탈퇴</u></string>
+    <string name="delete_account2">회원탈퇴</string>
+    <string name="check_delete_account_rule">탈퇴 전 확인해 주세요.</string>
+    <string name="delete_account_rule">회원 탈퇴 시 개인 정보 처리 방침에 따라 탈퇴 후에도 90일간 보관되며, 90일이 지난 후에는 완전히 삭제됩니다.</string>
+    <string name="delete_account_title">탈퇴 사유를 알려주세요.</string>
+    <string name="delete_account_reason_not_useful">루트가 다양하지 않아서 유용하지 않음</string>
+    <string name="delete_account_reason_difficult">여행 루트를 기록하기 어려움</string>
+    <string name="delete_account_reason_different">다운로드시 기대한 내용과 앱이 다름</string>
+    <string name="delete_account_reason_service">서비스 운영의 신뢰도가 낮음</string>
+    <string name="write_content">내용을 작성해주세요</string>
+    <string name="delete_account_btn">동의 및 탈퇴하기</string>
+
     <!-- 신고하기 -->
+    <string name="report_question">이 사용자를 신고하시겠습니까?</string>
     <string name="report_title">해당 게시글을 신고하는 이유를 알려주세요.</string>
     <string name="report_reason_not_trip">여행 내용과 관련 없는 내용임</string>
     <string name="report_reason_advertising">광고/홍보성 게시글임</string>
@@ -223,6 +267,7 @@
     <string name="next_btn">다음</string>
     <string name="done_btn">완료</string>
     <string name="confirm_btn">확인</string>
+    <string name="save_btn">저장하기</string>
     <string name="report">신고하기</string>
     <string name="edit">수정하기</string>
     <string name="delete">삭제하기</string>

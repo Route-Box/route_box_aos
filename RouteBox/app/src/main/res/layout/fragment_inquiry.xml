@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.daval.routebox.presentation.ui.user.InquiryViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/inquiry_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.inquiryStatus.length() > 0 ? viewModel.inquiryStatus : @string/inquiry_type}"
+            android:layout_marginVertical="18dp"
+            android:layout_marginStart="22dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/body_b_s" />
+        
+        <ImageView
+            android:id="@+id/inquiry_status_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_down"
+            android:layout_marginStart="4dp"
+            android:padding="4dp"
+            app:layout_constraintTop_toTopOf="@id/inquiry_status"
+            app:layout_constraintBottom_toBottomOf="@id/inquiry_status"
+            app:layout_constraintStart_toEndOf="@id/inquiry_status" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/inquiry_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="22dp"
+            android:layout_marginBottom="120dp"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray5"
+            app:layout_constraintTop_toBottomOf="@id/inquiry_status"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="16dp">
+
+                <EditText
+                    android:id="@+id/inquiry_content_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="245dp"
+                    android:hint="@string/write_content"
+                    android:text="@={viewModel.inquiryContent}"
+                    android:background="@color/transparent"
+                    android:gravity="top"
+                    android:maxLength="400"
+                    style="@style/body_r_s"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/inquiry_content_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{String.valueOf(viewModel.inquiryContent.length())}"
+                    android:textColor="@{viewModel.inquiryContent.length() > 0 ? @color/main : @color/gray4}"
+                    style="@style/body_r_s"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/inquiry_content_max" />
+
+                <TextView
+                    android:id="@+id/inquiry_content_max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/400"
+                    android:textColor="@color/main"
+                    style="@style/body_r_s"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/add_picture_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_picture"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="22dp"
+            app:layout_constraintTop_toBottomOf="@id/inquiry_cv"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/body_b_s" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/3"
+            android:layout_marginStart="7dp"
+            android:textColor="@color/gray1"
+            app:layout_constraintTop_toTopOf="@id/add_picture_tv"
+            app:layout_constraintBottom_toBottomOf="@id/add_picture_tv"
+            app:layout_constraintStart_toEndOf="@id/add_picture_tv"
+            style="@style/body_r_s" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/picture_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="22dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/add_picture_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_picture_plus" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/complete_btn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/inquiry"
+            android:layout_marginBottom="28dp"
+            android:enabled="@{viewModel.btnEnabled}"
+            android:textSize="16sp"
+            android:fontFamily="@font/pretendard_bold"
+            android:background="@drawable/selector_main_btn"
+            android:textColor="@drawable/selector_main_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

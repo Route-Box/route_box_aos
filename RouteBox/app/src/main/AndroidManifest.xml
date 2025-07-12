@@ -92,6 +92,14 @@
         <activity android:name=".presentation.ui.route.edit.RouteEditBaseActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".presentation.ui.route.edit.RouteCompleteTagActivity"/>
+        <activity android:name=".presentation.ui.user.IntroductionActivity" />
+        <activity android:name=".presentation.ui.user.SettingActivity" />
+        <activity android:name=".presentation.ui.user.SettingNotificationActivity" />
+        <activity android:name=".presentation.ui.user.SettingServiceActivity" />
+        <activity android:name=".presentation.ui.user.SettingUserActivity" />
+        <activity android:name=".presentation.ui.user.DeleteAccountActivity" />
+        <activity android:name=".presentation.ui.user.SettingInquiryActivity" />
+        <activity android:name=".presentation.ui.user.MyInquiryActivity" />
         <activity android:name=".presentation.ui.common.report.ReportFeedActivity"/>
         <meta-data
             android:name="com.kakao.sdk.AppKey"

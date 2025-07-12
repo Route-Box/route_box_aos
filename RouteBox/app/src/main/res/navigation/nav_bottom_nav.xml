@@ -60,9 +60,9 @@
     <!-- My -->
     <fragment
         android:id="@+id/myFragment"
-        android:name="com.daval.routebox.presentation.ui.my.MyFragment"
+        android:name="com.daval.routebox.presentation.ui.user.UserFragment"
         android:label="MyFragment"
-        tools:layout="@layout/fragment_my">
+        tools:layout="@layout/fragment_user">
     </fragment>
 
 </navigation>

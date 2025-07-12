@@ -1,15 +1,15 @@
-package com.daval.routebox.presentation.ui.route.adapter
+package com.daval.routebox.presentation.ui.user.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.daval.routebox.databinding.ItemActivityAddPictureBinding
 import com.daval.routebox.databinding.ItemPictureBinding
+import com.daval.routebox.databinding.ItemPicturePlusBinding
 import com.daval.routebox.domain.model.pictureImgType
 import com.daval.routebox.domain.model.pictureAddType
 
-class PictureRVAdapter(
+class InquiryPictureRVAdapter(
     private var imgList: ArrayList<String?>
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -35,8 +35,8 @@ class PictureRVAdapter(
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             pictureAddType -> {
-                val binding: ItemActivityAddPictureBinding = ItemActivityAddPictureBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
-                return AddPictureViewHolder(binding)
+                val binding: ItemPicturePlusBinding = ItemPicturePlusBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+                return PlusPictureViewHolder(binding)
             }
             else -> {
                 val binding: ItemPictureBinding = ItemPictureBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
@@ -47,7 +47,7 @@ class PictureRVAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (imgList[position] == null) {
-            (holder as AddPictureViewHolder).bind()
+            (holder as PlusPictureViewHolder).bind()
             holder.setIsRecyclable(false)
             holder.itemView.setOnClickListener {
                 mItemClickListener.onPlusItemClick(position)
@@ -63,7 +63,7 @@ class PictureRVAdapter(
 
     override fun getItemCount(): Int = imgList.size
 
-    inner class AddPictureViewHolder(val binding: ItemActivityAddPictureBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PlusPictureViewHolder(val binding: ItemPicturePlusBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind() { }
     }
 

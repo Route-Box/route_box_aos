@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:paddingHorizontal="26dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/ic_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_setting"
+                style="@style/body_b_l"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/setting_info"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/setting_info"
+            android:layout_marginHorizontal="22dp"
+            android:gravity="center_vertical"
+            style="@style/body_b_m"
+            app:layout_constraintTop_toBottomOf="@id/top_bar"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/line_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray6"
+            android:layout_marginHorizontal="22dp"
+            app:layout_constraintTop_toBottomOf="@id/setting_info"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/setting_notification"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/setting_notification"
+            android:layout_marginHorizontal="22dp"
+            android:gravity="center_vertical"
+            style="@style/body_b_m"
+            app:layout_constraintTop_toBottomOf="@id/line_1"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/line_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray6"
+            android:layout_marginHorizontal="22dp"
+            app:layout_constraintTop_toBottomOf="@id/setting_notification"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/setting_service"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/setting_service"
+            android:layout_marginHorizontal="22dp"
+            android:gravity="center_vertical"
+            style="@style/body_b_m"
+            app:layout_constraintTop_toBottomOf="@id/line_2"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/line_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray6"
+            android:layout_marginHorizontal="22dp"
+            app:layout_constraintTop_toBottomOf="@id/setting_service"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/setting_inquiry"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/setting_inquiry"
+            android:layout_marginHorizontal="22dp"
+            android:gravity="center_vertical"
+            style="@style/body_b_m"
+            app:layout_constraintTop_toBottomOf="@id/line_3"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/line_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray6"
+            android:layout_marginHorizontal="22dp"
+            app:layout_constraintTop_toBottomOf="@id/setting_inquiry"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/logout"
+            android:layout_marginHorizontal="22dp"
+            android:gravity="center_vertical"
+            style="@style/body_b_m"
+            app:layout_constraintTop_toBottomOf="@id/line_4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/delete_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_account"
+            android:layout_marginHorizontal="22dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/gray4"
+            style="@style/body_r_xs"
+            app:layout_constraintTop_toBottomOf="@id/logout"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
