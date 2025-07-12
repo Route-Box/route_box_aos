@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_inquiry"
+    app:startDestination="@id/inquiryFragment">
+
+    <fragment
+        android:id="@+id/inquiryFragment"
+        android:name="com.daval.routebox.presentation.ui.user.InquiryFragment"
+        android:label="InquiryFragment" >
+        <action
+            android:id="@+id/action_inquiryFragment_to_inquiryHistoryFragment"
+            app:destination="@id/inquiryHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/inquiryHistoryFragment"
+        android:name="com.daval.routebox.presentation.ui.user.InquiryHistoryFragment"
+        android:label="InquiryHistoryFragment" >
+        <action
+            android:id="@+id/action_inquiryHistoryFragment_to_inquiryFragment"
+            app:destination="@id/inquiryFragment" />
+    </fragment>
+</navigation>

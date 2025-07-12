@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.daval.routebox.databinding.ItemActivityPictureAlbumBinding
-import com.daval.routebox.databinding.ItemActivityPictureCameraBinding
+import com.daval.routebox.databinding.ItemPictureCameraBinding
 import com.daval.routebox.domain.model.ActivityPictureAlbum
 import com.daval.routebox.domain.model.pictureAddType
 import com.daval.routebox.domain.model.pictureImgType
@@ -36,7 +36,7 @@ class PictureAlbumRVAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     ): RecyclerView.ViewHolder {
         when (viewType) {
             pictureAddType -> {
-                val binding: ItemActivityPictureCameraBinding = ItemActivityPictureCameraBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+                val binding: ItemPictureCameraBinding = ItemPictureCameraBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
                 return CameraViewHolder(binding)
             }
             else -> {
@@ -64,7 +64,7 @@ class PictureAlbumRVAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int = pictureList.size
 
-    inner class CameraViewHolder(val binding: ItemActivityPictureCameraBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class CameraViewHolder(val binding: ItemPictureCameraBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind() { }
     }
 

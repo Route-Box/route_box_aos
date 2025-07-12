@@ -228,7 +228,14 @@
     <string name="setting_service_1">이용약관</string>
     <string name="setting_service_2">개인정보처리방침</string>
     <string name="setting_service_3">위치정보이용 약관</string>
-    <string name="setting_ask">1:1 문의</string>
+    <string name="setting_inquiry">1:1 문의</string>
+    <string name="inquiry">문의하기</string>
+    <string name="inquiry_history">나의 문의 내역</string>
+    <string name="inquiry_type">문의 유형</string>
+    <string name="inquiry_content">문의 내용을 작성해주세요</string>
+    <string name="add_picture">사진 추가하기</string>
+    <string name="inquiry_user_info">회원정보</string>
+    <string name="error">오류</string>
     <string name="logout">로그아웃</string>
     <string name="logout_content">로그아웃 하시겠습니까?</string>
 

@@ -46,6 +46,9 @@ class SettingActivity: AppCompatActivity(), PopupDialogInterface {
         binding.settingService.setOnClickListener {
             startActivity(Intent(this@SettingActivity, SettingServiceActivity::class.java))
         }
+        binding.settingInquiry.setOnClickListener {
+            startActivity(Intent(this@SettingActivity, SettingInquiryActivity::class.java))
+        }
         binding.logout.setOnClickListener {
             showLogoutPopupDialog()
         }
